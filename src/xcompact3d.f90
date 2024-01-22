@@ -12,7 +12,6 @@ program xcompact3d
   use navier, only : velocity_to_momentum, momentum_to_velocity, pre_correc, &
        calc_divu_constraint, solve_poisson, cor_vel
   use tools, only : restart, simu_stats, apply_spatial_filter, read_inflow
-  use turbine, only : compute_turbines
   use ibm_param
   use ibm, only : body
   use genepsi, only : genepsi3d
@@ -26,8 +25,6 @@ program xcompact3d
      !t=itime*dt
      t=t0 + (itime0 + itime + 1 - ifirst)*dt
      call simu_stats(2)
-
-     if (iturbine.ne.0) call compute_turbines(ux1, uy1, uz1)
 
      if (iin.eq.3.and.mod(itime,ntimesteps)==1) then
         call read_inflow(ux_inflow,uy_inflow,uz_inflow,itime/ntimesteps)
@@ -97,8 +94,6 @@ subroutine init_xcompact3d()
   use decomp_2d_io, only : decomp_2d_io_init
   USE decomp_2d_poisson, ONLY : decomp_2d_poisson_init
   use case
-  use sandbox, only : init_sandbox
-  use forces
 
   use var
 
@@ -116,7 +111,6 @@ subroutine init_xcompact3d()
   use variables, only : nstat, nvisu, nprobe, ilist
 
   use les, only: init_explicit_les
-  use turbine, only: init_turbines
 
   use visu, only : visu_init, visu_ready
 
@@ -198,13 +192,6 @@ subroutine init_xcompact3d()
      call body(ux1,uy1,uz1,ep1)
   endif
 
-  if (iforces.eq.1) then
-     call init_forces()
-     if (irestart==1) then
-        call restart_forces(0)
-     endif
-  endif
-
   !####################################################################
   ! initialise visu
   if (ivisu.ne.0) then
@@ -221,10 +208,7 @@ subroutine init_xcompact3d()
      itime = 0
      call preprocessing(rho1,ux1,uy1,uz1,pp3,phi1,ep1)
   else
-     itr=1
-     if (itype == itype_sandbox) then
-        call init_sandbox(ux1,uy1,uz1,ep1,phi1,1)
-     end if
+     itr=1     
      call restart(ux1,uy1,uz1,dux1,duy1,duz1,ep1,pp3(:,:,:,1),phi1,dphi1,px1,py1,pz1,rho1,drho1,mu1,0)
   endif
 
@@ -249,18 +233,6 @@ subroutine init_xcompact3d()
 
   call init_probes()
 
-  if (iturbine.ne.0) call init_turbines(ux1, uy1, uz1)
-
-  if (itype==2) then
-     if(nrank.eq.0)then
-        open(42,file='time_evol.dat',form='formatted')
-     endif
-  endif
-  if (itype==5) then
-     if(nrank.eq.0)then
-        open(38,file='forces.dat',form='formatted')
-     endif
-  endif
 
 endsubroutine init_xcompact3d
 !########################################################################
@@ -280,18 +252,7 @@ subroutine finalise_xcompact3d()
   implicit none
 
   integer :: ierr
-  
-  if (itype==2) then
-     if(nrank.eq.0)then
-        close(42)
-     endif
-  endif
-  if (itype==5) then
-     if(nrank.eq.0)then
-        close(38)
-     endif
-  endif
-  
+    
   call simu_stats(4)
   call finalize_probes()
   call visu_finalise()
