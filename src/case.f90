@@ -9,19 +9,9 @@ module case
   use variables
 
   use user_sim
-  use tgv
-  use cyl
-  use hill
-  use dbg_schemes
   use channel
-  use mixlayer
-  use lockexch
   use tbl
-  use abl
   use uniform
-  use sandbox
-  use cavity
-  use pipe
 
   use var, only : nzmsize
 

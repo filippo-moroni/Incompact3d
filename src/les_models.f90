@@ -105,7 +105,6 @@ contains
     USE decomp_2d
     USE decomp_2d_io
     use var, only: nut1
-    USE abl, only: wall_sgs_slip, wall_sgs_noslip
     implicit none
 
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1, ep1
@@ -128,27 +127,6 @@ contains
 
     if(iconserv.eq.0) then ! Non-conservative form for calculating the divergence of the SGS stresses
        call sgs_mom_nonconservative(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,nut1,ep1)
-
-       ! SGS correction for ABL
-       if(itype.eq.itype_abl) then
-          ! No-slip wall
-          if (ncly1==2) then 
-             call wall_sgs_noslip(ux1,uy1,uz1,nut1,wallfluxx1,wallfluxy1,wallfluxz1)
-             if(xstart(2)==1) then
-               sgsx1(:,2,:) = -wallfluxx1(:,2,:)
-               sgsy1(:,2,:) = -wallfluxy1(:,2,:)
-               sgsz1(:,2,:) = -wallfluxz1(:,2,:)
-             endif
-          ! Slip wall
-          elseif (ncly1==1) then
-             call wall_sgs_slip(ux1,uy1,uz1,phi1,nut1,wallfluxx1,wallfluxy1,wallfluxz1)
-             if(xstart(2)==1) then
-                sgsx1(:,1,:) = wallfluxx1(:,1,:)
-                sgsy1(:,1,:) = wallfluxy1(:,1,:)
-                sgsz1(:,1,:) = wallfluxz1(:,1,:)
-             endif
-          endif
-       endif
 
     elseif (iconserv.eq.1) then ! Conservative form for calculating the divergence of the SGS stresses (used with wall functions)
        call sgs_mom_conservative(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,nut1)
@@ -1257,7 +1235,6 @@ end subroutine wale
     USE decomp_2d
 
     USE var, only: di1,tb1,di2,tb2,di3,tb3,tc1,tc2,tc3
-    USE abl, only: wall_sgs_slip_scalar
 
     implicit none
 
@@ -1316,12 +1293,6 @@ end subroutine wale
     call transpose_z_to_y(sgsphi3, sgsphi2)
     call transpose_y_to_x(sgsphi2, sgsphi1)
 
-    ! SGS correction for ABL
-    if (itype.eq.itype_abl.and.is==1.and.ibuoyancy.eq.1) then
-       call transpose_y_to_x(tb2,dphidy1)
-       call wall_sgs_slip_scalar(sgsphi1,nut1,dphidy1)
-    endif
-
   end subroutine sgs_scalar_nonconservative
 
   !************************************************************
@@ -1337,7 +1308,6 @@ end subroutine wale
     USE var, only : sgsx2,sgsy2,sgsz2
     USE var, only : sgsx3,sgsy3,sgsz3
     USE var, only : sxx1,sxy1,sxz1,syy1,syz1,szz1
-    USE abl, only : wall_sgs_noslip
     use ibm_param, only: ubcx, ubcy, ubcz
     
     implicit none 
@@ -1361,25 +1331,7 @@ end subroutine wale
     tyy1 = 2.0*nut1*syy1
     tyz1 = 2.0*nut1*syz1
     tzz1 = 2.0*nut1*szz1   
-    
-    ! Add wall model for ABL
-    if (itype.eq.itype_abl) then
-      if (ncly1==2) then 
-        call wall_sgs_noslip(ux1,uy1,uz1,nut1,wallsgsx1,wallsgsy1,wallsgsz1)
-        if (xstart(2)==1) then
-          txx1(:,2,:) = 0.
-          txy1(:,2,:) = - wallsgsx1(:,2,:)! txy1(:,2,:)
-          txz1(:,2,:) = 0.
-          tyy1(:,2,:) = 0.
-          tyz1(:,2,:) = - wallsgsz1(:,2,:)! tyz1(:,2,:)
-          tzz1(:,2,:) = 0.
-        endif
-      elseif (ncly1==1) then 
-        write(*,*) 'Simulation stopped: slip bottom wall not supported with iconserv=1'
-        call MPI_ABORT(MPI_COMM_WORLD,code,ierr); stop 
-      endif
-    endif
-    
+        
     ! Compute derivatives
     ta1 = zero; ta2 = zero; ta3 = zero
     tb1 = zero; tb2 = zero; tb3 = zero

@@ -12,9 +12,6 @@ program xcompact3d
   use navier, only : velocity_to_momentum, momentum_to_velocity, pre_correc, &
        calc_divu_constraint, solve_poisson, cor_vel
   use tools, only : restart, simu_stats, apply_spatial_filter, read_inflow
-  use ibm_param
-  use ibm, only : body
-  use genepsi, only : genepsi3d
 
   implicit none
 

@@ -428,11 +428,6 @@ contains
     call interxpv(pz1,pgz1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
          nxmsize,xsize(1),xsize(2),xsize(3),1)
 
-    if (iforces.eq.1) then
-       call interxpv(ppi1,pp1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
-            nxmsize,xsize(1),xsize(2),xsize(3),1)
-    endif
-
     !we are in X pencils:
     if (nclx1.eq.2) then
        do k=1,xsize(3)
@@ -504,7 +499,6 @@ contains
     USE param
     USE var
     USE MPI
-    use ibm, only : corgp_ibm, body
 
     implicit none
 
@@ -747,12 +741,6 @@ contains
     call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
     if (nrank == 0) write(*,*)'## Pres corr uz ', dep1
 #endif
-
-    if (iibm==1) then !solid body old school
-       call corgp_IBM(ux1,uy1,uz1,px1,py1,pz1,1)
-       call body(ux1,uy1,uz1,ep1)
-       call corgp_IBM(ux1,uy1,uz1,px1,py1,pz1,2)
-    endif
 
     return
   end subroutine pre_correc

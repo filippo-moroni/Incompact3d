@@ -16,9 +16,8 @@ module channel
 
   PRIVATE ! All functions/subroutines private by default
   PUBLIC :: init_channel, boundary_conditions_channel, postprocess_channel, &
-            visu_channel, visu_channel_init, momentum_forcing_channel, &
-            geomcomplex_channel
-
+            visu_channel, visu_channel_init, momentum_forcing_channel
+            
 contains
   !############################################################################
   subroutine init_channel (ux1,uy1,uz1,ep1,phi1)
@@ -374,43 +373,6 @@ contains
     endif
 
   end subroutine momentum_forcing_channel
-  !############################################################################
-  !############################################################################
-  subroutine geomcomplex_channel(epsi,nxi,nxf,ny,nyi,nyf,nzi,nzf,yp,remp)
-
-    use decomp_2d, only : mytype
-    use param, only : zero, one, two, ten
-    use ibm
-
-    implicit none
-
-    integer                    :: nxi,nxf,ny,nyi,nyf,nzi,nzf
-    real(mytype),dimension(nxi:nxf,nyi:nyf,nzi:nzf) :: epsi
-    real(mytype),dimension(ny) :: yp
-    real(mytype)               :: remp
-    integer                    :: j
-    real(mytype)               :: ym
-    real(mytype)               :: zeromach
-    real(mytype)               :: h
-
-    epsi(:,:,:) = zero
-    h = (yly - two) / two
-
-    zeromach=one
-    do while ((one + zeromach / two) .gt. one)
-       zeromach = zeromach/two
-    end do
-    zeromach = ten*zeromach
-
-    do j=nyi,nyf
-       ym=yp(j)
-       if ((ym.le.h).or.(ym.ge.(h+two))) then
-          epsi(:,j,:)=remp
-       endif
-    enddo
-
-    return
-  end subroutine geomcomplex_channel
   !############################################################################
   !############################################################################
   subroutine sem_init_channel(ux1, uy1, uz1)
