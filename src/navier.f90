@@ -390,8 +390,7 @@ contains
     USE var, only: pp1,pgy1,pgz1,di1,pp2,ppi2,pgy2,pgz2,pgzi2,dip2,&
          pgz3,ppi3,dip3,nxmsize,nymsize,nzmsize
 
-    USE forces, only : iforces, ppi1
-
+ 
     implicit none
 
     integer :: i,j,k
