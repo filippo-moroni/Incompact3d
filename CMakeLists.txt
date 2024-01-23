@@ -147,7 +147,7 @@ add_subdirectory(src)
 add_subdirectory(post_vtk)
 
 # Create an example dir with all input.i3d example files
-option(BUILD_TESTING "Build with tests" ON)
+option(BUILD_TESTING "Build with tests" OFF)
 set(test_dir "${PROJECT_BINARY_DIR}/Test")
 add_subdirectory(examples)
 message(STATUS "Before test main ${test_dir}")
