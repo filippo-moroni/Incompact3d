@@ -36,15 +36,8 @@ program xcompact3d
 
         call set_fluid_properties(rho1,mu1)
         call boundary_conditions(rho1,ux1,uy1,uz1,phi1,ep1)
-
-        if (imove.eq.1) then ! update epsi for moving objects
-          if ((iibm.eq.2).or.(iibm.eq.3)) then
-             call genepsi3d(ep1)
-          else if (iibm.eq.1) then
-             call body(ux1,uy1,uz1,ep1)
-          endif
-        endif
         call calculate_transeq_rhs(drho1,dux1,duy1,duz1,dphi1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
+        
 #ifdef DEBG
         call check_transients()
 #endif
@@ -110,9 +103,6 @@ subroutine init_xcompact3d()
   use les, only: init_explicit_les
 
   use visu, only : visu_init, visu_ready
-
-  use genepsi, only : genepsi3d, epsi_init
-  use ibm, only : body
 
   use probes, only : init_probes
 
@@ -182,13 +172,6 @@ subroutine init_xcompact3d()
      if (jles.gt.0)  call init_explicit_les()
   endif
 
-  if ((iibm.eq.2).or.(iibm.eq.3)) then
-     call genepsi3d(ep1)
-  else if (iibm.eq.1) then
-     call epsi_init(ep1)
-     call body(ux1,uy1,uz1,ep1)
-  endif
-
   !####################################################################
   ! initialise visu
   if (ivisu.ne.0) then
@@ -212,12 +195,6 @@ subroutine init_xcompact3d()
   if ((ioutflow.eq.1).or.(iin.eq.3)) then
      call init_inflow_outflow()
   end if
-
-  if ((iibm.eq.2).or.(iibm.eq.3)) then
-     call genepsi3d(ep1)
-  else if (iibm.eq.1) then
-     call body(ux1,uy1,uz1,ep1)
-  endif
 
   if (mod(itime, ilist) == 0 .or. itime == ifirst) then
      call test_speed_min_max(ux1,uy1,uz1)

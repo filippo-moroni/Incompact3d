@@ -318,9 +318,6 @@ subroutine dery_00(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind)
   real(mytype), dimension(ny) :: ffy,fsy,fwy,ppy
   real(mytype)                      :: lind
 
-  if (iibm.eq.2) call lagpoly(uy)
-  if (iibm.eq.3) call cubsply(uy,lind)
-
   do k=1,nz
      do i=1,nx
         ty(i,1,k)=afjy*(uy(i,2,k)-uy(i,ny,k))&
@@ -2993,9 +2990,6 @@ subroutine derzz_11(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nz) :: sfz,ssz,swz
   real(mytype)                      :: lind
 
-  if (iibm.eq.2) call lagpolz(uz)
-  if (iibm.eq.3) call cubsplz(uz,lind)
-
   if (npaire==1) then
      do j=1,ny
         do i=1,nx
@@ -3216,9 +3210,6 @@ subroutine derzz_12(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,ny) :: sz
   real(mytype), dimension(nz) :: sfz,ssz,swz
   real(mytype)                      :: lind
-
-  if (iibm.eq.2) call lagpolz(uz)
-  if (iibm.eq.3) call cubsplz(uz,lind)
 
   if (npaire==1) then
      do j=1,ny
@@ -3698,8 +3689,6 @@ subroutine derxvp(tx,ux,rx,sx,cfx6,csx6,cwx6,nx,nxm,ny,nz,npaire)
   real(mytype), dimension(ny,nz) :: sx
   real(mytype), dimension(nxm) :: cfx6,csx6,cwx6
   integer :: i,j,k,nyz
-
-
 
   nyz=ny*nz
 

@@ -155,28 +155,13 @@ if (${BUILD_TESTING})
   include(CTest)
   message(STATUS "MPI INCL ALSO FOUND: ${MPI_INCLUDE_PATH}")
   message(STATUS "MPI EXEC: ${MPIEXEC_EXECUTABLE}")
-  # ABL
-  add_test(NAME ABL-Convective-old COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_convective_test.i3d WORKING_DIRECTORY ${test_dir}/ABL-Convective-old)
-  add_test(NAME ABL-Neutral-old COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_neutral_test.i3d WORKING_DIRECTORY ${test_dir}/ABL-Neutral-old)
-  add_test(NAME ABL-Stable-old COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_stable_test.i3d WORKING_DIRECTORY ${test_dir}/ABL-Stable-old)
-  add_test(NAME ABL-Neutral COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_neutral_test.i3d WORKING_DIRECTORY ${test_dir}/ABL-Neutral)
+
   # Channel
   add_test(NAME Channel-Flow-X COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test_x.i3d WORKING_DIRECTORY ${test_dir}/Channel-Flow-X)
   add_test(NAME Channel-Flow-Z COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test_z.i3d WORKING_DIRECTORY ${test_dir}/Channel-Flow-Z)
-  # Cylinder
-  if(NOT ${USE_ADIOS2})
-    add_test(NAME Cylinder COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test.i3d WORKING_DIRECTORY ${test_dir}/Cylinder)
-    add_test(NAME CylinderMoving COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test_moving.i3d WORKING_DIRECTORY ${test_dir}/CylinderMoving)
-  endif()
-  # Lock excahnge
-  add_test(NAME Lock-exchange COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test.i3d WORKING_DIRECTORY ${test_dir}/Lock-exchange)
-  # Mixing Layer
-  add_test(NAME Mixing-layer COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test.i3d WORKING_DIRECTORY ${test_dir}/Mixing-layer)
-  # TGV
-  add_test(NAME TGvortex COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test.i3d WORKING_DIRECTORY ${test_dir}/TGV)
+
   # TBL
   add_test(NAME TBL COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test.i3d WORKING_DIRECTORY ${test_dir}/TBL)
-  # Wind Turbines
-  add_test(NAME Wind-Turbine COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test.i3d WORKING_DIRECTORY ${test_dir}/Wind-Turbine)
+
 endif()
 

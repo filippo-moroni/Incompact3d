@@ -861,7 +861,6 @@ contains
     use param
     use variables
     use decomp_2d
-    use case, only : scalar_forcing
 
     use var, only : ta1,tb1,tc1,di1
     use var, only : rho2,uy2,ta2,tb2,tc2,td2,te2,di2
@@ -1034,9 +1033,6 @@ contains
     !X PENCILS
     ! Add convective and diffusive scalar terms to final sum
     dphi1(:,:,:,1) = ta1(:,:,:) + tc1(:,:,:)
-
-    !! Additional forcing
-    call scalar_forcing(dphi1, rho1, ux1, uy1, uz1, phi1)
 
     !! XXX We have computed rho dphidt, want dphidt
     if (ilmn) then
