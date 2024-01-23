@@ -154,16 +154,6 @@ contains
 
     integer :: j
 
-    ! Recover temperature when decomposed (pressure to be recovered externally)
-    if (itype.eq.itype_abl.and.ibuoyancy.eq.1) then
-      do j=1,xsize(2) 
-        abl_T(:,j,:,1) = phi1(:,j,:,1) + Tstat(j,1)
-      enddo
-      call run_postprocessing(rho1, ux1, uy1, uz1, pp3, abl_T, ep1)
-    else
-      call run_postprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
-    endif
-
   end subroutine postprocessing
   !##################################################################
   !##################################################################
