@@ -1,7 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
-
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 module visu
   
   implicit none
@@ -24,7 +51,7 @@ module visu
 
   private
   public :: output2D, visu_init, visu_ready, visu_finalise, write_snapshot, end_snapshot, &
-       write_field, io_name, gen_filename
+       write_field, io_name
 
 contains
 
@@ -106,39 +133,35 @@ contains
   !
   subroutine visu_ready ()
 
-    use decomp_2d_io, only : decomp_2d_open_io, decomp_2d_append_mode, decomp_2d_write_mode, gen_iodir_name
+    use decomp_2d_io, only : decomp_2d_open_io, decomp_2d_append_mode, decomp_2d_write_mode
 
-    use param, only : irestart
-    
     implicit none
 
     integer :: mode
     
 #ifdef ADIOS2
-    logical, save :: outloc_init
-    logical :: dir_exists
     
     mode = decomp_2d_write_mode
 
-    ! XXX: A fix was applied to ADIOS2.7.1 series to prevent corrupting files when appended from Fortran
-    if (.not.outloc_init) then
-       if (irestart == 1) then
-          !! Restarting - is the output already available to write to?
-          inquire(file=gen_iodir_name("data", io_name), exist=dir_exists)
-          if (dir_exists) then
-             outloc_init = .true.
-          end if
-       end if
+    ! XXX: Currently opening BP4 files in append mode seems to corrupt data.
+    ! if (.not.outloc_init) then
+    !    if (irestart == 1) then
+    !       !! Restarting - is the output already available to write to?
+    !       inquire(file=gen_iodir_name("data", io_name), exist=dir_exists)
+    !       if (dir_exists) then
+    !          outloc_init = .true.
+    !       end if
+    !    end if
        
-       if (.not.outloc_init) then !! Yes, yes, but check the restart check above.
-          mode = decomp_2d_write_mode
-       else
-          mode = decomp_2d_append_mode
-       end if
-       outloc_init = .true.
-    else
-       mode = decomp_2d_append_mode
-    end if
+    !    if (.not.outloc_init) then !! Yes, yes, but check the restart check above.
+    !       mode = decomp_2d_write_mode
+    !    else
+    !       mode = decomp_2d_append_mode
+    !    end if
+    !    outloc_init = .true.
+    ! else
+    !    mode = decomp_2d_append_mode
+    ! end if
 
     call decomp_2d_open_io(io_name, "data", mode)
 #endif
@@ -194,7 +217,7 @@ contains
     real(mytype), dimension(ph3%zst(1):ph3%zen(1),ph3%zst(2):ph3%zen(2),nzmsize,npress), intent(in) :: pp3
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), numscalar), intent(in) :: phi1
     integer, intent(in) :: itime
-    integer, intent(out) :: num
+    character(len=32), intent(out) :: num
 
     ! Local variables
     integer :: is
@@ -218,23 +241,23 @@ contains
 #ifndef ADIOS2
     if (filenamedigits) then
        ! New enumeration system, it works integrated with xcompact3d_toolbox
-       num = itime
+       write(num, ifilenameformat) itime
     else
        ! Classic enumeration system
-       num = itime / ioutput
+       write(num, ifilenameformat) itime/ioutput
     endif
 #else
     ! ADIOS2 is zero-indexed
-    num = itime/ioutput - 1
+    write(num, '(I0)') itime/ioutput - 1
 #endif
     
     ! Write XDMF header
-    if (use_xdmf) call write_xdmf_header(".", "snapshot", num)
+    if (use_xdmf) call write_xdmf_header(".", "snapshot", trim(num))
 
     ! Write velocity
-    call write_field(ux1, ".", "ux", num)
-    call write_field(uy1, ".", "uy", num)
-    call write_field(uz1, ".", "uz", num)
+    call write_field(ux1, ".", "ux", trim(num))
+    call write_field(uy1, ".", "uy", trim(num))
+    call write_field(uz1, ".", "uz", trim(num))
 
     ! Interpolate pressure
     !WORK Z-PENCILS
@@ -254,16 +277,16 @@ contains
     call rescale_pressure(ta1)
 
     ! Write pressure
-    call write_field(ta1, ".", "pp", num, .true., flush=.true.)
+    call write_field(ta1, ".", "pp", trim(num), .true., flush=.true.)
 
     ! LMN - write density
-    if (ilmn) call write_field(rho1(:,:,:,1), ".", "rho", num)
+    if (ilmn) call write_field(rho1(:,:,:,1), ".", "rho", trim(num))
 
     ! Write scalars
     if (iscalar.ne.0) then
       do is = 1, numscalar
         write(scname,"('phi',I2.2)") is
-        call write_field(phi1(:,:,:,is), ".", trim(scname), num, .true.)
+        call write_field(phi1(:,:,:,is), ".", trim(scname), trim(num), .true.)
       enddo
     endif
 
@@ -280,10 +303,8 @@ contains
     implicit none
 
     integer, intent(in) :: itime
-    integer, intent(in) :: num
+    character(len=32), intent(in) :: num
 
-    character(len=:), allocatable :: filename
-    
     character(len=32) :: fmt2, fmt3, fmt4
     integer :: is
     integer :: ierr
@@ -299,8 +320,7 @@ contains
         write(fmt3,'("(A,F16.4)")')
         write(fmt4,'("(A,F16.12)")')
 
-        filename = "./data/snap"//int_to_str(num)//".ini"
-        open(newunit=is,file=filename,action='write',status='replace')
+        open(newunit=is,file="./data/snap"//trim(num)//".ini",action='write',status='replace')
         write(is,'(A)')'[domain]'
         write(is,fmt2) 'nx=      ',nx
         write(is,fmt2) 'ny=      ',ny
@@ -344,15 +364,12 @@ contains
     implicit none
 
     ! Arguments
-    character(len=*), intent(in) :: pathname, filename
-    integer, intent(in) :: num
+    character(len=*), intent(in) :: pathname, filename, num
 
     ! Local variables
     integer :: i,k
     real(mytype) :: xp(xszV(1)), zp(zszV(3))
 
-    character(len=:), allocatable :: fmt
-    
     if (nrank.eq.0) then
       OPEN(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf"))
 
@@ -360,7 +377,6 @@ contains
       write(ioxdmf,*)'<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>'
       write(ioxdmf,*)'<Xdmf xmlns:xi="http://www.w3.org/2001/XInclude" Version="2.0">'
       write(ioxdmf,*)'<Domain>'
-      call write_xdmf_topo()
       if (istret.ne.0) then
         do i=1,xszV(1)
           xp(i) = real(i-1,mytype)*dx*nvisu
@@ -368,6 +384,17 @@ contains
         do k=1,zszV(3)
           zp(k) = real(k-1,mytype)*dz*nvisu
         enddo
+        write(ioxdmf,*)'    <Topology name="topo" TopologyType="3DRectMesh"'
+        if (output2D.eq.0) then
+          write(ioxdmf,*)'        Dimensions="',zszV(3),yszV(2),xszV(1),'">'
+        else if (output2D.eq.1) then
+          write(ioxdmf,*)'        Dimensions="',zszV(3),yszV(2),1,'">'
+        else if (output2D.eq.2) then
+          write(ioxdmf,*)'        Dimensions="',zszV(3),1,xszV(1),'">'
+        else if (output2D.eq.3) then
+          write(ioxdmf,*)'        Dimensions="',1,yszV(2),xszV(1),'">'
+        endif
+        write(ioxdmf,*)'    </Topology>'
         write(ioxdmf,*)'    <Geometry name="geo" Type="VXVYVZ">'
         if (output2D.ne.1) then
           write(ioxdmf,*)'        <DataItem Dimensions="',xszV(1),'" NumberType="Float" Precision="4" Format="XML">'
@@ -395,6 +422,17 @@ contains
         write(ioxdmf,*)'        </DataItem>'
         write(ioxdmf,*)'    </Geometry>'
       else
+        write(ioxdmf,*)'    <Topology name="topo" TopologyType="3DCoRectMesh"'
+        if (output2D.eq.0) then
+          write(ioxdmf,*)'        Dimensions="',zszV(3),yszV(2),xszV(1),'">'
+        else if (output2D.eq.1) then
+          write(ioxdmf,*)'        Dimensions="',zszV(3),yszV(2),1,'">'
+        else if (output2D.eq.2) then
+          write(ioxdmf,*)'        Dimensions="',zszV(3),1,xszV(1),'">'
+        else if (output2D.eq.3) then
+          write(ioxdmf,*)'        Dimensions="',1,yszV(2),xszV(1),'">'
+        endif
+        write(ioxdmf,*)'    </Topology>'
         write(ioxdmf,*)'    <Geometry name="geo" Type="ORIGIN_DXDYDZ">'
         write(ioxdmf,*)'        <!-- Origin -->'
         write(ioxdmf,*)'        <DataItem Format="XML" Dimensions="3">'
@@ -402,60 +440,24 @@ contains
         write(ioxdmf,*)'        </DataItem>'
         write(ioxdmf,*)'        <!-- DxDyDz -->'
         write(ioxdmf,*)'        <DataItem Format="XML" Dimensions="3">'
-        if (mytype == kind(0.0d0)) then
-           fmt = "(A, E24.17, A, E24.17, A, E24.17)"
-        else
-           fmt = "(A, E16.9, A, E16.9, A, E16.9)"
-        end if
         if (output2D.eq.0) then
-          write(ioxdmf,fmt)'        ',nvisu*dz," ",nvisu*dy," ",nvisu*dx
+          write(ioxdmf,*)'        ',nvisu*dz,nvisu*dy,nvisu*dx
         else if (output2D.eq.1) then
-          write(ioxdmf,fmt)'        ',dz," ",dy," ",1.
+          write(ioxdmf,*)'        ',dz,dy,1.
         else if (output2D.eq.2) then
-          write(ioxdmf,fmt)'        ',dz," ",1.," ",dx
+          write(ioxdmf,*)'        ',dz,1.,dx
         else if (output2D.eq.3) then
-          write(ioxdmf,fmt)'        ',1.," ",dy," ",dx
+          write(ioxdmf,*)'        ',1.,dy,dx
         endif
         write(ioxdmf,*)'        </DataItem>'
         write(ioxdmf,*)'    </Geometry>'
       endif
-      write(ioxdmf,'(A, I0, A)')'    <Grid Name="', num, '" GridType="Uniform">'
+      write(ioxdmf,*)'    <Grid Name="'//num//'" GridType="Uniform">'
       write(ioxdmf,*)'        <Topology Reference="/Xdmf/Domain/Topology[1]"/>'
       write(ioxdmf,*)'        <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>'
     endif
   end subroutine write_xdmf_header
 
-  subroutine write_xdmf_topo()
-
-    use decomp_2d, only : xszV, yszV, zszV
-    use param, only : istret
-    
-    implicit none
-
-    character(len=:), allocatable :: topo_type
-    character(len=:), allocatable :: fmt
-    
-    if (istret /= 0) then
-       topo_type = "3DRectMesh"
-    else
-       topo_type = "3DCoRectMesh"
-    end if
-    
-    write(ioxdmf,'(A)')'    <Topology name="topo" TopologyType="'//topo_type//'"'
-
-    fmt = "(A, I0, A, I0, A, I0, A)"
-    if (output2D.eq.0) then
-       write(ioxdmf,fmt)'        Dimensions="',zszV(3)," ",yszV(2)," ",xszV(1),'">'
-    else if (output2D.eq.1) then
-       write(ioxdmf,fmt)'        Dimensions="',zszV(3)," ",yszV(2)," ",1,'">'
-    else if (output2D.eq.2) then
-       write(ioxdmf,fmt)'        Dimensions="',zszV(3)," ",1," ",xszV(1),'">'
-    else if (output2D.eq.3) then
-       write(ioxdmf,fmt)'        Dimensions="',1," ",yszV(2)," ",xszV(1),'">'
-    endif
-    write(ioxdmf,'(A)')'    </Topology>'
-  end subroutine write_xdmf_topo
-  
   !
   ! Write the footer of the XDMF file
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
@@ -495,8 +497,7 @@ contains
     implicit none
 
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: f1
-    character(len=*), intent(in) :: pathname, filename
-    integer, intent(in) :: num
+    character(len=*), intent(in) :: pathname, filename, num 
     logical, optional, intent(in) :: skip_ibm, flush
 
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: local_array
@@ -504,9 +505,6 @@ contains
     
     integer :: ierr
 
-    integer :: precision
-    character(len=:), allocatable :: fmt
-    
 #ifndef ADIOS2
     mpiio = .true.
 #else
@@ -527,35 +525,29 @@ contains
 #else
           write(ioxdmf,*)'           <DataItem Format="HDF"'
 #endif
-
 #ifdef DOUBLE_PREC
 #ifdef SAVE_SINGLE
           if (output2D.eq.0) then
-             precision = 4
+             write(ioxdmf,*)'            DataType="Float" Precision="4" Endian="little" Seek="0"'
           else
-             precision = 8
+             write(ioxdmf,*)'            DataType="Float" Precision="8" Endian="little" Seek="0"'
           endif
 #else
-          precision = 8
+          write(ioxdmf,*)'            DataType="Float" Precision="8" Endian="little" Seek="0"'
 #endif
 #else
-          precision = 4
+          write(ioxdmf,*)'            DataType="Float" Precision="4" Endian="little" Seek="0"'
 #endif
-          write(ioxdmf,"(A,I0,A)")'            DataType="Float" Precision="', precision, '" Endian="little" Seek="0"'
-
-          fmt = "(A, I0, A, I0, A, I0, A)"
           if (output2D.eq.0) then
-             write(ioxdmf,fmt)'            Dimensions="',zszV(3)," ",yszV(2)," ",xszV(1),'">'
+             write(ioxdmf,*)'            Dimensions="',zszV(3),yszV(2),xszV(1),'">'
           else if (output2D.eq.1) then
-             write(ioxdmf,fmt)'            Dimensions="',zszV(3)," ",yszV(2)," ",1,'">'
+             write(ioxdmf,*)'            Dimensions="',zszV(3),yszV(2),1,'">'
           else if (output2D.eq.2) then
-             write(ioxdmf,fmt)'            Dimensions="',zszV(3)," ",1," ",xszV(1),'">'
+             write(ioxdmf,*)'            Dimensions="',zszV(3),1,xszV(1),'">'
           else if (output2D.eq.3) then
-             write(ioxdmf,fmt)'            Dimensions="',1," ",yszV(2)," ",xszV(1),'">'
+             write(ioxdmf,*)'            Dimensions="',1,yszV(2),xszV(1),'">'
           endif
-
           write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin'), num)
-
           write(ioxdmf,*)'           </DataItem>'
           write(ioxdmf,*)'        </Attribute>'
        endif
@@ -584,23 +576,22 @@ contains
   end subroutine write_field
 
   function gen_snapshotname(pathname, varname, num, ext)
-    character(len=*), intent(in) :: pathname, varname, ext
-    integer, intent(in) :: num
-    character(len=:), allocatable :: gen_snapshotname
+    character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
-    gen_snapshotname = gen_filename(pathname, varname, num, ext)
+    character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_snapshotname
+    write(gen_snapshotname, "(A)") gen_filename(pathname, varname, num, ext)
 #else
-    gen_snapshotname = varname//'-'//int_to_str(num)//'.'//ext
+    character(len=(len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_snapshotname
+    write(gen_snapshotname, "(A)") varname//'-'//num//'.'//ext
 #endif
   end function gen_snapshotname
   
   function gen_filename(pathname, varname, num, ext)
 
-    character(len=*), intent(in) :: pathname, varname, ext
-    integer, intent(in) :: num
+    character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
-    character(len=:), allocatable :: gen_filename
-    gen_filename = pathname//'/'//varname//'-'//int_to_str(num)//'.'//ext
+    character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename
+    write(gen_filename, "(A)") pathname//'/'//varname//'-'//num//'.'//ext
 #else
     character(len=len(varname)) :: gen_filename
     write(gen_filename, "(A)") varname
@@ -610,31 +601,17 @@ contains
 
   function gen_h5path(filename, num)
 
-    character(len=*), intent(in) :: filename
-    integer, intent(in) :: num
+    character(len=*), intent(in) :: filename, num
 #ifndef ADIOS2
     character(len=*), parameter :: path_to_h5file = "./"
     character(len=(len(path_to_h5file) + len(filename))) :: gen_h5path
     write(gen_h5path, "(A)") path_to_h5file//filename
 #else
     character(len=*), parameter :: path_to_h5file = "../data.hdf5:/Step"
-    character(len=:), allocatable :: gen_h5path
-    gen_h5path = path_to_h5file//int_to_str(num)//"/"//filename
+    character(len=(len(path_to_h5file) + len(num) + 1+ len(filename))) :: gen_h5path
+    write(gen_h5path, "(A)") path_to_h5file//num//"/"//filename
 #endif
     
   end function gen_h5path
-
-  ! Function converting an integer to a string.
-  function int_to_str(i)
-
-    integer, intent(in) :: i ! Integer input.
-
-    ! String return value. The string must be long enough to contain all the characters required to
-    ! represent the integer, i.e 1 + log_10(i). To protect against calling with integer 0 the value
-    ! passed to log_10 must be >= 1.
-    character(len=(1 + int(log10(real(max(i, 1)))))) :: int_to_str
-
-    write(int_to_str, "(I0)") i
-  end function int_to_str
   
 end module visu

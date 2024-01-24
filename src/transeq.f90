@@ -1,7 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
-
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 module transeq
 
   private
@@ -74,7 +101,10 @@ contains
     use var, only : FTx, FTy, FTz, Fdiscx, Fdiscy, Fdiscz
     use ibm_param, only : ubcx,ubcy,ubcz
     use les, only : compute_SGS
-    use mpi
+#ifdef DEBG 
+    use tools, only : avg3d
+#endif
+
 
     use case, only : momentum_forcing
 
@@ -88,13 +118,12 @@ contains
 
     !! OUTPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1,duy1,duz1
-    
-    integer :: i,j,k,is
 
 #ifdef DEBG 
-    real(mytype) :: dep, dep1
-    integer :: code
+    real(mytype) avg_param
 #endif
+    
+    integer :: i,j,k,is
 
     !SKEW SYMMETRIC FORM
     !WORK X-PENCILS
@@ -108,10 +137,10 @@ contains
       tc1(:,:,:) = ux1(:,:,:) * uz1(:,:,:)
     endif
 
-#ifdef DEBG
-    dep=maxval(abs(ta1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ta1 (uu) MAX ', dep1
+#ifdef DEBG 
+    avg_param = zero
+    call avg3d (ta1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ta1 (uu) AVG ', avg_param
 #endif
 
     call derx (td1,ta1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,ubcx*ubcx)
@@ -121,10 +150,10 @@ contains
     call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,ubcy)
     call derx (tc1,uz1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,ubcz)
 
-#ifdef DEBG
-    dep=maxval(abs(ta1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ta1 (du) MAX ', dep1
+#ifdef DEBG 
+    avg_param = zero
+    call avg3d (ta1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ta1 (du) AVG ', avg_param
 #endif
 
     ! Convective terms of x-pencil are stored in tg1,th1,ti1
@@ -138,10 +167,10 @@ contains
       ti1(:,:,:) = tf1(:,:,:) + ux1(:,:,:) * tc1(:,:,:)
     endif
     ! TODO: save the x-convective terms already in dux1, duy1, duz1
-#ifdef DEBG
-    dep=maxval(abs(tg1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg1 (duu+udu) MAX ', dep1
+#ifdef DEBG 
+    avg_param = zero
+    call avg3d (tg1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg1 (duu+udu) AVG ', avg_param
 #endif
 
     if (ilmn) then
@@ -155,13 +184,13 @@ contains
     call transpose_x_to_y(ux1,ux2)
     call transpose_x_to_y(uy1,uy2)
     call transpose_x_to_y(uz1,uz2)
-#ifdef DEBG
-    dep=maxval(abs(ux2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ux2 (transpose) MAX ', dep1
-    dep=maxval(abs(uy2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR uy2 (transpose) MAX ', dep1
+#ifdef DEBG 
+    avg_param = zero
+    call avg3d (ux2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ux2 (transpose) AVG ', avg_param
+    avg_param = zero
+    call avg3d (uy2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR uy2 (transpose) AVG ', avg_param
 #endif
 
     if (ilmn) then
@@ -181,10 +210,10 @@ contains
       te2(:,:,:) = uy2(:,:,:) * uy2(:,:,:)
       tf2(:,:,:) = uz2(:,:,:) * uy2(:,:,:)
     endif
-#ifdef DEBG
-    dep=maxval(abs(td2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td2 (uu) MAX ', dep1
+#ifdef DEBG 
+    avg_param = zero
+    call avg3d (td2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td2 (uu) AVG ', avg_param
 #endif
 
     call dery (tg2,td2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0,ubcx*ubcy)
@@ -194,10 +223,10 @@ contains
     call dery (te2,uy2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0,ubcy)
     call dery (tf2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcz)
 
-#ifdef DEBG
-    dep=maxval(abs(td2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td2 (du) MAX ', dep1
+#ifdef DEBG 
+    avg_param = zero
+    call avg3d (td2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td2 (du) AVG ', avg_param
 #endif
 
     ! Convective terms of y-pencil in tg2,th2,ti2
@@ -210,10 +239,10 @@ contains
       th2(:,:,:) = th2(:,:,:) + uy2(:,:,:) * te2(:,:,:)
       ti2(:,:,:) = ti2(:,:,:) + uy2(:,:,:) * tf2(:,:,:)
     endif
-#ifdef DEBG
-    dep=maxval(abs(tg2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg2 (duu+udu) MAX ', dep1
+#ifdef DEBG 
+    avg_param = zero
+    call avg3d (tg2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg2 (duu+udu) AVG ', avg_param
 #endif
 
 
@@ -243,9 +272,9 @@ contains
        tf3(:,:,:) = uz3(:,:,:) * uz3(:,:,:)
     endif
 #ifdef DEBG
-    dep=maxval(abs(td3))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td3 (uu) MAX ', dep1
+    avg_param = zero
+    call avg3d (td3, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td3 (uu) AVG ', avg_param
 #endif
 
     call derz (tg3,td3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0,ubcx*ubcz)
@@ -279,9 +308,9 @@ contains
        tc3(:,:,:) = tc3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * divu3(:,:,:)
     endif
 #ifdef DEBG
-    dep=maxval(abs(ta3))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ta3 (duu+udu) MAX ', dep1
+    avg_param = zero
+    call avg3d (ta3, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR ta3 (duu+udu) AVG ', avg_param
 #endif
 
     ! Convective terms of z-pencil are in ta3 -> td3, tb3 -> te3, tc3 -> tf3
@@ -316,9 +345,9 @@ contains
     th2(:,:,:) = te2(:,:,:) - half * th2(:,:,:)
     ti2(:,:,:) = tf2(:,:,:) - half * ti2(:,:,:)
 #ifdef DEBG
-    dep=maxval(abs(tg2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg2 (Conv+Diff)) MAX ', dep1
+    avg_param = zero
+    call avg3d (tg2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg2 (Conv+Diff)) AVG ', avg_param
 #endif
 
 
@@ -402,15 +431,15 @@ contains
        endif
     endif
 #ifdef DEBG
-    dep=maxval(abs(td2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td2 (Diff Y) MAX ', dep1
-    dep=maxval(abs(te2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR te2 (Diff Y) MAX ', dep1
-    dep=maxval(abs(tf2))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tf2 (Diff Y) MAX ', dep1
+    avg_param = zero
+    call avg3d (td2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td2 (Diff Y) AVG ', avg_param
+    avg_param = zero
+    call avg3d (te2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR te2 (Diff Y) AVG ', avg_param
+    avg_param = zero
+    call avg3d (tf2, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tf2 (Diff Y) AVG ', avg_param
 #endif
 
 
@@ -445,15 +474,15 @@ contains
       tf1(:,:,:) = xnu * tf1(:,:,:)
     endif
 #ifdef DEBG
-    dep=maxval(abs(td1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td1 (Diff X) MAX ', dep1
-    dep=maxval(abs(te1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR te1 (Diff X) MAX ', dep1
-    dep=maxval(abs(tf1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tf1 (Diff X) MAX ', dep1
+    avg_param = zero
+    call avg3d (td1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR td1 (Diff X) AVG ', avg_param
+    avg_param = zero
+    call avg3d (te1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR te1 (Diff X) AVG ', avg_param
+    avg_param = zero
+    call avg3d (tf1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tf1 (Diff X) AVG ', avg_param
 #endif
 
     !FINAL SUM: DIFF TERMS + CONV TERMS
@@ -461,48 +490,54 @@ contains
     duy1(:,:,:,1) = tb1(:,:,:) - half*th1(:,:,:)  + te1(:,:,:)
     duz1(:,:,:,1) = tc1(:,:,:) - half*ti1(:,:,:)  + tf1(:,:,:)
 #ifdef DEBG
-    dep=maxval(abs(dux1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS dux1 ', dep1
-    dep=maxval(abs(duy1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS duy1 ', dep1
-    dep=maxval(abs(duz1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS duz1 ', dep1
+    avg_param = zero
+    call avg3d (dux1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS dux1 ', avg_param
+    avg_param = zero
+    call avg3d (duy1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS duy1 ', avg_param
+    avg_param = zero
+    call avg3d (duz1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS duz1 ', avg_param
 #endif
     if (ilmn) then
        call momentum_full_viscstress_tensor(dux1(:,:,:,1), duy1(:,:,:,1), duz1(:,:,:,1), divu3, mu1)
     endif
 #ifdef DEBG
-    dep=maxval(abs(dux1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS VisTau dux1 ', dep1
-    dep=maxval(abs(duy1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS VisTau duy1 ', dep1
-    dep=maxval(abs(duz1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS VisTau duz1 ', dep1
+    avg_param = zero
+    call avg3d (dux1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS VisTau dux1 ', avg_param
+    avg_param = zero
+    call avg3d (duy1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS VisTau duy1 ', avg_param
+    avg_param = zero
+    call avg3d (duz1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS VisTau duz1 ', avg_param
 #endif
 
     ! If LES modelling is enabled, add the SGS stresses
     if (ilesmod.ne.0.and.jles.le.3.and.jles.gt.0) then
-       call compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1)
+       ! Wall model for LES
+       if (iwall.eq.1) then
+          call compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,1)
+       else
+          call compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,0)
+       endif
+       ! Calculate SGS stresses (conservative/non-conservative formulation)
        dux1(:,:,:,1) = dux1(:,:,:,1) + sgsx1(:,:,:)
        duy1(:,:,:,1) = duy1(:,:,:,1) + sgsy1(:,:,:)
        duz1(:,:,:,1) = duz1(:,:,:,1) + sgsz1(:,:,:)
     endif
 #ifdef DEBG
-    dep=maxval(abs(dux1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS LES dux1 ', dep1
-    dep=maxval(abs(duy1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS LES duy1 ', dep1
-    dep=maxval(abs(duz1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS LES duz1 ', dep1
+    avg_param = zero
+    call avg3d (dux1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS LES dux1 ', avg_param
+    avg_param = zero
+    call avg3d (duy1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS LES duy1 ', avg_param
+    avg_param = zero
+    call avg3d (duz1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS LES duz1 ', avg_param
 #endif
 
     if (ilmn) then
@@ -517,28 +552,28 @@ contains
       enddo
     endif
 #ifdef DEBG
-    dep=maxval(abs(dux1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS ILMN dux1 ', dep1
-    dep=maxval(abs(duy1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS ILMN duy1 ', dep1
-    dep=maxval(abs(duz1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS ILMN duz1 ', dep1
+    avg_param = zero
+    call avg3d (dux1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS ILMN dux1 ', avg_param
+    avg_param = zero
+    call avg3d (duy1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS ILMN duy1 ', avg_param
+    avg_param = zero
+    call avg3d (duz1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS ILMN duz1 ', avg_param
 #endif
     !! Additional forcing
     call momentum_forcing(dux1, duy1, duz1, rho1, ux1, uy1, uz1, phi1)
 #ifdef DEBG
-    dep=maxval(abs(dux1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Forc dux1 ', dep1
-    dep=maxval(abs(duy1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Forc duy1 ', dep1
-    dep=maxval(abs(duz1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Forc duz1 ', dep1
+    avg_param = zero
+    call avg3d (dux1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Forc dux1 ', avg_param
+    avg_param = zero
+    call avg3d (duy1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Forc duy1 ', avg_param
+    avg_param = zero
+    call avg3d (duz1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Forc duz1 ', avg_param
 #endif
 
     !! Turbine forcing
@@ -552,15 +587,15 @@ contains
        duz1(:,:,:,1)=duz1(:,:,:,1)+Fdiscz(:,:,:)/rho_air
     endif
 #ifdef DEBG
-    dep=maxval(abs(dux1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Turb dux1 ', dep1
-    dep=maxval(abs(duy1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Turb duy1 ', dep1
-    dep=maxval(abs(duz1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Turb duz1 ', dep1
+    avg_param = zero
+    call avg3d (dux1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Turb dux1 ', avg_param
+    avg_param = zero
+    call avg3d (duy1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Turb duy1 ', avg_param
+    avg_param = zero
+    call avg3d (duz1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Turb duz1 ', avg_param
 #endif
 
     if (itrip == 1) then
@@ -569,15 +604,15 @@ contains
        if ((nrank==0).and.(mod(itime,ilist)==0)) write(*,*) 'TRIPPING!!'
     endif
 #ifdef DEBG
-    dep=maxval(abs(dux1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Trip dux1 ', dep1
-    dep=maxval(abs(duy1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Trip duy1 ', dep1
-    dep=maxval(abs(duz1))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## MomRHS Trip duz1 ', dep1
+    avg_param = zero
+    call avg3d (dux1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Trip dux1 ', avg_param
+    avg_param = zero
+    call avg3d (duy1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Trip duy1 ', avg_param
+    avg_param = zero
+    call avg3d (duz1, avg_param)
+    if (nrank == 0) write(*,*)'## MomRHS Trip duz1 ', avg_param
 #endif
 
   end subroutine momentum_rhs_eq
@@ -729,11 +764,7 @@ contains
     integer :: iend, jend, kend
     integer :: i, j, k
 
-    ! Return directly if richardson is zero
-    if (abs(richardson) < tiny(richardson)) return
-
     !! X-gravity
-    if (abs(gravx) > tiny(gravx)) then
     if ((nclx1.eq.0).and.(nclxn.eq.0)) then
        istart = 1
        iend = xsize(1)
@@ -769,10 +800,8 @@ contains
           enddo
        enddo
     enddo
-    endif
 
     !! Y-gravity
-    if (abs(gravy) > tiny(gravy)) then
     if (nclx1.eq.2) then
        istart = 2
     else
@@ -810,10 +839,8 @@ contains
           enddo
        enddo
     enddo
-    endif
 
     !! Z-gravity
-    if (abs(gravz) > tiny(gravz)) then
     if (nclx1.eq.2) then
        istart = 2
     else
@@ -851,7 +878,7 @@ contains
           enddo
        enddo
     enddo
-    endif
+
 
   end subroutine momentum_gravity
   !############################################################################
@@ -861,6 +888,7 @@ contains
     use param
     use variables
     use decomp_2d
+    use case, only : scalar_forcing
 
     use var, only : ta1,tb1,tc1,di1
     use var, only : rho2,uy2,ta2,tb2,tc2,td2,te2,di2
@@ -1033,6 +1061,9 @@ contains
     !X PENCILS
     ! Add convective and diffusive scalar terms to final sum
     dphi1(:,:,:,1) = ta1(:,:,:) + tc1(:,:,:)
+
+    !! Additional forcing
+    call scalar_forcing(dphi1, rho1, ux1, uy1, uz1, phi1)
 
     !! XXX We have computed rho dphidt, want dphidt
     if (ilmn) then

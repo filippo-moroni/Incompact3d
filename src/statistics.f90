@@ -1,6 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 
 module stats
 
@@ -8,8 +36,6 @@ module stats
 
   character(len=*), parameter :: io_statistics = "statistics-io", &
        stat_dir = "statistics"
-
-  integer :: stats_time
   
   private
   public overall_statistic
@@ -64,7 +90,7 @@ contains
   !
   subroutine init_statistic
 
-    use param, only : zero, iscalar, istatfreq
+    use param, only : zero, iscalar
     use var, only : tmean
     use var, only : pmean
     use var, only : umean, uumean
@@ -127,15 +153,17 @@ contains
 
   function gen_statname(stat) result(newname)
 
+    use param, only : itime
+
     implicit none
     
     character(len=*), intent(in) :: stat
-    character(len=:), allocatable :: newname
+    character(len=30) :: newname
     
 #ifndef ADIOS2
-    newname = stat//".dat"//int_to_str(stats_time)
+    write(newname, "(A,'.dat',I7.7)") stat, itime
 #else
-    newname = stat
+    write(newname, *) stat
 #endif
     
   end function gen_statname
@@ -175,15 +203,14 @@ contains
         it = itime - 1
     else
         it = itime
-     endif
-     stats_time = it
+    endif
 
     if (nrank==0) then
       print *,'==========================================================='
       if (flag_read) then
-        print *,'Reading stat file', stats_time
+        print *,'Reading stat file', it
       else
-        print *,'Writing stat file', stats_time
+        print *,'Writing stat file', it
       endif
     endif
 
@@ -212,10 +239,9 @@ contains
 
     if (iscalar==1) then
        do is=1, numscalar
-          write(filename,"('phi',I2.2)") is
-          call read_or_write_one_stat(flag_read, gen_statname(trim(filename)), phimean(:,:,:,is))
+          call read_or_write_one_stat(flag_read, gen_statname(filename), phimean(:,:,:,is))
           write(filename,"('phiphi',I2.2)") is
-          call read_or_write_one_stat(flag_read, gen_statname(trim(filename)), phiphimean(:,:,:,is))
+          call read_or_write_one_stat(flag_read, gen_statname(filename), phiphimean(:,:,:,is))
        enddo
     endif
 
@@ -252,11 +278,11 @@ contains
     integer :: ierror
 
     if (flag_read) then
-       ! Here, nstat = 1 (checked in the subroutine restart_statistic)
-       call decomp_2d_read_one(1, array, stat_dir, filename, io_statistics, reduce_prec=.false.)
+       ! There was a check for nvisu = 1 before
+       call decomp_2d_read_one(1, array, stat_dir, filename, io_statistics)
     else
-       call decomp_2d_write_one(1, array, stat_dir, filename, 1, io_statistics, reduce_prec=.false.)
-    endif
+      call decomp_2d_write_one(1, array, stat_dir, filename, 1, io_statistics)
+   endif
 
   end subroutine read_or_write_one_stat
 
@@ -304,42 +330,41 @@ contains
        call restart_statistic()
     endif
 
-    if (mod(itime-initstat,istatfreq)==0) then
-      !! Mean pressure
-      !WORK Z-PENCILS
-      call interzpv(ppi3,pp3(:,:,:,1),dip3,sz,cifip6z,cisip6z,ciwip6z,cifz6,cisz6,ciwz6,&
-          (ph3%zen(1)-ph3%zst(1)+1),(ph3%zen(2)-ph3%zst(2)+1),nzmsize,zsize(3),1)
-      !WORK Y-PENCILS
-      call transpose_z_to_y(ppi3,pp2,ph3) !nxm nym nz
-      call interypv(ppi2,pp2,dip2,sy,cifip6y,cisip6y,ciwip6y,cify6,cisy6,ciwy6,&
-          (ph3%yen(1)-ph3%yst(1)+1),nymsize,ysize(2),ysize(3),1)
-      !WORK X-PENCILS
-      call transpose_y_to_x(ppi2,pp1,ph2) !nxm ny nz
-      call interxpv(ta1,pp1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
-          nxmsize,xsize(1),xsize(2),xsize(3),1)
-      ! Convert to physical pressure
-      call rescale_pressure(ta1)
-      call update_average_scalar(pmean, ta1, ep1)
+    !! Mean pressure
+    !WORK Z-PENCILS
+    call interzpv(ppi3,pp3(:,:,:,1),dip3,sz,cifip6z,cisip6z,ciwip6z,cifz6,cisz6,ciwz6,&
+         (ph3%zen(1)-ph3%zst(1)+1),(ph3%zen(2)-ph3%zst(2)+1),nzmsize,zsize(3),1)
+    !WORK Y-PENCILS
+    call transpose_z_to_y(ppi3,pp2,ph3) !nxm nym nz
+    call interypv(ppi2,pp2,dip2,sy,cifip6y,cisip6y,ciwip6y,cify6,cisy6,ciwy6,&
+         (ph3%yen(1)-ph3%yst(1)+1),nymsize,ysize(2),ysize(3),1)
+    !WORK X-PENCILS
+    call transpose_y_to_x(ppi2,pp1,ph2) !nxm ny nz
+    call interxpv(ta1,pp1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
+         nxmsize,xsize(1),xsize(2),xsize(3),1)
+    ! Convert to physical pressure
+    call rescale_pressure(ta1)
+    call update_average_scalar(pmean, ta1, ep1)
 
-      !! Mean velocity
-      call update_average_vector(umean, vmean, wmean, &
+    !! Mean velocity
+    call update_average_vector(umean, vmean, wmean, &
+                               ux1, uy1, uz1, ep1)
+
+    !! Second-order velocity moments
+    call update_variance_vector(uumean, vvmean, wwmean, uvmean, uwmean, vwmean, &
                                 ux1, uy1, uz1, ep1)
 
-      !! Second-order velocity moments
-      call update_variance_vector(uumean, vvmean, wwmean, uvmean, uwmean, vwmean, &
-                                  ux1, uy1, uz1, ep1)
+    !! Scalar statistics
+    if (iscalar==1) then
+       do is=1, numscalar
+          !pmean=phi1
+          call update_average_scalar(phimean(:,:,:,is), phi1(:,:,:,is), ep1)
 
-      !! Scalar statistics
-      if (iscalar==1) then
-        do is=1, numscalar
-            !pmean=phi1
-            call update_average_scalar(phimean(:,:,:,is), phi1(:,:,:,is), ep1)
-
-            !phiphimean=phi1*phi1
-            call update_average_scalar(phiphimean(:,:,:,is), phi1(:,:,:,is)*phi1(:,:,:,is), ep1)
-        enddo
-      endif
+          !phiphimean=phi1*phi1
+          call update_average_scalar(phiphimean(:,:,:,is), phi1(:,:,:,is)*phi1(:,:,:,is), ep1)
+       enddo
     endif
+
     ! Write all statistics
     if (mod(itime,icheckpoint)==0) then
        call read_or_write_all_stats(.false.)
@@ -374,7 +399,7 @@ contains
   subroutine update_average_scalar(um, ux, ep)
 
     use decomp_2d, only : mytype, xsize, xstS, xenS, fine_to_coarseS
-    use param, only : itime, initstat,istatfreq
+    use param, only : itime, initstat
     use var, only : di1, tmean
 
     implicit none
@@ -382,12 +407,10 @@ contains
     ! inputs
     real(mytype), dimension(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)), intent(inout) :: um
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, ep
-    real(mytype) :: stat_inc
+
     di1 = one_minus_ep1(ux, ep)
     call fine_to_coarseS(1, di1, tmean)
-
-    stat_inc = 1._mytype/real((itime-initstat)/istatfreq+1, kind=mytype)
-    um = um + (tmean - um) * stat_inc
+    um = um + (tmean - um) / real(itime-initstat+1, kind=mytype)
 
   end subroutine update_average_scalar
 
@@ -432,11 +455,5 @@ contains
 
   end subroutine update_variance_vector
 
-  function int_to_str(i)
-    integer, intent(in) :: i
-    character(len=(1 + int(log10(real(i))))) :: int_to_str
-
-    write(int_to_str, "(I0)") i
-  end function int_to_str
 endmodule stats
 

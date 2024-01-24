@@ -1,6 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 
 subroutine filter(af)
   USE param
@@ -221,6 +249,7 @@ subroutine filx_00(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiX
+  use ibm, only : lagpolx, cubsplx
 
   implicit none
 
@@ -229,6 +258,9 @@ subroutine filx_00(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   real(mytype), dimension(ny,nz) :: fisx
   real(mytype), dimension(nx) :: fiffx,fifsx,fifwx
   real(mytype)                :: lind
+
+  if (iibm.eq.2) call lagpolx(ux)
+  if (iibm.eq.3) call cubsplx(ux,lind)
 
   do k=1,nz
      do j=1,ny
@@ -288,6 +320,7 @@ subroutine filx_11(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiX
+  use ibm, only : lagpolx, cubsplx
 
   implicit none
 
@@ -296,6 +329,9 @@ subroutine filx_11(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   real(mytype), dimension(ny,nz) :: fisx
   real(mytype), dimension(nx) :: fiffx,fifsx,fifwx
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolx(ux)
+  if (iibm.eq.3) call cubsplx(ux,lind)
 
   if (npaire==1) then
      do k=1,nz
@@ -376,6 +412,7 @@ subroutine filx_12(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiX
+  use ibm, only : lagpolx, cubsplx
 
   implicit none
 
@@ -384,6 +421,9 @@ subroutine filx_12(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   real(mytype), dimension(ny,nz) :: fisx
   real(mytype), dimension(nx) :: fiffx,fifsx,fifwx
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolx(ux)
+  if (iibm.eq.3) call cubsplx(ux,lind)
 
   if (npaire==1) then
      do k=1,nz
@@ -458,6 +498,7 @@ subroutine filx_21(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiX
+  use ibm, only : lagpolx, cubsplx
 
   implicit none
 
@@ -466,6 +507,9 @@ subroutine filx_21(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   real(mytype), dimension(ny,nz) :: fisx
   real(mytype), dimension(nx) :: fiffx,fifsx,fifwx
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolx(ux)
+  if (iibm.eq.3) call cubsplx(ux,lind)
 
   if (npaire==1) then
      do k=1,nz
@@ -542,6 +586,7 @@ subroutine filx_22(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiX
+  use ibm, only : lagpolx, cubsplx
 
   implicit none
 
@@ -550,6 +595,9 @@ subroutine filx_22(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   real(mytype), dimension(ny,nz) :: fisx
   real(mytype), dimension(nx) :: fiffx,fifsx,fifwx
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolx(ux)
+  if (iibm.eq.3) call cubsplx(ux,lind)
 
   do k=1,nz
      do j=1,ny
@@ -585,6 +633,7 @@ subroutine fily_00(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiY
+  use ibm, only : lagpoly, cubsply
 
   implicit none
 
@@ -594,6 +643,9 @@ subroutine fily_00(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,nz)  :: fisy
   real(mytype), dimension(ny) :: fiffy,fifsy,fifwy
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpoly(uy)
+  if (iibm.eq.3) call cubsply(uy,lind)
 
   do k=1,nz
      do i=1,nx
@@ -657,6 +709,7 @@ subroutine fily_11(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiY
+  use ibm, only : lagpoly, cubsply
 
   implicit none
 
@@ -666,6 +719,9 @@ subroutine fily_11(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,nz)  :: fisy
   real(mytype), dimension(ny) :: fiffy,fifsy,fifwy
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpoly(uy)
+  if (iibm.eq.3) call cubsply(uy,lind)
 
   if (npaire==1) then
      do k=1,nz
@@ -746,6 +802,7 @@ subroutine fily_12(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiY
+  use ibm, only : lagpoly, cubsply
 
   implicit none
 
@@ -755,6 +812,9 @@ subroutine fily_12(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,nz)  :: fisy
   real(mytype), dimension(ny) :: fiffy,fifsy,fifwy
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpoly(uy)
+  if (iibm.eq.3) call cubsply(uy,lind)
 
   if (npaire==1) then
      do k=1,nz
@@ -827,6 +887,7 @@ subroutine fily_21(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiY
+  use ibm, only : lagpoly, cubsply
 
   implicit none
 
@@ -836,6 +897,9 @@ subroutine fily_21(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,nz)  :: fisy
   real(mytype), dimension(ny) :: fiffy,fifsy,fifwy
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpoly(uy)
+  if (iibm.eq.3) call cubsply(uy,lind)
 
   if (npaire==1) then
      do k=1,nz
@@ -909,6 +973,7 @@ subroutine fily_22(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiY
+  use ibm, only : lagpoly, cubsply
 
   implicit none
 
@@ -918,6 +983,9 @@ subroutine fily_22(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,nz)  :: fisy
   real(mytype), dimension(ny) :: fiffy,fifsy,fifwy
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpoly(uy)
+  if (iibm.eq.3) call cubsply(uy,lind)
 
   do k=1,nz
      do i=1,nx
@@ -954,6 +1022,7 @@ subroutine filz_00(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiZ
+  use ibm, only : lagpolz, cubsplz
 
   implicit none
 
@@ -963,10 +1032,8 @@ subroutine filz_00(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nz) :: fiffz,fifsz,fifwz
   real(mytype)                      :: lind
 
-  if (nz==1) then
-    tz = uz
-    return
-  endif
+  if (iibm.eq.2) call lagpolz(uz)
+  if (iibm.eq.3) call cubsplz(uz,lind)
 
   do j=1,ny
      do i=1,nx
@@ -1026,6 +1093,7 @@ subroutine filz_11(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiZ
+  use ibm, only : lagpolz, cubsplz
 
   implicit none
 
@@ -1034,6 +1102,9 @@ subroutine filz_11(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,ny) :: fisz
   real(mytype), dimension(nz) :: fiffz,fifsz,fifwz
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolz(uz)
+  if (iibm.eq.3) call cubsplz(uz,lind)
 
   if (npaire==1) then
      do j=1,ny
@@ -1112,6 +1183,7 @@ subroutine filz_12(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiZ
+  use ibm, only : lagpolz, cubsplz
 
   implicit none
 
@@ -1120,6 +1192,9 @@ subroutine filz_12(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,ny) :: fisz
   real(mytype), dimension(nz) :: fiffz,fifsz,fifwz
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolz(uz)
+  if (iibm.eq.3) call cubsplz(uz,lind)
 
   if (npaire==1) then
      do j=1,ny
@@ -1193,6 +1268,7 @@ subroutine filz_21(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiZ
+  use ibm, only : lagpolz, cubsplz
 
   implicit none
 
@@ -1201,6 +1277,9 @@ subroutine filz_21(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,ny) :: fisz
   real(mytype), dimension(nz) :: fiffz,fifsz,fifwz
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolz(uz)
+  if (iibm.eq.3) call cubsplz(uz,lind)
 
   if (npaire==1) then
      do j=1,ny
@@ -1275,6 +1354,7 @@ subroutine filz_22(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
   USE param
   use parfiZ
+  use ibm, only : lagpolz, cubsplz
 
   implicit none
 
@@ -1283,6 +1363,9 @@ subroutine filz_22(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   real(mytype), dimension(nx,ny) :: fisz
   real(mytype), dimension(nz) :: fiffz,fifsz,fifwz
   real(mytype)                      :: lind
+
+  if (iibm.eq.2) call lagpolz(uz)
+  if (iibm.eq.3) call cubsplz(uz,lind)
 
   do j=1,ny
      do i=1,nx

@@ -1,7 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
-
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 module channel
 
   use decomp_2d
@@ -16,8 +43,9 @@ module channel
 
   PRIVATE ! All functions/subroutines private by default
   PUBLIC :: init_channel, boundary_conditions_channel, postprocess_channel, &
-            visu_channel, visu_channel_init, momentum_forcing_channel
-            
+            visu_channel, visu_channel_init, momentum_forcing_channel, &
+            geomcomplex_channel
+
 contains
   !############################################################################
   subroutine init_channel (ux1,uy1,uz1,ep1,phi1)
@@ -27,6 +55,11 @@ contains
     use variables
     use param
     use MPI
+    use dbg_schemes, only: exp_prec, abs_prec, sqrt_prec
+#ifdef DEBG 
+    use tools, only : avg3d
+#endif
+    
 
     implicit none
 
@@ -37,6 +70,24 @@ contains
     real(mytype) :: cx0,cy0,cz0,hg,lg
     real(mytype) :: ftent
     integer :: k,j,i,fh,ierror,ii,is,it,code, jj
+
+    !integer, dimension (:), allocatable :: seed
+    !real(mytype), dimension(:,:,:), allocatable :: urand
+
+    integer :: xshift, yshift, zshift
+
+    integer ( kind = 4 ) :: seed1, seed2, seed3, seed11, seed22, seed33
+    integer ( kind = 4 ) :: return_30k
+    integer ( kind = 4 ), parameter :: nsemini = 1000 ! For the moment we fix it but after this can go in the input file
+    real(mytype), dimension(3,nsemini) :: eddy, posvor
+    real(mytype)     :: volsemini, rrand, ddx, ddy, ddz, lsem, upr, vpr, wpr, rrand1
+    real(mytype), dimension(3) :: dim_min, dim_max
+    real( kind = 8 ) :: r8_random
+    external r8_random, return_30k
+#ifdef DEBG 
+    real(mytype) avg_param
+#endif
+
 
     if (idir_stream /= 1 .and. idir_stream /= 3) then
        if (nrank == 0) then
@@ -85,7 +136,7 @@ contains
           do j=1,xsize(2)
              if (istret==0) y=real(j+xstart(2)-1-1,mytype)*dy-yly*half
              if (istret/=0) y=yp(j+xstart(2)-1)-yly*half
-             um=exp(-zptwo*y*y)
+             um=exp_prec(-zptwo*y*y)
              do i=1,xsize(1)
                 if (idir_stream == 1) then
                    ux1(i,j,k)=one-y*y
@@ -113,7 +164,7 @@ contains
           do j=1,xsize(2)
              if (istret==0) y=real(j+xstart(2)-1-1,mytype)*dy-yly*half
              if (istret/=0) y=yp(j+xstart(2)-1)-yly*half
-             um=exp(-zptwo*y*y)
+             um=exp_prec(-zptwo*y*y)
              do i=1,xsize(1)
                 if (idir_stream == 1) then
                    ux1(i,j,k)=init_noise*um*(two*ux1(i,j,k)-one)+one-y*y
@@ -127,8 +178,92 @@ contains
              enddo
           enddo
        enddo
-    elseif (iin == 4) then ! SEM
-       call sem_init_channel(ux1, uy1, uz1)
+    ! iin = 3 is for inlet-outlet files
+    elseif (iin == 4) then ! Simplified version of SEM 
+       dim_min(1) = zero
+       dim_min(2) = zero
+       dim_min(3) = zero
+       dim_max(1) = xlx
+       dim_max(2) = yly
+       dim_max(3) = zlz
+       volsemini = xlx * yly * zlz
+       ! 3 int to get different random numbers
+       seed1 =  2345
+       seed2 = 13456
+       seed3 = 24567
+       do jj=1,nsemini
+          ! Vortex Position
+          do ii=1,3
+             seed11 = return_30k(seed1+jj*2+ii*379)
+             seed22 = return_30k(seed2+jj*5+ii*5250)
+             seed33 = return_30k(seed3+jj*3+ii*8170)
+             rrand1  = real(r8_random(seed11, seed22, seed33),mytype)
+             call random_number(rrand)
+             !write(*,*) ' rr r1 ', rrand, rrand1
+             posvor(ii,jj) = dim_min(ii)+(dim_max(ii)-dim_min(ii))*rrand
+          enddo
+          ! Eddy intensity
+          do ii=1,3
+             seed11 = return_30k(seed1+jj*7+ii*7924)
+             seed22 = return_30k(seed2+jj*11+ii*999)
+             seed33 = return_30k(seed3+jj*5+ii*5054)
+             rrand1  = real(r8_random(seed11, seed22, seed33),mytype)
+             call random_number(rrand)
+             !write(*,*) ' rr r1 ', rrand, rrand1
+             if (rrand <= zpfive) then
+                eddy(ii,jj) = -one
+             else
+                eddy(ii,jj) = +one
+             endif 
+          enddo
+       enddo
+       !do jj=1,nsemini
+       !   write(*,*) 'posvor ', posvor(1,jj), posvor(2,jj), posvor(3,jj)
+       !   write(*,*) 'eddy   ', eddy(1,jj)  , eddy(2,jj)  , eddy(3,jj)
+       !   write(*,*) '  '
+       !enddo
+       ! Loops to apply the fluctuations 
+       do k=1,xsize(3)
+          z=real((k+xstart(3)-1-1),mytype)*dz
+          do j=1,xsize(2)
+             if (istret==0) y=real(j+xstart(2)-2,mytype)*dy
+             if (istret/=0) y=yp(j+xstart(2)-1)
+             do i=1,xsize(1)
+                x=real(i-1,mytype)*dx
+                lsem = 0.15_mytype ! For the moment we keep it constant
+                upr = zero
+                vpr = zero
+                wpr = zero
+                do jj=1,nsemini
+                   ddx = abs_prec(x-posvor(1,jj))
+                   ddy = abs_prec(y-posvor(2,jj))
+                   ddz = abs_prec(z-posvor(3,jj))
+                   if (ddx < lsem .and. ddy < lsem .and. ddz < lsem) then
+                      ! coefficients for the intensity of the fluctuation
+                      ftent = (one-ddx/lsem)*(one-ddy/lsem)*(one-ddz/lsem)
+                      ftent = ftent / (sqrt_prec(two/three*lsem))**3
+                      upr = upr + eddy(1,jj) * ftent
+                      vpr = vpr + eddy(2,jj) * ftent
+                      wpr = wpr + eddy(3,jj) * ftent
+                   endif
+                enddo
+                upr = upr * sqrt_prec(volsemini/nsemini)
+                vpr = vpr * sqrt_prec(volsemini/nsemini)
+                wpr = wpr * sqrt_prec(volsemini/nsemini)
+                ! 
+                um  = one-(y-yly*half)**2 ! we can use a better arroximation 
+                if (idir_stream == 1) then
+                   ux1(i,j,k)=upr*sqrt_prec(two/three*init_noise*um) + um
+                   uy1(i,j,k)=vpr*sqrt_prec(two/three*init_noise*um)
+                   uz1(i,j,k)=wpr*sqrt_prec(two/three*init_noise*um)
+                else
+                   uz1(i,j,k)=upr*sqrt_prec(two/three*init_noise*um) + um
+                   uy1(i,j,k)=vpr*sqrt_prec(two/three*init_noise*um)
+                   ux1(i,j,k)=wpr*sqrt_prec(two/three*init_noise*um)
+                endif
+             enddo
+          enddo
+       enddo
     endif
    
     !INIT FOR G AND U=MEAN FLOW + NOISE 
@@ -141,6 +276,19 @@ contains
           enddo
        enddo
     enddo
+
+#ifdef DEBG
+    avg_param = zero
+    call avg3d (ux1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB Channel Init ux_avg ', avg_param
+    avg_param = zero
+    call avg3d (uy1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB Channel Init uy_avg ', avg_param
+    avg_param = zero
+    call avg3d (uz1, avg_param)
+    if (nrank == 0) write(*,*)'## SUB Channel Init uz_avg ', avg_param
+    if (nrank .eq. 0) write(*,*) '# init end ok'
+#endif
 
     return
   end subroutine init_channel
@@ -290,7 +438,7 @@ contains
     real(mytype), intent(in), dimension(ph1%zst(1):ph1%zen(1),ph1%zst(2):ph1%zen(2),nzmsize,npress) :: pp3
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ep1
-    integer, intent(in) :: num
+    character(len=32), intent(in) :: num
 
     ! Write vorticity as an example of post processing
 
@@ -337,7 +485,7 @@ contains
                  - td1(:,:,:) * tb1(:,:,:) &
                  - tg1(:,:,:) * tc1(:,:,:) &
                  - th1(:,:,:) * tf1(:,:,:)
-    call write_field(di1, ".", "critq", num, flush = .true.) ! Reusing temporary array, force flush
+    call write_field(di1, ".", "critq", trim(num), flush = .true.) ! Reusing temporary array, force flush
 
   end subroutine visu_channel
   !############################################################################
@@ -375,88 +523,40 @@ contains
   end subroutine momentum_forcing_channel
   !############################################################################
   !############################################################################
-  subroutine sem_init_channel(ux1, uy1, uz1)
+  subroutine geomcomplex_channel(epsi,nxi,nxf,ny,nyi,nyf,nzi,nzf,yp,remp)
+
+    use decomp_2d, only : mytype
+    use param, only : zero, one, two, ten
+    use ibm
 
     implicit none
 
-    ! Arguments
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
+    integer                    :: nxi,nxf,ny,nyi,nyf,nzi,nzf
+    real(mytype),dimension(nxi:nxf,nyi:nyf,nzi:nzf) :: epsi
+    real(mytype),dimension(ny) :: yp
+    real(mytype)               :: remp
+    integer                    :: j
+    real(mytype)               :: ym
+    real(mytype)               :: zeromach
+    real(mytype)               :: h
 
-    ! Local variables
-    integer :: i, j, k, ii, jj
-    real(mytype) :: x, y, z, ftent, um
-    integer ( kind = 4 ), parameter :: nsemini = 1000 ! For the moment we fix it but after this can go in the input file
-    real(mytype), dimension(3,nsemini) :: eddy, posvor
-    real(mytype)     :: volsemini, rrand, ddx, ddy, ddz, lsem, upr, vpr, wpr
-    real(mytype), dimension(3) :: dim_min, dim_max
+    epsi(:,:,:) = zero
+    h = (yly - two) / two
 
-     dim_min(1) = zero
-     dim_min(2) = zero
-     dim_min(3) = zero
-     dim_max(1) = xlx
-     dim_max(2) = yly
-     dim_max(3) = zlz
-     volsemini = xlx * yly * zlz
-     ! 3 int to get different random numbers
-     do jj = 1, nsemini
-        ! Vortex Position
-        do ii = 1, 3
-           call random_number(rrand)
-           posvor(ii,jj) = dim_min(ii)+(dim_max(ii)-dim_min(ii))*rrand
-        enddo
-        ! Eddy intensity
-        do ii = 1, 3
-           call random_number(rrand)
-           if (rrand <= zpfive) then
-              eddy(ii,jj) = -one
-           else
-              eddy(ii,jj) = +one
-           endif 
-        enddo
-     enddo
-     ! Loops to apply the fluctuations 
-     do k = 1, xsize(3)
-        z = real((k+xstart(3)-1-1),mytype)*dz
-        do j = 1, xsize(2)
-           if (istret==0) y=real(j+xstart(2)-2,mytype)*dy
-           if (istret/=0) y=yp(j+xstart(2)-1)
-           do i = 1, xsize(1)
-              x = real(i-1,mytype)*dx
-              lsem = 0.15_mytype ! For the moment we keep it constant
-              upr = zero
-              vpr = zero
-              wpr = zero
-              do jj = 1, nsemini
-                 ddx = abs(x-posvor(1,jj))
-                 ddy = abs(y-posvor(2,jj))
-                 ddz = abs(z-posvor(3,jj))
-                 if (ddx < lsem .and. ddy < lsem .and. ddz < lsem) then
-                    ! coefficients for the intensity of the fluctuation
-                    ftent = (one-ddx/lsem)*(one-ddy/lsem)*(one-ddz/lsem)
-                    ftent = ftent / (sqrt(two/three*lsem))**3
-                    upr = upr + eddy(1,jj) * ftent
-                    vpr = vpr + eddy(2,jj) * ftent
-                    wpr = wpr + eddy(3,jj) * ftent
-                 endif
-              enddo
-              upr = upr * sqrt(volsemini/nsemini)
-              vpr = vpr * sqrt(volsemini/nsemini)
-              wpr = wpr * sqrt(volsemini/nsemini)
-              ! 
-              um  = one-(y-yly*half)**2 ! we can use a better arroximation 
-              if (idir_stream == 1) then
-                 ux1(i,j,k)=upr*sqrt(two/three*init_noise*um) + um
-                 uy1(i,j,k)=vpr*sqrt(two/three*init_noise*um)
-                 uz1(i,j,k)=wpr*sqrt(two/three*init_noise*um)
-              else
-                 uz1(i,j,k)=upr*sqrt(two/three*init_noise*um) + um
-                 uy1(i,j,k)=vpr*sqrt(two/three*init_noise*um)
-                 ux1(i,j,k)=wpr*sqrt(two/three*init_noise*um)
-              endif
-           enddo
-        enddo
-     enddo
+    zeromach=one
+    do while ((one + zeromach / two) .gt. one)
+       zeromach = zeromach/two
+    end do
+    zeromach = ten*zeromach
 
-  end subroutine sem_init_channel
+    do j=nyi,nyf
+       ym=yp(j)
+       if ((ym.le.h).or.(ym.ge.(h+two))) then
+          epsi(:,j,:)=remp
+       endif
+    enddo
+
+    return
+  end subroutine geomcomplex_channel
   !############################################################################
 end module channel

@@ -1,7 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
-
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 module tools
 
   implicit none
@@ -10,7 +37,6 @@ module tools
 
   character(len=*), parameter :: io_restart = "restart-io"
   character(len=*), parameter :: resfile = "checkpoint"
-  character(len=*), parameter :: resfile_old = "checkpoint.old"
   character(len=*), parameter :: io_ioflow = "in-outflow-io"
   
   private
@@ -20,7 +46,8 @@ module tools
        simu_stats, &
        apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
        compute_cfldiff, compute_cfl, &
-       rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z
+       rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z, &
+       avg3d
 
 contains
   !##################################################################
@@ -235,8 +262,6 @@ contains
     NAMELIST /Time/ tfield, itime
     NAMELIST /NumParam/ nx, ny, nz, istret, beta, dt, itimescheme
 
-    logical, save :: first_restart = .true.
-    
     write(filename,"('restart',I7.7)") itime
     write(filestart,"('restart',I7.7)") ifirst-1
 
@@ -249,11 +274,6 @@ contains
           write(*,*) '===========================================================<<<<<'
           write(*,*) 'Writing restart point ',filename !itime/icheckpoint
        endif
-
-       if (adios2_restart_initialised) then
-          ! First, rename old checkpoint in case of error
-          if (validation_restart) call rename(resfile, resfile_old)
-       end if
     end if
 
     if (.not. adios2_restart_initialised) then
@@ -281,7 +301,7 @@ contains
           call decomp_2d_write_one(1,duz1(:,:,:,3),resfile,"duz-3",0,io_restart,reduce_prec=.false.)
        end if
        !
-       call decomp_2d_write_one(3,pp3,resfile,"pp",0,io_restart,opt_decomp=phG,reduce_prec=.false.)
+       call decomp_2d_write_one(3,pp3,resfile,"pp",0,io_restart,phG,reduce_prec=.false.)
        !
        if (iscalar==1) then
           do is=1, numscalar
@@ -314,48 +334,39 @@ contains
        call decomp_2d_end_io(io_restart, resfile)
        call decomp_2d_close_io(io_restart, resfile)
 
-       ! Validate restart file then remove old file and update restart.info
-       if (validation_restart) then
-          if (validate_restart(resfile_old, resfile)) then
-             call delete_filedir(resfile_old)
-          else
-             call decomp_2d_abort(1, "Writing restart - validation failed!")
-          endif
-       endif
-
        ! Write info file for restart - Kay Schäfer
        if (nrank == 0) then
-          write(filename,"('restart.info')")
-          write(fmt2,'("(A,I16)")')
-          write(fmt3,'("(A,F16.4)")')
-          write(fmt4,'("(A,F16.12)")')
-          !
-          open (111,file=filename,action='write',status='replace')
-          write(111,'(A)')'!========================='
-          write(111,'(A)')'&Time'
-          write(111,'(A)')'!========================='
-          write(111,fmt3) 'tfield=   ',t
-          write(111,fmt2) 'itime=    ',itime
-          write(111,'(A)')'/End'
-          write(111,'(A)')'!========================='
-          write(111,'(A)')'&NumParam'
-          write(111,'(A)')'!========================='
-          write(111,fmt2) 'nx=       ',nx
-          write(111,fmt2) 'ny=       ',ny
-          write(111,fmt2) 'nz=       ',nz
-          write(111,fmt3) 'Lx=       ',xlx
-          write(111,fmt3) 'Ly=       ',yly
-          write(111,fmt3) 'Lz=       ',zlz
-          write(111,fmt2) 'istret=   ',istret
-          write(111,fmt4) 'beta=     ',beta
-          write(111,fmt2) 'iscalar=  ',iscalar
-          write(111,fmt2) 'numscalar=',numscalar
-          write(111,'(A,I14)') 'itimescheme=',itimescheme
-          write(111,fmt2) 'iimplicit=',iimplicit
-          write(111,'(A)')'/End'
-          write(111,'(A)')'!========================='
+         write(filename,"('restart',I7.7,'.info')") itime
+         write(fmt2,'("(A,I16)")')
+         write(fmt3,'("(A,F16.4)")')
+         write(fmt4,'("(A,F16.12)")')
+         !
+         open (111,file=filename,action='write',status='replace')
+         write(111,'(A)')'!========================='
+         write(111,'(A)')'&Time'
+         write(111,'(A)')'!========================='
+         write(111,fmt3) 'tfield=   ',t
+         write(111,fmt2) 'itime=    ',itime
+         write(111,'(A)')'/End'
+         write(111,'(A)')'!========================='
+         write(111,'(A)')'&NumParam'
+         write(111,'(A)')'!========================='
+         write(111,fmt2) 'nx=       ',nx
+         write(111,fmt2) 'ny=       ',ny
+         write(111,fmt2) 'nz=       ',nz
+         write(111,fmt3) 'Lx=       ',xlx
+         write(111,fmt3) 'Ly=       ',yly
+         write(111,fmt3) 'Lz=       ',zlz
+         write(111,fmt2) 'istret=   ',istret
+         write(111,fmt4) 'beta=     ',beta
+         write(111,fmt2) 'iscalar=  ',iscalar
+         write(111,fmt2) 'numscalar=',numscalar
+         write(111,'(A,I14)') 'itimescheme=',itimescheme
+         write(111,fmt2) 'iimplicit=',iimplicit
+         write(111,'(A)')'/End'
+         write(111,'(A)')'!========================='
 
-          close(111)
+         close(111)
        end if
     else
        if (nrank==0) then
@@ -382,7 +393,7 @@ contains
           call decomp_2d_read_one(1,duz1(:,:,:,3),resfile,"duz-3",io_restart,reduce_prec=.false.)
        end if
        !
-       call decomp_2d_read_one(3,pp3,resfile,"pp",io_restart,opt_decomp=phG,reduce_prec=.false.)
+       call decomp_2d_read_one(3,pp3,resfile,"pp",io_restart,phG,reduce_prec=.false.)
        !
        if (iscalar==1) then
          do is=1, numscalar
@@ -428,7 +439,7 @@ contains
        call decomp_2d_close_io(io_restart, resfile)
 
        !! Read time of restart file
-       write(filename,"(A)") 'restart.info'
+       write(filename,"('restart',I7.7,'.info')") ifirst-1
        inquire(file=filename, exist=fexists)
        if (nrank==0) write(*,*) filename
        ! file exists???
@@ -440,7 +451,7 @@ contains
          itime0 = 0
        else
          t0 = zero
-         itime0 = 0
+         itime0 = ifirst-1
        end if
        
     endif
@@ -659,7 +670,7 @@ contains
     real(mytype), dimension(NTimeSteps,xsize(2),xsize(3)) :: ux1,uy1,uz1
     character(20) :: fninflow
 
-    character(len=1024) :: inflow_file
+    character(80) :: inflow_file
     
     ! Recirculate inflows 
     if (ifileinflow>=ninflows) then 
@@ -668,15 +679,21 @@ contains
 
     ! Read inflow
     write(fninflow,'(i20)') ifileinflow+1
+#ifndef ADIOS2
     write(inflow_file, "(A)") trim(inflowpath)//'inflow'//trim(adjustl(fninflow))
+#else
+    write(inflow_file, "(A)") trim(inflowpath)//'inflow'
+#endif
     if (nrank==0) print *,'READING INFLOW FROM ',inflow_file
     
     call decomp_2d_open_io(io_ioflow, inflow_file, decomp_2d_read_mode)
-    
+    call decomp_2d_start_io(io_ioflow, inflow_file)
+
     call decomp_2d_read_inflow(inflow_file,"ux",ntimesteps,ux_inflow,io_ioflow)
     call decomp_2d_read_inflow(inflow_file,"uy",ntimesteps,uy_inflow,io_ioflow)
     call decomp_2d_read_inflow(inflow_file,"uz",ntimesteps,uz_inflow,io_ioflow)
 
+    call decomp_2d_end_io(io_ioflow, inflow_file)
     call decomp_2d_close_io(io_ioflow, inflow_file)
 
   end subroutine read_inflow
@@ -687,7 +704,7 @@ contains
  
     use decomp_2d
     use decomp_2d_io
-    use var, only: ux_recoutflow, uy_recoutflow, uz_recoutflow, ilist
+    use var, only: ux_recoutflow, uy_recoutflow, uz_recoutflow
     use param
 
     implicit none
@@ -696,7 +713,7 @@ contains
     integer, intent(in) :: timestep
     integer :: j,k
 
-    if (nrank==0.and.mod(itime,ilist)==0) print *, 'Appending outflow', timestep 
+    if (nrank==0) print *, 'Appending outflow', timestep 
     do k=1,xsize(3)
     do j=1,xsize(2)
       ux_recoutflow(timestep,j,k)=ux(xend(1),j,k)
@@ -726,12 +743,19 @@ contains
     logical, save :: clean = .true.
     integer :: iomode
 
-    logical :: dir_exists
-
-    iomode = decomp_2d_write_mode
+    if (clean .and. (irestart .eq. 0)) then
+       iomode = decomp_2d_write_mode
+       clean = .false.
+    else
+       iomode = decomp_2d_append_mode
+    end if
     
     write(fnoutflow,'(i20)') ifileoutflow
+#ifndef ADIOS2
     write(outflow_file, "(A)") './out/inflow'//trim(adjustl(fnoutflow))
+#else
+    write(outflow_file, "(A)") './out/inflow'
+#endif
     if (nrank==0) print *,'WRITING OUTFLOW TO ', outflow_file
     
     call decomp_2d_open_io(io_ioflow, outflow_file, iomode)
@@ -922,174 +946,75 @@ contains
     return
 
   end subroutine mean_plane_z
-  ! Subroutine to rename a file/directory
-  !
-  ! [string, in]            oldname  - name of existing file
-  ! [string, in]            newname  - existing file to be renamed as
-  ! [integer, in, optional] opt_rank - which rank should perform the operation? all others will wait.
-  subroutine rename(oldname, newname, opt_rank)
+  !############################################################################
+  !!
+  !!  SUBROUTINE: avg3d
+  !!      AUTHOR: Stefano Rolfo
+  !! DESCRIPTION: Compute the total sum of a a 3d field
+  !!
+  !############################################################################
+  subroutine avg3d (var, avg)
 
-    use MPI
-    use decomp_2d, only : nrank, decomp_2d_abort
-    use decomp_2d_io, only : gen_iodir_name
-    
-    character(len=*), intent(in) :: oldname
-    character(len=*), intent(in) :: newname
-    integer, intent(in), optional :: opt_rank
+    use decomp_2d, only: real_type, xsize, xend
+    use param
+    use variables, only: nx,ny,nz,nxm,nym,nzm
+    use mpi
 
-    integer :: exe_rank
-    logical :: exist
-    character(len=:), allocatable :: cmd
+    implicit none
 
-    integer :: ierror
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)),intent(in) :: var
+    real(mytype), intent(out) :: avg
+    real(mytype)              :: dep
 
-    character(len=:), allocatable :: oldname_ext
-    
-    if (present(opt_rank)) then
-       exe_rank = opt_rank
+    integer :: i,j,k, code
+    integer :: nxc, nyc, nzc, xsize1, xsize2, xsize3
+
+    if (nclx1==1.and.xend(1)==nx) then
+       xsize1=xsize(1)-1
     else
-       exe_rank = 0
-    end if
-
-    if (nrank == exe_rank) then
-       oldname_ext = gen_iodir_name(oldname, io_restart)
-       inquire(file=oldname_ext, exist=exist)
-       if (exist) then
-          cmd = "mv "//oldname_ext//" "//newname
-          call execute_command_line(cmd)
-       end if
-    end if
-
-    call MPI_Barrier(MPI_COMM_WORLD, ierror)
-    if (ierror /= 0) then
-       call decomp_2d_abort(ierror, &
-            "Error in MPI_Barrier!")
-    end if
-    
-  end subroutine rename
-
-  ! Subroutine to delete a file/director
-  !
-  ! [string, in]            name     - name of file to delete
-  ! [integer, in, optional] opt_rank - which rank should perform the operation? all others will wait.
-  subroutine delete_filedir(name, opt_rank)
-
-    use MPI
-    use decomp_2d, only : nrank, decomp_2d_abort
-    
-    character(len=*), intent(in) :: name
-    integer, intent(in), optional :: opt_rank
-
-    integer :: exe_rank
-    logical :: exist
-    integer :: unit
-
-    character(len=:), allocatable :: cmd
-
-    integer :: ierror
-    
-    if (present(opt_rank)) then
-       exe_rank = opt_rank
+       xsize1=xsize(1)
+    endif
+    if (ncly1==1.and.xend(2)==ny) then
+       xsize2=xsize(2)-1
     else
-       exe_rank = 0
-    end if
-
-    if (nrank == exe_rank) then
-       inquire(file=name, exist=exist)
-       if (exist) then
-          inquire(file=name//"/.", exist=exist)
-          if (.not. exist) then
-             ! Open file so it can be deleted on close
-             open(newunit=unit, file=name)
-             close(unit, status='delete')
-          else
-             ! Directory - hopefully rm should work...
-             cmd = "rm -r "//name
-             call execute_command_line(cmd)
-          end if
-       end if
-    end if
-
-    call MPI_Barrier(MPI_COMM_WORLD, ierror)
-    if (ierror /= 0) then
-       call decomp_2d_abort(ierror, &
-            "Error in MPI_Barrier!")
-    end if
-    
-  end subroutine delete_filedir
-
-  ! Relatively crude validation function, checks that old and new checkpoints are the same size.
-  ! XXX: for ADIOS2/BP4 this isn't really correct/useful as it's a directory...
-  !
-  ! [string, in]            refname  - name of previous checkpoint
-  ! [string, in]            testname - name of new checkpoint
-  ! [integer, in, optional] opt_rank - which rank should perform the operation? all others will wait.
-  logical function validate_restart(refname, testname, opt_rank)
-
-    use MPI
-    use decomp_2d, only : nrank, decomp_2d_abort
-    use decomp_2d_io, only : gen_iodir_name
-    
-    character(len=*), intent(in) :: refname
-    character(len=*), intent(in) :: testname
-    integer, intent(in), optional :: opt_rank
-
-    integer :: exe_rank
-    logical :: success
-    integer :: ierror
-
-    integer :: refsize
-    integer :: testsize
-
-    logical :: refexist, testexist
-    logical, save :: checked_initial = .false.
-
-    character(len=:), allocatable :: testname_ext
-    
-    if (present(opt_rank)) then
-       exe_rank = opt_rank
+       xsize2=xsize(2)
+    endif
+    if (nclz1==1.and.xend(3)==nz) then
+       xsize3=xsize(3)-1
     else
-       exe_rank = 0
-    end if
+       xsize3=xsize(3)
+    endif
+    if (nclx1==1) then
+       nxc=nxm
+    else
+       nxc=nx
+    endif
+    if (ncly1==1) then
+       nyc=nym
+    else
+       nyc=ny
+    endif
+    if (nclz1==1) then
+       nzc=nzm
+    else
+       nzc=nz
+    endif
 
-    if (nrank == exe_rank) then
-       success = .true.
+    dep=zero
+    do k=1,xsize3
+       do j=1,xsize2
+          do i=1,xsize1
+             !dep=dep+var(i,j,k)**2
+             dep=dep+var(i,j,k)
+          enddo
+       enddo
+    enddo
+    call MPI_ALLREDUCE(dep,avg,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+    avg=avg/(nxc*nyc*nzc)
 
-       testname_ext = gen_iodir_name(testname, io_restart)
-       
-       inquire(file=refname, size=refsize, exist=refexist)
-       inquire(file=testname_ext, size=testsize, exist=testexist)
+    return
 
-       if (testexist) then
-          if (refexist) then
-             if (testsize /= refsize) then
-                success = .false.
-             end if
-          else
-             if (checked_initial) then
-                print *, "ERROR: old restart ", refname, " doesn't exist!"
-                success = .false.
-             else
-                ! Must assume this is the first call to restart, no old restart should exist
-                success = .true.
-             end if
-             checked_initial = .true.
-          end if
-       else
-          success = .false.
-       end if
-    end if
-
-    call MPI_Bcast(success, 1, MPI_LOGICAL, exe_rank, MPI_COMM_WORLD, ierror)
-    if (ierror /= 0) then
-       call decomp_2d_abort(ierror, &
-            "Error in MPI_Allreduce")
-    end if
-
-    validate_restart = success
-    
-  end function validate_restart
-  
+  end subroutine avg3d
 end module tools
 !##################################################################
 
@@ -1996,6 +1921,149 @@ subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
   mweight(:,:,:) = one / mweight(:,:,:)
 
 endsubroutine calc_mweight
+!##################################################################
+!##################################################################
+function r8_random ( s1, s2, s3 )
+
+!*****************************************************************************80
+!
+!! R8_RANDOM returns a pseudorandom number between 0 and 1.
+!
+!  Discussion:
+!
+!    This function returns a pseudo-random number rectangularly distributed
+!    between 0 and 1.   The cycle length is 6.95E+12.  (See page 123
+!    of Applied Statistics (1984) volume 33), not as claimed in the
+!    original article.
+!
+!  Licensing:
+!
+!    This code is distributed under the GNU LGPL license.
+!
+!  Modified:
+!
+!    08 July 2008
+!
+!  Author:
+!
+!    FORTRAN77 original version by Brian Wichman, David Hill.
+!    FORTRAN90 version by John Burkardt.
+!
+!  Reference:
+!
+!    Brian Wichman, David Hill,
+!    Algorithm AS 183: An Efficient and Portable Pseudo-Random
+!    Number Generator,
+!    Applied Statistics,
+!    Volume 31, Number 2, 1982, pages 188-190.
+!
+!  Parameters:
+!
+!    Input/output, integer ( kind = 4 ) S1, S2, S3, three values used as the
+!    seed for the sequence.  These values should be positive
+!    integers between 1 and 30,000.
+!
+!    Output, real ( kind = 8 ) R8_RANDOM, the next value in the sequence.
+!
+  implicit none
+
+  integer ( kind = 4 ) s1
+  integer ( kind = 4 ) s2
+  integer ( kind = 4 ) s3
+  real ( kind = 8 ) r8_random
+
+  s1 = mod ( 171 * s1, 30269 )
+  s2 = mod ( 172 * s2, 30307 )
+  s3 = mod ( 170 * s3, 30323 )
+
+  r8_random = mod ( real ( s1, kind = 8 ) / 30269.0D+00 &
+                  + real ( s2, kind = 8 ) / 30307.0D+00 &
+                  + real ( s3, kind = 8 ) / 30323.0D+00, 1.0D+00 )
+
+  return
+end
+!##################################################################
+function return_30k(x) result(y)
+
+  integer ( kind = 4 ), intent(in) :: x
+  integer ( kind = 4 )             :: y
+  integer ( kind = 4 ), parameter  :: xmax = 30000
+
+  y = iabs(x) - int(iabs(x)/xmax)*xmax
+end function return_30k
+!##################################################################
+function r8_uni ( s1, s2 )
+
+!*****************************************************************************80
+!
+!! R8_UNI returns a pseudorandom number between 0 and 1.
+!
+!  Discussion:
+!
+!    This function generates uniformly distributed pseudorandom numbers
+!    between 0 and 1, using the 32-bit generator from figure 3 of
+!    the article by L'Ecuyer.
+!
+!    The cycle length is claimed to be 2.30584E+18.
+!
+!  Licensing:
+!
+!    This code is distributed under the GNU LGPL license.
+!
+!  Modified:
+!
+!    08 July 2008
+!
+!  Author:
+!
+!    Original Pascal original version by Pierre L'Ecuyer
+!    FORTRAN90 version by John Burkardt
+!
+!  Reference:
+!
+!    Pierre LEcuyer,
+!    Efficient and Portable Combined Random Number Generators,
+!    Communications of the ACM,
+!    Volume 31, Number 6, June 1988, pages 742-751.
+!
+!  Parameters:
+!
+!    Input/output, integer ( kind = 4 ) S1, S2, two values used as the
+!    seed for the sequence.  On first call, the user should initialize
+!    S1 to a value between 1 and 2147483562;  S2 should be initialized
+!    to a value between 1 and 2147483398.
+!
+!    Output, real ( kind = 8 ) R8_UNI, the next value in the sequence.
+!
+  implicit none
+
+  integer ( kind = 4 ) k
+  real ( kind = 8 ) r8_uni
+  integer ( kind = 4 ) s1
+  integer ( kind = 4 ) s2
+  integer ( kind = 4 ) z
+
+  k = s1 / 53668
+  s1 = 40014 * ( s1 - k * 53668 ) - k * 12211
+  if ( s1 < 0 ) then
+    s1 = s1 + 2147483563
+  end if
+
+  k = s2 / 52774
+  s2 = 40692 * ( s2 - k * 52774 ) - k * 3791
+  if ( s2 < 0 ) then
+    s2 = s2 + 2147483399
+  end if
+
+  z = s1 - s2
+  if ( z < 1 ) then
+    z = z + 2147483562
+  end if
+
+  r8_uni = real ( z, kind = 8 ) / 2147483563.0D+00
+
+  return
+end
 !##################################################################
 !##################################################################
 subroutine test_min_max(name,text,array_tmp,i_size_array_tmp)

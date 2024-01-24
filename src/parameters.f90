@@ -1,7 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
-
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 !###########################################################################
 !
 !  SUBROUTINE: parameter
@@ -25,8 +52,11 @@ subroutine parameter(input_i3d)
 
   use var, only : dphi1
 
+  use lockexch, only : pfront
+
   use probes, only : nprobes, setup_probes, flag_all_digits, flag_extra_probes, xyzprobes
   use visu, only : output2D
+  use forces, only : iforces, nvol, xld, xrd, yld, yud!, zld, zrd
 
   implicit none
 
@@ -47,26 +77,27 @@ subroutine parameter(input_i3d)
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
   NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, nvisu, ilist, iprocessing, &
-       ninflows, ntimesteps, inflowpath, ioutflow, output2D, nprobes, &
-       validation_restart
-  NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat, istatfreq
+       ninflows, ntimesteps, inflowpath, ioutflow, output2D, nprobes
+  NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
   NAMELIST /ProbesParam/ flag_all_digits, flag_extra_probes, xyzprobes
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
        scalar_lbound, scalar_ubound, sc_even, sc_skew, &
        alpha_sc, beta_sc, g_sc, Tref
-  NAMELIST /LESModel/ jles, smagcst, smagwalldamp, nSmag, walecst, maxdsmagcst, iconserv
+  NAMELIST /LESModel/ jles, smagcst, smagwalldamp, nSmag, walecst, maxdsmagcst, iwall
+  NAMELIST /WallModel/ smagwalldamp
   NAMELIST /Tripping/ itrip,A_tr,xs_tr_tbl,ys_tr_tbl,ts_tr_tbl,x0_tr_tbl
-  NAMELIST /ibmstuff/ cex,cey,cez,ra,rai,rao,nobjmax,nraf, npif, izap, ianal, imove, thickness, chord, omega ,ubcx,ubcy,ubcz,rads, c_air
+  NAMELIST /ibmstuff/ cex,cey,cez,ra,nobjmax,nraf,nvol,iforces, npif, izap, ianal, imove, thickness, chord, omega ,ubcx,ubcy,ubcz,rads, c_air
+  NAMELIST /ForceCVs/ xld, xrd, yld, yud!, zld, zrd
   NAMELIST /LMN/ dens1, dens2, prandtl, ilmn_bound, ivarcoeff, ilmn_solve_temp, &
        massfrac, mol_weight, imultispecies, primary_species, &
        Fr, ibirman_eos
   NAMELIST /ABL/ z_zero, iwallmodel, k_roughness, ustar, dBL, &
        imassconserve, ibuoyancy, iPressureGradient, iCoriolis, CoriolisFreq, &
-       istrat, idamping, iheight, TempRate, TempFlux, itherm, gravv, UG, T_wall, T_top, ishiftedper, iconcprec, pdl, dsampling 
-  !NAMELIST /CASE/
+       istrat, idamping, iheight, TempRate, TempFlux, itherm, gravv, UG, T_wall, T_top, ishiftedper, iconcprec, pdl 
+  NAMELIST /CASE/ tgv_twod, pfront
   NAMELIST/ALMParam/iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
-  NAMELIST/ADMParam/Ndiscs,ADMcoords,iturboutput,rho_air,T_relax
+  NAMELIST/ADMParam/Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
 
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -94,13 +125,6 @@ subroutine parameter(input_i3d)
 
   !! These are the 'essential' parameters
   read(10, nml=BasicParam); rewind(10)
-  if (nz==1) then
-     if (nrank==0) write(*,*) "Warning : support for 2D simulations is experimental"
-     nclz1 = 0
-     nclzn = 0
-     p_row = nproc
-     p_col = 1
-  endif
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
   read(10, nml=Statistics); rewind(10)
@@ -110,6 +134,10 @@ subroutine parameter(input_i3d)
   if (nprobes.gt.0) then
      call setup_probes()
      read(10, nml=ProbesParam); rewind(10)
+  endif
+  if (iforces.eq.1) then
+     allocate(xld(nvol), xrd(nvol), yld(nvol), yud(nvol))!, zld(nvol), zrd(nvol))
+     read(10, nml=ForceCVs); rewind(10)
   endif
   
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
@@ -183,10 +211,6 @@ subroutine parameter(input_i3d)
   endif
   if (numscalar.ne.0) then
      read(10, nml=ScalarParam); rewind(10)
-     if (nz==1) then
-        nclzS1 = 0
-        nclzSn = 0
-     endif
   endif
   ! !! These are the 'optional'/model parameters
   ! read(10, nml=ScalarParam)
@@ -200,9 +224,16 @@ subroutine parameter(input_i3d)
   if (itype.eq.itype_tbl) then
      read(10, nml=Tripping); rewind(10)
   endif
-
+  if (itype.eq.itype_abl) then
+     read(10, nml=ABL); rewind(10)
+  endif
+  if (iturbine.eq.1) then
+     read(10, nml=ALMParam); rewind(10)
+  else if (iturbine.eq.2) then
+     read(10, nml=ADMParam); rewind(10)
+  endif
   ! read(10, nml=TurbulenceWallModel)
-  ! read(10, nml=CASE); rewind(10) !! Read case-specific variables
+  read(10, nml=CASE); rewind(10) !! Read case-specific variables
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -217,7 +248,6 @@ subroutine parameter(input_i3d)
   if (ncly1.eq.0.and.nclyn.eq.0) then
      ncly=.true.
      nym=ny
-     if (istret.ne.0) call decomp_2d_abort(istret, "Invalid options (stretching + periodicity)")
   else
      ncly=.false.
      nym=ny-1
@@ -313,8 +343,6 @@ subroutine parameter(input_i3d)
         print *,'Simulating TGV'
      elseif (itype.eq.itype_channel) then
         print *,'Simulating channel'
-     elseif (itype.eq.itype_pipe) then
-        print *,'Simulating pipe'
      elseif (itype.eq.itype_hill) then
         print *,'Simulating periodic hill'
      elseif (itype.eq.itype_cyl) then
@@ -324,8 +352,7 @@ subroutine parameter(input_i3d)
      elseif (itype.eq.itype_mixlayer) then
         print *,'Mixing layer'
      elseif (itype.eq.itype_jet) then
-        print *,'Jet is currently unsupported!'
-        stop
+        print *,'Jet'
      elseif (itype.eq.itype_tbl) then
         print *,'Turbulent boundary layer'
      elseif (itype.eq.itype_abl) then
@@ -333,9 +360,7 @@ subroutine parameter(input_i3d)
      elseif (itype.eq.itype_uniform) then
         print *,'Uniform flow'
      elseif (itype.eq.itype_sandbox) then
-        print *,'Sandbox'
-     elseif (itype.eq.itype_cavity) then
-        print *,'Cavity'  
+           print *,'Sandbox'
      else
         print *,'Unknown itype: ', itype
         stop
@@ -522,6 +547,12 @@ subroutine parameter(input_i3d)
      endif
      if (angle.ne.0.) write(*,"(' Solid rotation     : ',F6.2)") angle
      write(*,*) ' '
+     !! Print case-specific information
+     if (itype==itype_lockexch) then
+        write(*,*)  "Initial front location: ", pfront
+     elseif (itype==itype_tgv) then
+        write(*,*)  "TGV 2D: ", tgv_twod
+     endif
      write(*,*) '==========================================================='
   endif
   
@@ -549,10 +580,10 @@ subroutine parameter_defaults()
   use variables
   use decomp_2d
   use complex_geometry
-  use ibm_param
 
   use probes, only : nprobes, flag_all_digits, flag_extra_probes
   use visu, only : output2D
+  use forces, only : iforces, nvol
 
   implicit none
 
@@ -579,16 +610,15 @@ subroutine parameter_defaults()
   datapath = './data/'
 
   !! LES stuff
-  smagwalldamp=1
+  SmagWallDamp=0
   nSmag=1
-  iconserv=0
-  smagcst=0.15
-  maxdsmagcst=0.3
 
   !! IBM stuff
   nraf = 0
   nobjmax = 0
 
+  nvol = 0
+  iforces = 0
   itrip = 0
   wrotation = zero
   irotation = 0
@@ -619,27 +649,44 @@ subroutine parameter_defaults()
   cpg = .false.
   idir_stream = 1
 
-  !! Pipe
-  rai = -1.0 !inner radius
-  rao = -1.0 !outer radius
-
   !! Filter
   ifilter=0
   C_filter=0.49_mytype
+
+  !! ABL
+  z_zero=zpone
+  k_roughness=zpfour
+  ustar=0.45_mytype
+  dBL=250._mytype
+  iPressureGradient=1
+  iwallmodel=1
+  imassconserve=0
+  ibuoyancy=1
+  iheight=0
+  itherm=1
+  idamping=0
+  gravv=9.81_mytype
+  TempRate=-zptwofive/3600_mytype
+  TempFlux=0.24_mytype
+  UG=[zero,zero,zero]
+  ishiftedper=0
+  iconcprec=0
+  pdl=zero
+  !! Turbine modelling
+  iturbine=0
+  rho_air=one
 
   !! IO
   ivisu = 1
   ipost = 0
   iprocessing = huge(i)
   initstat = huge(i)
-  istatfreq =1
   ninflows=1
   ntimesteps=1
   inflowpath='./'
   ioutflow=0
   output2D = 0
   nprobes=0
-  validation_restart = .true.
 
   !! PROBES
   flag_all_digits = .false.
@@ -652,6 +699,9 @@ subroutine parameter_defaults()
   izap = 1
 
   imodulo2 = 1
+
+  !! CASE specific variables
+  tgv_twod = .FALSE.
 
   !! TRIPPING
   A_tr=zero

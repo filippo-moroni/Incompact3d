@@ -1,6 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 
 module case
 
@@ -9,9 +37,18 @@ module case
   use variables
 
   use user_sim
+  use tgv
+  use cyl
+  use hill
   use dbg_schemes
   use channel
+  use mixlayer
+  use jet
+  use lockexch
   use tbl
+  use abl
+  use uniform
+  use sandbox
 
   use var, only : nzmsize
 
@@ -53,13 +90,53 @@ contains
 
        call init_user (ux1, uy1, uz1, ep1, phi1)
 
+    elseif (itype.eq.itype_lockexch) then
+
+       call init_lockexch(rho1, ux1, uy1, uz1, ep1, phi1)
+
+    elseif (itype.eq.itype_tgv) then
+
+       call init_tgv (ux1, uy1, uz1, ep1, phi1)
+
     elseif (itype.eq.itype_channel) then
 
        call init_channel (ux1, uy1, uz1, ep1, phi1)
-       
+
+    elseif (itype.eq.itype_hill) then
+
+       call  init_hill (ux1,uy1,uz1,ep1,phi1)
+
+    elseif (itype.eq.itype_cyl) then
+
+       call init_cyl (ux1, uy1, uz1, phi1)
+
+    elseif (itype.eq.itype_dbg) then
+
+       call init_dbg (ux1, uy1, uz1, ep1, phi1)
+
+    elseif (itype.eq.itype_mixlayer) then
+
+       call init_mixlayer(rho1, ux1, uy1, uz1)
+
+    elseif (itype.eq.itype_jet) then
+
+       call init_jet(rho1, ux1, uy1, uz1, ep1, phi1)
+
     elseif (itype.eq.itype_tbl) then
 
        call init_tbl (ux1, uy1, uz1, ep1, phi1)
+
+    elseif (itype.eq.itype_abl) then
+
+       call init_abl (ux1, uy1, uz1, ep1, phi1)
+
+    elseif (itype.eq.itype_uniform) then
+
+       call init_uniform (ux1, uy1, uz1, ep1, phi1)
+
+    elseif (itype.EQ.itype_sandbox) THEN
+   
+       call init_sandbox (ux1, uy1, uz1, ep1, phi1, 0)
 
     else
   
@@ -101,17 +178,49 @@ contains
 
        call boundary_conditions_user (ux,uy,uz,phi,ep)
 
+    elseif (itype.eq.itype_lockexch) then
+
+       call boundary_conditions_lockexch(rho, phi)
+
+    elseif (itype.eq.itype_tgv) then
+
+       call boundary_conditions_tgv (ux, uy, uz, phi)
+
     elseif (itype.eq.itype_channel) then
 
        call boundary_conditions_channel (ux, uy, uz, phi)
+
+    elseif (itype.eq.itype_hill) then
+
+       call boundary_conditions_hill (ux,uy,uz,phi,ep)
+
+    elseif (itype.eq.itype_cyl) then
+
+       call boundary_conditions_cyl (ux, uy, uz, phi)
 
     elseif (itype.eq.itype_dbg) then
 
        call boundary_conditions_dbg (ux, uy, uz, phi)
 
+    elseif (itype.eq.itype_jet) then
+
+       call boundary_conditions_jet (rho,ux,uy,uz,phi)
+
     elseif (itype.eq.itype_tbl) then
 
        call boundary_conditions_tbl (ux, uy, uz, phi)
+
+    elseif (itype.eq.itype_abl) then
+
+       call boundary_conditions_abl (ux, uy, uz, phi)
+
+    elseif (itype.eq.itype_uniform) then
+
+       call boundary_conditions_uniform (ux, uy, uz, phi)
+
+    elseif (itype.EQ.itype_sandbox) THEN
+   
+       call boundary_conditions_sandbox (ux, uy, uz, phi)
 
     endif
 
@@ -144,22 +253,6 @@ contains
   subroutine postprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
     use decomp_2d, only : mytype, xsize, ph1
-    use var, only : nzmsize, numscalar, nrhotime, npress, abl_T
-
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime), intent(in) :: rho1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ep1
-    real(mytype),dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp3
-
-    integer :: j
-
-  end subroutine postprocessing
-  !##################################################################
-  !##################################################################
-  subroutine run_postprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
-
-    use decomp_2d, only : mytype, xsize, ph1
     use visu, only  : write_snapshot, end_snapshot
     use stats, only : overall_statistic
 
@@ -167,6 +260,7 @@ contains
     use var, only : itime
     use var, only : numscalar, nrhotime, npress
 
+    use turbine, only : turbine_output
     use probes, only : write_probes
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
@@ -175,29 +269,47 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ep1
     real(mytype),dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp3
 
-    integer :: num
+    integer :: j
+    character(len=32) :: num
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: T ! FIXME This can be huge
+
+    T = zero
+
+    ! Recover temperature when decomposed (pressure to be recovered externally)
+    if (itype.eq.itype_abl.and.ibuoyancy.eq.1) then
+      do j=1,xsize(2) 
+        T(:,j,:,1) = phi1(:,j,:,1) + Tstat(j,1)
+      enddo
+    else
+      T = phi1
+    endif
 
     if ((ivisu.ne.0).and.(mod(itime, ioutput).eq.0)) then
-       call write_snapshot(rho1, ux1, uy1, uz1, pp3, phi1, ep1, itime, num)
+       call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
 
        ! XXX: Ultimate goal for ADIOS2 is to pass do all postproc online - do we need this?
        !      Currently, needs some way to "register" variables for IO
-       call visu_case(rho1, ux1, uy1, uz1, pp3, phi1, ep1, num)
+       call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
 
        call end_snapshot(itime, num)
     end if
 
-    call postprocess_case(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
+    call postprocess_case(rho1, ux1, uy1, uz1, pp3, T, ep1)
 
-    call overall_statistic(ux1, uy1, uz1, phi1, pp3, ep1)
+    call overall_statistic(ux1, uy1, uz1, T, pp3, ep1)
+
+    if (iturbine.ne.0) then 
+      call turbine_output()
+    endif
 
     call write_probes(ux1, uy1, uz1, pp3, phi1)
 
-  end subroutine run_postprocessing
+  end subroutine postprocessing
   !##################################################################
   !##################################################################
   subroutine postprocess_case(rho,ux,uy,uz,pp,phi,ep)
 
+    use forces
     use var, only : nzmsize
     use param, only : npress
 
@@ -211,18 +323,55 @@ contains
 
        call postprocess_user (ux, uy, uz, phi, ep)
 
+    elseif (itype.eq.itype_lockexch) then
+
+       call postprocess_lockexch(rho, ux, uy, uz, phi, ep)
+
+    elseif (itype.eq.itype_tgv) then
+
+       call postprocess_tgv (ux, uy, uz, phi, ep)
+
     elseif (itype.eq.itype_channel) then
 
        call postprocess_channel (ux, uy, uz, pp, phi, ep)
+
+    elseif (itype.eq.itype_hill) then
+
+       call postprocess_hill(ux, uy, uz, phi, ep)
+
+    elseif (itype.eq.itype_cyl) then
+
+       call postprocess_cyl (ux, uy, uz, ep)
 
     elseif (itype.eq.itype_dbg) then
 
        call postprocess_dbg (ux, uy, uz, phi, ep)
 
+    elseif (itype.eq.itype_jet) then
+
+       call postprocess_jet (ux, uy, uz, phi, ep)
+
     elseif (itype.eq.itype_tbl) then
 
        call postprocess_tbl (ux, uy, uz, ep)
 
+    elseif (itype.eq.itype_abl) then
+
+       call postprocess_abl (ux, uy, uz, ep)
+
+    elseif (itype.eq.itype_uniform) then
+
+       call postprocess_uniform (ux, uy, uz, ep)
+
+    elseif (itype.EQ.itype_sandbox) THEN
+   
+       call postprocess_sandbox (ux, uy, uz, phi, ep)
+
+    endif
+
+    if (iforces.eq.1) then
+       call force(ux,uy,ep)
+       call restart_forces(1)
     endif
 
   end subroutine postprocess_case
@@ -237,13 +386,29 @@ contains
 
     implicit none
     
-    if (itype .eq. itype_channel) then
+    if (itype .eq. itype_tgv) then
+
+       call visu_tgv_init(case_visu_init)
+
+    else if (itype .eq. itype_channel) then
 
        call visu_channel_init(case_visu_init)
 
+    else if (itype .eq. itype_cyl) then
+
+       call visu_cyl_init(case_visu_init)
+
     else if (itype .eq. itype_tbl) then
 
-       call visu_tbl_init(case_visu_init)    
+       call visu_tbl_init(case_visu_init)
+
+    else if (itype .eq. itype_lockexch) then
+
+       call visu_lockexch_init(case_visu_init)
+
+    else if (itype .eq. itype_uniform) then
+
+       call visu_uniform_init(case_visu_init)      
 
     end if
     
@@ -265,7 +430,7 @@ contains
     real(mytype), intent(in), dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress) :: pp3
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ep1
-    integer, intent(in) :: num
+    character(len=32), intent(in) :: num
 
     logical :: called_visu = .false.
     
@@ -274,14 +439,29 @@ contains
        call visu_user(ux1, uy1, uz1, pp3, phi1, ep1, num)
        called_visu = .true.
        
+    elseif (itype.eq.itype_tgv) then
+
+       call visu_tgv(ux1, uy1, uz1, pp3, phi1, ep1, num)
+       called_visu = .true.
+
     elseif (itype.eq.itype_channel) then
 
        call visu_channel(ux1, uy1, uz1, pp3, phi1, ep1, num)
        called_visu = .true.
 
+    elseif (itype.eq.itype_cyl) then
+
+       call visu_cyl(ux1, uy1, uz1, pp3, phi1, ep1, num)
+       called_visu = .true.
+
     elseif (itype.eq.itype_tbl) then
 
        call visu_tbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
+       called_visu = .true.
+       
+   elseif (itype.eq.itype_uniform) then
+
+       call visu_uniform(ux1, uy1, uz1, pp3, phi1, ep1, num)
        called_visu = .true.
 
     endif
@@ -317,6 +497,14 @@ contains
 
        call momentum_forcing_channel(dux1, duy1, duz1, ux1, uy1, uz1)
 
+    elseif (itype.eq.itype_jet) then
+
+       call momentum_forcing_jet(dux1, duy1, duz1, rho1, ux1, uy1, uz1)
+
+    elseif (itype.eq.itype_abl) then
+
+       call momentum_forcing_abl(dux1, duy1, duz1, ux1, uy1, uz1, phi1)
+
     endif
 
   end subroutine momentum_forcing
@@ -337,6 +525,12 @@ contains
     real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
     real(mytype), dimension(xsize(1),xsize(2),xsize(3),ntime) :: dphi1
 
+    if (itype.eq.itype_abl) then
+
+       call scalar_forcing_abl(uy1, dphi1, phi1)
+
+    endif
+
   end subroutine scalar_forcing
   !##################################################################
   !##################################################################
@@ -346,6 +540,14 @@ contains
 
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: rho1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: mu1
+
+    if (itype.eq.itype_lockexch) then
+
+       if (ilmn) then 
+          call set_fluid_properties_lockexch(rho1, mu1)
+       end if
+       
+    endif
 
   endsubroutine set_fluid_properties
   !##################################################################

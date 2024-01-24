@@ -1,7 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
-
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 module variables
   !USE param
   !USE var
@@ -283,9 +310,7 @@ module param
        itype_tbl = 9, &
        itype_abl = 10, &
        itype_uniform = 11, &
-       itype_sandbox = 12, &
-       itype_cavity = 13, &
-       itype_pipe = 14
+       itype_sandbox = 12
 
   integer :: cont_phi,itr,itime,itest,iprocessing
   integer :: ifft,istret,iforc_entree,iturb
@@ -296,15 +321,14 @@ module param
   integer :: itime0
   integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
   integer :: npif,izap,ianal
-  integer :: ivisu, ipost, initstat, istatfreq
+  integer :: ivisu, ipost, initstat
   integer :: ifilter
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
   real(mytype) :: dt,re,xnu,init_noise,inflow_noise,u1,u2,angle,anglex,angley
   real(mytype) :: wrotation,ro
   real(mytype) :: dens1, dens2
   real(mytype) :: C_filter
-  character(len=512) :: inflowpath
-  logical :: validation_restart
+  character(len=100) :: inflowpath
 
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.
@@ -334,7 +358,7 @@ module param
   real(mytype) :: Tref
 
   !! LES modelling flag
-  integer :: ilesmod
+  integer :: ilesmod, iwall
 
   !LES
   integer :: jles
@@ -358,8 +382,8 @@ module param
   logical :: ibirman_eos
 
   !! ABL
-  integer :: iwallmodel, iPressureGradient, imassconserve, ibuoyancy, iStrat, iCoriolis, idamping, iheight, itherm, iconcprec, ishiftedper, iconserv
-  real(mytype) :: z_zero, k_roughness, u_shear, ustar, dBL, CoriolisFreq, TempRate, TempFlux, gravv, T_wall, T_top, pdl, dsampling
+  integer :: iwallmodel, iPressureGradient, imassconserve, ibuoyancy, iStrat, iCoriolis, idamping, iheight, itherm, iconcprec, ishiftedper
+  real(mytype) :: z_zero, k_roughness, u_shear, ustar, dBL, CoriolisFreq, TempRate, TempFlux, gravv, T_wall, T_top, pdl
   real(mytype), dimension(3) :: UG
   real(mytype), save, allocatable, dimension(:,:) :: Tstat
   real(mytype), save, allocatable, dimension(:,:) :: PsiM, PsiH
@@ -371,12 +395,15 @@ module param
   ! Actuator disk
   character(len=100) :: admCoords
   integer :: Ndiscs          ! number of actuator discs
-  real(mytype) :: T_relax
+  real(mytype) :: C_T, aind
   ! Actuator line
   integer :: NTurbines, NActuatorlines
   character, dimension(100) :: TurbinesPath*80, ActuatorlinesPath*80
   real(mytype) :: eps_factor ! Smoothing factor
   
+  !! Case-specific variables
+  logical :: tgv_twod
+
   character :: filesauve*80, filenoise*80, &
        nchamp*80,filepath*80, fileturb*80, filevisu*80, datapath*80
   real(mytype), dimension(5) :: adt,bdt,cdt,ddt,gdt
@@ -618,7 +645,7 @@ end module simulation_stats
 !############################################################################
 module ibm_param
   use decomp_2d, only : mytype
-  real(mytype) :: cex,cey,cez,ra,rai,rao,ubcx,ubcy,ubcz,rads, c_air
+  real(mytype) :: cex,cey,cez,ra,ubcx,ubcy,ubcz,rads, c_air
   real(mytype) :: chord,thickness,omega
   integer :: inana ! Analytical BC as Input
   integer :: imove

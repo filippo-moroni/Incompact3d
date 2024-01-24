@@ -1,6 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 
 !********************************************************************
 !
@@ -313,8 +341,6 @@ subroutine first_derivative(alfa1,af1,bf1,cf1,df1,alfa2,af2,alfan,afn,bfn,&
      afm  = (three/four)/d
   endif
 
-  if (n==1) return
-
   if     (ncl1.eq.0) then !Periodic
      ff(1)   =alfai
      ff(2)   =alfai
@@ -532,8 +558,6 @@ subroutine second_derivative(alsa1,as1,bs1,&
   bstt = (three/fortyfour)/d2
   cstt = zero
 
-  if (n==1) return
-
   if     (ncl1.eq.0) then !Periodic
      sf(1)   =alsai
      sf(2)   =alsai
@@ -691,40 +715,6 @@ subroutine interpolation(dx,nxm,nx,nclx1,nclxn,&
      bcix6=(17._mytype/62._mytype)/three/dx
   endif
 
-  if (ifirstder == 1) then
-     ailcaix6 = zero
-     aicix6   = half
-     bicix6   = zero
-     cicix6   = zero
-     dicix6   = zero
-  else if (ipinter.eq.1) then
-     ailcaix6=three/ten
-     aicix6=three/four
-     bicix6=one/(two*ten)
-     cicix6=zero
-     dicix6=zero
-  else if (ipinter.eq.2) then
-     ailcaix6=0.461658_mytype
-
-     dicix6=0.00293016_mytype
-     aicix6=one/64._mytype *(75._mytype +70._mytype *ailcaix6-320._mytype *dicix6)
-     bicix6=one/128._mytype *(126._mytype *ailcaix6-25._mytype +1152._mytype *dicix6)
-     cicix6=one/128._mytype *(-ten*ailcaix6+three-640._mytype *dicix6)
-
-     aicix6=aicix6/two
-     bicix6=bicix6/two
-     cicix6=cicix6/two
-     dicix6=dicix6/two
-  else if (ipinter.eq.3) then
-     ailcaix6=0.49_mytype
-     aicix6=one/128._mytype *(75._mytype +70._mytype*ailcaix6)
-     bicix6=one/256._mytype *(126._mytype*ailcaix6-25._mytype)
-     cicix6=one/256._mytype *(-ten*ailcaix6+three)
-     dicix6=zero
-  endif
-
-  if (nx==1) return
-
   cfx6(1)=alcaix6
   cfx6(2)=alcaix6
   cfx6(nxm-2)=alcaix6
@@ -770,6 +760,38 @@ subroutine interpolation(dx,nxm,nx,nclx1,nclxn,&
      cci6(i)=one
      cbi6(i)=alcaix6
   enddo
+
+  if (ifirstder == 1) then
+     ailcaix6 = zero
+     aicix6   = half
+     bicix6   = zero
+     cicix6   = zero
+     dicix6   = zero
+  else if (ipinter.eq.1) then
+     ailcaix6=three/ten
+     aicix6=three/four
+     bicix6=one/(two*ten)
+     cicix6=zero
+     dicix6=zero
+  else if (ipinter.eq.2) then
+     ailcaix6=0.461658_mytype
+
+     dicix6=0.00293016_mytype
+     aicix6=one/64._mytype *(75._mytype +70._mytype *ailcaix6-320._mytype *dicix6)
+     bicix6=one/128._mytype *(126._mytype *ailcaix6-25._mytype +1152._mytype *dicix6)
+     cicix6=one/128._mytype *(-ten*ailcaix6+three-640._mytype *dicix6)
+
+     aicix6=aicix6/two
+     bicix6=bicix6/two
+     cicix6=cicix6/two
+     dicix6=dicix6/two
+  else if (ipinter.eq.3) then
+     ailcaix6=0.49_mytype
+     aicix6=one/128._mytype *(75._mytype +70._mytype*ailcaix6)
+     bicix6=one/256._mytype *(126._mytype*ailcaix6-25._mytype)
+     cicix6=one/256._mytype *(-ten*ailcaix6+three)
+     dicix6=zero
+  endif
 
   cifx6(1)=ailcaix6
   cifx6(2)=ailcaix6

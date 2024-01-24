@@ -1,7 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
-
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 module navier
 
   implicit none
@@ -22,14 +49,13 @@ contains
   !############################################################################
   SUBROUTINE solve_poisson(pp3, px1, py1, pz1, rho1, ux1, uy1, uz1, ep1, drho1, divu3)
 
-    USE decomp_2d, ONLY : mytype, xsize, zsize, ph1, nrank, real_type
+    USE decomp_2d, ONLY : mytype, xsize, zsize, ph1, nrank
     USE decomp_2d_poisson, ONLY : poisson
     USE var, ONLY : nzmsize
     USE var, ONLY : dv3
     USE param, ONLY : ntime, nrhotime, npress
     USE param, ONLY : ilmn, ivarcoeff, zero, one 
-    USE mpi
-    
+
     implicit none
 
     !! Inputs
@@ -48,8 +74,7 @@ contains
     LOGICAL :: converged
     REAL(mytype) :: atol, rtol, rho0, divup3norm
 #ifdef DEBG
-    real(mytype) :: dep, dep1
-    integer :: code
+    real(mytype) avg_param
 #endif
 
     nlock = 1 !! Corresponds to computing div(u*)
@@ -90,32 +115,32 @@ contains
 
        IF (.NOT.converged) THEN
 #ifdef DEBG
-          dep=maxval(abs(pp3(:,:,:,1)))
-          call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-          if (nrank == 0) write(*,*)'## Solve Poisson before1 pp3', dep1
+          avg_param = zero
+          call avg3d (pp3(:,:,:,1), avg_param)
+          if (nrank == 0) write(*,*)'## Solve Poisson before1 pp3', avg_param
 #endif
           CALL poisson(pp3(:,:,:,1))
 #ifdef DEBG
-          dep=maxval(abs(pp3(:,:,:,1)))
-          call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-          if (nrank == 0) write(*,*)'## Solve Poisson after call  pp3', dep1
+          avg_param = zero
+          call avg3d (pp3(:,:,:,1), avg_param)
+          if (nrank == 0) write(*,*)'## Solve Poisson after call  pp3', avg_param
 #endif
 
           !! Need to update pressure gradient here for varcoeff
           CALL gradp(px1,py1,pz1,pp3(:,:,:,1))
 #ifdef DEBG
-          dep=maxval(abs(pp3(:,:,:,1)))
-          call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-          if (nrank == 0) write(*,*)'## Solve Poisson pp3', dep1
-          dep=maxval(abs(px1))
-          call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-          if (nrank == 0) write(*,*)'## Solve Poisson px', dep1
-          dep=maxval(abs(py1))
-          call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-          if (nrank == 0) write(*,*)'## Solve Poisson py', dep1
-          dep=maxval(abs(pz1))
-          call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-          if (nrank == 0) write(*,*)'## Solve Poisson pz', dep1
+          avg_param = zero
+          call avg3d (pp3(:,:,:,1), avg_param)
+          if (nrank == 0) write(*,*)'## Solve Poisson pp3', avg_param
+          avg_param = zero
+          call avg3d (px1, avg_param)
+          if (nrank == 0) write(*,*)'## Solve Poisson px', avg_param
+          avg_param = zero
+          call avg3d (py1, avg_param)
+          if (nrank == 0) write(*,*)'## Solve Poisson py', avg_param
+          avg_param = zero
+          call avg3d (pz1, avg_param)
+          if (nrank == 0) write(*,*)'## Solve Poisson pz', avg_param
 #endif
          
 
@@ -207,36 +232,34 @@ contains
     USE decomp_2d
     USE variables
     USE param
-    USE mpi
 
     implicit none
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)),intent(in) :: px,py,pz
 #ifdef DEBG
-    real(mytype) :: dep, dep1
-    integer :: code
+    real(mytype) avg_param
 #endif
 
 #ifdef DEBG
-        dep=maxval(abs(ux))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Cor Vel ux', dep1
-        dep=maxval(abs(uy))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Cor Vel uy', dep1
-        dep=maxval(abs(uz))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Cor Vel uz', dep1
-        dep=maxval(abs(px))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Cor Vel px', dep1
-        dep=maxval(abs(py))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Cor Vel py', dep1
-        dep=maxval(abs(pz))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Cor Vel pz', dep1
+    avg_param = zero
+    call avg3d (ux, avg_param)
+    if (nrank == 0) write(*,*)'## Cor Vel ux', avg_param
+    avg_param = zero
+    call avg3d (uy, avg_param)
+    if (nrank == 0) write(*,*)'## Cor Vel uy', avg_param
+    avg_param = zero
+    call avg3d (uz, avg_param)
+    if (nrank == 0) write(*,*)'## Cor Vel uz', avg_param
+    avg_param = zero
+    call avg3d (px, avg_param)
+    if (nrank == 0) write(*,*)'## Cor Vel px', avg_param
+    avg_param = zero
+    call avg3d (py, avg_param)
+    if (nrank == 0) write(*,*)'## Cor Vel py', avg_param
+    avg_param = zero
+    call avg3d (pz, avg_param)
+    if (nrank == 0) write(*,*)'## Cor Vel pz', avg_param
 #endif
 
     ux(:,:,:)=ux(:,:,:)-px(:,:,:)
@@ -390,7 +413,8 @@ contains
     USE var, only: pp1,pgy1,pgz1,di1,pp2,ppi2,pgy2,pgz2,pgzi2,dip2,&
          pgz3,ppi3,dip3,nxmsize,nymsize,nzmsize
 
- 
+    USE forces, only : iforces, ppi1
+
     implicit none
 
     integer :: i,j,k
@@ -427,6 +451,11 @@ contains
          nxmsize,xsize(1),xsize(2),xsize(3),1)
     call interxpv(pz1,pgz1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
          nxmsize,xsize(1),xsize(2),xsize(3),1)
+
+    if (iforces.eq.1) then
+       call interxpv(ppi1,pp1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
+            nxmsize,xsize(1),xsize(2),xsize(3),1)
+    endif
 
     !we are in X pencils:
     if (nclx1.eq.2) then
@@ -499,6 +528,7 @@ contains
     USE param
     USE var
     USE MPI
+    use ibm, only : corgp_ibm, body
 
     implicit none
 
@@ -510,23 +540,14 @@ contains
     integer, dimension(2) :: dims, dummy_coords
     logical, dimension(2) :: dummy_periods
 #ifdef DEBG
-    real(mytype) dep, dep1
+    real(mytype) avg_param
 #endif
 
     call MPI_CART_GET(DECOMP_2D_COMM_CART_X, 2, dims, dummy_periods, dummy_coords, code)
 
-    !********NCLX==0*************************************
-    !we are in X pencils:
-    if ((itype.eq.itype_pipe).and.(nclx1==0.and.nclxn==0)) then
-
-        !Correct bulk velocity and temperature
-        call pipe_bulk(ux,uy,uz,ep)
-
-    endif
-
     !********NCLX==2*************************************
     !we are in X pencils:
-    if ((itype.eq.itype_channel.or.itype.eq.itype_uniform.or.itype.eq.itype_abl).and.(nclx1==2.and.nclxn==2)) then
+    if ((itype.eq.itype_channel.or.itype.eq.itype_uniform).and.(nclx1==2.and.nclxn==2)) then
 
        !Computation of the flow rate Inflow/Outflow
        ut1=zero
@@ -731,16 +752,22 @@ contains
        endif
     endif
 #ifdef DEBG
-    dep=maxval(abs(ux))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Pres corr ux ', dep1
-    dep=maxval(abs(uy))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Pres corr uy ', dep1
-    dep=maxval(abs(uz))
-    call MPI_ALLREDUCE(dep,dep1,1,real_type,MPI_MAX,MPI_COMM_WORLD,code)
-    if (nrank == 0) write(*,*)'## Pres corr uz ', dep1
+    avg_param = zero
+    call avg3d (ux, avg_param)
+    if (nrank == 0) write(*,*)'## Pres corr ux ', avg_param
+    avg_param = zero
+    call avg3d (uy, avg_param)
+    if (nrank == 0) write(*,*)'## Pres corr uy ', avg_param
+    avg_param = zero
+    call avg3d (uz, avg_param)
+    if (nrank == 0) write(*,*)'## Pres corr uz ', avg_param
 #endif
+
+    if (iibm==1) then !solid body old school
+       call corgp_IBM(ux1,uy1,uz1,px1,py1,pz1,1)
+       call body(ux1,uy1,uz1,ep1)
+       call corgp_IBM(ux1,uy1,uz1,px1,py1,pz1,2)
+    endif
 
     return
   end subroutine pre_correc
@@ -1276,249 +1303,76 @@ contains
     enddo
 
   end subroutine tbl_flrt
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !!
-  !!  subroutine: pipe_bulk / pipe_bulk_u / pipe_bulk_phi
-  !!      AUTHOR: Rodrigo Vicente Cruz
-  !! DESCRIPTION: Correction of pipe's bulk velocity (constant 
-  !!              flow rate) and bulk temperature.
-  !!              See Thesis Vicente Cruz 2021 for help.
-  !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !********************************************************************
-  !
-  subroutine pipe_bulk(ux,uy,uz,ep)
-  !
-  !********************************************************************
+!############################################################################
+!!
+!!  SUBROUTINE: avg3d
+!!      AUTHOR: Stefano Rolfo
+!! DESCRIPTION: Compute the total sum of a a 3d field
+!!
+!############################################################################
+subroutine avg3d (var, avg)
 
-    use param, only: one
-    use decomp_2d, only: mytype, xsize
-    use variables, only: numscalar
-    use var, only: ta1, phi1
+  use decomp_2d, only: real_type, xsize, xend
+  use param
+  use dbg_schemes, only: sqrt_prec
+  use variables, only: nx,ny,nz,nxm,nym,nzm
+  use mpi
 
-    implicit none
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3))  :: ux,uy,uz,ep
-    real(mytype),save                                   :: ncount = -one
-    integer                                             :: is
+  implicit none
 
-    !Compute the number of cells inside the pipe at the beginning
-    if (ncount < 0) then
-       ta1(:,:,:) = one
-       call pipe_volume_avg(ta1,ncount,ep,one)
-    endif
+  real(mytype),dimension(xsize(1),xsize(2),xsize(3)),intent(in) :: var
+  real(mytype), intent(out) :: avg
+  real(mytype)              :: dep
 
-    !Bulk velocity correction
-    call pipe_bulk_u(ux,uy,uz,ep,one,ncount)
+  integer :: i,j,k, code
+  integer :: nxc, nyc, nzc, xsize1, xsize2, xsize3
 
-    !Bulk temperature correction
-    if (numscalar.ne.0) then
-        do is=1,numscalar
-            call pipe_bulk_phi(phi1(:,:,:,is),ux,ep,is,one,ncount)
+  if (nclx1==1.and.xend(1)==nx) then
+     xsize1=xsize(1)-1
+  else
+     xsize1=xsize(1)
+  endif
+  if (ncly1==1.and.xend(2)==ny) then
+     xsize2=xsize(2)-1
+  else
+     xsize2=xsize(2)
+  endif
+  if (nclz1==1.and.xend(3)==nz) then
+     xsize3=xsize(3)-1
+  else
+     xsize3=xsize(3)
+  endif
+  if (nclx1==1) then
+     nxc=nxm
+  else
+     nxc=nx
+  endif
+  if (ncly1==1) then
+     nyc=nym
+  else
+     nyc=ny
+  endif
+  if (nclz1==1) then
+     nzc=nzm
+  else
+     nzc=nz
+  endif
+
+  dep=zero
+  do k=1,xsize3
+     do j=1,xsize2
+        do i=1,xsize1
+           !dep=dep+var(i,j,k)**2
+           dep=dep+var(i,j,k)
         enddo
-    endif
+     enddo
+  enddo
+  call MPI_ALLREDUCE(dep,avg,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+  !avg=sqrt_prec(avg)/(nxc*nyc*nzc)
+  avg=avg/(nxc*nyc*nzc)
 
-  end subroutine pipe_bulk
-  !********************************************************************
-  !
-  subroutine pipe_bulk_u(ux,uy,uz,ep,ub_constant,ncount)
-  !
-  !********************************************************************
+  return
 
-    use decomp_2d
-    use variables
-    use param
-    use var
-    use ibm_param, only: rai
-    use MPI
-
-    implicit none
-    !INPUTS
-    real(mytype),intent(inout),dimension(xsize(1),xsize(2),xsize(3))    :: ux,uy,uz
-    real(mytype),intent(in   ),dimension(xsize(1),xsize(2),xsize(3))    :: ep
-    real(mytype),intent(in   )                                          :: ub_constant !bulk velocity value
-    real(mytype),intent(in   )                                          :: ncount !numer of cells inside the pipe
-    !LOCALS
-    real(mytype)                                                        :: qm      !flow rate
-    real(mytype)                                                        :: ym,zm,yc,zc,r
-    integer                                                             :: j,i,k
-    integer, save                                                       :: local_io_unit=-1
-
-    yc = yly/two
-    zc = zlz/two
-
-    if (local_io_unit.eq.-1 .and. nrank.eq.0) then
-       open(newunit=local_io_unit,file='Ub.dat',status='unknown')
-    endif
-
-    !--------------------------- Bulk Velocity ---------------------------
-    !Calculate loss of streamwise mean pressure gradient
-    call pipe_volume_avg(ux,qm,ep,ncount)
-    if (nrank==0) then
-       if (mod(itime, ilist)==0) print *,'Velocity:'
-       if (mod(itime, ilist)==0) print *,'    Bulk velocity before',qm
-       write(local_io_unit,*) real((itime-1)*dt,mytype), (ub_constant-qm) !write pressure drop
-    endif
-
-    !Correction
-    do k=1,xsize(3)
-        zm=dz*real(xstart(3)-1+k-1,mytype)-zc
-        do j=1,xsize(2)
-            if (istret.eq.0) ym=real(j+xstart(2)-1-1,mytype)*dy-yc
-            if (istret.ne.0) ym=yp(j+xstart(2)-1)-yc
-            r=sqrt(ym*ym+zm*zm)
-            do i=1,xsize(1)
-                if (r.le.rai.and.ep(i,j,k).eq.0) then
-                    ux(i,j,k)=ux(i,j,k)+(ub_constant-qm)
-                else
-                    !Cancel solid zone (rai <= r <= rao)
-                    !and buffer zone (r > rao)
-                    ux(i,j,k)=zero
-                    uy(i,j,k)=zero
-                    uz(i,j,k)=zero
-                endif
-            enddo
-        enddo
-    enddo
-
-    !Check new bulk velocity
-    if (mod(itime, ilist)==0) then
-        call pipe_volume_avg(ux,qm,ep,ncount)
-        if (nrank==0) print *,'    Bulk velocity  after',qm
-    endif
-    !
-    return
-    !
-  end subroutine pipe_bulk_u
-  !********************************************************************
-  !
-  subroutine pipe_bulk_phi(phi,ux,ep,is,phib_constant,ncount)
-  !
-  !********************************************************************
-
-    use decomp_2d
-    use decomp_2d_poisson
-    use variables
-    use param
-    use ibm_param, only: rai
-    use MPI
-
-    implicit none
-    !INPUTS
-    real(mytype),intent(inout),dimension(xsize(1),xsize(2),xsize(3))  :: phi,ux
-    real(mytype),intent(in   ),dimension(xsize(1),xsize(2),xsize(3))  :: ep
-    real(mytype),intent(in   )                                        :: phib_constant !bulk temperature value
-    real(mytype),intent(in   )                                        :: ncount !numer of cells inside the pipe
-    !LOCALS
-    real(mytype)                                                      :: qv,qm !volumetric averaged values
-    real(mytype)                                                      :: ym,zm,yc,zc,r
-    real(mytype)                                                      :: phi_out
-    integer                                                           :: is,j,i,k
-    character(len=30)                                                 :: filename
-    integer, allocatable, save, dimension(:)                          :: local_io_unit
-
-    if (iscalar.eq.0) return
-
-255 format('Tb_',I2.2,'.dat')
-256 format(' Scalar:                       #',I2)
-
-    ! Safety check
-    if (is<1.or.is>numscalar) return
-
-    if (.not.allocated(local_io_unit)) then
-        allocate(local_io_unit(numscalar))
-        local_io_unit(:)=-1
-    endif
-
-    if (local_io_unit(is).eq.-1.and.nrank.eq.0) then
-        write(filename,255) is
-        open(newunit=local_io_unit(is),file=filename,status='unknown')
-    endif
-
-    yc = yly / two
-    zc = zlz / two
-    phi_out =zero !for reconstruction smoothness
-
-    !--------------------------- Bulk Temperature ---------------------------
-    !                  with corrected streamwise velocity
-    call pipe_volume_avg(ux*phi,qm,ep,ncount)
-    call pipe_volume_avg(ux*ux ,qv,ep,ncount)
-    if (nrank.eq.0) then
-        if (mod(itime, ilist)==0) write(*,256) is
-        if (mod(itime, ilist)==0) print *,'         Bulk phi before',qm
-        write(local_io_unit(is),*) real((itime-1)*dt,mytype),(phib_constant-qm)/(qv)
-    endif
-
-    !Correction
-    do k=1,xsize(3)
-        zm=dz*real(xstart(3)-1+k-1,mytype)-zc
-        do j=1,xsize(2)
-            if (istret.eq.0) ym=real(j+xstart(2)-1-1,mytype)*dy-yc
-            if (istret.ne.0) ym=yp(j+xstart(2)-1)-yc
-            r=sqrt(ym*ym+zm*zm)
-            do i=1,xsize(1)
-                if (r.le.rai.and.ep(i,j,k).eq.0) then
-                    phi(i,j,k)=phi(i,j,k)+ux(i,j,k)*((phib_constant-qm)/qv)
-                else !smoothness for reconstruction
-                    phi(i,j,k)=phi_out
-                endif
-            enddo
-        enddo
-    enddo
-
-    !Check new bulk temperature
-    if (mod(itime, ilist)==0) then
-        call pipe_volume_avg(ux*phi,qm,ep,ncount)
-        if (nrank==0) print *,'          Bulk phi after',qm
-    endif
-    !
-    return
-
-  end subroutine pipe_bulk_phi
-  !********************************************************************
-  !
-  subroutine pipe_volume_avg(var,qm,ep,ncount)
-  !
-  !********************************************************************
-
-    use param
-    use variables
-    use decomp_2d
-    use MPI
-    use ibm_param, only: rai
-
-    implicit none
-
-    !INPUTS
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3))  :: var,ep
-    real(mytype),intent(out)                            :: qm
-    real(mytype),intent(in)                             :: ncount
-    !LOCALS
-    real(mytype)                                        :: ym,yc,zm,zc,r
-    integer                                             :: i,j,k,code
-
-    !Compute volumetric average of var
-    !in the inner fluid zone r <= rai
-    yc=yly/two
-    zc=zlz/two
-    qm=zero
-    do k=1,xsize(3)
-        zm=dz*real(xstart(3)-1+k-1,mytype)-zc
-        do j=1,xsize(2)
-            if (istret.eq.0) ym=real(j+xstart(2)-1-1,mytype)*dy-yc
-            if (istret.ne.0) ym=yp(j+xstart(2)-1)-yc
-            r=sqrt(ym*ym+zm*zm)
-            do i=1,xsize(1)
-                if (r.le.rai.and.ep(i,j,k).eq.0) then
-                    qm=qm+var(i,j,k)
-                endif
-            enddo
-        enddo
-    enddo
-    call MPI_ALLREDUCE(MPI_IN_PLACE,qm,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-    qm=qm/ncount
-    !
-    return
-
-  end subroutine pipe_volume_avg
+end subroutine avg3d
 
 endmodule navier

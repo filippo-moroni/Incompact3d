@@ -1,6 +1,34 @@
-!Copyright (c) 2012-2022, Xcompact3d
-!This file is part of Xcompact3d (xcompact3d.com)
-!SPDX-License-Identifier: BSD 3-Clause
+!################################################################################
+!This file is part of Xcompact3d.
+!
+!Xcompact3d
+!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
+!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
+!
+!    Xcompact3d is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation.
+!
+!    Xcompact3d is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
+!-------------------------------------------------------------------------------
+!-------------------------------------------------------------------------------
+!    We kindly request that you cite Xcompact3d/Incompact3d in your
+!    publications and presentations. The following citations are suggested:
+!
+!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
+!    incompressible flows: a simple and efficient method with the quasi-spectral
+!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
+!
+!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
+!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
+!    Methods in Fluids, vol 67 (11), pp 1735-1757
+!################################################################################
 
 module var
 
@@ -8,8 +36,6 @@ module var
   USE variables
   USE param
   USE complex_geometry
-
-  implicit none
   
   ! define all major arrays here
   real(mytype), save, allocatable, dimension(:,:,:) :: ux1, ux2, ux3, po3, dv3
@@ -69,7 +95,6 @@ module var
 
   ! working arrays for ABL
   real(mytype), save, allocatable, dimension(:,:) :: heatflux
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: abl_T
 
   ! arrays for turbine modelling
   real(mytype), save, allocatable, dimension(:,:,:) :: FTx, FTy, FTz, Fdiscx, Fdiscy, Fdiscz
@@ -85,8 +110,6 @@ contains
 
     TYPE(DECOMP_INFO), save :: ph! decomposition object
 
-    integer :: i, j, k
-    
 #ifdef DEBG
     if (nrank == 0) write(*,*) '# Init_variables start'
 #endif
@@ -154,11 +177,11 @@ contains
     call alloc_x(ti1)
     ti1 = zero
     call alloc_x(di1)
-    di1 = zero
+    tdi1 = zero
     call alloc_x(ep1)
-    ep1 = zero
+    tep1 = zero
     if (ilmn) then
-      call alloc_x(mu1)
+      call alloc_x(mu1, opt_global=.true.)
       mu1 = one
     endif
 
@@ -306,7 +329,7 @@ contains
     call alloc_y(uy2)
     uy2=zero
     call alloc_y(uz2)
-    uz2=zero
+    uzj2=zero
     call alloc_y(ta2)
     ta2=zero
     call alloc_y(tb2)
@@ -1313,10 +1336,6 @@ contains
     PsiH = zero
     allocate(Tstat(xsize(2),1))
     Tstat = zero
-    if (itype.eq.itype_abl.and.ibuoyancy.eq.1) then
-       allocate(abl_T(xsize(1),xsize(2),xsize(3),numscalar))
-       abl_T = zero
-    endif
 
     !! Turbine Modelling
     if (iturbine.eq.1) then
@@ -1341,7 +1360,7 @@ contains
     if (.not.ilmn) then
        nrhotime = 1 !! Save some space
     endif
-    allocate(rho1(xsize(1),xsize(2),xsize(3),nrhotime)) !Need to store old density values to extrapolate drhodt
+    allocate(rho1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),nrhotime)) !Need to store old density values to extrapolate drhodt
     rho1=one
     call alloc_y(rho2)
     rho2=zero
