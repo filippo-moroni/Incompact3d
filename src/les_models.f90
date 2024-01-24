@@ -102,7 +102,6 @@ contains
     USE decomp_2d
     USE decomp_2d_io
     use var, only: nut1
-    USE abl, only: wall_sgs
     implicit none
 
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1, ep1
@@ -132,16 +131,6 @@ contains
 
        ! Call les_conservative
 
-    endif
-
-    ! SGS correction for ABL
-    if(itype.eq.itype_abl) then
-       call wall_sgs(ux1,uy1,uz1,phi1,nut1,wallfluxx1,wallfluxy1,wallfluxz1)
-       if (xstart(2)==1) then
-          sgsx1(:,1,:) = wallfluxx1(:,1,:)
-          sgsy1(:,1,:) = wallfluxy1(:,1,:)
-          sgsz1(:,1,:) = wallfluxz1(:,1,:)
-       endif
     endif
 
     return
@@ -1211,8 +1200,7 @@ end subroutine wale
     USE decomp_2d
 
     USE var, only: di1,tb1,di2,tb2,di3,tb3,tc1,tc2,tc3
-    USE abl, only: wall_sgs_scalar
-
+ 
     implicit none
 
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: sgsphi1, phi1
@@ -1269,12 +1257,6 @@ end subroutine wale
 
     call transpose_z_to_y(sgsphi3, sgsphi2)
     call transpose_y_to_x(sgsphi2, sgsphi1)
-
-    ! SGS correction for ABL
-    if (itype.eq.itype_abl.and.is==1.and.ibuoyancy.eq.1) then
-       call transpose_y_to_x(tb2,dphidy1)
-       call wall_sgs_scalar(sgsphi1,nut1,dphidy1)
-    endif
 
   end subroutine sgs_scalar_nonconservative
 

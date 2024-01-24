@@ -52,11 +52,8 @@ subroutine parameter(input_i3d)
 
   use var, only : dphi1
 
-  use lockexch, only : pfront
-
   use probes, only : nprobes, setup_probes, flag_all_digits, flag_extra_probes, xyzprobes
   use visu, only : output2D
-  use forces, only : iforces, nvol, xld, xrd, yld, yud!, zld, zrd
 
   implicit none
 
@@ -87,15 +84,14 @@ subroutine parameter(input_i3d)
   NAMELIST /LESModel/ jles, smagcst, smagwalldamp, nSmag, walecst, maxdsmagcst, iwall
   NAMELIST /WallModel/ smagwalldamp
   NAMELIST /Tripping/ itrip,A_tr,xs_tr_tbl,ys_tr_tbl,ts_tr_tbl,x0_tr_tbl
-  NAMELIST /ibmstuff/ cex,cey,cez,ra,nobjmax,nraf,nvol,iforces, npif, izap, ianal, imove, thickness, chord, omega ,ubcx,ubcy,ubcz,rads, c_air
-  NAMELIST /ForceCVs/ xld, xrd, yld, yud!, zld, zrd
+  NAMELIST /ibmstuff/ cex,cey,cez,ra,nobjmax,nraf, npif, izap, ianal, imove, thickness, chord, omega ,ubcx,ubcy,ubcz,rads, c_air
   NAMELIST /LMN/ dens1, dens2, prandtl, ilmn_bound, ivarcoeff, ilmn_solve_temp, &
        massfrac, mol_weight, imultispecies, primary_species, &
        Fr, ibirman_eos
   NAMELIST /ABL/ z_zero, iwallmodel, k_roughness, ustar, dBL, &
        imassconserve, ibuoyancy, iPressureGradient, iCoriolis, CoriolisFreq, &
        istrat, idamping, iheight, TempRate, TempFlux, itherm, gravv, UG, T_wall, T_top, ishiftedper, iconcprec, pdl 
-  NAMELIST /CASE/ tgv_twod, pfront
+  NAMELIST /CASE/ tgv_twod
   NAMELIST/ALMParam/iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST/ADMParam/Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
 
@@ -134,10 +130,6 @@ subroutine parameter(input_i3d)
   if (nprobes.gt.0) then
      call setup_probes()
      read(10, nml=ProbesParam); rewind(10)
-  endif
-  if (iforces.eq.1) then
-     allocate(xld(nvol), xrd(nvol), yld(nvol), yud(nvol))!, zld(nvol), zrd(nvol))
-     read(10, nml=ForceCVs); rewind(10)
   endif
   
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
@@ -547,12 +539,6 @@ subroutine parameter(input_i3d)
      endif
      if (angle.ne.0.) write(*,"(' Solid rotation     : ',F6.2)") angle
      write(*,*) ' '
-     !! Print case-specific information
-     if (itype==itype_lockexch) then
-        write(*,*)  "Initial front location: ", pfront
-     elseif (itype==itype_tgv) then
-        write(*,*)  "TGV 2D: ", tgv_twod
-     endif
      write(*,*) '==========================================================='
   endif
   
@@ -583,8 +569,7 @@ subroutine parameter_defaults()
 
   use probes, only : nprobes, flag_all_digits, flag_extra_probes
   use visu, only : output2D
-  use forces, only : iforces, nvol
-
+  
   implicit none
 
   integer :: i
@@ -617,8 +602,6 @@ subroutine parameter_defaults()
   nraf = 0
   nobjmax = 0
 
-  nvol = 0
-  iforces = 0
   itrip = 0
   wrotation = zero
   irotation = 0

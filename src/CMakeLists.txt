@@ -13,7 +13,6 @@ add_executable(xcompact3d
                     constants.f90
                     derive.f90
                     filters.f90
-                    forces.f90
                     genepsi3d.f90
                     ibm.f90
                     implicit.f90

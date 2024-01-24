@@ -72,13 +72,10 @@ contains
 !############################################################################
   subroutine geomcomplex(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, dx, yp, dz, remp)
 
-    USE param, ONLY : itype, itype_cyl, itype_hill, itype_channel,itype_sandbox
+    USE param, ONLY : itype, itype_channel
     USE decomp_2d, ONLY : mytype
-    USE cyl, ONLY : geomcomplex_cyl
-    USE hill, ONLY : geomcomplex_hill
     USE channel, ONLY : geomcomplex_channel
-    USE sandbox, ONLY : geomcomplex_sandbox
-
+   
     IMPLICIT NONE
 
     INTEGER :: nxi,nxf,ny,nyi,nyf,nzi,nzf
@@ -87,21 +84,9 @@ contains
     REAL(mytype),DIMENSION(ny) :: yp
     REAL(mytype)               :: remp
 
-    IF (itype.EQ.itype_cyl) THEN
-
-       CALL geomcomplex_cyl(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, dx, yp, remp)
-
-    ELSEIF (itype.EQ.itype_hill) THEN
-
-       CALL geomcomplex_hill(epsi,nxi,nxf,ny,nyi,nyf,nzi,nzf,dx,yp,dz,remp)
-
-    ELSEIF (itype.EQ.itype_channel) THEN
+    IF (itype.EQ.itype_channel) THEN
 
        CALL geomcomplex_channel(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, yp, remp)
-
-    ELSEIF (itype.EQ.itype_sandbox) THEN
-     
-       CALL  geomcomplex_sandbox(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, yp, remp)
 
     ENDIF
 

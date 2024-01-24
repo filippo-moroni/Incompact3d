@@ -122,8 +122,6 @@ subroutine init_xcompact3d()
   use decomp_2d_io, only : decomp_2d_io_init
   USE decomp_2d_poisson, ONLY : decomp_2d_poisson_init
   use case
-  use sandbox, only : init_sandbox
-  use forces
 
   use var
 
@@ -220,13 +218,6 @@ subroutine init_xcompact3d()
   else if (iibm.eq.1) then
      call epsi_init(ep1)
      call body(ux1,uy1,uz1,ep1)
-  endif
-
-  if (iforces.eq.1) then
-     call init_forces()
-     if (irestart==1) then
-        call restart_forces(0)
-     endif
   endif
 
   !####################################################################
