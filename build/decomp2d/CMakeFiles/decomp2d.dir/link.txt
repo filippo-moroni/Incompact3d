@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../lib/libdecomp2d.a CMakeFiles/decomp2d.dir/decomp_2d.f90.o CMakeFiles/decomp2d.dir/glassman.f90.o CMakeFiles/decomp2d.dir/io.f90.o CMakeFiles/decomp2d.dir/fft_generic.f90.o
-/usr/bin/ranlib ../lib/libdecomp2d.a
