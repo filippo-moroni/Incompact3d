@@ -143,9 +143,6 @@ add_subdirectory(decomp2d)
 # Create the Xcompact3d executable
 add_subdirectory(src)
 
-# Create the Xcompact3d executable
-add_subdirectory(post_vtk)
-
 # Create an example dir with all input.i3d example files
 option(BUILD_TESTING "Build with tests" OFF)
 set(test_dir "${PROJECT_BINARY_DIR}/Test")

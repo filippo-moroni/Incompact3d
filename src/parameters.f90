@@ -92,8 +92,11 @@ subroutine parameter(input_i3d)
        imassconserve, ibuoyancy, iPressureGradient, iCoriolis, CoriolisFreq, &
        istrat, idamping, iheight, TempRate, TempFlux, itherm, gravv, UG, T_wall, T_top, ishiftedper, iconcprec, pdl 
   NAMELIST /CASE/ tgv_twod
-  NAMELIST/ALMParam/iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
-  NAMELIST/ADMParam/Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
+  NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
+  NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
+  
+  ! Added to account for different number of realizations
+  NAMELIST /NRealiz/ nr
 
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -101,12 +104,15 @@ subroutine parameter(input_i3d)
 
   if (nrank==0) then
      write(*,*) '==========================================================='
-     write(*,*) '======================Xcompact3D==========================='
-     write(*,*) '===Copyright (c) 2018 Eric Lamballais and Sylvain Laizet==='
-     write(*,*) '===Modified by Felipe Schuch and Ricardo Frantz============'
-     write(*,*) '===Modified by Paul Bartholomew, Georgios Deskos and======='
-     write(*,*) '===Sylvain Laizet -- 2018- ================================'
+     write(*,*) '===================== Xcompact3D =========================='
+     write(*,*) '== Copyright (c) 2018 Eric Lamballais and Sylvain Laizet =='
+     write(*,*) '== Modified by Felipe Schuch and Ricardo Frantz ==========='
+     write(*,*) '== Modified by Paul Bartholomew, Georgios Deskos and ======'
+     write(*,*) '== Sylvain Laizet -- 2018- ================================'
      write(*,*) '==========================================================='
+     write(*,*) '== Modified by Filippo Moroni -- 2024 ====================='
+     write(*,*) '==========================================================='
+     
 #if defined(VERSION)
      write(*,*)'Git version        : ', VERSION
 #else
@@ -124,9 +130,11 @@ subroutine parameter(input_i3d)
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
   read(10, nml=Statistics); rewind(10)
+  
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
   endif
+  
   if (nprobes.gt.0) then
      call setup_probes()
      read(10, nml=ProbesParam); rewind(10)
@@ -179,8 +187,8 @@ subroutine parameter(input_i3d)
            stop
         endif
      endif
-     read(10, nml=LMN); rewind(10)
-
+ 
+  read(10, nml=LMN); rewind(10)
      do is = 1, numscalar
         if (massfrac(is)) then
            imultispecies = .TRUE.
@@ -201,11 +209,12 @@ subroutine parameter(input_i3d)
         endif
      endif
   endif
+  
   if (numscalar.ne.0) then
      read(10, nml=ScalarParam); rewind(10)
   endif
-  ! !! These are the 'optional'/model parameters
-  ! read(10, nml=ScalarParam)
+  
+  ! These are the 'optional'/model parameters
   if(ilesmod==0) then
      nu0nu=four
      cnu=0.44_mytype
@@ -219,13 +228,18 @@ subroutine parameter(input_i3d)
   if (itype.eq.itype_abl) then
      read(10, nml=ABL); rewind(10)
   endif
+  
   if (iturbine.eq.1) then
      read(10, nml=ALMParam); rewind(10)
   else if (iturbine.eq.2) then
      read(10, nml=ADMParam); rewind(10)
   endif
-  ! read(10, nml=TurbulenceWallModel)
-  read(10, nml=CASE); rewind(10) !! Read case-specific variables
+  
+  !read(10, nml=TurbulenceWallModel); rewind(10)
+  
+  read(10, nml=CASE); rewind(10)                 !! Read case-specific variables
+  read(10, nml=NRealiz); rewind(10)
+  
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -406,14 +420,14 @@ subroutine parameter(input_i3d)
      !
      if (iimplicit.ne.0) then
        if (iimplicit.eq.1) then
-         write(*,"('                          ',A40)") "With backward Euler for Y diffusion"
+         write(*,"('            ',A40)") "With backward Euler for Y diffusion"
        else if (iimplicit.eq.2) then
-         write(*,"('                          ',A40)") "With CN for Y diffusion"
+         write(*,"('            ',A40)") "With CN for Y diffusion"
        endif
      endif
      !
-     if (ilesmod.ne.0) then
-       write(*,*) '                   : DNS'
+     if (ilesmod.eq.0) then
+       write(*,*) '                      : DNS'
      else
        if (jles==1) then
           write(*,*) '                   : Phys Smag'
