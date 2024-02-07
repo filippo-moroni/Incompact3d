@@ -675,7 +675,6 @@ subroutine parameter_defaults()
   flag_all_digits = .false.
   flag_extra_probes = .false.
 
-
   ipost = 0
   iibm=0
   npif = 2
@@ -692,5 +691,8 @@ subroutine parameter_defaults()
   ys_tr_tbl=0.350508_mytype
   ts_tr_tbl=1.402033_mytype
   x0_tr_tbl=3.505082_mytype
+  
+  ! Number of realizations of the same flow
+  nr = 1
 
 end subroutine parameter_defaults

@@ -266,6 +266,7 @@ subroutine init_xcompact3d()
         open(42,file='time_evol.dat',form='formatted')
      endif
   endif
+  
   if (itype==5) then
      if(nrank.eq.0)then
         open(38,file='forces.dat',form='formatted')
