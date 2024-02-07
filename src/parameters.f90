@@ -237,8 +237,8 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-  read(10, nml=CASE); rewind(10)                 !! Read case-specific variables
-  read(10, nml=NRealiz); rewind(10)
+  read(10, nml=CASE); rewind(10)                 ! Read case-specific variables
+  read(10, nml=NRealiz); rewind(10)              ! Read the realization N° this simulation is
   
   close(10)
 
@@ -275,7 +275,8 @@ subroutine parameter(input_i3d)
   dz2 = dz * dz
 
   xnu=one/re
-  !! Constant pressure gradient, re = Re_tau -> use to compute Re_centerline
+  
+  ! Constant pressure gradient, re = Re_tau -> use to compute Re_centerline
   if (cpg) then
     re_cent = (re/0.116_mytype)**(1.0_mytype/0.88_mytype)
     xnu = one/re_cent ! viscosity based on Re_cent to keep same scaling as CFR
@@ -417,7 +418,7 @@ subroutine parameter(input_i3d)
        print *,'Error: itimescheme must be specified as 1-6'
        stop
      endif
-     !
+          
      if (iimplicit.ne.0) then
        if (iimplicit.eq.1) then
          write(*,"('            ',A40)") "With backward Euler for Y diffusion"
@@ -425,21 +426,23 @@ subroutine parameter(input_i3d)
          write(*,"('            ',A40)") "With CN for Y diffusion"
        endif
      endif
-     !
-     if (ilesmod.eq.0) then
-       write(*,*) '                      : DNS'
+     
+     ! Displaying the specific model adopted
+     write(*,*) '==========================================================='   
+     if (ilesmod==0) then
+          write(*,"(' Turbulence closure     : ',A17)") "DNS"
      else
        if (jles==1) then
-          write(*,*) '                   : Phys Smag'
+          write(*,"(' Turbulence closure     : ',A17)") "Phys Smag"
        else if (jles==2) then
-          write(*,*) '                   : Phys WALE'
+          write(*,"(' Turbulence closure     : ',A17)") "Phys WALE"      
        else if (jles==3) then
-          write(*,*) '                   : Phys dyn. Smag'
+          write(*,"(' Turbulence closure     : ',A17)") "Phys dyn. Smag"
        else if (jles==4) then
-          write(*,*) '                   : iSVV'
-       else
+          write(*,"(' Turbulence closure     : ',A17)") "iSVV"
        endif
      endif
+     
      write(*,*) '==========================================================='
      write(*,"(' ifirst                 : ',I17)") ifirst
      write(*,"(' ilast                  : ',I17)") ilast
@@ -600,6 +603,7 @@ subroutine parameter_defaults()
   istret = 0
   ipinter=3
   beta = 0
+  ilesmod = 0
   iscalar = 0
   cont_phi = 0
   filepath = './data/'
@@ -669,6 +673,7 @@ subroutine parameter_defaults()
   ishiftedper=0
   iconcprec=0
   pdl=zero
+  
   !! Turbine modelling
   iturbine=0
   rho_air=one
