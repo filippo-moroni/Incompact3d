@@ -1,0 +1,12 @@
+#
+#  INCOMPACT 3D post processing parameters
+#
+1    # file1    # First time of saving
+1    # filen    # Final time of saving
+1    # icrfile  # File increment in time
+1    # nr       # Number of flow realizations    
+#
+#  STATISTICS (0:no, 1:yes)
+#
+1    # post_mean  # Compute mean statistics
+0    # post_vort  # Compute instantaneous vorticity vector
