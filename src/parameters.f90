@@ -711,7 +711,7 @@ subroutine parameter_defaults()
   ts_tr_tbl=1.402033_mytype
   x0_tr_tbl=3.505082_mytype
   
-  ! Number of realizations of the same flow
-  nr = 1
+  ! Realization number of our flow case
+  nr = '1'
 
 end subroutine parameter_defaults
