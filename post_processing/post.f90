@@ -109,10 +109,6 @@ PROGRAM post
 
  do ie=1,nt
  
-!---------Start of the ensemble average cycle--------------!
-
-  do ii=1,nr 
-                              
      call cpu_time(t1)
      ifile = (ii-1)*icrfile+file1
      t=dt*real(imodulo*ifile,mytype)
@@ -122,25 +118,26 @@ PROGRAM post
         print *,'----------------------------------------------------'
         write(*,"(' We are averaging the realizations of the SnapShot =',I3,'/',I3,', Time unit =',F9.5)") ifile,filen,t
      endif
-     
-     ! Modification of the SnapShot name to account for the different realizations 
-     write(filename,"(I3.3)") ifile        ! to be completed, guardare bene l'uso di write
-     
+ 
+!---------Start of the ensemble average cycle--------------!
+
+  do ii=1,nr 
+                                    
      ! Read data
      call cpu_time(trstart)
      
      if (read_vel) then
-        write(filename,"('./data/ux',I3.3)") ifile
-        call decomp_2d_read_one(1,ux1,filename)
-        write(filename,"('./data/uy',I3.3)") ifile
-        call decomp_2d_read_one(1,uy1,filename)
-        write(filename,"('./data/uz',I3.3)") ifile
+        write(filename,"('./data/ux',I3.3,'_',I1.1)") ifile, nr
+        call decomp_2d_read_one(1,ux1,filename)       
+        write(filename,"('./data/uy',I3.3,'_',I1.1)") ifile, nr
+        call decomp_2d_read_one(1,uy1,filename)       
+        write(filename,"('./data/uz',I3.3,'_',I1.1)") ifile, nr
         call decomp_2d_read_one(1,uz1,filename)
         call test_speed_min_max(ux1,uy1,uz1)
      endif
      
      if (read_pre) then
-        write(filename,"('./data/pp',I3.3)") ifile
+        write(filename,"('./data/pp',I3.3,'_',I1.1)") ifile,nr
         call decomp_2d_read_one(1,pre1,filename)
         if (nscheme==2) then
             pre1 = pre1/dt  !IF nscheme = 2
@@ -151,7 +148,7 @@ PROGRAM post
      
      if (read_phi) then
         do is=1, nphi
-           write(filename,"('./data/phi',I1.1,I4.4)") is, ifile
+           write(filename,"('./data/phi',I1.1,I4.4,'_',I1.1)") is, ifile, nr
            call decomp_2d_read_one(1,phi1(:,:,:,is),filename)
         enddo
      endif
@@ -168,10 +165,11 @@ PROGRAM post
      if (post_vort) call STAT_VORTICITY(ux1,uy1,uz1,ifile)
 
 
-  enddo
+  enddo ! closing of the do-loop on the different flow realizations
 
-!-----Mean over homogeneous directions (H = Homogeneous)----!
+!----Mean over homogeneous directions (H = Homogeneous)----!
 
+  ! Summation over x and z directions
   if (post_mean) then
      do k=xstart(3),xend(3)
       do i=xstart(1),xend(1)
@@ -269,8 +267,11 @@ PROGRAM post
      endif
 
 !------------------Write unformatted data------------------!
-
-     write(dirname,*) 'data_post/'
+     
+     write(dirname,"('data_post_TU',I2.1,'/')") t
+     
+     !write(dirname,*) 'data_post/'
+     
      call system('mkdir -p '//trim(dirname))
 
      ! Unformatted data

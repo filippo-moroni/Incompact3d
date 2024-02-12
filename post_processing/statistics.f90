@@ -23,7 +23,7 @@ subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
                      u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                      u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                      uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
-                     phi2mean,uphimean,vphimean,wphimean,nt)
+                     phi2mean,uphimean,vphimean,wphimean,nr)
 
   USE param
   USE variables
