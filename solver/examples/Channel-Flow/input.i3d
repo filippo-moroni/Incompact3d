@@ -74,7 +74,7 @@ iimplicit = 2         ! Time integration scheme for diffusive terms:  1->Backwar
 ! Basic I/O
 irestart = 0          ! Read initial flow field ?
 icheckpoint = 5000    ! Frequency for writing backup file
-ioutput = 25          ! Frequency for visualization
+ioutput = 5000        ! Frequency for saving and visualization
 ilist = 25            ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection   # meaning?
 
@@ -83,6 +83,9 @@ nvisu = 1             ! Size for visualisation collection   # meaning?
 !=================
 &Statistics
 !=================
+
+wrotation = 0.12      ! rotation speed to trigger turbulence
+spinup_time = 5000    ! number of time steps with a rotation to trigger turbulence
 
 /End
 
@@ -107,7 +110,7 @@ nclzSn = 0
 
 &NRealiz
 
-nr = '2'              ! N° of the specific realization of the flow, it is applied at the end of the filenames
+nr = '1'              ! N° of the specific realization of the flow, it is applied at the end of the filenames
 
 /End
 

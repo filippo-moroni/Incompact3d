@@ -26,26 +26,25 @@ PROGRAM post
   real(mytype) :: tstart,t1,trank,tranksum,ttotal,tremaining,telapsed,trstart, trend
   
   ! Added by R. Corsini
-  integer :: ix,rr,ipr,jpr,kpr,ierror,ipos  
+  integer :: ierror,ipos  
   integer(8) :: ttsize 
-  integer,dimension(2) :: ipost                    ! index for the number of post-processing subroutines employed
+  integer,dimension(2) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_phi,read_vel,read_ibm,read_pre  
   real(mytype) :: xpos 
   character(30) :: filename,dirname 
   character(1) :: a
 
+  ! Setting up the 2d decomposition
   TYPE(DECOMP_INFO) :: phG,ph1,ph2,ph3,ph4
 
   call ft_parameter(.true.)
 
-  CALL MPI_INIT(code)
-  
-  ! Modified by R. Corsini
-  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror) 
-  call decomp_2d_init(nx,ny,nz,1,nproc) 
-  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)     !start from 1 == true
-  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)     !start from 1 == true
-  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)  !start from 1 == true
+  CALL MPI_INIT(code) 
+  !call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
+  call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
+  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)     ! start from 1 == true
+  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)     ! start from 1 == true
+  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)  ! start from 1 == true
   call parameter()
 
   ! Start of the post-processing
@@ -66,16 +65,16 @@ PROGRAM post
   read (10,'(A1)') a
   read (10,'(A1)') a
   read (10,'(A1)') a
-  do i=1,size(ipost)
-     read (10,*) ipost(i)
+  do i=1,size(sel)
+     read (10,*) sel(i)
   enddo
   close(10)
 
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
   
-  if (ipost(1)==1) post_mean=.true.
-  if (ipost(2)==1) post_vort=.true.
+  if (sel(1)==1) post_mean=.true.
+  if (sel(2)==1) post_vort=.true.
 
   if (nrank==0) then
      if ((.not.post_mean).and.(.not.post_vort)) &
@@ -127,17 +126,17 @@ PROGRAM post
      call cpu_time(trstart)
      
      if (read_vel) then
-        write(filename,"('./data/ux',I3.3,'_',I1.1)") ifile, nr
+        write(filename,"('./data/ux',I4.4,'_',I1.1)") ifile, nr
         call decomp_2d_read_one(1,ux1,filename)       
-        write(filename,"('./data/uy',I3.3,'_',I1.1)") ifile, nr
+        write(filename,"('./data/uy',I4.4,'_',I1.1)") ifile, nr
         call decomp_2d_read_one(1,uy1,filename)       
-        write(filename,"('./data/uz',I3.3,'_',I1.1)") ifile, nr
+        write(filename,"('./data/uz',I4.4,'_',I1.1)") ifile, nr
         call decomp_2d_read_one(1,uz1,filename)
         call test_speed_min_max(ux1,uy1,uz1)
      endif
      
      if (read_pre) then
-        write(filename,"('./data/pp',I3.3,'_',I1.1)") ifile,nr
+        write(filename,"('./data/pp',I4.4,'_',I1.1)") ifile, nr
         call decomp_2d_read_one(1,pre1,filename)
         if (nscheme==2) then
             pre1 = pre1/dt  !IF nscheme = 2
@@ -162,7 +161,7 @@ PROGRAM post
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean,nr)
 
-     if (post_vort) call STAT_VORTICITY(ux1,uy1,uz1,ifile)
+     if (post_vort) call STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)
 
 
   enddo ! closing of the do-loop on the different flow realizations
@@ -268,7 +267,7 @@ PROGRAM post
 
 !------------------Write unformatted data------------------!
      
-     write(dirname,"('data_post_TU',I2.1,'/')") t
+     write(dirname,"('data_post_TU',I4.1,'/')") t
      
      !write(dirname,*) 'data_post/'
      
