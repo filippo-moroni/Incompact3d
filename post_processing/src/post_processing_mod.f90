@@ -49,42 +49,57 @@ contains
 
     USE var
 
-    integer :: j
-
     TYPE(DECOMP_INFO), save :: ph  ! decomposition object
 
     if (nrank==0) print *,'Initializing post-processing variables...'
 
     if (nclx) then
-      nxmsize = xsize(1)
+       nxmsize = xsize(1)
     else
        nxmsize = xsize(1) -1
     endif
     if (ncly) then
-      nymsize = ysize(2)
+       nymsize = ysize(2)
     else
        nymsize = ysize(2) -1
     endif
     if (nclz) then
-      nzmsize = zsize(3)
+       nzmsize = zsize(3)
     else
        nzmsize = zsize(3) -1
     endif
     call decomp_info_init(nxmsize, nymsize, nzmsize, ph)
-  
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !Y PENCILS
-    call alloc_y(ux1, opt_global=.true.) !global indices
-    call alloc_y(uy1, opt_global=.true.) !global indices
-    call alloc_y(uz1, opt_global=.true.) !global indices
-    ux1=zero;uy1=zero;uz1=zero
+    
+    
+    !xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively. In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
 
+    !xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system. Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, it is easier to know which process owns the plane if global index is used).
+
+
+    !Y PENCILS
+    call alloc_x(ux1, opt_global=.true.) !global indices
+    ux1 = zero
+    call alloc_x(uy1, opt_global=.true.) !global indices
+    uy1 = zero
+    call alloc_x(uz1, opt_global=.true.) !global indices
+    uz1 = zero
+
+    call alloc_x(pre1, opt_global=.true.) !global indices
+    pre1 = zero
+
+    allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
+    phi1 = zero
+
+    call alloc_x(ta1)
+    ta1 = zero
+       
+    ! Check if memory is allocated properly
     if (post_mean) then
        if (.not.allocated(pre1)) then
-          call alloc_y(pre1, opt_global=.true.) !global indices 
+          call alloc_x(pre1, opt_global=.true.) !global indices 
           pre1=zero
        endif
-       if (.not.allocated(ta1)) call alloc_y(ta1)
+       if (.not.allocated(ta1)) call alloc_x(ta1)
        if (iscalar==1) then
            if (.not.allocated(phi1)) then
               allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices

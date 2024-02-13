@@ -35,26 +35,62 @@ PROGRAM post
   character(30) :: filename,dirname 
   character(1) :: a
   
-  ! Start of the post-processing
-   
-  post_mean=.false.; post_vort=.false.  
-  read_vel=.false.;  read_pre=.false.; read_phi=.false.; read_ibm=.false.
+  !
   
-  ! Setting up the 2d decomposition
-  CALL MPI_INIT(code) 
-  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
-  call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
-  
-  !call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)     ! start from 1 == true
-  !call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)     ! start from 1 == true
-  !call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)  ! start from 1 == true
+  integer :: ierr
+
+  integer :: nargin, FNLength, status, DecInd
+  logical :: back
+  character(len=80) :: InputFN, FNBase
+    
+  !! Initialise MPI
+  call MPI_INIT(ierr)
+  call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,ierr)
+  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierr)
+
+  ! Handle input file like a boss -- GD
+  nargin=command_argument_count()
+  if (nargin <1) then
+     InputFN='input.i3d'
+     if (nrank==0) write(*,*) 'Xcompact3d is run with the default file -->', trim(InputFN)
+  elseif (nargin >= 1) then
+     call get_command_argument(1,InputFN,FNLength,status)
+     back=.true.
+     FNBase=inputFN((index(InputFN,'/',back)+1):len(InputFN))
+     DecInd=index(FNBase,'.',back)
+     if (DecInd >1) then
+        FNBase=FNBase(1:(DecInd-1))
+     end if
+     if (nrank==0) write(*,*) 'Xcompact3d is run with the provided file -->', trim(InputFN)
+  endif
   
   ! Reading the input file for geometry and numerics
-  call parameter()                  
+  call parameter(InputFN)
   
   ! Imposing the specific decomposition
   p_row=1; p_col=nproc
   
+  !
+  
+  call decomp_2d_init(nx,ny,nz,p_row,p_col)
+  call decomp_2d_io_init()
+  
+  call init_post_variables()
+  call schemes()
+  call decomp_info_init(nxm,nym,nzm,phG)
+  
+ 
+  ! Start of the post-processing  
+  post_mean=.false.; post_vort=.false.  
+  read_vel=.false.;  read_pre=.false.; read_phi=.false.; read_ibm=.false.
+  
+
+  ! Setting up the 2d decomposition
+  !CALL MPI_INIT(code) 
+  !call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
+  !call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
+  
+                 
   ! Reading of the input file for post-processing
   open(10,file='post.prm',status='unknown',form='formatted')
   read (10,'(A1)') a
@@ -88,10 +124,9 @@ PROGRAM post
   endif
 
   if (post_vort) read_vel=.true.
-  ! Initialize variables and statistics
-  call init_post_variables
-  call schemes
-  call init_statistics
+  
+  ! Initialize statistics
+  call init_statistics()
 
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
