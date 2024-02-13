@@ -52,7 +52,6 @@ subroutine parameter(input_i3d)
 
   use var, only : dphi1
 
-  use probes, only : nprobes, setup_probes, flag_all_digits, flag_extra_probes, xyzprobes
   use visu, only : output2D
 
   implicit none
@@ -74,9 +73,8 @@ subroutine parameter(input_i3d)
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
   NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, nvisu, ilist, iprocessing, &
-       ninflows, ntimesteps, inflowpath, ioutflow, output2D, nprobes
+       ninflows, ntimesteps, inflowpath, ioutflow, output2D
   NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
-  NAMELIST /ProbesParam/ flag_all_digits, flag_extra_probes, xyzprobes
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
        scalar_lbound, scalar_ubound, sc_even, sc_skew, &
@@ -95,22 +93,20 @@ subroutine parameter(input_i3d)
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
   
-  ! Added to account for different number of realizations
-  NAMELIST /NRealiz/ nr
-
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
 #endif
 
   if (nrank==0) then
      write(*,*) '==========================================================='
-     write(*,*) '===================== Xcompact3D =========================='
+     write(*,*) '===================== PostIncompact3d ====================='
      write(*,*) '== Copyright (c) 2018 Eric Lamballais and Sylvain Laizet =='
      write(*,*) '== Modified by Felipe Schuch and Ricardo Frantz ==========='
      write(*,*) '== Modified by Paul Bartholomew, Georgios Deskos and ======'
      write(*,*) '== Sylvain Laizet -- 2018- ================================'
      write(*,*) '==========================================================='
      write(*,*) '== Modified by Filippo Moroni -- 2024 ====================='
+     write(*,*) '== From original files by Roberto Corsini ================='
      write(*,*) '==========================================================='
      
 #if defined(VERSION)
@@ -134,12 +130,7 @@ subroutine parameter(input_i3d)
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
   endif
-  
-  if (nprobes.gt.0) then
-     call setup_probes()
-     read(10, nml=ProbesParam); rewind(10)
-  endif
-  
+   
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
@@ -238,7 +229,6 @@ subroutine parameter(input_i3d)
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
   read(10, nml=CASE); rewind(10)                 ! Read case-specific variables
-  read(10, nml=NRealiz); rewind(10)              ! Read the realization N° this simulation is
   
   close(10)
 
@@ -335,8 +325,6 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
-  if (nrank==0) call system('mkdir data out probes 2> /dev/null')
-
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
@@ -584,7 +572,6 @@ subroutine parameter_defaults()
   use decomp_2d
   use complex_geometry
 
-  use probes, only : nprobes, flag_all_digits, flag_extra_probes
   use visu, only : output2D
   
   implicit none
@@ -688,11 +675,6 @@ subroutine parameter_defaults()
   inflowpath='./'
   ioutflow=0
   output2D = 0
-  nprobes=0
-
-  !! PROBES
-  flag_all_digits = .false.
-  flag_extra_probes = .false.
 
   ipost = 0
   iibm=0
@@ -711,7 +693,4 @@ subroutine parameter_defaults()
   ts_tr_tbl=1.402033_mytype
   x0_tr_tbl=3.505082_mytype
   
-  ! Realization number of our flow case
-  nr = '1'
-
 end subroutine parameter_defaults

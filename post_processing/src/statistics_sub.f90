@@ -29,13 +29,13 @@ subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
   USE variables
   USE decomp_2d
   USE decomp_2d_io
-  use post_processing
   
   implicit none
-
+  
   ! Variables definition
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,pre1           ! velocity components and pressure
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1             ! scalar field
+  
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1                                   ! temporary array
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: u1mean,v1mean,w1mean                  ! 1st order moment (average)
@@ -46,10 +46,10 @@ subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: pre1mean,pre2mean                     ! average and variance of pressure
   real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1mean,phi2mean           ! average and variance of scalar field
   real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: uphimean,vphimean,wphimean  ! average and variance of mixed fluctuations
- 
+  
   integer :: is                                                                               ! index for the different scalar fields
   integer :: nr
-                                                                     
+                                                                                                                                            
   !---x-component---!
   !u1=ux1
   u1mean=u1mean+ux1/nr 

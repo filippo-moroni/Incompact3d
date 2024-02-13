@@ -14,6 +14,7 @@ PROGRAM post
   USE var
   USE MPI
   USE post_processing
+  USE tools
 
   implicit none
 
@@ -23,7 +24,7 @@ PROGRAM post
   integer :: nr                                    ! total number of flow realizations
   integer :: ifile,ssfile,iwrn,num
   
-  real(mytype) :: tstart,t1,trank,tranksum,ttotal,tremaining,telapsed,trstart, trend
+  real(mytype) :: tstart,t1,trank,tranksum,ttotal,tremaining,telapsed,trstart,trend
   
   ! Added by R. Corsini
   integer :: ierror,ipos  
@@ -33,25 +34,26 @@ PROGRAM post
   real(mytype) :: xpos 
   character(30) :: filename,dirname 
   character(1) :: a
-
-  ! Setting up the 2d decomposition
-  TYPE(DECOMP_INFO) :: phG,ph1,ph2,ph3,ph4
-
-  call ft_parameter(.true.)
-
-  CALL MPI_INIT(code) 
-  !call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
-  call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
-  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)     ! start from 1 == true
-  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)     ! start from 1 == true
-  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)  ! start from 1 == true
-  call parameter()
-
-  ! Start of the post-processing
-  p_row=1; p_col=nproc
   
+  ! Start of the post-processing
+   
   post_mean=.false.; post_vort=.false.  
-  read_vel=.false.; read_pre=.false.; read_phi=.false.; read_ibm=.false.
+  read_vel=.false.;  read_pre=.false.; read_phi=.false.; read_ibm=.false.
+  
+  ! Setting up the 2d decomposition
+  CALL MPI_INIT(code) 
+  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
+  call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
+  
+  !call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)     ! start from 1 == true
+  !call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)     ! start from 1 == true
+  !call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)  ! start from 1 == true
+  
+  ! Reading the input file for geometry and numerics
+  call parameter()                  
+  
+  ! Imposing the specific decomposition
+  p_row=1; p_col=nproc
   
   ! Reading of the input file for post-processing
   open(10,file='post.prm',status='unknown',form='formatted')
@@ -61,7 +63,7 @@ PROGRAM post
   read (10,*) file1
   read (10,*) filen
   read (10,*) icrfile
-  read (10,*) nr
+  read (10,*) nr 
   read (10,'(A1)') a
   read (10,'(A1)') a
   read (10,'(A1)') a
@@ -69,9 +71,6 @@ PROGRAM post
      read (10,*) sel(i)
   enddo
   close(10)
-
-  ! Total number of Snapshots in time
-  nt = (filen-file1)/icrfile+1
   
   if (sel(1)==1) post_mean=.true.
   if (sel(2)==1) post_vort=.true.
@@ -80,7 +79,7 @@ PROGRAM post
      if ((.not.post_mean).and.(.not.post_vort)) &
         call decomp_2d_abort(10,'Invalid post-processing switchers specified, NO WORK TO BE DONE HERE')
   endif
-
+  
   ! Logicals for reading Snapshots
   if (post_mean) then
      read_vel=.true.
@@ -89,29 +88,35 @@ PROGRAM post
   endif
 
   if (post_vort) read_vel=.true.
-
   ! Initialize variables and statistics
   call init_post_variables
   call schemes
   call init_statistics
 
+  ! Total number of Snapshots in time
+  nt = (filen-file1)/icrfile+1
 
+  !
+  
   ttsize=0
   if (read_vel) ttsize=ttsize+3
   if (read_pre) ttsize=ttsize+1
-  if (read_phi) ttsize=ttsize+nphi
+  if (read_phi) ttsize=ttsize+numscalar
   ttsize=ttsize*nx*ny*nz
   tstart=0.;t1=0.;trank=0.;tranksum=0.;ttotal=0.
   call cpu_time(tstart)
-
+  
+  ! Writing the directory where snapshots are saved
+  write(dirname,"('./data/')")
+  
 !-------An extra cycle for different time units is thus required, external do loop
 
  do ie=1,nt
  
      call cpu_time(t1)
      ifile = (ii-1)*icrfile+file1
-     t=dt*real(imodulo*ifile,mytype)
-     itime=imodulo*ifile
+     t=dt*real(ioutput*ifile,mytype)
+     itime=ioutput*ifile
     
      if (nrank==0) then
         print *,'----------------------------------------------------'
@@ -126,29 +131,38 @@ PROGRAM post
      call cpu_time(trstart)
      
      if (read_vel) then
-        write(filename,"('./data/ux',I4.4,'_',I1.1)") ifile, nr
-        call decomp_2d_read_one(1,ux1,filename)       
-        write(filename,"('./data/uy',I4.4,'_',I1.1)") ifile, nr
-        call decomp_2d_read_one(1,uy1,filename)       
-        write(filename,"('./data/uz',I4.4,'_',I1.1)") ifile, nr
-        call decomp_2d_read_one(1,uz1,filename)
+        
+        write(filename,"('ux',I4.4,'_',I1.1)") ifile, nr            
+        call decomp_2d_read_one(1,ux1,dirname,filename,a)
+
+        write(filename,"('uy',I4.4,'_',I1.1)") ifile, nr            
+        call decomp_2d_read_one(1,uy1,dirname,filename,a)       
+
+        write(filename,"('uz',I4.4,'_',I1.1)") ifile, nr            
+        call decomp_2d_read_one(1,uz1,dirname,filename,a)    
+                     
         call test_speed_min_max(ux1,uy1,uz1)
      endif
      
      if (read_pre) then
-        write(filename,"('./data/pp',I4.4,'_',I1.1)") ifile, nr
-        call decomp_2d_read_one(1,pre1,filename)
-        if (nscheme==2) then
-            pre1 = pre1/dt  !IF nscheme = 2
-        else
-            if (nrank==0) print *, '!!WARNING!! Pressure field not scaled by dt'
-        endif
+     
+        write(filename,"('pp',I4.4,'_',I1.1)") ifile, nr            
+        call decomp_2d_read_one(1,pre1,dirname,filename,a)  
+               
+        !if (nscheme==2) then
+        !    pre1 = pre1/dt  !IF nscheme = 2
+        !else
+        !    if (nrank==0) print *, '!!WARNING!! Pressure field not scaled by dt'      
+        !endif
+        
      endif
      
      if (read_phi) then
-        do is=1, nphi
-           write(filename,"('./data/phi',I1.1,I4.4,'_',I1.1)") is, ifile, nr
-           call decomp_2d_read_one(1,phi1(:,:,:,is),filename)
+        do is=1, numscalar
+        
+           write(filename,"('phi',I1.1,'_',I4.4,'_',I1.1)") is, ifile, nr            
+           call decomp_2d_read_one(1,phi1(:,:,:,is),dirname,filename,a)  
+           
         enddo
      endif
      
@@ -192,7 +206,7 @@ PROGRAM post
               pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/real(nx*nz,mytype)
               
               if (iscalar==1) then
-                 do is=1,nphi
+                 do is=1,numscalar
                     phi1meanH1(j,is)=phi1meanH1(j,is)+phi1mean(i,j,k,is)/real(nx*nz,mytype)
                     phi2meanH1(j,is)=phi2meanH1(j,is)+phi2mean(i,j,k,is)/real(nx*nz,mytype)
                     uphimeanH1(j,is)=uphimeanH1(j,is)+uphimean(i,j,k,is)/real(nx*nz,mytype)
@@ -227,11 +241,11 @@ PROGRAM post
      call MPI_REDUCE(pre2meanH1,pre2meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
     
      if (iscalar==1) then
-        call MPI_REDUCE(phi1meanH1,phi1meanHT,xsize(2)*nphi,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(phi2meanH1,phi2meanHT,xsize(2)*nphi,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(uphimeanH1,uphimeanHT,xsize(2)*nphi,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(vphimeanH1,vphimeanHT,xsize(2)*nphi,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(wphimeanH1,wphimeanHT,xsize(2)*nphi,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(phi1meanH1,phi1meanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(phi2meanH1,phi2meanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(uphimeanH1,uphimeanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(vphimeanH1,vphimeanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(wphimeanH1,wphimeanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      endif
   endif
 
@@ -255,7 +269,7 @@ PROGRAM post
            pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2
            
            if (iscalar==1) then
-              do is=1,nphi
+              do is=1,numscalar
                  phi2meanHT(j,is)=phi2meanHT(j,is)-phi1meanHT(j,is)**2
                  uphimeanHT(j,is)=uphimeanHT(j,is)-u1meanHT(j)*phi1meanH1(j,is)
                  vphimeanHT(j,is)=vphimeanHT(j,is)-v1meanHT(j)*phi1meanH1(j,is)
@@ -267,10 +281,9 @@ PROGRAM post
 
 !------------------Write unformatted data------------------!
      
+     ! New directory for the statistics
      write(dirname,"('data_post_TU',I4.1,'/')") t
-     
-     !write(dirname,*) 'data_post/'
-     
+        
      call system('mkdir -p '//trim(dirname))
 
      ! Unformatted data
@@ -288,8 +301,9 @@ PROGRAM post
                          u4meanHT,v4meanHT,w4meanHT, &
                          uvmeanHT,uwmeanHT,vwmeanHT, &
                          pre1meanHT,pre2meanHT
+        
         if (iscalar==1) then
-           do is=1,nphi
+           do is=1,numscalar
               inquire(unit=210,pos=ipos)
               write(210,pos=ipos) phi1meanHT(:,is),phi2meanHT(:,is), &
                                   uphimeanHT(:,is),vphimeanHT(:,is),wphimeanHT(:,is)
@@ -301,6 +315,7 @@ PROGRAM post
   endif ! closing of the if-statement for processor 0
   
  enddo  ! closing of the do-loop for the different time units (or SnapShots)
+ 
   
   ! End of post-processing
 
@@ -328,7 +343,10 @@ PROGRAM post
 
   call decomp_2d_finalize
   CALL MPI_FINALIZE(code)
+
 end PROGRAM post
+
+
 
 
 
