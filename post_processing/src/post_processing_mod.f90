@@ -77,32 +77,32 @@ contains
 
 
     !Y PENCILS
-    call alloc_x(ux1, opt_global=.true.) !global indices
+    call alloc_y(ux1, opt_global=.true.)  !global indices
     ux1 = zero
-    call alloc_x(uy1, opt_global=.true.) !global indices
+    call alloc_y(uy1, opt_global=.true.)  !global indices
     uy1 = zero
-    call alloc_x(uz1, opt_global=.true.) !global indices
+    call alloc_y(uz1, opt_global=.true.)  !global indices
     uz1 = zero
 
-    call alloc_x(pre1, opt_global=.true.) !global indices
+    call alloc_y(pre1, opt_global=.true.) !global indices
     pre1 = zero
 
-    allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
+    allocate(phi1(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar)) !global indices
     phi1 = zero
 
-    call alloc_x(ta1)
+    call alloc_y(ta1)
     ta1 = zero
        
     ! Check if memory is allocated properly
     if (post_mean) then
        if (.not.allocated(pre1)) then
-          call alloc_x(pre1, opt_global=.true.) !global indices 
+          call alloc_y(pre1, opt_global=.true.) !global indices 
           pre1=zero
        endif
-       if (.not.allocated(ta1)) call alloc_x(ta1)
+       if (.not.allocated(ta1)) call alloc_y(ta1)
        if (iscalar==1) then
            if (.not.allocated(phi1)) then
-              allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
+              allocate(phi1(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar)) !global indices
               phi1=zero
            endif
        endif
@@ -145,36 +145,37 @@ contains
     USE MPI
     
     if (post_mean) then
-       allocate(u1mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))  ! global indices   
-       allocate(v1mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))   
-       allocate(w1mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))   
-       allocate(u2mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))    
-       allocate(v2mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))    
-       allocate(w2mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))    
-       allocate(u3mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))    
-       allocate(v3mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))   
-       allocate(w3mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))    
-       allocate(u4mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))  
-       allocate(v4mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))    
-       allocate(w4mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))      
-       allocate(uvmean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))      
-       allocate(uwmean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))       
-       allocate(vwmean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))     
-       allocate(pre1mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))    
-       allocate(pre2mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3)))  
-       allocate(u1meanH1(xsize(2)));   allocate(v1meanH1(xsize(2)));  allocate(w1meanH1(xsize(2)))
-       allocate(u2meanH1(xsize(2)));   allocate(v2meanH1(xsize(2)));  allocate(w2meanH1(xsize(2)))
-       allocate(u3meanH1(xsize(2)));   allocate(v3meanH1(xsize(2)));  allocate(w3meanH1(xsize(2)))
-       allocate(u4meanH1(xsize(2)));   allocate(v4meanH1(xsize(2)));  allocate(w4meanH1(xsize(2)))
-       allocate(uvmeanH1(xsize(2)));   allocate(uwmeanH1(xsize(2)));  allocate(vwmeanH1(xsize(2)))
-       allocate(pre1meanH1(xsize(2))); allocate(pre2meanH1(xsize(2)))
+       allocate(u1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
+       allocate(v1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
+       allocate(w1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
+       allocate(u2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(v2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(w2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(u3mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(v3mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
+       allocate(w3mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(u4mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  
+       allocate(v4mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(w4mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))      
+       allocate(uvmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))      
+       allocate(uwmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))       
+       allocate(vwmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))     
+       allocate(pre1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(pre2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  
+       
+       allocate(u1meanH1(ysize(2)));   allocate(v1meanH1(ysize(2)));  allocate(w1meanH1(ysize(2)))
+       allocate(u2meanH1(ysize(2)));   allocate(v2meanH1(ysize(2)));  allocate(w2meanH1(ysize(2)))
+       allocate(u3meanH1(ysize(2)));   allocate(v3meanH1(ysize(2)));  allocate(w3meanH1(ysize(2)))
+       allocate(u4meanH1(ysize(2)));   allocate(v4meanH1(ysize(2)));  allocate(w4meanH1(ysize(2)))
+       allocate(uvmeanH1(ysize(2)));   allocate(uwmeanH1(ysize(2)));  allocate(vwmeanH1(ysize(2)))
+       allocate(pre1meanH1(ysize(2))); allocate(pre2meanH1(ysize(2)))
    
-       allocate(u1meanHT(xsize(2)));   allocate(v1meanHT(xsize(2)));  allocate(w1meanHT(xsize(2)))
-       allocate(u2meanHT(xsize(2)));   allocate(v2meanHT(xsize(2)));  allocate(w2meanHT(xsize(2)))
-       allocate(u3meanHT(xsize(2)));   allocate(v3meanHT(xsize(2)));  allocate(w3meanHT(xsize(2)))
-       allocate(u4meanHT(xsize(2)));   allocate(v4meanHT(xsize(2)));  allocate(w4meanHT(xsize(2)))
-       allocate(uvmeanHT(xsize(2)));   allocate(uwmeanHT(xsize(2)));  allocate(vwmeanHT(xsize(2)))
-       allocate(pre1meanHT(xsize(2))); allocate(pre2meanHT(xsize(2)))
+       allocate(u1meanHT(ysize(2)));   allocate(v1meanHT(ysize(2)));  allocate(w1meanHT(ysize(2)))
+       allocate(u2meanHT(ysize(2)));   allocate(v2meanHT(ysize(2)));  allocate(w2meanHT(ysize(2)))
+       allocate(u3meanHT(ysize(2)));   allocate(v3meanHT(ysize(2)));  allocate(w3meanHT(ysize(2)))
+       allocate(u4meanHT(ysize(2)));   allocate(v4meanHT(ysize(2)));  allocate(w4meanHT(ysize(2)))
+       allocate(uvmeanHT(ysize(2)));   allocate(uwmeanHT(ysize(2)));  allocate(vwmeanHT(ysize(2)))
+       allocate(pre1meanHT(ysize(2))); allocate(pre2meanHT(ysize(2)))
 
        u1mean=zero;v1mean=zero;w1mean=zero
        u2mean=zero;v2mean=zero;w2mean=zero
@@ -198,16 +199,16 @@ contains
        pre1meanHT=zero;pre2meanHT=zero
 
       if (iscalar==1) then
-          allocate(phi1mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar))  ! global indices   
-          allocate(phi2mean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar))    
-          allocate(uphimean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar))    
-          allocate(vphimean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar))   
-          allocate(wphimean(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar))    
+          allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))  ! global indices   
+          allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
+          allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
+          allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))   
+          allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
 
-          allocate(phi1meanH1(xsize(2),1:numscalar)); allocate(phi2meanH1(xsize(2),1:numscalar))
-          allocate(uphimeanH1(xsize(2),1:numscalar)); allocate(vphimeanH1(xsize(2),1:numscalar)); allocate(wphimeanH1(xsize(2),1:numscalar))
-          allocate(phi1meanHT(xsize(2),1:numscalar)); allocate(phi2meanHT(xsize(2),1:numscalar))
-          allocate(uphimeanHT(xsize(2),1:numscalar)); allocate(vphimeanHT(xsize(2),1:numscalar)); allocate(wphimeanHT(xsize(2),1:numscalar))
+          allocate(phi1meanH1(ysize(2),1:numscalar)); allocate(phi2meanH1(ysize(2),1:numscalar))
+          allocate(uphimeanH1(ysize(2),1:numscalar)); allocate(vphimeanH1(ysize(2),1:numscalar)); allocate(wphimeanH1(ysize(2),1:numscalar))
+          allocate(phi1meanHT(ysize(2),1:numscalar)); allocate(phi2meanHT(ysize(2),1:numscalar))
+          allocate(uphimeanHT(ysize(2),1:numscalar)); allocate(vphimeanHT(ysize(2),1:numscalar)); allocate(wphimeanHT(ysize(2),1:numscalar))
 
           phi1mean=zero;phi2mean=zero
           uphimean=zero;vphimean=zero;wphimean=zero

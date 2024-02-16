@@ -33,19 +33,19 @@ subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
   implicit none
   
   ! Variables definition
-  real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,pre1           ! velocity components and pressure
-  real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1             ! scalar field
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux1,uy1,uz1,pre1           ! velocity components and pressure
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi1             ! scalar field
   
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1                                   ! temporary array
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta1                                   ! temporary array
   
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: u1mean,v1mean,w1mean                  ! 1st order moment (average)
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: u2mean,v2mean,w2mean                  ! 2nd order moment (variance)
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: u3mean,v3mean,w3mean                  ! 3rd order moment (skewness)
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: u4mean,v4mean,w4mean                  ! 4th order moment (kurtosis)
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: uvmean,uwmean,vwmean                  ! Reynolds stresses
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: pre1mean,pre2mean                     ! average and variance of pressure
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1mean,phi2mean           ! average and variance of scalar field
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: uphimean,vphimean,wphimean  ! average and variance of mixed fluctuations
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean                  ! 1st order moment (average)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean                  ! 2nd order moment (variance)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean                  ! 3rd order moment (skewness)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean                  ! 4th order moment (kurtosis)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean                  ! Reynolds stresses
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean                     ! average and variance of pressure
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi1mean,phi2mean           ! average and variance of scalar field
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: uphimean,vphimean,wphimean  ! average and variance of mixed fluctuations
   
   integer :: is                                                                               ! index for the different scalar fields
   integer :: nr
@@ -146,7 +146,7 @@ subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
 end subroutine STAT_MEAN
 !********************************************************************
 ! Vorticity 
-subroutine STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)
+subroutine STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)   ! to be checked and completed
 
   USE param
   USE variables

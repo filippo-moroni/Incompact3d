@@ -18,7 +18,7 @@ PROGRAM post
 
   implicit none
 
-  integer :: code,i,j,k,is
+  integer :: i,j,k,is
   integer :: ii,ie                                 ! internal and external loops 
   integer :: file1,filen,icrfile,nt
   integer :: nr                                    ! total number of flow realizations
@@ -37,22 +37,25 @@ PROGRAM post
   
   !
   
-  integer :: ierr
+  integer :: code
 
   integer :: nargin, FNLength, status, DecInd
   logical :: back
   character(len=80) :: InputFN, FNBase
     
-  !! Initialise MPI
-  call MPI_INIT(ierr)
-  call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,ierr)
-  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierr)
-
-  ! Handle input file like a boss -- GD
+  ! Initialize MPI
+  CALL MPI_INIT(code)
+  
+  !call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,code)
+  
+  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)
+  !call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
+  
+  ! Reading of the input file as Xcompact3d
   nargin=command_argument_count()
   if (nargin <1) then
      InputFN='input.i3d'
-     if (nrank==0) write(*,*) 'Xcompact3d is run with the default file -->', trim(InputFN)
+     if (nrank==0) write(*,*) 'PostIncompact3d is run with the default file -->', trim(InputFN)
   elseif (nargin >= 1) then
      call get_command_argument(1,InputFN,FNLength,status)
      back=.true.
@@ -61,16 +64,17 @@ PROGRAM post
      if (DecInd >1) then
         FNBase=FNBase(1:(DecInd-1))
      end if
-     if (nrank==0) write(*,*) 'Xcompact3d is run with the provided file -->', trim(InputFN)
+     if (nrank==0) write(*,*) 'PostIncompact3d is run with the provided file -->', trim(InputFN)
   endif
   
   ! Reading the input file for geometry and numerics
   call parameter(InputFN)
   
   ! Imposing the specific decomposition
-  p_row=1; p_col=nproc
+  ! p_row=1; p_col=nproc
   
-  !
+  ! Setting up the 2d decomposition
+  !call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
   
   call decomp_2d_init(nx,ny,nz,p_row,p_col)
   call decomp_2d_io_init()
@@ -83,13 +87,7 @@ PROGRAM post
   ! Start of the post-processing  
   post_mean=.false.; post_vort=.false.  
   read_vel=.false.;  read_pre=.false.; read_phi=.false.; read_ibm=.false.
-  
-
-  ! Setting up the 2d decomposition
-  !CALL MPI_INIT(code) 
-  !call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
-  !call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
-  
+   
                  
   ! Reading of the input file for post-processing
   open(10,file='post.prm',status='unknown',form='formatted')
@@ -219,9 +217,9 @@ PROGRAM post
 
   ! Summation over x and z directions
   if (post_mean) then
-     do k=xstart(3),xend(3)
-      do i=xstart(1),xend(1)
-        do j=xstart(2),xend(2)          
+     do k=ystart(3),yend(3)
+      do i=ystart(1),yend(1)
+        do j=ystart(2),yend(2)          
               u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)/real(nx*nz,mytype)
               v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)/real(nx*nz,mytype)
               w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)/real(nx*nz,mytype)
@@ -257,30 +255,30 @@ PROGRAM post
 !---------Mean over all MPI processes (T = Total)----------!
 
   if (post_mean) then
-     call MPI_REDUCE(u1meanH1,u1meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v1meanH1,v1meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w1meanH1,w1meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(u2meanH1,u2meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v2meanH1,v2meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w2meanH1,w2meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(u3meanH1,u3meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v3meanH1,v3meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w3meanH1,w3meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(u4meanH1,u4meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v4meanH1,v4meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w4meanH1,w4meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(uvmeanH1,uvmeanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(uvmeanH1,uvmeanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(vwmeanH1,vwmeanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(pre1meanH1,pre1meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(pre2meanH1,pre2meanHT,xsize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(v1meanH1,v1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(w1meanH1,w1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(u2meanH1,u2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(v2meanH1,v2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(w2meanH1,w2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(u3meanH1,u3meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(v3meanH1,v3meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(w3meanH1,w3meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(u4meanH1,u4meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(v4meanH1,v4meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(w4meanH1,w4meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(vwmeanH1,vwmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(pre1meanH1,pre1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(pre2meanH1,pre2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
     
      if (iscalar==1) then
-        call MPI_REDUCE(phi1meanH1,phi1meanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(phi2meanH1,phi2meanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(uphimeanH1,uphimeanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(vphimeanH1,vphimeanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(wphimeanH1,wphimeanHT,xsize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(phi1meanH1,phi1meanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(phi2meanH1,phi2meanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(uphimeanH1,uphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(vphimeanH1,vphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      endif
   endif
 
@@ -288,7 +286,7 @@ PROGRAM post
 
   if(nrank.eq.0) then ! only processor 0 is working
      if (post_mean) then
-        do j=xstart(2),xend(2)
+        do j=ystart(2),yend(2)
            u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
            v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
            w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
