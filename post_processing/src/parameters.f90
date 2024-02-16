@@ -379,57 +379,6 @@ subroutine parameter(input_i3d)
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
      write(*,*) '==========================================================='
      write(*,"(' Time step dt           : ',F17.8)") dt
-     !
-     if (itimescheme.eq.1) then
-       !print *,'Temporal scheme        : Forwards Euler'
-       write(*,"(' Temporal scheme        : ',A20)") "Forwards Euler"
-     elseif (itimescheme.eq.2) then
-       !print *,'Temporal scheme        : Adams-bashforth 2'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 2"
-     elseif (itimescheme.eq.3) then
-       !print *,'Temporal scheme        : Adams-bashforth 3'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 3"
-     elseif (itimescheme.eq.4) then
-       !print *,'Temporal scheme        : Adams-bashforth 4'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 4"
-       print *,'Error: Adams-bashforth 4 not implemented!'
-       stop
-     elseif (itimescheme.eq.5) then
-       !print *,'Temporal scheme        : Runge-kutta 3'
-       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 3"
-     elseif (itimescheme.eq.6) then
-       !print *,'Temporal scheme        : Runge-kutta 4'
-       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 4"
-       print *,'Error: Runge-kutta 4 not implemented!'
-       stop
-     else
-       print *,'Error: itimescheme must be specified as 1-6'
-       stop
-     endif
-          
-     if (iimplicit.ne.0) then
-       if (iimplicit.eq.1) then
-         write(*,"('            ',A40)") "With backward Euler for Y diffusion"
-       else if (iimplicit.eq.2) then
-         write(*,"('            ',A40)") "With CN for Y diffusion"
-       endif
-     endif
-     
-     ! Displaying the specific model adopted
-     write(*,*) '==========================================================='   
-     if (ilesmod==0) then
-          write(*,"(' Turbulence closure     : ',A17)") "DNS"
-     else
-       if (jles==1) then
-          write(*,"(' Turbulence closure     : ',A17)") "Phys Smag"
-       else if (jles==2) then
-          write(*,"(' Turbulence closure     : ',A17)") "Phys WALE"      
-       else if (jles==3) then
-          write(*,"(' Turbulence closure     : ',A17)") "Phys dyn. Smag"
-       else if (jles==4) then
-          write(*,"(' Turbulence closure     : ',A17)") "iSVV"
-       endif
-     endif
      
      write(*,*) '==========================================================='
      write(*,"(' ifirst                 : ',I17)") ifirst
@@ -482,37 +431,6 @@ subroutine parameter(input_i3d)
              endif
           endif
        end do
-     endif
-     write(*,*) '==========================================================='
-     write(*,"(' spinup_time            : ',I17)") spinup_time
-     write(*,"(' wrotation              : ',F17.8)") wrotation
-     write(*,*) '==========================================================='
-     if (iibm==0) write(*,"(' Immersed boundary      : ',A17)") "off"
-     if (iibm.gt.1) then
-      write(*,"(' Immersed boundary      : ',A17)") "on"
-      write(*,"(' iibm                   : ',I17)") iibm
-     end if
-     if (iibm==1) write(*,*) 'Simple immersed boundary method'
-     if (iibm==2) then
-       write(*,*) 'Lagrangian polynomial reconstruction'
-       write(*,*) '==========================================================='
-       write(*,"(' npif                   : ',I17)") npif
-       write(*,"(' izap                   : ',I17)") izap
-       write(*,"(' nraf                   : ',I17)") nraf
-       write(*,"(' nobjmax                : ',I17)") nobjmax
-     end if
-     write(*,*) '==========================================================='
-     write(*,"(' Boundary condition velocity field: ')")
-     write(*,"(' nclx1, nclxn           : ',I15,',',I1 )") nclx1,nclxn
-     write(*,"(' ncly1, nclyn           : ',I15,',',I1 )") ncly1,nclyn
-     write(*,"(' nclz1, nclzn           : ',I15,',',I1 )") nclz1,nclzn
-     write(*,*) '==========================================================='
-     if ((iscalar==1).or.(ilmn)) then
-       write(*,"(' Boundary condition scalar field: ')")
-       write(*,"(' nclxS1, nclxSn         : ',I15,',',I1 )") nclxS1,nclxSn
-       write(*,"(' nclyS1, nclySn         : ',I15,',',I1 )") nclyS1,nclySn
-       write(*,"(' nclzS1, nclzSn         : ',I15,',',I1 )") nclzS1,nclzSn
-       write(*,*) '==========================================================='
      endif
 
 #ifdef DOUBLE_PREC

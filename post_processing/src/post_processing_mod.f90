@@ -4,6 +4,7 @@ module post_processing
   USE decomp_2d
   USE variables
   USE param
+  USE var
 
   implicit none
   
@@ -15,6 +16,7 @@ module post_processing
   logical, save :: post_mean,post_vort
 
   ! Arrays for statistic collection
+  
   real(mytype), save, allocatable, dimension(:,:,:) :: u1mean,v1mean,w1mean
   real(mytype), save, allocatable, dimension(:,:,:) :: u2mean,v2mean,w2mean
   real(mytype), save, allocatable, dimension(:,:,:) :: u3mean,v3mean,w3mean
@@ -136,6 +138,45 @@ contains
        if (.not.allocated(tf3)) call alloc_z(tf3)
        if (.not.allocated(di3)) call alloc_z(di3)
     endif
+    
+    !module derivative
+    allocate(ffx(nx),sfx(nx),fsx(nx),fwx(nx),ssx(nx),swx(nx))
+    allocate(ffxp(nx),sfxp(nx),fsxp(nx),fwxp(nx),ssxp(nx),swxp(nx))
+    allocate(ffy(ny),sfy(ny),fsy(ny),fwy(ny),ssy(ny),swy(ny))
+    allocate(ffyp(ny),sfyp(ny),fsyp(ny),fwyp(ny),ssyp(ny),swyp(ny))
+    allocate(ffz(nz),sfz(nz),fsz(nz),fwz(nz),ssz(nz),swz(nz))
+    allocate(ffzp(nz),sfzp(nz),fszp(nz),fwzp(nz),sszp(nz),swzp(nz))
+
+    allocate(ffxS(nx),sfxS(nx),fsxS(nx),fwxS(nx),ssxS(nx),swxS(nx))
+    allocate(ffxpS(nx),sfxpS(nx),fsxpS(nx),fwxpS(nx),ssxpS(nx),swxpS(nx))
+    allocate(ffyS(ny),sfyS(ny),fsyS(ny),fwyS(ny),ssyS(ny),swyS(ny))
+    allocate(ffypS(ny),sfypS(ny),fsypS(ny),fwypS(ny),ssypS(ny),swypS(ny))
+    allocate(ffzS(nz),sfzS(nz),fszS(nz),fwzS(nz),sszS(nz),swzS(nz))
+    allocate(ffzpS(nz),sfzpS(nz),fszpS(nz),fwzpS(nz),sszpS(nz),swzpS(nz))
+
+    allocate(sx(xsize(2),xsize(3)),vx(xsize(2),xsize(3)))
+    allocate(sy(ysize(1),ysize(3)),vy(ysize(1),ysize(3)))
+    allocate(sz(zsize(1),zsize(2)),vz(zsize(1),zsize(2)))
+
+    !module derpres
+    allocate(cfx6(nxm),ccx6(nxm),cbx6(nxm),cfxp6(nxm),ciwxp6(nxm),csxp6(nxm),&
+         cwxp6(nxm),csx6(nxm),cwx6(nxm),cifx6(nxm),cicx6(nxm),cisx6(nxm))
+    allocate(cibx6(nxm),cifxp6(nxm),cisxp6(nxm),ciwx6(nxm))
+    allocate(cfi6(nx),cci6(nx),cbi6(nx),cfip6(nx),csip6(nx),cwip6(nx),csi6(nx),&
+         cwi6(nx),cifi6(nx),cici6(nx),cibi6(nx),cifip6(nx))
+    allocate(cisip6(nx),ciwip6(nx),cisi6(nx),ciwi6(nx))
+    allocate(cfy6(nym),ccy6(nym),cby6(nym),cfyp6(nym),csyp6(nym),cwyp6(nym),csy6(nym))
+    allocate(cwy6(nym),cify6(nym),cicy6(nym),ciby6(nym),cifyp6(nym),cisyp6(nym),&
+         ciwyp6(nym),cisy6(nym),ciwy6(nym))
+    allocate(cfi6y(ny),cci6y(ny),cbi6y(ny),cfip6y(ny),csip6y(ny),cwip6y(ny),&
+         csi6y(ny),cwi6y(ny),cifi6y(ny),cici6y(ny))
+    allocate(cibi6y(ny),cifip6y(ny),cisip6y(ny),ciwip6y(ny),cisi6y(ny),ciwi6y(ny))
+    allocate(cfz6(nzm),ccz6(nzm),cbz6(nzm),cfzp6(nzm),cszp6(nzm),cwzp6(nzm),csz6(nzm))
+    allocate(cwz6(nzm),cifz6(nzm),cicz6(nzm),cibz6(nzm),cifzp6(nzm),ciszp6(nzm),&
+         ciwzp6(nzm),cisz6(nzm),ciwz6(nzm))
+    allocate(cfi6z(nz),cci6z(nz),cbi6z(nz),cfip6z(nz),csip6z(nz),cwip6z(nz),&
+         csi6z(nz),cwi6z(nz),cifi6z(nz),cici6z(nz))
+    allocate(cibi6z(nz),cifip6z(nz),cisip6z(nz),ciwip6z(nz),cisi6z(nz),ciwi6z(nz))
 
   end subroutine init_post_variables
   !******************************************************************

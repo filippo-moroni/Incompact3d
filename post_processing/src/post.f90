@@ -22,21 +22,20 @@ PROGRAM post
   integer :: ii,ie                                 ! internal and external loops 
   integer :: file1,filen,icrfile,nt
   integer :: nr                                    ! total number of flow realizations
-  integer :: ifile,ssfile,iwrn,num
+  integer :: ifile,ssfile,num
   
-  real(mytype) :: tstart,t1,trank,tranksum,ttotal,tremaining,telapsed,trstart,trend
+  real(mytype) :: tstart,t1,trank,tranksum,ttotal,trstart,trend
   
   ! Added by R. Corsini
-  integer :: ierror,ipos  
+  integer :: ipos  
   integer(8) :: ttsize 
   integer,dimension(2) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_phi,read_vel,read_ibm,read_pre  
-  real(mytype) :: xpos 
+ 
   character(30) :: filename,dirname 
   character(1) :: a
   
-  !
-  
+  ! 
   integer :: code
 
   integer :: nargin, FNLength, status, DecInd
@@ -45,13 +44,10 @@ PROGRAM post
     
   ! Initialize MPI
   CALL MPI_INIT(code)
+  call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,code) 
+  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)  ! same as R. Corsini & Xcompact3d
   
-  !call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,code)
-  
-  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)
-  !call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierror)            ! added by R. Corsini
-  
-  ! Reading of the input file as Xcompact3d
+  ! Reading of the input file as Xcompact3d does
   nargin=command_argument_count()
   if (nargin <1) then
      InputFN='input.i3d'
@@ -71,7 +67,7 @@ PROGRAM post
   call parameter(InputFN)
   
   ! Imposing the specific decomposition
-  ! p_row=1; p_col=nproc
+  !p_row=1; p_col=nproc
   
   ! Setting up the 2d decomposition
   !call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
@@ -140,7 +136,7 @@ PROGRAM post
   call cpu_time(tstart)
   
   ! Writing the directory where snapshots are saved
-  write(dirname,"('./data/')")
+  write(dirname,"('./data')")
   
 !-------An extra cycle for different time units is thus required, external do loop
 
