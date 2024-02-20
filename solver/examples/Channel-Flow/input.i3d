@@ -108,10 +108,12 @@ nclzSn = 0
 
 /End
 
-&NRealiz
+!&NRealiz
 
-nr = '1'              ! N° of the specific realization of the flow, it is applied at the end of the filenames
+!nr = '1'              ! N° of the specific realization of the flow, it is applied at the end of the filenames
 
-/End
+!/End
+
+
 
 
