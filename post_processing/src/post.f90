@@ -134,10 +134,7 @@ PROGRAM post
   ttsize=ttsize*nx*ny*nz
   tstart=0.;t1=0.;trank=0.;tranksum=0.;ttotal=0.
   call cpu_time(tstart)
-  
-  ! Writing the directory where snapshots are saved
-  write(dirname,"('./data')")
-  
+    
 !-------An extra cycle for different time units is thus required, external do loop
 
  do ie=1,nt
@@ -159,6 +156,9 @@ PROGRAM post
      ! Read data
      call cpu_time(trstart)
      
+     ! Writing the directory where snapshots are saved (different realizations)
+     write(dirname,"('./data_r',I1.1)") nr
+          
      if (read_vel) then
         
         write(filename,"('ux',I4.4,'_',I1.1)") ifile, nr            
@@ -205,7 +205,6 @@ PROGRAM post
                                    phi2mean,uphimean,vphimean,wphimean,nr)
 
      if (post_vort) call STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)
-
 
   enddo ! closing of the do-loop on the different flow realizations
 
