@@ -96,7 +96,7 @@ subroutine parameter(input_i3d)
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
   
   ! Added to account for different number of realizations
-  NAMELIST /NRealiz/ nr
+  ! NAMELIST /NRealiz/ nr
 
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -238,7 +238,7 @@ subroutine parameter(input_i3d)
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
   read(10, nml=CASE); rewind(10)                 ! Read case-specific variables
-  read(10, nml=NRealiz); rewind(10)              ! Read the realization N° this simulation is
+  !read(10, nml=NRealiz); rewind(10)              ! Read the realization N° this simulation is
   
   close(10)
 
@@ -712,6 +712,6 @@ subroutine parameter_defaults()
   x0_tr_tbl=3.505082_mytype
   
   ! Realization number of our flow case
-  nr = '1'
+  ! nr = '1'
 
 end subroutine parameter_defaults

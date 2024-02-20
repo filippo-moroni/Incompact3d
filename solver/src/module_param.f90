@@ -428,7 +428,7 @@ module param
   real(mytype), allocatable, dimension(:) :: h_coeff2, h_2,phase2
   
   ! Specific realization number of our flow case
-  character :: nr
+  ! character :: nr
 
   !numbers
 
