@@ -161,13 +161,13 @@ PROGRAM post
           
      if (read_vel) then
         
-        write(filename,"('ux',I3.3)") ifile           
+        write(filename,"('ux-',I3.3,'.bin')") ifile           
         call decomp_2d_read_one(1,ux1,dirname,filename,a)
 
-        write(filename,"('uy',I3.3)") ifile           
+        write(filename,"('uy-',I3.3,'.bin')") ifile           
         call decomp_2d_read_one(1,uy1,dirname,filename,a)       
 
-        write(filename,"('uz',I3.3)") ifile           
+        write(filename,"('uz-',I3.3,'.bin')") ifile           
         call decomp_2d_read_one(1,uz1,dirname,filename,a)    
                      
         call test_speed_min_max(ux1,uy1,uz1)
@@ -175,7 +175,7 @@ PROGRAM post
      
      if (read_pre) then
      
-        write(filename,"('pp',I3.3)") ifile            
+        write(filename,"('pp-',I3.3,'.bin')") ifile            
         call decomp_2d_read_one(1,pre1,dirname,filename,a)  
                
         !if (nscheme==2) then
@@ -189,7 +189,7 @@ PROGRAM post
      if (read_phi) then
         do is=1, numscalar
         
-           write(filename,"('phi',I1.1,I3.3)") is, ifile            
+           write(filename,"('phi',I1.1,'-',I3.3,'.bin'") is, ifile            
            call decomp_2d_read_one(1,phi1(:,:,:,is),dirname,filename,a)  
            
         enddo
