@@ -19,10 +19,10 @@ PROGRAM post
   implicit none
 
   integer :: i,j,k,is
-  integer :: ii,ie                                 ! internal and external loops 
+  integer :: ii = 1,ie = 1                         ! internal and external loops 
   integer :: file1,filen,icrfile,nt
   integer :: nr                                    ! total number of flow realizations
-  integer :: ifile,ssfile,num
+  integer :: ifile
   
   real(mytype) :: tstart,t1,trank,tranksum,ttotal,trstart,trend
   
@@ -161,13 +161,13 @@ PROGRAM post
           
      if (read_vel) then
         
-        write(filename,"('ux',I4.4,'_',I1.1)") ifile, nr            
+        write(filename,"('ux',I3.3)") ifile           
         call decomp_2d_read_one(1,ux1,dirname,filename,a)
 
-        write(filename,"('uy',I4.4,'_',I1.1)") ifile, nr            
+        write(filename,"('uy',I3.3)") ifile           
         call decomp_2d_read_one(1,uy1,dirname,filename,a)       
 
-        write(filename,"('uz',I4.4,'_',I1.1)") ifile, nr            
+        write(filename,"('uz',I3.3)") ifile           
         call decomp_2d_read_one(1,uz1,dirname,filename,a)    
                      
         call test_speed_min_max(ux1,uy1,uz1)
@@ -175,7 +175,7 @@ PROGRAM post
      
      if (read_pre) then
      
-        write(filename,"('pp',I4.4,'_',I1.1)") ifile, nr            
+        write(filename,"('pp',I3.3)") ifile            
         call decomp_2d_read_one(1,pre1,dirname,filename,a)  
                
         !if (nscheme==2) then
@@ -189,7 +189,7 @@ PROGRAM post
      if (read_phi) then
         do is=1, numscalar
         
-           write(filename,"('phi',I1.1,'_',I4.4,'_',I1.1)") is, ifile, nr            
+           write(filename,"('phi',I1.1,I3.3)") is, ifile            
            call decomp_2d_read_one(1,phi1(:,:,:,is),dirname,filename,a)  
            
         enddo
