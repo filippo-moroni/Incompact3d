@@ -18,7 +18,8 @@ add_executable(post_incompact3d
                     tools.f90               
                     variables.f90
                     visu.f90)
-#add_executable(xcompact3d ${files_xcompact})
+                    
+#add_executable(post_incompact3d ${files_post_incompact3d})
 target_include_directories(post_incompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
 target_link_libraries(post_incompact3d PRIVATE decomp2d)
 if (MPI_FOUND)
