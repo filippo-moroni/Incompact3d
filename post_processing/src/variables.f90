@@ -45,9 +45,17 @@ module var
   real(mytype), save, allocatable, dimension(:,:,:,:) :: rho1, drho1
   real(mytype), save, allocatable, dimension(:,:,:) :: rho2, rho3
   real(mytype), save, allocatable, dimension(:,:,:) :: divu3
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: phi1, phi2, phi3
+  
+  ! modified to reduce the arrays dimension of 1 (only one scalar is allowed in this way)
+  !real(mytype), save, allocatable, dimension(:,:,:,:) :: phi1, phi2, phi3  
+  real(mytype), save, allocatable, dimension(:,:,:) :: phi1, phi2, phi3
+  
   real(mytype), save, allocatable, dimension(:,:,:) :: px1, py1, pz1
-  real(mytype), save, allocatable, dimension(:,:,:) :: ep1, diss1, pre1
+  real(mytype), save, allocatable, dimension(:,:,:) :: ep1, diss1
+  
+  real(mytype), save, allocatable, dimension(:,:,:) :: pre1
+  real(mytype), save, allocatable, dimension(:,:,:) :: pre2  ! pressure pencil in y-direction
+  
   real(mytype), save, allocatable, dimension(:,:,:,:) :: dux1,duy1,duz1  ! Output of convdiff
   real(mytype), save, allocatable, dimension(:,:,:,:,:) :: dphi1
   real(mytype), save, allocatable, dimension(:,:,:) :: mu1,mu2,mu3
@@ -155,7 +163,8 @@ contains
     call alloc_x(pre1, opt_global=.true.) !global indices
     pre1 = zero
 
-    allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
+    !allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
+    allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3))) !global indices    
     phi1 = zero
 
     call alloc_x(ta1)
@@ -329,8 +338,11 @@ contains
     uzf2=zero
     call alloc_y(phif2)
     phif2=zero
-    allocate(phi2(ysize(1),ysize(2),ysize(3),1:numscalar))
+    
+    !allocate(phi2(ysize(1),ysize(2),ysize(3),1:numscalar))
+    allocate(phi2(ysize(1),ysize(2),ysize(3)))
     phi2=zero
+    
     allocate(pgz2(ph3%yst(1):ph3%yen(1),nymsize,ysize(3)))
     pgz2=zero
     allocate(pp2(ph3%yst(1):ph3%yen(1),nymsize,ysize(3)))
@@ -396,8 +408,11 @@ contains
     uzf3=zero
     call alloc_z(phif3)
     phif3=zero
-    allocate(phi3(zsize(1),zsize(2),zsize(3),1:numscalar))
+    
+    !allocate(phi3(zsize(1),zsize(2),zsize(3),1:numscalar))
+    allocate(phi3(zsize(1),zsize(2),zsize(3)))
     phi3=zero
+    
     allocate(pgz3(ph3%zst(1):ph3%zen(1),ph3%zst(2):ph3%zen(2),zsize(3)))
     pgz3=zero
     allocate(ppi3(ph3%zst(1):ph3%zen(1),ph3%zst(2):ph3%zen(2),zsize(3)))

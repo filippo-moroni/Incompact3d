@@ -116,7 +116,7 @@ contains
     integer :: code,ierror,i,j,k
     real(mytype) :: uxmax,uymax,uzmax,uxmin,uymin,uzmin
     real(mytype) :: uxmax1,uymax1,uzmax1,uxmin1,uymin1,uzmin1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
+    real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ux,uy,uz
     real(mytype),dimension(6) :: umaxin, umaxout
 
     if (iibm > 0) then

@@ -15,16 +15,19 @@ module post_processing
 
   logical, save :: post_mean,post_vort
 
-  ! Arrays for statistic collection
-  
+  ! Arrays for statistic collection  
   real(mytype), save, allocatable, dimension(:,:,:) :: u1mean,v1mean,w1mean
   real(mytype), save, allocatable, dimension(:,:,:) :: u2mean,v2mean,w2mean
   real(mytype), save, allocatable, dimension(:,:,:) :: u3mean,v3mean,w3mean
   real(mytype), save, allocatable, dimension(:,:,:) :: u4mean,v4mean,w4mean
   real(mytype), save, allocatable, dimension(:,:,:) :: uvmean,uwmean,vwmean
   real(mytype), save, allocatable, dimension(:,:,:) :: pre1mean,pre2mean
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: phi1mean,phi2mean
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: uphimean,vphimean,wphimean
+  
+  !real(mytype), save, allocatable, dimension(:,:,:,:) :: phi1mean,phi2mean
+  !real(mytype), save, allocatable, dimension(:,:,:,:) :: uphimean,vphimean,wphimean
+  
+  real(mytype), save, allocatable, dimension(:,:,:) :: phi1mean,phi2mean
+  real(mytype), save, allocatable, dimension(:,:,:) :: uphimean,vphimean,wphimean
 
   real(mytype), save, allocatable, dimension(:) :: u1meanH1,v1meanH1,w1meanH1
   real(mytype), save, allocatable, dimension(:) :: u2meanH1,v2meanH1,w2meanH1
@@ -32,8 +35,12 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: u4meanH1,v4meanH1,w4meanH1
   real(mytype), save, allocatable, dimension(:) :: uvmeanH1,uwmeanH1,vwmeanH1
   real(mytype), save, allocatable, dimension(:) :: pre1meanH1,pre2meanH1
-  real(mytype), save, allocatable, dimension(:,:) :: phi1meanH1,phi2meanH1
-  real(mytype), save, allocatable, dimension(:,:) :: uphimeanH1,vphimeanH1,wphimeanH1
+ 
+  !real(mytype), save, allocatable, dimension(:,:) :: phi1meanH1,phi2meanH1
+  !real(mytype), save, allocatable, dimension(:,:) :: uphimeanH1,vphimeanH1,wphimeanH1
+  
+  real(mytype), save, allocatable, dimension(:) :: phi1meanH1,phi2meanH1
+  real(mytype), save, allocatable, dimension(:) :: uphimeanH1,vphimeanH1,wphimeanH1
 
   real(mytype), save, allocatable, dimension(:) :: u1meanHT,v1meanHT,w1meanHT
   real(mytype), save, allocatable, dimension(:) :: u2meanHT,v2meanHT,w2meanHT
@@ -41,9 +48,13 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: u4meanHT,v4meanHT,w4meanHT
   real(mytype), save, allocatable, dimension(:) :: uvmeanHT,uwmeanHT,vwmeanHT
   real(mytype), save, allocatable, dimension(:) :: pre1meanHT,pre2meanHT
-  real(mytype), save, allocatable, dimension(:,:) :: phi1meanHT,phi2meanHT
-  real(mytype), save, allocatable, dimension(:,:) :: uphimeanHT,vphimeanHT,wphimeanHT
-
+  
+  !real(mytype), save, allocatable, dimension(:,:) :: phi1meanHT,phi2meanHT
+  !real(mytype), save, allocatable, dimension(:,:) :: uphimeanHT,vphimeanHT,wphimeanHT
+  
+  real(mytype), save, allocatable, dimension(:) :: phi1meanHT,phi2meanHT
+  real(mytype), save, allocatable, dimension(:) :: uphimeanHT,vphimeanHT,wphimeanHT
+  
 contains
 
   !******************************************************************
@@ -70,46 +81,46 @@ contains
     else
        nzmsize = zsize(3) -1
     endif
+    
     call decomp_info_init(nxmsize, nymsize, nzmsize, ph)
     
     
     !xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively. In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
 
     !xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system. Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, it is easier to know which process owns the plane if global index is used).
-
-
-    !Y PENCILS
-    call alloc_y(ux1, opt_global=.true.)  !global indices
+    
+    ! Allocate X-pencil arrays using global indices (temporary array is not necessary as x-pencil)
+    call alloc_x(ux1, opt_global=.true.)  !global indices
     ux1 = zero
-    call alloc_y(uy1, opt_global=.true.)  !global indices
+    call alloc_x(uy1, opt_global=.true.)  !global indices
     uy1 = zero
-    call alloc_y(uz1, opt_global=.true.)  !global indices
+    call alloc_x(uz1, opt_global=.true.)  !global indices
     uz1 = zero
-
-    call alloc_y(pre1, opt_global=.true.) !global indices
+    call alloc_x(pre1, opt_global=.true.) !global indices
     pre1 = zero
-
-    allocate(phi1(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar)) !global indices
+    
+    !allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
+    allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3))) !global indices
     phi1 = zero
+    
+    ! Allocate Y-pencil arrays
+    call alloc_y(ux2)
+    ux2=zero
+    call alloc_y(uy2)
+    uy2=zero
+    call alloc_y(uz2)
+    uz2=zero
+    call alloc_y(pre2)
+    pre2=zero   
+    
+    !allocate(phi2(ysize(1),ysize(2),ysize(3),1:numscalar))
+    allocate(phi2(ysize(1),ysize(2),ysize(3)))
+    phi2=zero
+    
+    call alloc_y(ta2)
+    ta2 = zero
 
-    call alloc_y(ta1)
-    ta1 = zero
-       
-    ! Check if memory is allocated properly
-    if (post_mean) then
-       if (.not.allocated(pre1)) then
-          call alloc_y(pre1, opt_global=.true.) !global indices 
-          pre1=zero
-       endif
-       if (.not.allocated(ta1)) call alloc_y(ta1)
-       if (iscalar==1) then
-           if (.not.allocated(phi1)) then
-              allocate(phi1(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar)) !global indices
-              phi1=zero
-           endif
-       endif
-    endif
-
+    ! Allocate memory for vorticity calculation
     if (post_vort) then
        if (.not.allocated(ta1)) call alloc_x(ta1)
        if (.not.allocated(tb1)) call alloc_x(tb1)
@@ -180,7 +191,7 @@ contains
 
   end subroutine init_post_variables
   !******************************************************************
-  ! Subroutine for allocating the memory for arrays
+  ! Subroutine for allocating the memory for statistics arrays
   subroutine init_statistics
 
     USE MPI
@@ -239,18 +250,29 @@ contains
        uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
        pre1meanHT=zero;pre2meanHT=zero
 
-      if (iscalar==1) then
-          allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))  ! global indices   
-          allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
-          allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
-          allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))   
-          allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
+     ! if (iscalar==1) then
+     !     allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))  ! global indices   
+     !     allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
+     !     allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
+     !     allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))   
+     !     allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
 
-          allocate(phi1meanH1(ysize(2),1:numscalar)); allocate(phi2meanH1(ysize(2),1:numscalar))
-          allocate(uphimeanH1(ysize(2),1:numscalar)); allocate(vphimeanH1(ysize(2),1:numscalar)); allocate(wphimeanH1(ysize(2),1:numscalar))
-          allocate(phi1meanHT(ysize(2),1:numscalar)); allocate(phi2meanHT(ysize(2),1:numscalar))
-          allocate(uphimeanHT(ysize(2),1:numscalar)); allocate(vphimeanHT(ysize(2),1:numscalar)); allocate(wphimeanHT(ysize(2),1:numscalar))
+     !     allocate(phi1meanH1(ysize(2),1:numscalar)); allocate(phi2meanH1(ysize(2),1:numscalar))
+     !     allocate(uphimeanH1(ysize(2),1:numscalar)); allocate(vphimeanH1(ysize(2),1:numscalar)); allocate(wphimeanH1(ysize(2),1:numscalar))
+     !     allocate(phi1meanHT(ysize(2),1:numscalar)); allocate(phi2meanHT(ysize(2),1:numscalar))
+     !     allocate(uphimeanHT(ysize(2),1:numscalar)); allocate(vphimeanHT(ysize(2),1:numscalar)); allocate(wphimeanHT(ysize(2),1:numscalar))
+     
+           allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
+           allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+           allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+           allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
+           allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
 
+           allocate(phi1meanH1(ysize(2))); allocate(phi2meanH1(ysize(2)))
+           allocate(uphimeanH1(ysize(2))); allocate(vphimeanH1(ysize(2))); allocate(wphimeanH1(ysize(2)))
+           allocate(phi1meanHT(ysize(2))); allocate(phi2meanHT(ysize(2)))
+           allocate(uphimeanHT(ysize(2))); allocate(vphimeanHT(ysize(2))); allocate(wphimeanHT(ysize(2)))
+            
           phi1mean=zero;phi2mean=zero
           uphimean=zero;vphimean=zero;wphimean=zero
   
@@ -259,7 +281,8 @@ contains
   
           phi1meanHT=zero;phi2meanHT=zero
           uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
-       endif
+     !  endif
+    
     endif
 
   end subroutine init_statistics

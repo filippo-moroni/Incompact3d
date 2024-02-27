@@ -19,7 +19,7 @@
 !----------------------------------------------------------!
 
 ! Mean statistics (average, variance, skewness, kurtosis)
-subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
+subroutine STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
                      u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                      u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                      uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
@@ -33,10 +33,10 @@ subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
   implicit none
   
   ! Variables definition
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux1,uy1,uz1,pre1           ! velocity components and pressure
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi1             ! scalar field
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2           ! velocity components and pressure
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi2             ! scalar field
   
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta1                                   ! temporary array
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                                   ! temporary array
   
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean                  ! 1st order moment (average)
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean                  ! 2nd order moment (variance)
@@ -45,100 +45,101 @@ subroutine STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean                  ! Reynolds stresses
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean                     ! average and variance of pressure
   real(mytype),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi1mean,phi2mean           ! average and variance of scalar field
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: uphimean,vphimean,wphimean  ! average and variance of mixed fluctuations
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations
   
   integer :: is                                                                               ! index for the different scalar fields
   integer :: nr
                                                                                                                                             
   !---x-component---!
-  !u1=ux1
-  u1mean=u1mean+ux1/nr 
+  ! average
+  u1mean=u1mean+ux2/nr 
 
-  !u2=ux1*ux1
-  ta1=ux1*ux1
-  u2mean=u2mean+ta1/nr
+  ! variance
+  ta2=ux2*ux2
+  u2mean=u2mean+ta2/nr
 
-  !u3=ux1*ux1*ux1
-  ta1=ux1*ux1*ux1
-  u3mean=u3mean+ta1/nr
+  ! skewness
+  ta2=ux2*ux2*ux2
+  u3mean=u3mean+ta2/nr
 
-  !u4=ux1*ux1*ux1*ux1 
-  ta1=ux1*ux1*ux1*ux1
-  u4mean=u4mean+ta1/nr
-
+  ! kurtosis 
+  ta2=ux2*ux2*ux2*ux2
+  u4mean=u4mean+ta2/nr
+  
   !---y-component---!
-  !v1=uy1
-  v1mean=v1mean+uy1/nr
+  ! average
+  v1mean=v1mean+uy2/nr 
 
-  !v2=uy1*uy1
-  ta1=uy1*uy1
-  v2mean=v2mean+ta1/nr
+  ! variance
+  ta2=uy2*uy2
+  v2mean=v2mean+ta2/nr
 
-  !v3=uy1*uy1*uy1 
-  ta1=uy1*uy1*uy1
-  v3mean=v3mean+ta1/nr
+  ! skewness
+  ta2=uy2*uy2*uy2
+  v3mean=v3mean+ta2/nr
 
-  !v4=uy1*uy1*uy1*uy1 
-  ta1=uy1*uy1*uy1*uy1
-  v4mean=v4mean+ta1/nr
-
+  ! kurtosis 
+  ta2=uy2*uy2*uy2*uy2
+  v4mean=v4mean+ta2/nr
+  
   !---z-component---!
-  !w1=uz1
-  w1mean=w1mean+uz1/nr
+  ! average
+  w1mean=w1mean+uz2/nr 
 
-  !w2=uz1*uz1
-  ta1=uz1*uz1
-  w2mean=w2mean+ta1/nr
+  ! variance
+  ta2=uz2*uz2
+  w2mean=w2mean+ta2/nr
 
-  !w3=uz1*uz1*uz1 
-  ta1=uz1*uz1*uz1
-  w3mean=w3mean+ta1/nr
+  ! skewness
+  ta2=uz2*uz2*uz2
+  w3mean=w3mean+ta2/nr
 
-  !w4=uz1*uz1*uz1*uz1 
-  ta1=uz1*uz1*uz1*uz1
-  w4mean=w4mean+ta1/nr
+  ! kurtosis 
+  ta2=uz2*uz2*uz2*uz2
+  w4mean=w4mean+ta2/nr
+
 
   !---Reynolds stresses---!
-  !uv=ux1*uy1
-  ta1=ux1*uy1
-  uvmean=uvmean+ta1/nr
+  !<uv>
+  ta2=ux2*uy2
+  uvmean=uvmean+ta2/nr
 
-  !uw=ux1*uz1
-  ta1=ux1*uz1
-  uwmean=uwmean+ta1/nr
+  !<uw>
+  ta2=ux2*uz2
+  uwmean=uwmean+ta2/nr
 
-  !vwmean=uy1*uz1
-  ta1=uy1*uz1
-  vwmean=vwmean+ta1/nr
+  !<vw>
+  ta2=uy2*uz2
+  vwmean=vwmean+ta2/nr
 
   !---pressure---!
-  pre1mean=pre1mean+pre1/nr
+  pre1mean=pre1mean+pre2/nr
 
-  ta1=pre1*pre1
-  pre2mean=pre2mean+ta1/nr
+  ta2=pre2*pre2
+  pre2mean=pre2mean+ta2/nr
 
   !---scalar---!
   if (iscalar==1) then
      do is=1, numscalar
 
-        !phi1mean=phi1
-        phi1mean(:,:,:,is)=phi1mean(:,:,:,is)+phi1(:,:,:,is)/nr
+        ! average: phi
+        phi1mean(:,:,:,is)=phi1mean(:,:,:,is)+phi2(:,:,:,is)/nr
 
-        !phi2mean=phi1*phi1
-        ta1=phi1(:,:,:,is)*phi1(:,:,:,is)
-        phi2mean(:,:,:,is)=phi2mean(:,:,:,is)+ta1/nr
+        ! variance: phi
+        ta2=phi2(:,:,:,is)*phi2(:,:,:,is)
+        phi2mean(:,:,:,is)=phi2mean(:,:,:,is)+ta2/nr
 
-        !uphimean=ux1*phi1
-        ta1=ux1*phi1(:,:,:,is)
-        uphimean(:,:,:,is)=uphimean(:,:,:,is)+ta1/nr
+        ! mixed fluctuations: u',phi'
+        ta2=ux2*phi2(:,:,:,is)
+        uphimean(:,:,:,is)=uphimean(:,:,:,is)+ta2/nr
 
-        !vphimean=uy1*phi1
-        ta1=uy1*phi1(:,:,:,is)
-        vphimean(:,:,:,is)=vphimean(:,:,:,is)+ta1/nr
+        ! mixed fluctuations: v',phi'
+        ta2=uy2*phi2(:,:,:,is)
+        vphimean(:,:,:,is)=vphimean(:,:,:,is)+ta2/nr
 
-        !wphimean=uz1*phi1
-        ta1=uz1*phi1(:,:,:,is)
-        wphimean(:,:,:,is)=wphimean(:,:,:,is)+ta1/nr
+        ! mixed fluctuations: w',phi'
+        ta2=uz2*phi2(:,:,:,is)
+        wphimean(:,:,:,is)=wphimean(:,:,:,is)+ta2/nr
 
      enddo
   endif

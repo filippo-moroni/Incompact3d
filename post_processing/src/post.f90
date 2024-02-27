@@ -30,9 +30,9 @@ PROGRAM post
   integer :: ipos  
   integer(8) :: ttsize 
   integer,dimension(2) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
-  logical :: read_phi,read_vel,read_ibm,read_pre  
+  logical :: read_vel,read_pre,read_phi  
  
-  character(30) :: filename,dirname 
+  character(99):: filename,dirname 
   character(1) :: a
   
   ! 
@@ -75,6 +75,10 @@ PROGRAM post
   call decomp_2d_init(nx,ny,nz,p_row,p_col)
   call decomp_2d_io_init()
   
+  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)    !start from 1 == true
+  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)    !start from 1 == true
+  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.) !start from 1 == true
+  
   call init_post_variables()
   call schemes()
   call decomp_info_init(nxm,nym,nzm,phG)
@@ -82,7 +86,7 @@ PROGRAM post
  
   ! Start of the post-processing  
   post_mean=.false.; post_vort=.false.  
-  read_vel=.false.;  read_pre=.false.; read_phi=.false.; read_ibm=.false.
+  read_vel=.false.;  read_pre=.false.; read_phi=.false.
    
                  
   ! Reading of the input file for post-processing
@@ -140,13 +144,13 @@ PROGRAM post
  do ie=1,nt
  
      call cpu_time(t1)
-     ifile = (ii-1)*icrfile+file1
+     ifile = (ie-1)*icrfile+file1
      t=dt*real(ioutput*ifile,mytype)
      itime=ioutput*ifile
     
      if (nrank==0) then
         print *,'----------------------------------------------------'
-        write(*,"(' We are averaging the realizations of the SnapShot =',I3,'/',I3,', Time unit =',F9.5)") ifile,filen,t
+        write(*,"(' We are averaging the realizations of the SnapShot =',I3,'/',I3,', Time unit =',F8.3)") ifile,filen,t
      endif
  
 !---------Start of the ensemble average cycle--------------!
@@ -161,14 +165,15 @@ PROGRAM post
           
      if (read_vel) then
         
+        ! Reading the x-pencils       
         write(filename,"('ux-',I3.3,'.bin')") ifile           
-        call decomp_2d_read_one(2,ux1,dirname,filename,a)
-
+        call decomp_2d_read_one(1,ux1,dirname,filename,a)
+  
         write(filename,"('uy-',I3.3,'.bin')") ifile           
-        call decomp_2d_read_one(2,uy1,dirname,filename,a)       
+        call decomp_2d_read_one(1,uy1,dirname,filename,a) 
 
         write(filename,"('uz-',I3.3,'.bin')") ifile           
-        call decomp_2d_read_one(2,uz1,dirname,filename,a)    
+        call decomp_2d_read_one(1,uz1,dirname,filename,a)    
                      
         call test_speed_min_max(ux1,uy1,uz1)
      endif
@@ -176,7 +181,7 @@ PROGRAM post
      if (read_pre) then
      
         write(filename,"('pp-',I3.3,'.bin')") ifile            
-        call decomp_2d_read_one(2,pre1,dirname,filename,a)  
+        call decomp_2d_read_one(1,pre1,dirname,filename,a)  
                
         !if (nscheme==2) then
         !    pre1 = pre1/dt  !IF nscheme = 2
@@ -187,24 +192,38 @@ PROGRAM post
      endif
      
      if (read_phi) then
-        do is=1, numscalar
         
-           write(filename,"('phi',I1.1,'-',I3.3,'.bin')") is, ifile            
-           call decomp_2d_read_one(2,phi1(:,:,:,is),dirname,filename,a)  
+        write(filename,"('phi01-',I3.3,'.bin')") ifile            
+        call decomp_2d_read_one(1,phi1(:,:,:),dirname,filename,a)  
            
-        enddo
      endif
      
+     !if (read_phi) then
+     !   do is=1, numscalar
+     !   
+     !      write(filename,"('phi',I1.1,'-',I3.3,'.bin')") is, ifile            
+     !      call decomp_2d_read_one(1,phi1(:,:,:,is),dirname,filename,a)  
+     !      
+     !   enddo
+     !endif
+     
      call cpu_time(trend)
+     
+     ! Transpose data to y-pencils
+     call transpose_x_to_y(ux1,ux2)
+     call transpose_x_to_y(uy1,uy2)
+     call transpose_x_to_y(uz1,uz2)
+     call transpose_x_to_y(pre1,pre2)
+     call transpose_x_to_y(phi1,phi2)
 
      ! Start statistics computation
-     if (post_mean) call STAT_MEAN(ux1,uy1,uz1,pre1,phi1,ta1, &
+     if (post_mean) call STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
                                    u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                                    u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean,nr)
-
-     if (post_vort) call STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)
+                                       
+     if (post_vort) call STAT_VORTICITY(ux2,uy2,uz2,ifile,nr)
 
   enddo ! closing of the do-loop on the different flow realizations
 
@@ -233,15 +252,22 @@ PROGRAM post
               pre1meanH1(j)=pre1meanH1(j)+pre1mean(i,j,k)/real(nx*nz,mytype)
               pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/real(nx*nz,mytype)
               
-              if (iscalar==1) then
-                 do is=1,numscalar
-                    phi1meanH1(j,is)=phi1meanH1(j,is)+phi1mean(i,j,k,is)/real(nx*nz,mytype)
-                    phi2meanH1(j,is)=phi2meanH1(j,is)+phi2mean(i,j,k,is)/real(nx*nz,mytype)
-                    uphimeanH1(j,is)=uphimeanH1(j,is)+uphimean(i,j,k,is)/real(nx*nz,mytype)
-                    vphimeanH1(j,is)=vphimeanH1(j,is)+vphimean(i,j,k,is)/real(nx*nz,mytype)
-                    wphimeanH1(j,is)=wphimeanH1(j,is)+wphimean(i,j,k,is)/real(nx*nz,mytype)
-                 enddo
-              endif 
+             ! if (iscalar==1) then
+             !    do is=1,numscalar
+             !       phi1meanH1(j,is)=phi1meanH1(j,is)+phi1mean(i,j,k,is)/real(nx*nz,mytype)
+             !       phi2meanH1(j,is)=phi2meanH1(j,is)+phi2mean(i,j,k,is)/real(nx*nz,mytype)
+             !       uphimeanH1(j,is)=uphimeanH1(j,is)+uphimean(i,j,k,is)/real(nx*nz,mytype)
+             !       vphimeanH1(j,is)=vphimeanH1(j,is)+vphimean(i,j,k,is)/real(nx*nz,mytype)
+             !       wphimeanH1(j,is)=wphimeanH1(j,is)+wphimean(i,j,k,is)/real(nx*nz,mytype)
+             !    enddo
+             ! endif
+                          
+             phi1meanH1(j)=phi1meanH1(j)+phi1mean(i,j,k)/real(nx*nz,mytype)
+             phi2meanH1(j)=phi2meanH1(j)+phi2mean(i,j,k)/real(nx*nz,mytype)
+             uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/real(nx*nz,mytype)
+             vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/real(nx*nz,mytype)
+             wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/real(nx*nz,mytype)
+                               
            enddo
         enddo
      enddo
@@ -268,13 +294,20 @@ PROGRAM post
      call MPI_REDUCE(pre1meanH1,pre1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      call MPI_REDUCE(pre2meanH1,pre2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
     
-     if (iscalar==1) then
-        call MPI_REDUCE(phi1meanH1,phi1meanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(phi2meanH1,phi2meanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(uphimeanH1,uphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(vphimeanH1,vphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-        call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     endif
+     !if (iscalar==1) then
+     !   call MPI_REDUCE(phi1meanH1,phi1meanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     !   call MPI_REDUCE(phi2meanH1,phi2meanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     !   call MPI_REDUCE(uphimeanH1,uphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     !   call MPI_REDUCE(vphimeanH1,vphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     !   call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2)*numscalar,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     !endif
+     
+        call MPI_REDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+        call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     
   endif
 
 !--------------MPI process nrank = 0 at work---------------!
@@ -296,21 +329,27 @@ PROGRAM post
            vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
            pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2
            
-           if (iscalar==1) then
-              do is=1,numscalar
-                 phi2meanHT(j,is)=phi2meanHT(j,is)-phi1meanHT(j,is)**2
-                 uphimeanHT(j,is)=uphimeanHT(j,is)-u1meanHT(j)*phi1meanH1(j,is)
-                 vphimeanHT(j,is)=vphimeanHT(j,is)-v1meanHT(j)*phi1meanH1(j,is)
-                 wphimeanHT(j,is)=wphimeanHT(j,is)-w1meanHT(j)*phi1meanH1(j,is)
-              enddo
-           endif
+           !if (iscalar==1) then
+           !   do is=1,numscalar
+           !      phi2meanHT(j,is)=phi2meanHT(j,is)-phi1meanHT(j,is)**2
+           !      uphimeanHT(j,is)=uphimeanHT(j,is)-u1meanHT(j)*phi1meanH1(j,is)
+           !      vphimeanHT(j,is)=vphimeanHT(j,is)-v1meanHT(j)*phi1meanH1(j,is)
+           !      wphimeanHT(j,is)=wphimeanHT(j,is)-w1meanHT(j)*phi1meanH1(j,is)
+           !   enddo
+           !endif
+ 
+                 phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
+                 uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanH1(j)
+                 vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanH1(j)
+                 wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanH1(j)
+           
         enddo
      endif
 
 !------------------Write unformatted data------------------!
      
      ! New directory for the statistics
-     write(dirname,"('data_post_TU',I4.1,'/')") t
+     write(dirname,"('data_post/')") 
         
      call system('mkdir -p '//trim(dirname))
 
@@ -319,24 +358,30 @@ PROGRAM post
      write(*,"(1x,'Writing output data to binary files :')")
      
      if (post_mean) then
-        write(filename,"('MEAN.bin')")
+     
+        write(filename,"('MEAN',F5.1,'.txt')") t
         write(*,"(3x,A)") filename
-        open(unit=210,file=trim(dirname)//trim(filename), &
-             form='unformatted',access='stream',status='replace')
-        write(210,pos=1) u1meanHT,v1meanHT,w1meanHT, &
+        
+        filename = adjustl(filename)
+        
+        open(unit=210,file=trim(dirname)//trim(filename),form='formatted')
+        write(210, *)    u1meanHT,v1meanHT,w1meanHT, &
                          u2meanHT,v2meanHT,w2meanHT, &
                          u3meanHT,v3meanHT,w3meanHT, &
                          u4meanHT,v4meanHT,w4meanHT, &
                          uvmeanHT,uwmeanHT,vwmeanHT, &
-                         pre1meanHT,pre2meanHT
+                         pre1meanHT,pre2meanHT,      &
+                         phi1meanHT,phi2meanHT,      &
+                         uphimeanHT,vphimeanHT,wphimeanHT
         
-        if (iscalar==1) then
-           do is=1,numscalar
-              inquire(unit=210,pos=ipos)
-              write(210,pos=ipos) phi1meanHT(:,is),phi2meanHT(:,is), &
-                                  uphimeanHT(:,is),vphimeanHT(:,is),wphimeanHT(:,is)
-           enddo
-        endif
+        !if (iscalar==1) then
+        !   do is=1,numscalar
+        !      inquire(unit=210,pos=ipos)
+        !      write(210,pos=ipos) phi1meanHT(:,is),phi2meanHT(:,is), &
+        !                          uphimeanHT(:,is),vphimeanHT(:,is),wphimeanHT(:,is)
+        !   enddo
+        !endif
+                      
         close(210)
      endif
 
