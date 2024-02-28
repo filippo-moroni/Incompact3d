@@ -26,6 +26,8 @@ PROGRAM post
   
   real(mytype) :: tstart,t1,trank,tranksum,ttotal,trstart,trend
   
+  integer  :: iunit				   ! Unit for the file to open (assigned by the compiler)
+  
   ! Added by R. Corsini
   integer :: ipos  
   integer(8) :: ttsize 
@@ -35,9 +37,10 @@ PROGRAM post
   character(99):: filename,dirname 
   character(1) :: a
   
-  ! 
+  ! Integer for MPI
   integer :: code
 
+  ! Variables to read the input.i3d file
   integer :: nargin, FNLength, status, DecInd
   logical :: back
   character(len=80) :: InputFN, FNBase
@@ -364,15 +367,59 @@ PROGRAM post
         
         filename = adjustl(filename)
         
-        open(unit=210,file=trim(dirname)//trim(filename),form='formatted')
-        write(210, *)    u1meanHT,v1meanHT,w1meanHT, &
-                         u2meanHT,v2meanHT,w2meanHT, &
-                         u3meanHT,v3meanHT,w3meanHT, &
-                         u4meanHT,v4meanHT,w4meanHT, &
-                         uvmeanHT,uwmeanHT,vwmeanHT, &
-                         pre1meanHT,pre2meanHT,      &
-                         phi1meanHT,phi2meanHT,      &
-                         uphimeanHT,vphimeanHT,wphimeanHT
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        do j = ystart(2),yend(2) + 1
+        
+        if (j .eq. 1) then
+        
+        write (iunit, *) 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
+                         'var[u]'   , ',', 'var[v]'   , ',', 'var[w]' , ',', &
+                         'skew[u]'  , ',', 'skew[v]'  , ',', 'skew[w]', ',', &
+                         'kurt[u]'  , ',', 'kurt[v]'  , ',', 'kurt[w]', ',', &
+                         "<u'v'>"   , ',', "<u'w'>"   , ',', "<v'w'>" , ',', &
+                         'mean[p]'  , ',', 'var[p]'   , ',',                 &
+                         'mean[phi]', ',', 'var[phi]' , ',',                 &
+                         "<u'phi'>" , ',', "<v'phi'>" , ',', "<w'phi'>" 
+                               
+        else
+        
+        write(iunit, *)  u1meanHT(j-1),         ',', &
+                         v1meanHT(j-1),         ',', &       
+                         w1meanHT(j-1),         ',', &
+                         u2meanHT(j-1),         ',', &
+                         v2meanHT(j-1),         ',', &
+                         w2meanHT(j-1),         ',', &
+                         u3meanHT(j-1),         ',', &
+                         v3meanHT(j-1),         ',', &
+                         w3meanHT(j-1),         ',', &
+                         u4meanHT(j-1),         ',', &
+                         v4meanHT(j-1),         ',', &
+                         w4meanHT(j-1),         ',', &
+                         uvmeanHT(j-1),         ',', &
+                         uwmeanHT(j-1),         ',', &  
+                         vwmeanHT(j-1),         ',', &                                              
+                         pre1meanHT(j-1),       ',', &
+                         pre2meanHT(j-1),       ',', &                     
+                         phi1meanHT(j-1),       ',', &
+                         phi2meanHT(j-1),       ',', &                        
+                         uphimeanHT(j-1),       ',', &
+                         vphimeanHT(j-1),       ',', &
+                         wphimeanHT(j-1)
+        
+        end if
+        
+        end do
+         
+         
+        !write(210, *)    u1meanHT,v1meanHT,w1meanHT, &
+        !                 u2meanHT,v2meanHT,w2meanHT, &
+        !                 u3meanHT,v3meanHT,w3meanHT, &
+        !                 u4meanHT,v4meanHT,w4meanHT, &
+        !                 uvmeanHT,uwmeanHT,vwmeanHT, &
+        !                 pre1meanHT,pre2meanHT,      &
+        !                 phi1meanHT,phi2meanHT,      &
+        !                 uphimeanHT,vphimeanHT,wphimeanHT
         
         !if (iscalar==1) then
         !   do is=1,numscalar
@@ -382,7 +429,7 @@ PROGRAM post
         !   enddo
         !endif
                       
-        close(210)
+        close(iunit)
      endif
 
   endif ! closing of the if-statement for processor 0
@@ -412,6 +459,26 @@ PROGRAM post
      print *,'Total wallclock (h):',real(ttotal/3600.,4)
      print *,'Total wallclock (d):',real(ttotal*1.1574e-5,4)
      print *,''
+     
+     if (post_mean) then
+     print *,'==========================================================='
+     print *,''
+     print *,'The following statistics have been saved in "MEAN" files:'
+     print *,''
+     print *,'mean[u], mean[v], mean[w]'
+     print *,' var[u],  var[v],  var[w]'
+     print *,'skew[u], skew[v], skew[w]'
+     print *,'kurt[u], kurt[v], kurt[w]'
+     print *,''
+     print *,'mean[uv], mean[uw], mean[vw]'
+     print *,''
+     print *,'mean[p],   var[p]'
+     print *,'mean[phi], var[phi]'
+     print *,''
+     print *,"mean[u'phi'], mean[v'phi'], mean[w'phi']"
+     print *,''    
+     endif
+     
   endif
 
   call decomp_2d_finalize
