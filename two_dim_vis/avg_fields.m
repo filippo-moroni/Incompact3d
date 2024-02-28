@@ -16,7 +16,7 @@ set(0,'defaulttextInterpreter','latex')
 %loadobj contourfcmap;
 
 %% Reading of file and variables
-M = readtable('MEAN500.0.txt',NumHeaderLines=1);
+M = readtable('MEAN400.0.txt',NumHeaderLines=1);
 
 % Averages of velocity components
 mean_u = M{:,1};   % mean of u
@@ -85,7 +85,8 @@ h4 = figure;
 %c.Label.Interpreter = 'latex';
 %c.Label.FontSize = 48;
 
-plot(y,mean_u)
+!plot(y,mean_u)
+semilogx(y,mean_u)
 
 xlabel('$y^+$','FontSize',40)
 ylabel('$U^+$','FontSize',40)
