@@ -127,7 +127,7 @@ PROGRAM post
   nt = (filen-file1)/icrfile+1
   
   ! Initialize statistics
-  call init_statistics()
+  call init_statistics(nt)
 
   ! Time passed since the program has started
   call cpu_time(tstart)
@@ -435,7 +435,7 @@ PROGRAM post
         if (ie .eq. 1) then
         
         write (iunit, *) 'delta_99'      , ',','disp_thickness', ',','mom_thickness', ',', &
-                         're_tau'        , ',','re_delta*'     , ',','re_theta'            &
+                         're_tau'        , ',','re_delta*'     , ',','re_theta', ',',      &
                          'shear_velocity', ',','time unit'                         
                                
         else

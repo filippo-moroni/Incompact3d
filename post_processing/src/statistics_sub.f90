@@ -140,7 +140,6 @@ subroutine STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
         ta2=uz2*phi2(:,:,:)
         wphimean(:,:,:)=wphimean(:,:,:)+ta2/nr
 
-     enddo
   endif
 
 end subroutine STAT_MEAN
