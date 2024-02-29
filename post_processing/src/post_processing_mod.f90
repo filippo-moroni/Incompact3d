@@ -22,10 +22,7 @@ module post_processing
   real(mytype), save, allocatable, dimension(:,:,:) :: u4mean,v4mean,w4mean
   real(mytype), save, allocatable, dimension(:,:,:) :: uvmean,uwmean,vwmean
   real(mytype), save, allocatable, dimension(:,:,:) :: pre1mean,pre2mean
-  
-  !real(mytype), save, allocatable, dimension(:,:,:,:) :: phi1mean,phi2mean
-  !real(mytype), save, allocatable, dimension(:,:,:,:) :: uphimean,vphimean,wphimean
-  
+    
   real(mytype), save, allocatable, dimension(:,:,:) :: phi1mean,phi2mean
   real(mytype), save, allocatable, dimension(:,:,:) :: uphimean,vphimean,wphimean
 
@@ -35,10 +32,7 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: u4meanH1,v4meanH1,w4meanH1
   real(mytype), save, allocatable, dimension(:) :: uvmeanH1,uwmeanH1,vwmeanH1
   real(mytype), save, allocatable, dimension(:) :: pre1meanH1,pre2meanH1
- 
-  !real(mytype), save, allocatable, dimension(:,:) :: phi1meanH1,phi2meanH1
-  !real(mytype), save, allocatable, dimension(:,:) :: uphimeanH1,vphimeanH1,wphimeanH1
-  
+   
   real(mytype), save, allocatable, dimension(:) :: phi1meanH1,phi2meanH1
   real(mytype), save, allocatable, dimension(:) :: uphimeanH1,vphimeanH1,wphimeanH1
 
@@ -48,13 +42,17 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: u4meanHT,v4meanHT,w4meanHT
   real(mytype), save, allocatable, dimension(:) :: uvmeanHT,uwmeanHT,vwmeanHT
   real(mytype), save, allocatable, dimension(:) :: pre1meanHT,pre2meanHT
-  
-  !real(mytype), save, allocatable, dimension(:,:) :: phi1meanHT,phi2meanHT
-  !real(mytype), save, allocatable, dimension(:,:) :: uphimeanHT,vphimeanHT,wphimeanHT
-  
+    
   real(mytype), save, allocatable, dimension(:) :: phi1meanHT,phi2meanHT
   real(mytype), save, allocatable, dimension(:) :: uphimeanHT,vphimeanHT,wphimeanHT
   
+  ! Arrays to save evolution of quantities in time
+  real(mytype), save, allocatable, dimension(:) :: delta_99,disp_t,mom_t
+  real(mytype), save, allocatable, dimension(:) :: re_tau,re_ds,re_theta
+  real(mytype), save, allocatable, dimension(:) :: sh_vel
+  
+  real(mytype), save, allocatable, dimension(:) :: yp
+   
 contains
 
   !******************************************************************
@@ -83,8 +81,7 @@ contains
     endif
     
     call decomp_info_init(nxmsize, nymsize, nzmsize, ph)
-    
-    
+        
     !xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively. In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
 
     !xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system. Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, it is easier to know which process owns the plane if global index is used).
@@ -99,7 +96,6 @@ contains
     call alloc_x(pre1, opt_global=.true.) !global indices
     pre1 = zero
     
-    !allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
     allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3))) !global indices
     phi1 = zero
     
@@ -113,7 +109,6 @@ contains
     call alloc_y(pre2)
     pre2=zero   
     
-    !allocate(phi2(ysize(1),ysize(2),ysize(3),1:numscalar))
     allocate(phi2(ysize(1),ysize(2),ysize(3)))
     phi2=zero
     
@@ -249,44 +244,44 @@ contains
        u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
        uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
        pre1meanHT=zero;pre2meanHT=zero
+   
+       allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
+       allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
+       allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
 
-     ! if (iscalar==1) then
-     !     allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))  ! global indices   
-     !     allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
-     !     allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
-     !     allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))   
-     !     allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3),1:numscalar))    
-
-     !     allocate(phi1meanH1(ysize(2),1:numscalar)); allocate(phi2meanH1(ysize(2),1:numscalar))
-     !     allocate(uphimeanH1(ysize(2),1:numscalar)); allocate(vphimeanH1(ysize(2),1:numscalar)); allocate(wphimeanH1(ysize(2),1:numscalar))
-     !     allocate(phi1meanHT(ysize(2),1:numscalar)); allocate(phi2meanHT(ysize(2),1:numscalar))
-     !     allocate(uphimeanHT(ysize(2),1:numscalar)); allocate(vphimeanHT(ysize(2),1:numscalar)); allocate(wphimeanHT(ysize(2),1:numscalar))
-     
-           allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
-           allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-           allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-           allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
-           allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-
-           allocate(phi1meanH1(ysize(2))); allocate(phi2meanH1(ysize(2)))
-           allocate(uphimeanH1(ysize(2))); allocate(vphimeanH1(ysize(2))); allocate(wphimeanH1(ysize(2)))
-           allocate(phi1meanHT(ysize(2))); allocate(phi2meanHT(ysize(2)))
-           allocate(uphimeanHT(ysize(2))); allocate(vphimeanHT(ysize(2))); allocate(wphimeanHT(ysize(2)))
+       allocate(phi1meanH1(ysize(2))); allocate(phi2meanH1(ysize(2)))
+       allocate(uphimeanH1(ysize(2))); allocate(vphimeanH1(ysize(2))); allocate(wphimeanH1(ysize(2)))
+       allocate(phi1meanHT(ysize(2))); allocate(phi2meanHT(ysize(2)))
+       allocate(uphimeanHT(ysize(2))); allocate(vphimeanHT(ysize(2))); allocate(wphimeanHT(ysize(2)))
             
-          phi1mean=zero;phi2mean=zero
-          uphimean=zero;vphimean=zero;wphimean=zero
+       phi1mean=zero;phi2mean=zero
+       uphimean=zero;vphimean=zero;wphimean=zero
   
-          phi1meanH1=zero;phi2meanH1=zero
-          uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
+       phi1meanH1=zero;phi2meanH1=zero
+       uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
   
-          phi1meanHT=zero;phi2meanHT=zero
-          uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
-     !  endif
+       phi1meanHT=zero;phi2meanHT=zero
+       uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
+       
+       ! Variables depending on time
+       allocate(delta_99(nt));  delta_99=zero  ! BL thickness delta99
+       allocate(disp_t  (nt));  disp_t  =zero  ! displacement thickness delta star (ds)
+       allocate(mom_t   (nt));  mom_t   =zero  ! momentum thickness theta
+     
+       allocate(re_tau  (nt));  re_tau  =zero  ! friction Re number (or delta99^+)
+       allocate(re_ds   (nt));  re_ds   =zero  ! Re number based on displacement thickness delta star (ds)
+       allocate(re_theta(nt));  re_theta=zero  ! Re number based on momentum thickness theta
+       
+       allocate(sh_vel  (nt));  sh_vel  =zero  ! shear-velocity
+       
+       allocate(yp (ysize(2));  yp      =zero  ! y-coordinates for the faces' elements
     
     endif
 
   end subroutine init_statistics
-  
+    
 end module post_processing
 !********************************************************************
 

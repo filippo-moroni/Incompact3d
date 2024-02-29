@@ -33,21 +33,21 @@ subroutine STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
   implicit none
   
   ! Variables definition
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2           ! velocity components and pressure
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi2             ! scalar field
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2     ! velocity components and pressure
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: phi2                 ! scalar field
   
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                                   ! temporary array
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                             ! temporary array
   
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean                  ! 1st order moment (average)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean                  ! 2nd order moment (variance)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean                  ! 3rd order moment (skewness)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean                  ! 4th order moment (kurtosis)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean                  ! Reynolds stresses
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean                     ! average and variance of pressure
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi1mean,phi2mean           ! average and variance of scalar field
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean            ! 1st order moment (average)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean            ! 2nd order moment (variance)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean            ! 3rd order moment (skewness)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean            ! 4th order moment (kurtosis)
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean            ! Reynolds stresses
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean               ! average and variance of pressure
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean               ! average and variance of scalar field
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean      ! average of mixed fluctuations
   
-  integer :: is                                                                               ! index for the different scalar fields
+  integer :: is                                                                         ! index for the different scalar fields
   integer :: nr
                                                                                                                                             
   !---x-component---!
@@ -120,26 +120,25 @@ subroutine STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
 
   !---scalar---!
   if (iscalar==1) then
-     do is=1, numscalar
 
         ! average: phi
-        phi1mean(:,:,:,is)=phi1mean(:,:,:,is)+phi2(:,:,:,is)/nr
+        phi1mean(:,:,:)=phi1mean(:,:,:)+phi2(:,:,:)/nr
 
         ! variance: phi
-        ta2=phi2(:,:,:,is)*phi2(:,:,:,is)
-        phi2mean(:,:,:,is)=phi2mean(:,:,:,is)+ta2/nr
+        ta2=phi2(:,:,:)*phi2(:,:,:)
+        phi2mean(:,:,:)=phi2mean(:,:,:)+ta2/nr
 
         ! mixed fluctuations: u',phi'
-        ta2=ux2*phi2(:,:,:,is)
-        uphimean(:,:,:,is)=uphimean(:,:,:,is)+ta2/nr
+        ta2=ux2*phi2(:,:,:)
+        uphimean(:,:,:)=uphimean(:,:,:)+ta2/nr
 
         ! mixed fluctuations: v',phi'
-        ta2=uy2*phi2(:,:,:,is)
-        vphimean(:,:,:,is)=vphimean(:,:,:,is)+ta2/nr
+        ta2=uy2*phi2(:,:,:)
+        vphimean(:,:,:)=vphimean(:,:,:)+ta2/nr
 
         ! mixed fluctuations: w',phi'
-        ta2=uz2*phi2(:,:,:,is)
-        wphimean(:,:,:,is)=wphimean(:,:,:,is)+ta2/nr
+        ta2=uz2*phi2(:,:,:)
+        wphimean(:,:,:)=wphimean(:,:,:)+ta2/nr
 
      enddo
   endif

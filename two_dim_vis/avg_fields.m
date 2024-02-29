@@ -7,6 +7,7 @@ clear
 %% Input from the user
 Re = 4200.0;              % Reynolds number (1/nu)
 nu = 1/Re;
+ny = 65;                  % number of points in y-direction
 
 %% Latex interpreter
 set(0,'defaulttextInterpreter','latex') 
@@ -62,8 +63,11 @@ y = G{:,1};           % y-coordinate at the faces of the cells
 
 %% Calculating shear velocity and viscous unit
 
+% Parallel velocity to the wall
+u_parallel = sqrt(mean_u(2)^2+mean_w(2)^2);
+
 % Mean gradient at the first face (shared by first 2 grid elements)
-mean_gradient = mean_u(2)/y(2);    % partial U / partial y  
+mean_gradient = u_parallel/y(2);     % partial U / partial y  
 
 % Shear velocity
 sh_vel = sqrt(nu*mean_gradient);
@@ -74,19 +78,29 @@ delta_nu = nu/sh_vel;
 %% Rescaling variables through wall units
 y = y/delta_nu;
 mean_u = mean_u/sh_vel;
+
 %% Plotting
 
-% trial
+c = 5;
+k = 0.41;
+u_plus = (1/k)*log(y)+c;
 
 h4 = figure;
+
+ny = (ny-1)/2;
 
 %c = colorbar('FontSize',16);
 %c.Label.String = '$U$';
 %c.Label.Interpreter = 'latex';
 %c.Label.FontSize = 48;
 
+y = y(1:ny);
+mean_u = mean_u(1:ny);
+
 !plot(y,mean_u)
 semilogx(y,mean_u)
+!hold on
+!semilogx(y,u_plus)
 
 xlabel('$y^+$','FontSize',40)
 ylabel('$U^+$','FontSize',40)

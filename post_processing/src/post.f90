@@ -26,9 +26,9 @@ PROGRAM post
   integer :: ifile
   
   real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0   ! variables to count time spent to post-process data
-  
+   
   integer  :: iunit				   ! unit for the file to open (assigned by the compiler)
-  
+    
   integer,dimension(2) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
@@ -123,12 +123,12 @@ PROGRAM post
 
   if (post_vort) read_vel=.true.
   
-  ! Initialize statistics
-  call init_statistics()
-
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
   
+  ! Initialize statistics
+  call init_statistics()
+
   ! Time passed since the program has started
   call cpu_time(tstart)
     
@@ -305,7 +305,7 @@ PROGRAM post
      
      if (post_mean) then
      
-        write(filename,"('MEAN',F5.1,'.txt')") t
+        write(filename,"('mean_statistics',F5.1,'.txt')") t
         write(*,"(3x,A)") filename
         
         filename = adjustl(filename)
@@ -356,14 +356,104 @@ PROGRAM post
                                
         close(iunit)
      endif
-        
-  ! add here calculation of: friction velocity, displacement thickness, momentum thickness, delta_99, re_tau (= delta_99^+)
   
-  ! ...
-
+!------------Calculate parameters of the flow--------------!
+  
+     ! Reading the coordinates in y of faces' elements
+     write(filename,"('yp.dat')") 
+               
+     filename = adjustl(filename)
+        
+     open(newunit=iunit,file=trim(filename),form='formatted')
+     
+     do j = ystart(2),yend(2)
+     
+        read(iunit, *) yp(j)
+    
+     end do
+     
+     close(iunit)
+     
+     ! delta_99
+     do j = ystart(2),yend(2)
+     
+        delta_99(ie) = yp(j)  
+        
+        if(u1meanHT(j) > 0.99*u1meanHT(yend(2))) exit
+               
+     end do
+     
+     ! displacement thickness
+     do j = ystart(2),yend(2) - 1
+     
+     disp_t(ie) = disp_t(ie) + u1meanHT(j)*(yp(j+1) - yp(j))
+                    
+     end do
+     
+     disp_t(ie) = yp(ysize(2)) - disp_t(ie)
+     
+     ! momentum thickness
+     do j = ystart(2),yend(2) - 1
+     
+     mom_t(ie) = mom_t(ie) + (u1meanHT(j) - u1meanHT(j)**2)*(yp(j+1) - yp(j))
+                    
+     end do
+     
+     ! friction or shear velocity
+     sh_vel(ie) = sqrt(xnu*u1meanHT(2)/yp(2))
+     
+     ! Reynolds numbers
+     re_tau  (ie) = delta_99(ie)*sh_vel(ie)/xnu  ! friction Re number (or delta99^+)
+     re_ds   (ie) = disp_t  (ie)*sh_vel(ie)/xnu  ! Re number based on displacement thickness delta star (ds)
+     re_theta(ie) = mom_t   (ie)*sh_vel(ie)/xnu  ! Re number based on momentum thickness theta     
+     
   endif ! closing of the if-statement for processor 0
   
- enddo  ! closing of the do-loop for the different time units (or SnapShots)
+ enddo  ! closing of the do-loop for the different time units (or SnapShots) (ie index)
+ 
+ if(nrank.eq.0) then
+ 
+ ! New directory for the statistics
+     write(dirname,"('data_post_parameters/')") 
+        
+     call system('mkdir -p '//trim(dirname))
+     
+     write(filename,"('parameters_statistics.txt')") 
+         
+        filename = adjustl(filename)
+        
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        do ie = 1,nt + 1
+        
+        ! Number of snapshot  
+        ifile = (ie-1)*icrfile+file1
+     
+        ! Time-unit (T)
+        t=dt*real(ioutput*ifile,mytype)
+        
+        if (ie .eq. 1) then
+        
+        write (iunit, *) 'delta_99'      , ',','disp_thickness', ',','mom_thickness', ',', &
+                         're_tau'        , ',','re_delta*'     , ',','re_theta'            &
+                         'shear_velocity', ',','time unit'                         
+                               
+        else
+        
+        write(iunit, *)  delta_99(ie-1), ',', &
+                         disp_t  (ie-1), ',', &
+                         mom_t   (ie-1), ',', &
+                         re_tau  (ie-1), ',', &
+                         re_ds   (ie-1), ',', &
+                         re_theta(ie-1), ',', &
+                         sh_vel  (ie-1), ',', &
+                         t
+        
+        end if
+        
+        end do
+ 
+ end if
    
   !-----------------------------!
   !  Post-processing ends here  !
