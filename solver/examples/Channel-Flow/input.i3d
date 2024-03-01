@@ -43,8 +43,8 @@ init_noise = 0.125    ! Turbulence intensity (1=100%)  ! Initial condition
 inflow_noise = 0.0    ! Turbulence intensity (1=100%)  ! Inflow condition
 idir_stream  = 1      ! Index of the streamwise direction (1=X, 3=Z, 2 not available)
 
-nclx1 = 0             ! check their meaning
-nclxn = 0
+nclx1 = 0             ! 1: first element, n: last element
+nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
 ncly1 = 2
 nclyn = 2
 nclz1 = 0
@@ -107,13 +107,5 @@ nclzSn = 0
 &CASE
 
 /End
-
-!&NRealiz
-
-!nr = '1'              ! N° of the specific realization of the flow, it is applied at the end of the filenames
-
-!/End
-
-
 
 

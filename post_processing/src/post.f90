@@ -383,10 +383,14 @@ PROGRAM post
                
      end do
      
+     ! Modify the index in u1meanHT: (try the 2 approaches)
+     ! j    :  forward rectangular integration
+     ! j + 1: backward rectangular integration
+     
      ! displacement thickness
      do j = ystart(2),yend(2) - 1
      
-     disp_t(ie) = disp_t(ie) + u1meanHT(j)*(yp(j+1) - yp(j))
+     disp_t(ie) = disp_t(ie) + u1meanHT(j)*(yp(j+1) - yp(j)) 
                     
      end do
      
