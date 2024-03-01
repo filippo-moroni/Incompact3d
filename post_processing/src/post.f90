@@ -418,7 +418,7 @@ PROGRAM post
         
      call system('mkdir -p '//trim(dirname))
      
-     write(filename,"('parameters_statistics.txt')") 
+     write(filename,"('parameters_stats.txt')") 
          
         filename = adjustl(filename)
         
@@ -427,7 +427,7 @@ PROGRAM post
         do ie = 1,nt + 1
         
         ! Number of snapshot  
-        ifile = (ie-1)*icrfile+file1
+        ifile = (ie-2)*icrfile+file1
      
         ! Time-unit (T)
         t=dt*real(ioutput*ifile,mytype)
