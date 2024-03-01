@@ -305,7 +305,7 @@ PROGRAM post
      
      if (post_mean) then
      
-        write(filename,"('mean_statistics',F5.1,'.txt')") t
+        write(filename,"('mean_stats',F5.1,'.txt')") t
         write(*,"(3x,A)") filename
         
         filename = adjustl(filename)
@@ -418,7 +418,7 @@ PROGRAM post
         
      call system('mkdir -p '//trim(dirname))
      
-     write(filename,"('parameters_stats.txt')") 
+     write(filename,"('param_stats.txt')") 
          
         filename = adjustl(filename)
         
@@ -488,7 +488,8 @@ PROGRAM post
      if (post_mean) then
      print *,'==========================================================='
      print *,''
-     print *,'The following statistics have been saved in "MEAN" files:'
+     print *,'The following statistics have been saved in'
+     print *,'"mean_stats" files:'
      print *,''
      print *,'mean[u], mean[v], mean[w]'
      print *,' var[u],  var[v],  var[w]'

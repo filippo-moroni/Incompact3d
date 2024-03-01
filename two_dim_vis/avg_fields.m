@@ -18,7 +18,9 @@ set(0,'defaulttextInterpreter','latex')
 
 %% Reading of file and variables
 %M = readtable('mean_statistics400.0.txt',NumHeaderLines=1);
-M = readtable('MEAN400.0.txt',NumHeaderLines=1);
+
+M = readtable('MEAN400.0_mycode_nodiss.txt',NumHeaderLines=1);
+%M = readtable('MEAN400.0.txt',NumHeaderLines=1);
 
 % Averages of velocity components
 mean_u = M{:,1};   % mean of u
@@ -74,8 +76,8 @@ sh_vel = sqrt(nu*mean_gradient);
 delta_nu = nu/sh_vel;
 
 %% Rescaling variables through wall units
-%y = y/delta_nu;
-%mean_u = mean_u/sh_vel;
+y = y/delta_nu;
+mean_u = mean_u/sh_vel;
 
 %% Plotting
 
@@ -94,15 +96,15 @@ h4 = figure;
 
 y = y(1:ny);
 mean_u = mean_u(1:ny);
-u_plus = u_plus(1:ny);
+%u_plus = u_plus(1:ny);
 
 %plot(y,mean_u)
 %hold on
 %plot(y,u_plus)
 
 semilogx(y,mean_u)
-hold on
-semilogx(y,u_plus)
+%hold on
+%semilogx(y,u_plus)
 
 xlabel('$y^+$','FontSize',40)
 ylabel('$U^+$','FontSize',40)

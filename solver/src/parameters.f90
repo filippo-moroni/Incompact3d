@@ -95,23 +95,20 @@ subroutine parameter(input_i3d)
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
   
-  ! Added to account for different number of realizations
-  ! NAMELIST /NRealiz/ nr
-
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
 #endif
 
   if (nrank==0) then
-     write(*,*) '==========================================================='
-     write(*,*) '===================== Xcompact3D =========================='
-     write(*,*) '== Copyright (c) 2018 Eric Lamballais and Sylvain Laizet =='
-     write(*,*) '== Modified by Felipe Schuch and Ricardo Frantz ==========='
-     write(*,*) '== Modified by Paul Bartholomew, Georgios Deskos and ======'
-     write(*,*) '== Sylvain Laizet -- 2018- ================================'
-     write(*,*) '==========================================================='
-     write(*,*) '== Modified by Filippo Moroni -- 2024 ====================='
-     write(*,*) '==========================================================='
+     write(*,*) '!---------------------------------------------------------!'
+     write(*,*) '!                    ~  Xcompact3D  ~                     !'
+     write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
+     write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
+     write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
+     write(*,*) '!  Sylvain Laizet, 2018                                   !'
+     write(*,*) '!                                                         !'
+     write(*,*) '!  Modified by Filippo Moroni, 2024                       !'
+     write(*,*) '!---------------------------------------------------------!'
      
 #if defined(VERSION)
      write(*,*)'Git version        : ', VERSION
@@ -711,7 +708,4 @@ subroutine parameter_defaults()
   ts_tr_tbl=1.402033_mytype
   x0_tr_tbl=3.505082_mytype
   
-  ! Realization number of our flow case
-  ! nr = '1'
-
 end subroutine parameter_defaults
