@@ -24,11 +24,11 @@ set(0,'defaulttextInterpreter','latex')
 %% Reading of file and variables
 
 % CFR
-% M = readtable('mean_statistics400.0_default_extra_diss.txt',NumHeaderLines=1);
-% M = readtable('MEAN400.0_mycode_extra_diss.txt',NumHeaderLines=1);
+M = readtable('mean_stats400.0_default_extra_diss.txt',NumHeaderLines=1);
+% M = readtable('mean_stats400.0_mycode_extra_diss.txt',NumHeaderLines=1);
 
 % CPG
-M = readtable('mean_stats400.0.txt',NumHeaderLines=1);
+% M = readtable('mean_stats400.0_mycode_cpg.txt',NumHeaderLines=1);
 
 % Averages of velocity components
 mean_u = M{:,1};   % mean of u
@@ -110,18 +110,23 @@ mean_u = mean_u(1:nh);
 %hold on
 %plot(y,u_plus)
 
-semilogx(y,mean_u)
+semilogx(y,mean_u,LineWidth=1.5)
 hold on
-semilogx(y_plus,u_plus)
+semilogx(y_plus,u_plus,LineWidth=1.5)
 hold on
+line([x_vertical, x_vertical], ylim, 'Color', 'black', 'LineStyle', '--','Linewidth',1.5); 
 
-line([x_vertical, x_vertical], ylim, 'Color', 'black', 'LineStyle', '--'); 
+xlim([0,240]);
+xticks([0 5 30 60 120 180])
 
-xlim([0,300]);
+grid on;
+grid minor;
 
 xlabel('$y^+$','FontSize',40)
 ylabel('$U^+$','FontSize',40)
-set(h4,'PaperSize',[40 18]);
+set(h4,'PaperSize',[16 16]);
+
+
 
 
 
