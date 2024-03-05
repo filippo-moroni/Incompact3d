@@ -96,10 +96,14 @@ y = y/delta_nu;
 mean_u = mean_u/sh_vel;
 
 %% Plotting
-c = 5;
-k = 0.41;
+
+% k = 0.41, B = 5.2 data reported by Pope (Turbulent flows)
+B = 5.2;  
+k = 0.37; % for a channel flow (more specific constant, see turbulence notes 
+          % by prof. Cimarelli
+
 y_plus = linspace(1,180,180);
-u_plus = (1/k)*log(y_plus)+c;
+u_plus = (1/k)*log(y_plus)+B;
 
 h4 = figure;
 
