@@ -24,48 +24,15 @@ set(0,'defaulttextInterpreter','latex')
 %% Reading of file and variables
 
 % CFR
-M = readtable('mean_stats400.0_default_extra_diss.txt',NumHeaderLines=1);
-% M = readtable('mean_stats400.0_mycode_extra_diss.txt',NumHeaderLines=1);
+M  = readtable('mean_stats400.0_default_extra_diss.txt',NumHeaderLines=1);
+M2 = readtable('mean_stats400.0_mycode_extra_diss.txt',NumHeaderLines=1);
 
 % CPG
 % M = readtable('mean_stats400.0_mycode_cpg.txt',NumHeaderLines=1);
 
 % Averages of velocity components
-mean_u = M{:,1};   % mean of u
-mean_v = M{:,2};   % mean of v
-mean_w = M{:,3};   % mean of w
-
-% Variances of velocity components
-var_u = M{:,4};    % variance of u
-var_v = M{:,5};    % variance of v
-var_w = M{:,6};    % variance of w
-
-% Skewnesses of velocity components
-skew_u = M{:,7};   % skewness of u
-skew_v = M{:,8};   % skewness of v
-skew_w = M{:,9};   % skewness of w
-
-% Kurtoses of velocity components
-kurt_u = M{:,10};  % kurtosis of u
-kurt_v = M{:,11};  % kurtosis of v
-kurt_w = M{:,12};  % kurtosis of w
-
-% Reynolds stresses
-mean_uv = M{:,13};  % <u'v'>
-mean_uw = M{:,14};  % <u'w'>
-mean_vw = M{:,15};  % <v'w'>
-
-% Pressure and scalar fields
-mean_p   = M{:,16};   % mean of p
-var_p    = M{:,17};   % variance of p
-
-mean_phi = M{:,18};   % mean of phi
-var_phi  = M{:,19};   % variance of phi
-
-% Mixed fluctuations (velocity and scalar)
-mean_uphi = M{:,20};  % <u'phi'>
-mean_vphi = M{:,21};  % <v'phi'>
-mean_wphi = M{:,22};  % <w'phi'>
+mean_u = M{:,1};         % mean of u default code
+mean_u_mycode = M2{:,1};  % mean of u my code
 
 % Reading of grid points
 G = readtable('yp.dat',NumHeaderLines=0);
@@ -92,15 +59,42 @@ sh_vel = sqrt(nu*mean_gradient);
 delta_nu = nu/sh_vel;
 
 %% Rescaling variables through wall units
-y = y/delta_nu;
+y_plus_default = y/delta_nu;
 mean_u = mean_u/sh_vel;
 
+
+%% Bulk velocity calculation and rescaling
+Ub = sum(mean_u_mycode(1:ny))/Ly;
+Ub = sqrt(Ub);
+
+mean_u_mycode = mean_u_mycode/Ub;
+
+nu = 1/Re;
+
+% Mean gradient at the first face (shared by first 2 grid elements)
+mean_gradient_mycode = mean_u_mycode(2)/y(2);     % partial U / partial y 
+
+% Shear velocity
+sh_vel_mycode = sqrt(nu*mean_gradient_mycode);
+ 
+% Viscous unit
+delta_nu_mycode = nu/sh_vel_mycode;
+
+%% Rescaling variables through wall units
+y_mycode = y/delta_nu_mycode;
+mean_u_mycode = mean_u_mycode/sh_vel_mycode;
+
+%% Data by Lee & Moser
+M = readtable('data_lee_retau180.txt',NumHeaderLines=72);
+
+yplus_lee = M{3:end,2};
+mean_u_lee = M{3:end,3};
 %% Plotting
 
 % k = 0.41, B = 5.2 data reported by Pope (Turbulent flows)
 B = 5.2;  
 k = 0.37; % for a channel flow (more specific constant, see turbulence notes 
-          % by prof. Cimarelli
+          % by prof. Cimarelli)
 
 y_plus = linspace(1,180,180);
 u_plus = (1/k)*log(y_plus)+B;
@@ -108,20 +102,28 @@ u_plus = (1/k)*log(y_plus)+B;
 h4 = figure;
 
 y = y(1:nh);
+
+y_mycode = y_mycode(1:nh);
+y_plus_default = y_plus_default(1:nh);
+
 mean_u = mean_u(1:nh);
+mean_u_mycode = mean_u_mycode(1:nh);
 
 %plot(y,mean_u)
 %hold on
 %plot(y,u_plus)
 
-semilogx(y,mean_u,LineWidth=1.5)
+semilogx(y_plus_default,mean_u,LineWidth=1.5)
 hold on
 semilogx(y_plus,u_plus,LineWidth=1.5)
 hold on
+semilogx(yplus_lee,mean_u_lee,LineWidth=1.5)
+semilogx(y_mycode,mean_u_mycode,LineWidth=1.5)
 line([x_vertical, x_vertical], ylim, 'Color', 'black', 'LineStyle', '--','Linewidth',1.5); 
+legend({'default code', 'log law', 'Lee and Moser','mycode','$Re_\tau$'}, 'Interpreter', 'latex',Location='northwest');
 
 xlim([0,240]);
-xticks([0 5 30 60 120 180])
+xticks([0 5 30 60 100 180])
 
 grid on;
 grid minor;
