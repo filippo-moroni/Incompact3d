@@ -37,11 +37,7 @@ numscalar = 1         ! Number of scalars
 
 ! Boundary and initial conditions
 iin = 1               ! Inflow conditions (1: classic, 2: turbinit, 4: SEM)
-u1  = 1.0             ! u1 (max velocity) (for inflow condition)
-u2  = 1.0             ! u2 (min velocity) (for inflow condition)
 init_noise = 0.125    ! Turbulence intensity (1=100%)  ! Initial condition
-inflow_noise = 0.0    ! Turbulence intensity (1=100%)  ! Inflow condition
-idir_stream  = 1      ! Index of the streamwise direction (1=X, 3=Z, 2 not available)
 
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
@@ -80,14 +76,6 @@ nvisu = 1             ! Size for visualisation collection   # meaning?
 
 /End
 
-!=================
-&Statistics
-!=================
-
-wrotation = 0.12      ! rotation speed to trigger turbulence
-spinup_time = 5000    ! number of time steps with a rotation to trigger turbulence
-
-/End
 
 !================
 &ScalarParam

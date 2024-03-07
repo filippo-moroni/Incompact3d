@@ -427,9 +427,6 @@ module param
   real(mytype), allocatable, dimension(:) :: h_coeff1, h_1,phase1
   real(mytype), allocatable, dimension(:) :: h_coeff2, h_2,phase2
   
-  ! Specific realization number of our flow case
-  ! character :: nr
-
   !numbers
 
   real(mytype),parameter :: zpone=0.1_mytype

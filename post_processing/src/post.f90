@@ -394,7 +394,8 @@ PROGRAM post
                     
      end do
      
-     disp_t(ie) = yp(ysize(2)) - disp_t(ie)
+     !disp_t(ie) = yp(ysize(2)) - disp_t(ie)  ! valid for a standard spatial BL (otherwise no further calculation for temporal BLs)
+     
      
      ! momentum thickness
      do j = ystart(2),yend(2) - 1
