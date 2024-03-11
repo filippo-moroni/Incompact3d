@@ -27,7 +27,7 @@ PROGRAM post
   
   real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0   ! variables to count time spent to post-process data
    
-  integer  :: iunit				   ! unit for the file to open (assigned by the compiler)
+  integer :: iunit		      		   ! unit for the file to open (assigned by the compiler)
     
   integer,dimension(2) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
@@ -203,7 +203,7 @@ PROGRAM post
      if (post_vort) call STAT_VORTICITY(ux2,uy2,uz2,ifile,nr)
 
   enddo ! closing of the do-loop on the different flow realizations
-
+  
 !----Mean over homogeneous directions (H = Homogeneous)----!
 
   ! Summation over x and z directions
@@ -237,6 +237,8 @@ PROGRAM post
         enddo
      enddo
   endif
+  
+  call reset_averages()  ! reset to zero the arrays used to collect the averages locally
 
 !---------Mean over all MPI processes (T = Total)----------!
 
@@ -374,6 +376,8 @@ PROGRAM post
      
      close(iunit)
      
+     ! These calculations are low-order (just to have an initial reference value)
+     
      ! delta_99
      do j = ystart(2),yend(2)
      
@@ -412,7 +416,11 @@ PROGRAM post
      re_ds   (ie) = disp_t  (ie)*sh_vel(ie)/xnu  ! Re number based on displacement thickness delta star (ds)
      re_theta(ie) = mom_t   (ie)*sh_vel(ie)/xnu  ! Re number based on momentum thickness theta     
      
+  call reset_domain()      ! reset to zero the averages on total domain (HT) 
+     
   endif ! closing of the if-statement for processor 0
+  
+  call reset_subdomains()  ! reset to zero the average vectors on subdomains (H1)
   
  enddo  ! closing of the do-loop for the different time units (or SnapShots) (ie index)
  

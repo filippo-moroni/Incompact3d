@@ -32,3 +32,8 @@ var_phi  = M{:,19};   % variance of phi
 mean_uphi = M{:,20};  % <u'phi'>
 mean_vphi = M{:,21};  % <v'phi'>
 mean_wphi = M{:,22};  % <w'phi'>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Vertical line
+line([x_vertical, x_vertical], ylim, 'Color', 'black', 'LineStyle', '-','Linewidth',1.5);

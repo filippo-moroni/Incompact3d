@@ -50,9 +50,7 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: delta_99,disp_t,mom_t
   real(mytype), save, allocatable, dimension(:) :: re_tau,re_ds,re_theta
   real(mytype), save, allocatable, dimension(:) :: sh_vel
-  
-  !real(mytype), save, allocatable, dimension(:) :: yp
-    
+     
 contains
 
   !******************************************************************
@@ -285,7 +283,68 @@ contains
     endif
 
   end subroutine init_statistics
+  
+  !******************************************************************
+  ! Subroutine to reset to zero the arrays of averages on same position 
+  
+  subroutine reset_averages
+  
+  USE MPI
+  
+  implicit none
+  
+  u1mean=zero;v1mean=zero;w1mean=zero
+  u2mean=zero;v2mean=zero;w2mean=zero
+  u3mean=zero;v3mean=zero;w3mean=zero
+  u4mean=zero;v4mean=zero;w4mean=zero
+  uvmean=zero;uwmean=zero;vwmean=zero
+  pre1mean=zero;pre2mean=zero
+  
+  phi1mean=zero;phi2mean=zero
+  uphimean=zero;vphimean=zero;wphimean=zero
     
+  end subroutine reset_averages
+
+  !******************************************************************
+  ! Subroutine to reset to zero the arrays of averages on subdomains 
+  
+  subroutine reset_subdomains
+  
+  USE MPI
+  
+  implicit none
+     
+  u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
+  u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
+  u3meanH1=zero;v3meanH1=zero;w3meanH1=zero
+  u4meanH1=zero;v4meanH1=zero;w4meanH1=zero
+  uvmeanH1=zero;uwmeanH1=zero;vwmeanH1=zero
+  pre1meanH1=zero;pre2meanH1=zero
+  
+  phi1meanH1=zero;phi2meanH1=zero
+  uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
+  
+  end subroutine reset_subdomains
+  
+  !******************************************************************
+  ! Subroutine to reset to zero the arrays of averages on total domain
+  
+  subroutine reset_domain
+   
+  implicit none
+     
+  u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
+  u2meanHT=zero;v2meanHT=zero;w2meanHT=zero
+  u3meanHT=zero;v3meanHT=zero;w3meanHT=zero
+  u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
+  uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
+  pre1meanHT=zero;pre2meanHT=zero
+  
+  phi1meanHT=zero;phi2meanHT=zero
+  uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
+  
+  end subroutine reset_domain
+   
 end module post_processing
 !********************************************************************
 

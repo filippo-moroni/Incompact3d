@@ -6,48 +6,71 @@ clear
 
 %% Input from the user
 Re = 4200.0;              % Reynolds number (1/nu)
+nu = 1/Re;                % kinematic viscosity
 
 ny = 65;                  % number of points in y-direction
 nh = (ny-1)/2 + 1;        % half number of points in y-direction
 
 Ly = 2.0;                 % total height of the channel
 
-x_vertical = 180;         % friction Reynolds number of the simulation
-
 %% Latex interpreter
 set(0,'defaulttextInterpreter','latex') 
 
-%% External functions
-%loadobj cmocean;
-%loadobj contourfcmap;
+%% Set some useful colors
+blue   = [57 106 177]./255;
+red    = [204 37 41]./255;
+black  = [83 81 84]./255;
+green  = [62 150 81]./255;
+brown  = [146 36 40]./255;
+purple = [107 76 154]./255;
+
+yellow = [0.9290 0.6940 0.1250];
+orange = [0.8500 0.3250 0.0980];
+lblue  = [0.3010 0.7450 0.9330];
+grey   = [0.5 0.5 0.5];
 
 %% Reading of file and variables
 
-% CFR
-M  = readtable('mean_stats400.0_default_extra_diss.txt',NumHeaderLines=1);
+% CFR - default code
+M1 = readtable('mean_stats400.0_default_extra_diss.txt',NumHeaderLines=1);
 M2 = readtable('mean_stats400.0_mycode_extra_diss.txt',NumHeaderLines=1);
 
 % CPG
-% M = readtable('mean_stats400.0_mycode_cpg.txt',NumHeaderLines=1);
+% M2 = readtable('mean_stats400.0_mycode_cpg.txt',NumHeaderLines=1);
 
-% Averages of velocity components
-mean_u = M{:,1};         % mean of u default code
-mean_u_mycode = M2{:,1};  % mean of u my code
+%% Default code variables
+mean_u  = M1{:,1};          % mean of u default code
+mean_v  = M1{:,2};          % mean of v default code
+var_u   = M1{:,4};          % variance of u
+var_v   = M1{:,5};          % variance of v
+mean_uv = M1{:,13};         % <u'v'>
 
-% Reading of grid points
+%% Modified code variables
+mean_u_mycode  = M2{:,1};   % mean of u my code
+mean_v_mycode  = M2{:,2};   % mean of v my code
+var_u_mycode   = M2{:,4};   % variance of u my code
+var_v_mycode   = M2{:,5};   % variance of v my code
+mean_uv_mycode = M2{:,13};  % <u'v'> my code
+
+%% Reading of grid points
 G = readtable('yp.dat',NumHeaderLines=0);
 
 y = G{:,1};           % y-coordinate at the faces of the cells 
 
-%% Calculations
+%% Reference data by Lee & Moser
+A1 = readtable('data_lee_retau180.txt',NumHeaderLines=72);
 
-% Bulk velocity calculation and rescaling
-Ub = sum(mean_u(1:ny))/Ly;
-Ub = sqrt(Ub);
+yplus_lee  = A1{3:end,2};
+mean_u_lee = A1{3:end,3};
 
-mean_u = mean_u/Ub;
+A2 = readtable('data_lee_fluct_retau180.txt',NumHeaderLines=75);
 
-nu = 1/Re;
+yplus_lee2  = A2{3:end,2};
+var_u_lee   = A2{3:end,3};
+var_v_lee   = A2{3:end,4};
+mean_uv_lee = A2{3:end,6};
+
+%% Calculations for default code
 
 % Mean gradient at the first face (shared by first 2 grid elements)
 mean_gradient = mean_u(2)/y(2);     % partial U / partial y 
@@ -60,16 +83,12 @@ delta_nu = nu/sh_vel;
 
 %% Rescaling variables through wall units
 y_plus_default = y/delta_nu;
-mean_u = mean_u/sh_vel;
+mean_u  = mean_u/sh_vel;
+var_u   = var_u/(sh_vel^2);
+var_v   = var_v/(sh_vel^2);
+mean_uv = mean_uv/(sh_vel^2);
 
-
-%% Bulk velocity calculation and rescaling
-Ub = sum(mean_u_mycode(1:ny))/Ly;
-Ub = sqrt(Ub);
-
-mean_u_mycode = mean_u_mycode/Ub;
-
-nu = 1/Re;
+%% Calculations for modified code
 
 % Mean gradient at the first face (shared by first 2 grid elements)
 mean_gradient_mycode = mean_u_mycode(2)/y(2);     % partial U / partial y 
@@ -82,60 +101,132 @@ delta_nu_mycode = nu/sh_vel_mycode;
 
 %% Rescaling variables through wall units
 y_mycode = y/delta_nu_mycode;
-mean_u_mycode = mean_u_mycode/sh_vel_mycode;
+mean_u_mycode  = mean_u_mycode/sh_vel_mycode;
+var_u_mycode   = var_u_mycode/(sh_vel_mycode^2);
+var_v_mycode   = var_v_mycode/(sh_vel_mycode^2);
+mean_uv_mycode = mean_uv_mycode/(sh_vel_mycode^2);
 
-%% Data by Lee & Moser
-M = readtable('data_lee_retau180.txt',NumHeaderLines=72);
+%% Von Karman law 
 
-yplus_lee = M{3:end,2};
-mean_u_lee = M{3:end,3};
-%% Plotting
+% k = 0.41, B = 5.2 (Pope, "Turbulent flows")
+% k = 0.37, B = 5.2 (Cimarelli, turb. lecture notes on channel flows)
 
-% k = 0.41, B = 5.2 data reported by Pope (Turbulent flows)
 B = 5.2;  
-k = 0.37; % for a channel flow (more specific constant, see turbulence notes 
-          % by prof. Cimarelli)
+k = 0.37;
 
-y_plus = linspace(1,180,180);
+y_plus = linspace(5,180,175);
 u_plus = (1/k)*log(y_plus)+B;
 
-h4 = figure;
+%% Viscous sub-layer
 
+y_plus_vsl = linspace(1,15,15);
+u_plus_vsl = y_plus_vsl;
+
+%% Resizing arrays
 y = y(1:nh);
-
 y_mycode = y_mycode(1:nh);
 y_plus_default = y_plus_default(1:nh);
 
-mean_u = mean_u(1:nh);
-mean_u_mycode = mean_u_mycode(1:nh);
+mean_u  = mean_u (1:nh);
+var_u   = var_u (1:nh);
+var_v   = var_v (1:nh);
+mean_uv = mean_uv(1:nh); 
 
-%plot(y,mean_u)
-%hold on
-%plot(y,u_plus)
+mean_u_mycode  = mean_u_mycode (1:nh);
+var_u_mycode   = var_u_mycode (1:nh);
+var_v_mycode   = var_v_mycode (1:nh);
+mean_uv_mycode = mean_uv_mycode(1:nh);
 
-semilogx(y_plus_default,mean_u,LineWidth=1.5)
+%% Mean velocity profile plot
+h4 = figure;
+
+scatter(y_plus_default,mean_u,"MarkerEdgeColor",blue,'Marker','o',LineWidth=1.5)
 hold on
-semilogx(y_plus,u_plus,LineWidth=1.5)
+semilogx(y_plus,u_plus,'Color',grey,'LineStyle', '--',LineWidth=1.5)
 hold on
-semilogx(yplus_lee,mean_u_lee,LineWidth=1.5)
-semilogx(y_mycode,mean_u_mycode,LineWidth=1.5)
-line([x_vertical, x_vertical], ylim, 'Color', 'black', 'LineStyle', '--','Linewidth',1.5); 
-legend({'default code', 'log law', 'Lee and Moser','mycode','$Re_\tau$'}, 'Interpreter', 'latex',Location='northwest');
+semilogx(yplus_lee,mean_u_lee,'Color',yellow,LineWidth=1.5)
+scatter(y_mycode,mean_u_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5)
+hold on
+semilogx(y_plus_vsl,u_plus_vsl,'Color',grey,'LineStyle', '--',LineWidth=1.5)
 
-xlim([0,240]);
+legend({'Default Incompact3d', 'Law of the wall', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
+
+xlim([0,180]);
 xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
 
 grid on;
 grid minor;
 
 xlabel('$y^+$','FontSize',40)
 ylabel('$U^+$','FontSize',40)
-set(h4,'PaperSize',[16 16]);
+set(h4,'PaperSize',[22 12]);
 
+caption = 'Log law with constants: k = 0.37, B = 5.2 (channel flow) \n(see lecture notes on turbulence prof. Cimarelli)';
+text(0.05, -1, sprintf(caption), 'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', 'FontSize', 12, 'FontWeight', 'bold');
 
+%% Variance of u' plot
+h4 = figure;
 
+scatter(y_plus_default,var_u,"MarkerEdgeColor",blue,'Marker','o',LineWidth=1.5)
+hold on
+semilogx(yplus_lee,var_u_lee,'Color',yellow,LineWidth=1.5)
+scatter(y_mycode,var_u_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5)
 
+legend({'Default Incompact3d', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
 
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
+
+grid on;
+grid minor;
+
+xlabel('$y^+$','FontSize',40)
+ylabel("$\langle u'^2 \rangle/u_\tau^2$",'FontSize',40)
+set(h4,'PaperSize',[22 12]);
+
+%% Variance of v' plot
+h4 = figure;
+
+scatter(y_plus_default,var_v,"MarkerEdgeColor",blue,'Marker','o',LineWidth=1.5)
+hold on
+semilogx(yplus_lee,var_v_lee,'Color',yellow,LineWidth=1.5)
+scatter(y_mycode,var_v_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5)
+
+legend({'Default Incompact3d', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
+
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
+
+grid on;
+grid minor;
+
+xlabel('$y^+$','FontSize',40)
+ylabel("$\langle v'^2 \rangle/u_\tau^2$",'FontSize',40)
+set(h4,'PaperSize',[22 12]);
+
+%% Reynolds stresses <u'v'> plot
+h4 = figure;
+
+scatter(y_plus_default,mean_uv,"MarkerEdgeColor",blue,'Marker','o',LineWidth=1.5)
+hold on
+semilogx(yplus_lee,mean_uv_lee,'Color',yellow,LineWidth=1.5)
+scatter(y_mycode,mean_uv_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5)
+
+legend({'Default Incompact3d', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
+
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
+
+grid on;
+grid minor;
+
+xlabel('$y^+$','FontSize',40)
+ylabel("$\langle u'v' \rangle/u_\tau^2$",'FontSize',40)
+set(h4,'PaperSize',[22 12]);
 
 
 
