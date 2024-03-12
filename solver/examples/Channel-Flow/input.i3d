@@ -4,7 +4,7 @@
 &BasicParam
 !===================
 
-! Flow type (3=Channel, 9=Turbulent-Boundary-Layer)
+! Flow type (3=Channel, 9=Turbulent-Boundary-Layer, 13=Temporal TBL)
 itype = 3
 
 ! Domain decomposition (if 0 is imposed, automatic decomposition)
@@ -104,8 +104,17 @@ nclzSn = 0
 
 /End
 
-&CASE
+!================
+&TemporalTBLParam
+!================
+
+uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
+twd = 1.0             ! trip wire diameter (D)
+noise_loc = 0.01      ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al.)
 
 /End
+
+
+
 
 

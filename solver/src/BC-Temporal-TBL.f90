@@ -17,11 +17,11 @@ module temporal_bl
   character(len=1),parameter :: NL=char(10) !new line character
 
   PRIVATE   ! All functions/subroutines private by default
-  PUBLIC :: init_temporal_bl,boundary_conditions_ttbl
+  PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl
 
 contains
   !############################################################################
-  subroutine init_temporal_bl (ux1,uy1,uz1)
+  subroutine init_temporal_tbl (ux1,uy1,uz1)
 
     use decomp_2d
     use decomp_2d_io
@@ -103,7 +103,7 @@ contains
        enddo
        
     return
-  end subroutine init_temporal_bl
+  end subroutine init_temporal_tbl
   !############################################################################
   !############################################################################
   subroutine boundary_conditions_ttbl()
