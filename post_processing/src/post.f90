@@ -266,7 +266,7 @@ PROGRAM post
 
 !--------------MPI process nrank = 0 at work---------------!
 
-  if(nrank.eq.0) then ! only processor 0 is working
+  if(nrank.eq.0) then  ! only processor 0 is working
      
      if (post_mean) then
         do j=ystart(2),yend(2)
@@ -372,8 +372,8 @@ PROGRAM post
                                
         else
         
-        write(iunit, *)  vortxmeanHT(j-1),         ',', &
-                         vortymeanHT(j-1),         ',', &       
+        write(iunit, *)  vortxmeanHT(j-1),  ',', &
+                         vortymeanHT(j-1),  ',', &       
                          vortzmeanHT(j-1)
         
         end if

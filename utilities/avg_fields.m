@@ -34,12 +34,15 @@ grey   = [0.5 0.5 0.5];
 
 %% Reading of file and variables
 
-% CFR - default code
+% CFR - default code & modified code
 M1 = readtable('mean_stats400.0_default_extra_diss.txt',NumHeaderLines=1);
 M2 = readtable('mean_stats400.0_mycode_extra_diss.txt',NumHeaderLines=1);
 
 % CPG
 % M2 = readtable('mean_stats400.0_mycode_cpg.txt',NumHeaderLines=1);
+
+% Vorticity - default code
+M3 = readtable('vort_stats400.0.txt',NumHeaderLines=1);
 
 %% Default code variables
 mean_u  = M1{:,1};          % mean of u default code
@@ -54,6 +57,11 @@ mean_v_mycode  = M2{:,2};   % mean of v my code
 var_u_mycode   = M2{:,4};   % variance of u my code
 var_v_mycode   = M2{:,5};   % variance of v my code
 mean_uv_mycode = M2{:,13};  % <u'v'> my code
+
+%% Vorticity
+vort_x = M3{:,1};
+vort_y = M3{:,2};
+vort_z = M3{:,3};
 
 %% Reading of grid points
 G = readtable('yp.dat',NumHeaderLines=0);
@@ -84,12 +92,19 @@ sh_vel = sqrt(nu*mean_gradient);
 % Viscous unit
 delta_nu = nu/sh_vel;
 
+% Viscous time 
+t_nu = nu/(sh_vel^2);
+
 %% Rescaling variables through wall units
 y_plus_default = y/delta_nu;
 mean_u  = mean_u/sh_vel;
 var_u   = var_u/(sh_vel^2);
 var_v   = var_v/(sh_vel^2);
 mean_uv = mean_uv/(sh_vel^2);
+
+vort_x  = vort_x*t_nu;
+vort_y  = vort_y*t_nu;
+vort_z  = vort_z*t_nu;
 
 %% Calculations for modified code
 
@@ -139,6 +154,10 @@ mean_u_mycode  = mean_u_mycode (1:nh);
 var_u_mycode   = var_u_mycode (1:nh);
 var_v_mycode   = var_v_mycode (1:nh);
 mean_uv_mycode = mean_uv_mycode(1:nh);
+
+vort_x = vort_x (1:nh);
+vort_y = vort_y (1:nh);
+vort_z = vort_z (1:nh);
 
 %% Mean velocity profile plot
 h4 = figure;
@@ -275,7 +294,34 @@ ylim([yaxis_lim,0.1]);
 
 set(h4,'PaperSize',[22 12]);
 
+%% Vorticity plot
+h4 = figure;
 
+scatter(y_plus_default,vort_y,"MarkerEdgeColor",blue,'Marker','o',LineWidth=1.5)
+
+legend({'Default Incompact3d', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
+
+grid on;
+grid minor;
+
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
+xlabel('$y^+$','FontSize',40)
+
+%yaxis_lim = -0.9;  % lower bound of y axes
+
+yyaxis left
+ax = gca;
+ax.YColor = 'black'; 
+ylabel("$\langle \omega_i \rangle t_\nu$",'FontSize',40)
+%ylim([yaxis_lim,0.1]);
+yyaxis right
+ax = gca;
+ax.YColor = 'black'; 
+%ylim([yaxis_lim,0.1]);
+
+set(h4,'PaperSize',[22 12]);
 
 
 
