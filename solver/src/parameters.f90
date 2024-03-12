@@ -94,6 +94,7 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
+  NAMELIST /TemporalTBLParam/ uwall,twd,noise_loc
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -234,9 +235,12 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-  read(10, nml=CASE); rewind(10)                 ! Read case-specific variables
-  !read(10, nml=NRealiz); rewind(10)              ! Read the realization N° this simulation is
+  read(10, nml=CASE); rewind(10)                  ! Read case-specific variables
   
+  if (itype.eq.itype_ttbl) then
+     read(10, nml=TemporalTBLParam); rewind(10);  ! Read parameters for temporal TBL case
+  end if
+   
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -364,7 +368,9 @@ subroutine parameter(input_i3d)
      elseif (itype.eq.itype_uniform) then
         print *,'Uniform flow'
      elseif (itype.eq.itype_sandbox) then
-           print *,'Sandbox'
+        print *,'Sandbox'
+     elseif (itype.eq.itype_ttbl) then
+        print *,'Temporal TBL'
      else
         print *,'Unknown itype: ', itype
         stop
@@ -609,11 +615,11 @@ subroutine parameter_defaults()
   t0 = zero
   datapath = './data/'
 
-  !! LES stuff
+  ! LES stuff
   SmagWallDamp=0
   nSmag=1
 
-  !! IBM stuff
+  ! IBM stuff
   nraf = 0
   nobjmax = 0
 
@@ -622,12 +628,12 @@ subroutine parameter_defaults()
   irotation = 0
   itest=1
 
-  !! Gravity field
+  ! Gravity field
   gravx = zero
   gravy = zero
   gravz = zero
 
-  !! LMN stuff
+  ! LMN stuff
   ilmn = .FALSE.
   ilmn_bound = .TRUE.
   pressure0 = one
@@ -643,15 +649,15 @@ subroutine parameter_defaults()
 
   primary_species = -1
 
-  !! Channel
+  ! Channel
   cpg = .false.
   idir_stream = 1
 
-  !! Filter
+  ! Filter
   ifilter=0
   C_filter=0.49_mytype
 
-  !! ABL
+  ! ABL
   z_zero=zpone
   k_roughness=zpfour
   ustar=0.45_mytype
@@ -671,11 +677,11 @@ subroutine parameter_defaults()
   iconcprec=0
   pdl=zero
   
-  !! Turbine modelling
+  ! Turbine modelling
   iturbine=0
   rho_air=one
 
-  !! IO
+  ! IO
   ivisu = 1
   ipost = 0
   iprocessing = huge(i)
@@ -687,7 +693,7 @@ subroutine parameter_defaults()
   output2D = 0
   nprobes=0
 
-  !! PROBES
+  ! Probes
   flag_all_digits = .false.
   flag_extra_probes = .false.
 
@@ -701,11 +707,16 @@ subroutine parameter_defaults()
   !! CASE specific variables
   tgv_twod = .FALSE.
 
-  !! TRIPPING
+  ! Tripping
   A_tr=zero
   xs_tr_tbl=1.402033_mytype
   ys_tr_tbl=0.350508_mytype
   ts_tr_tbl=1.402033_mytype
   x0_tr_tbl=3.505082_mytype
+  
+  ! Temporal TBL
+  uwall = 1.0       ! velocity of translating bottom wall (U_wall) 
+  twd = 1.0         ! trip wire diameter (D)
+  noise_loc = 0.01  ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al.)
   
 end subroutine parameter_defaults

@@ -13,87 +13,48 @@ module temporal_bl
 
   implicit none
 
-  integer :: FS
   character(len=100) :: fileformat
   character(len=1),parameter :: NL=char(10) !new line character
 
-  PRIVATE ! All functions/subroutines private by default
-  PUBLIC :: 
+  PRIVATE   ! All functions/subroutines private by default
+  PUBLIC :: init_temporal_bl,boundary_conditions_ttbl
 
 contains
   !############################################################################
-  subroutine init_temporal_bl (ux1,uy1,uz1,ep1,phi1)
+  subroutine init_temporal_bl (ux1,uy1,uz1)
 
     use decomp_2d
     use decomp_2d_io
     use variables
     use param
     use MPI
-    use dbg_schemes, only: exp_prec, abs_prec, sqrt_prec
+    use dbg_schemes, only: tanh_prec
     
-
     implicit none
+       
+    real(mytype),intent(inout),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
 
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,ep1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
-
-    real(mytype) :: y,r,um,r3,x,z,h,ct
-    real(mytype) :: cx0,cy0,cz0,hg,lg
-    real(mytype) :: ftent
-    integer :: k,j,i,fh,ierror,ii,is,it,code, jj
-
-    !integer, dimension (:), allocatable :: seed
-    !real(mytype), dimension(:,:,:), allocatable :: urand
-
-    integer :: xshift, yshift, zshift
-
-    integer ( kind = 4 ) :: seed1, seed2, seed3, seed11, seed22, seed33
-    integer ( kind = 4 ) :: return_30k
-    integer ( kind = 4 ), parameter :: nsemini = 1000 ! For the moment we fix it but after this can go in the input file
-    real(mytype), dimension(3,nsemini) :: eddy, posvor
-    real(mytype)     :: volsemini, rrand, ddx, ddy, ddz, lsem, upr, vpr, wpr, rrand1
-    real(mytype), dimension(3) :: dim_min, dim_max
-    real( kind = 8 ) :: r8_random
-    external r8_random, return_30k
-
-    ! to do: add tanh profile + noise
+    real(mytype) :: y
+    real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
+    real(mytype) :: um        ! mean streamwise initial velocity profile
+    real(mytype) :: diff      ! difference between wall and mean velocities
     
-    ! to be modified
-    if (iscalar==1) then
-       if (nrank==0.and.(mod(itime, ilist) == 0 .or. itime == ifirst .or. itime == ilast)) then
-          write(*,*) 'Imposing linear temperature profile'
-       end if
-       do k=1,xsize(3)
-          do j=1,xsize(2)
-             if (istret==0) y=real(j+xstart(2)-2,mytype)*dy
-             if (istret/=0) y=yp(j+xstart(2)-1)
-             do i=1,xsize(1)
-                phi1(i,j,k,:) = one - y/yly
-             enddo
-          enddo
-       enddo
+    
+    ! For random numbers generation (check better what 'seed' means)
+    integer :: ii,code  
+    integer :: i,j,k
+    
+    ! Momentum thickness calculation
+    theta_sl = 54.0*xnu/uwall
 
-       phi1(:,:,:,:) = zero !change as much as you want
-       if ((nclyS1 == 2).and.(xstart(2) == 1)) then
-         !! Generate a hot patch on bottom boundary
-         phi1(:,1,:,:) = one
-       endif
-       if ((nclySn == 2).and.(xend(2) == ny)) then
-         phi1(:,xsize(2),:,:) = zero
-       endif
-    endif
-
-
+    ! Initialize velocity fields
     ux1=zero
     uy1=zero
     uz1=zero
+ 
+    ! Initialization as Kozul et al. (JFM, 2016) (tanh + noise)
     
-    byx1=zero;
-    byy1=zero;
-    byz1=zero
-
-    ! Traditional init to turbulent flows using random numbers + lam profile
-    
+       ! Noise (random numbers from 0 to 1)
        call system_clock(count=code)
        if (iin.eq.2) code=0
        call random_seed(size = ii)
@@ -102,19 +63,42 @@ contains
        call random_number(ux1)
        call random_number(uy1)
        call random_number(uz1)
-       !modulation of the random noise + initial velocity profile
+             
+       ! Noise superimposed to the tanh velocity profile
        do k=1,xsize(3)
           do j=1,xsize(2)
-             if (istret==0) y=real(j+xstart(2)-1-1,mytype)*dy-yly*half
-             if (istret/=0) y=yp(j+xstart(2)-1)-yly*half
-             um=exp_prec(-zptwo*y*y)
+          
+             if (istret==0) y=real(j+xstart(2)-1-1,mytype)*dy
+             if (istret/=0) y=yp(j+xstart(2)-1)
+             
+             ! Initial streamwise velocity profile
+             um = uwall*(0.5 + 0.5*(tanh_prec(twd/2*theta_sl)*(1.0 - y/twd)))
+             
+             ! Difference between wall and mean velocities
+             diff = uwall - um
+             
+             ! Area near the wall, we add noise to all velocity components
+             if (diff < noise_loc*uwall) then
+             
+             do i=1,xsize(1)
+                  ! Rescaling the noise with a percentage of the wall velocity
+                  ux1 = ux1*init_noise*uwall
+                  uy1 = uy1*init_noise*uwall
+                  uz1 = uz1*init_noise*uwall
+                 
+                  ux1(i,j,k)= ux1(i,j,k) + um 
+             enddo
+             
+             ! Area away from the wall, no noise, only mean velocity profile
+             else 
              do i=1,xsize(1)
    
-                   ux1(i,j,k)=init_noise*um*(two*ux1(i,j,k)-one)+one-y*y
-                   uy1(i,j,k)=init_noise*um*(two*uy1(i,j,k)-one)
-                   uz1(i,j,k)=init_noise*um*(two*uz1(i,j,k)-one)
-
-             enddo
+                  ux1 = zero
+                  uy1 = zero
+                  uz1 = zero
+                 
+                  ux1(i,j,k)= ux1(i,j,k) + um 
+             enddo  
           enddo
        enddo
        
@@ -122,18 +106,24 @@ contains
   end subroutine init_temporal_bl
   !############################################################################
   !############################################################################
-  subroutine boundary_conditions_ttbl (ux,uy,uz,phi)
+  subroutine boundary_conditions_ttbl()
 
     use param
     use variables
     use decomp_2d
 
     implicit none
-
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
     
-    ! check if BCs needs to be explicitly declared
+    ! Bottom boundary (other BCs should not be defined explicitly) (to check)
+    if (ncly1 == 2) then
+      do k = 1, xsize(3)
+        do i = 1, xsize(1)
+          byx1(i,k) = uwall  
+          byy1(i,k) = zero
+          byz1(i,k) = zero
+        enddo
+      enddo
+    endif
     
   end subroutine boundary_conditions_ttbl
   
