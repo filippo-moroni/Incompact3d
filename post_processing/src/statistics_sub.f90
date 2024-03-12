@@ -23,11 +23,11 @@
 !----------------------------------------------------------!
 
 ! Mean statistics (average, variance, skewness, kurtosis)
-subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,ta2, &
+subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
                      u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                      u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                      uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
-                     phi2mean,uphimean,vphimean,wphimean,nr)
+                     phi2mean,uphimean,vphimean,wphimean)
 
   use param
   use variables
@@ -39,20 +39,19 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,ta2, &
   ! Variables definition
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2     ! velocity components and pressure
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: phi2                 ! scalar field
+  integer,     intent(in) :: nr                                                         ! number of flow realizations
   
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                             ! temporary array
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                             ! temporary array (local)
   
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean            ! 1st order moment (average)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean            ! 2nd order moment (variance)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean            ! 3rd order moment (skewness)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean            ! 4th order moment (kurtosis)
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean            ! Reynolds stresses
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean               ! average and variance of pressure
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean               ! average and variance of scalar field
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean      ! average of mixed fluctuations
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean            ! 1st order moment (average)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean            ! 2nd order moment (variance)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean            ! 3rd order moment (skewness)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean            ! 4th order moment (kurtosis)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean            ! Reynolds stresses
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean               ! average and variance of pressure
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean               ! average and variance of scalar field
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean      ! average of mixed fluctuations
   
-  integer            :: is                                                              ! index for the different scalar fields
-  integer,intent(in) :: nr
                                                                                                                                             
   !---x-component---!
   ! average
@@ -126,30 +125,30 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,ta2, &
   if (iscalar==1) then
 
         ! average: phi
-        phi1mean(:,:,:)=phi1mean(:,:,:)+phi2(:,:,:)/nr
+        phi1mean=phi1mean+phi2/nr
 
         ! variance: phi
-        ta2=phi2(:,:,:)*phi2(:,:,:)
-        phi2mean(:,:,:)=phi2mean(:,:,:)+ta2/nr
+        ta2=phi2*phi2
+        phi2mean=phi2mean+ta2/nr
 
         ! mixed fluctuations: u',phi'
-        ta2=ux2*phi2(:,:,:)
-        uphimean(:,:,:)=uphimean(:,:,:)+ta2/nr
+        ta2=ux2*phi2
+        uphimean=uphimean+ta2/nr
 
         ! mixed fluctuations: v',phi'
-        ta2=uy2*phi2(:,:,:)
-        vphimean(:,:,:)=vphimean(:,:,:)+ta2/nr
+        ta2=uy2*phi2
+        vphimean=vphimean+ta2/nr
 
         ! mixed fluctuations: w',phi'
-        ta2=uz2*phi2(:,:,:)
-        wphimean(:,:,:)=wphimean(:,:,:)+ta2/nr
+        ta2=uz2*phi2
+        wphimean=wphimean+ta2/nr
 
   endif
 
 end subroutine stat_mean
 !********************************************************************
 ! Vorticity 
-subroutine stat_vorticity(ux1,uy1,uz1,vortxmean2,vortymean2,vortzmean2,nr)   ! to be checked and completed
+subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2)   
 
   use param
   use variables
@@ -158,17 +157,16 @@ subroutine stat_vorticity(ux1,uy1,uz1,vortxmean2,vortymean2,vortzmean2,nr)   ! t
   use MPI
   
   implicit none
-
+  
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
+  integer,intent(in) :: nr
+  
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
   
-  character(len=30)  :: filename
-  
-  integer,intent(in) :: nr
-  real(mytype)       :: lind
-  
+  character(len=30)  :: filename 
+  real(mytype)       :: lind 
   real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1   ! average vorticity components, x-pencils
   real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2   ! average vorticity components, y-pencils
       
@@ -238,14 +236,15 @@ subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_
 
   implicit none
   
-  integer,intent(in) :: ie,nt
+  real(mytype),intent(in),dimension(ysize(2)) :: u1meanHT
+  integer,     intent(in) :: ie,nt
+    
+  real(mytype),intent(out),dimension(nt)      :: delta_99,disp_t,mom_t
+  real(mytype),intent(out),dimension(nt)      :: re_tau,re_ds,re_theta
+  real(mytype),intent(out),dimension(nt)      :: sh_vel
+  
   integer            :: j, iunit
   character(99)      :: filename
-  real(mytype),intent(in),dimension(ysize(2)) :: u1meanHT
-  
-  real(mytype), dimension(nt) :: delta_99,disp_t,mom_t
-  real(mytype), dimension(nt) :: re_tau,re_ds,re_theta
-  real(mytype), dimension(nt) :: sh_vel
   
   ! Reading the coordinates in y of faces' elements
   write(filename,"('yp.dat')") 

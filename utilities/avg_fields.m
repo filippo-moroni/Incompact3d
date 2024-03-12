@@ -13,6 +13,9 @@ nh = (ny-1)/2 + 1;        % half number of points in y-direction
 
 Ly = 2.0;                 % total height of the channel
 
+%% External functions
+loadobj cloneYAxisFromLeftToRight;
+
 %% Latex interpreter
 set(0,'defaulttextInterpreter','latex') 
 
@@ -149,17 +152,28 @@ scatter(y_mycode,mean_u_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5)
 hold on
 semilogx(y_plus_vsl,u_plus_vsl,'Color',grey,'LineStyle', '--',LineWidth=1.5)
 
-legend({'Default Incompact3d', 'Law of the wall', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
-
-xlim([0,180]);
-xticks([0 5 30 60 100 180])
-set(gca,'xscale','log')
+legend({'Default Incompact3d', 'Viscous sublayer and log law', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
 
 grid on;
 grid minor;
 
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
 xlabel('$y^+$','FontSize',40)
+
+yaxis_lim = 20;  % upper bound of y axes
+
+yyaxis left
+ax = gca;
+ax.YColor = 'black'; 
 ylabel('$U^+$','FontSize',40)
+ylim([0,yaxis_lim]);
+yyaxis right
+ax = gca;
+ax.YColor = 'black'; 
+ylim([0,yaxis_lim]);
+
 set(h4,'PaperSize',[22 12]);
 
 caption = 'Log law with constants: k = 0.37, B = 5.2 (channel flow) \n(see lecture notes on turbulence prof. Cimarelli)';
@@ -175,15 +189,26 @@ scatter(y_mycode,var_u_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5)
 
 legend({'Default Incompact3d', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
 
-xlim([0,180]);
-xticks([0 5 30 60 100 180])
-set(gca,'xscale','log')
-
 grid on;
 grid minor;
 
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
 xlabel('$y^+$','FontSize',40)
+
+yaxis_lim = 8;  % upper bound of y axes
+
+yyaxis left
+ax = gca;
+ax.YColor = 'black'; 
 ylabel("$\langle u'^2 \rangle/u_\tau^2$",'FontSize',40)
+ylim([0,yaxis_lim]);
+yyaxis right
+ax = gca;
+ax.YColor = 'black'; 
+ylim([0,yaxis_lim]);
+
 set(h4,'PaperSize',[22 12]);
 
 %% Variance of v' plot
@@ -196,15 +221,26 @@ scatter(y_mycode,var_v_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5)
 
 legend({'Default Incompact3d', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
 
-xlim([0,180]);
-xticks([0 5 30 60 100 180])
-set(gca,'xscale','log')
-
 grid on;
 grid minor;
 
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
 xlabel('$y^+$','FontSize',40)
+
+yaxis_lim = 0.8;  % upper bound of y axes
+
+yyaxis left
+ax = gca;
+ax.YColor = 'black'; 
 ylabel("$\langle v'^2 \rangle/u_\tau^2$",'FontSize',40)
+ylim([0,yaxis_lim]);
+yyaxis right
+ax = gca;
+ax.YColor = 'black'; 
+ylim([0,yaxis_lim]);
+
 set(h4,'PaperSize',[22 12]);
 
 %% Reynolds stresses <u'v'> plot
@@ -217,16 +253,30 @@ scatter(y_mycode,mean_uv_mycode,"MarkerEdgeColor",red,'Marker','o',LineWidth=1.5
 
 legend({'Default Incompact3d', 'Lee and Moser (2015)','Modified Incompact3d'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
 
-xlim([0,180]);
-xticks([0 5 30 60 100 180])
-set(gca,'xscale','log')
-
 grid on;
 grid minor;
 
+xlim([0,180]);
+xticks([0 5 30 60 100 180])
+set(gca,'xscale','log')
 xlabel('$y^+$','FontSize',40)
+
+yaxis_lim = -0.9;  % lower bound of y axes
+
+yyaxis left
+ax = gca;
+ax.YColor = 'black'; 
 ylabel("$\langle u'v' \rangle/u_\tau^2$",'FontSize',40)
+ylim([yaxis_lim,0.1]);
+yyaxis right
+ax = gca;
+ax.YColor = 'black'; 
+ylim([yaxis_lim,0.1]);
+
 set(h4,'PaperSize',[22 12]);
+
+
+
 
 
 

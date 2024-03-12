@@ -173,13 +173,13 @@ PROGRAM post
      call transpose_x_to_y(phi1,phi2)
 
      ! Statistics computation through external subroutines
-     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,ta2, &
+     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
                                    u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                                    u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
-                                   phi2mean,uphimean,vphimean,wphimean,nr)
+                                   phi2mean,uphimean,vphimean,wphimean)
                                        
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,vortxmean,vortymean,vortzmean,nr)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,vortxmean,vortymean,vortzmean)
 
   enddo ! closing of the do-loop on the different flow realizations
   
