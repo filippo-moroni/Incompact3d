@@ -76,7 +76,7 @@ irestart = 0          ! Read initial flow field ? If not 0, set n+1 with respect
 icheckpoint = 5000    ! Frequency for writing backup file
 ioutput = 5000        ! Frequency for saving and visualization
 ilist = 25            ! Frequency for writing to screen        
-nvisu = 1             ! Size for visualisation collection   # meaning?
+nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
 /End
 

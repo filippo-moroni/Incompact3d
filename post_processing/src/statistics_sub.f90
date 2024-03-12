@@ -16,19 +16,23 @@
 ! Two-points statistics:
 ! - (to be implemented, e.g. correlations) 
 
+! Flow parameters: 
+! - delta_99, displacement thickness, momentum thickness
+! - shear velocity
+! - related Re numbers
 !----------------------------------------------------------!
 
 ! Mean statistics (average, variance, skewness, kurtosis)
-subroutine STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
+subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,ta2, &
                      u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                      u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                      uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                      phi2mean,uphimean,vphimean,wphimean,nr)
 
-  USE param
-  USE variables
-  USE decomp_2d
-  USE decomp_2d_io
+  use param
+  use variables
+  use decomp_2d
+  use decomp_2d_io
   
   implicit none
   
@@ -47,8 +51,8 @@ subroutine STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean               ! average and variance of scalar field
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean      ! average of mixed fluctuations
   
-  integer :: is                                                                         ! index for the different scalar fields
-  integer :: nr
+  integer            :: is                                                              ! index for the different scalar fields
+  integer,intent(in) :: nr
                                                                                                                                             
   !---x-component---!
   ! average
@@ -142,16 +146,16 @@ subroutine STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
 
   endif
 
-end subroutine STAT_MEAN
+end subroutine stat_mean
 !********************************************************************
 ! Vorticity 
-subroutine STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)   ! to be checked and completed
+subroutine stat_vorticity(ux1,uy1,uz1,vortxmean2,vortymean2,vortzmean2,nr)   ! to be checked and completed
 
-  USE param
-  USE variables
-  USE decomp_2d
-  USE decomp_2d_io
-  USE MPI
+  use param
+  use variables
+  use decomp_2d
+  use decomp_2d_io
+  use MPI
   
   implicit none
 
@@ -159,16 +163,15 @@ subroutine STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)   ! to be checked and completed
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
-  integer :: ijk,nvect1,ifile
-  character(len=30) :: filename
   
-  integer :: nr
-  real(mytype) :: lind
+  character(len=30)  :: filename
   
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean,vortymean,vortzmean   ! average vorticity components
+  integer,intent(in) :: nr
+  real(mytype)       :: lind
+  
+  real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1   ! average vorticity components, x-pencils
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2   ! average vorticity components, y-pencils
       
-  nvect1=xsize(1)*xsize(2)*xsize(3)
-
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
   call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
@@ -191,6 +194,7 @@ subroutine STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)   ! to be checked and completed
   call transpose_z_to_y(ta3,td2)
   call transpose_z_to_y(tb3,te2)
   call transpose_z_to_y(tc3,tf2)
+  
   call transpose_y_to_x(td2,tg1)
   call transpose_y_to_x(te2,th1)
   call transpose_y_to_x(tf2,ti1)
@@ -203,30 +207,99 @@ subroutine STAT_VORTICITY(ux1,uy1,uz1,ifile,nr)   ! to be checked and completed
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
   
   !---Vorticity average---!
-  
-  ! Variable declaration
-  di1=0._mytype
+   
+  ! Vorticity along x 
+  di1 = tf1 - th1  !dw/dy - dv/dz
+  vortxmean1 = vortxmean1 + di1/nr
     
-  ! Vorticity along x    
-  do ijk=1,nvect1 !dw/dy - dv/dz
-     di1(ijk,1,1)=tf1(ijk,1,1)-th1(ijk,1,1)
-  enddo  
-  vortxmean = vortxmean + di1/nr
-  
   ! Vorticity along y
-  do ijk=1,nvect1 !du/dz - dw/dx
-     di1(ijk,1,1)=tg1(ijk,1,1)-tc1(ijk,1,1)
-  enddo
-  vortymean = vortymean + di1/nr
-  
+  di1 = tg1 - tc1  !du/dz - dw/dx
+  vortymean1 = vortymean1 + di1/nr
+     
   ! Vorticity along z
-   do ijk=1,nvect1 !dv/dx - du/dy
-      di1(ijk,1,1)=tb1(ijk,1,1)-td1(ijk,1,1)
-   enddo
-   vortzmean = vortzmean + di1/nr
+  di1 = tb1 - td1  !dv/dx - du/dy
+  vortzmean1 = vortzmean1 + di1/nr
+   
+  ! Transpose vorticity along y
+  call transpose_x_to_y(vortxmean1,vortxmean2)
+  call transpose_x_to_y(vortymean1,vortymean2)
+  call transpose_x_to_y(vortzmean1,vortzmean2)
 
-end subroutine STAT_VORTICITY
+end subroutine stat_vorticity
 !********************************************************************
+! Calculation of flow parameters: delta_99, displacement thickness, momentum thickness, 
+! shear velocity and related Re numbers
+subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
 
+  use param
+  use variables
+  use decomp_2d
+  use decomp_2d_io
 
+  implicit none
+  
+  integer,intent(in) :: ie,nt
+  integer            :: j, iunit
+  character(99)      :: filename
+  real(mytype),intent(in),dimension(ysize(2)) :: u1meanHT
+  
+  real(mytype), dimension(nt) :: delta_99,disp_t,mom_t
+  real(mytype), dimension(nt) :: re_tau,re_ds,re_theta
+  real(mytype), dimension(nt) :: sh_vel
+  
+  ! Reading the coordinates in y of faces' elements
+  write(filename,"('yp.dat')") 
+               
+  filename = adjustl(filename)
+        
+  open(newunit=iunit,file=trim(filename),form='formatted')
+     
+  do j = ystart(2),yend(2)
+     
+  read(iunit, *) yp(j)
+    
+  end do
+     
+  close(iunit)
+     
+  ! These calculations are low-order (just to have an initial reference value)
+     
+  ! delta_99
+  do j = ystart(2),yend(2)
+     
+  delta_99(ie) = yp(j)  
+        
+  if(u1meanHT(j) > 0.99*u1meanHT(yend(2))) exit
+               
+  end do
+     
+  ! Modify the index in u1meanHT: (try the 2 approaches)
+  ! j    :  forward rectangular integration
+  ! j + 1: backward rectangular integration
+     
+  ! displacement thickness
+  do j = ystart(2),yend(2) - 1
+     
+  disp_t(ie) = disp_t(ie) + u1meanHT(j)*(yp(j+1) - yp(j)) 
+                    
+  end do
+     
+  !disp_t(ie) = yp(ysize(2)) - disp_t(ie)  ! valid for a standard spatial BL (otherwise no further calculation for temporal BLs)
+         
+  ! momentum thickness
+  do j = ystart(2),yend(2) - 1
+     
+  mom_t(ie) = mom_t(ie) + (u1meanHT(j) - u1meanHT(j)**2)*(yp(j+1) - yp(j))
+                    
+  end do
+     
+  ! friction or shear velocity
+  sh_vel(ie) = sqrt(xnu*u1meanHT(2)/yp(2))
+     
+  ! Reynolds numbers
+  re_tau  (ie) = delta_99(ie)*sh_vel(ie)/xnu  ! friction Re number (or delta99^+)
+  re_ds   (ie) = disp_t  (ie)*sh_vel(ie)/xnu  ! Re number based on displacement thickness delta star (ds)
+  re_theta(ie) = mom_t   (ie)*sh_vel(ie)/xnu  ! Re number based on momentum thickness theta 
+
+end subroutine stat_parameters
 

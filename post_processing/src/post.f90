@@ -37,35 +37,14 @@ PROGRAM post
   
   ! Integer for MPI
   integer :: code
-
-  ! Variables to read the input.i3d file
-  integer :: nargin, FNLength, status, DecInd
-  logical :: back
-  character(len=80) :: InputFN, FNBase
     
   ! Initialize MPI
-  CALL MPI_INIT(code)
+  call MPI_INIT(code)
   call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,code) 
-  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)  ! same as R. Corsini & Xcompact3d
+  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)    ! same as R. Corsini & Xcompact3d
   
-  ! Reading of the input file as Xcompact3d does
-  nargin=command_argument_count()
-  if (nargin <1) then
-     InputFN='input.i3d'
-     if (nrank==0) write(*,*) 'PostIncompact3d is run with the default file -->', trim(InputFN)
-  elseif (nargin >= 1) then
-     call get_command_argument(1,InputFN,FNLength,status)
-     back=.true.
-     FNBase=inputFN((index(InputFN,'/',back)+1):len(InputFN))
-     DecInd=index(FNBase,'.',back)
-     if (DecInd >1) then
-        FNBase=FNBase(1:(DecInd-1))
-     end if
-     if (nrank==0) write(*,*) 'PostIncompact3d is run with the provided file -->', trim(InputFN)
-  endif
-  
-  ! Reading the input file for geometry and numerics
-  call parameter(InputFN)
+  ! Reading of input.i3d file
+  call reading_input_file()
   
   ! Imposing decomposition in slabs
   !p_row=1; p_col=nproc
@@ -194,13 +173,13 @@ PROGRAM post
      call transpose_x_to_y(phi1,phi2)
 
      ! Statistics computation through external subroutines
-     if (post_mean) call STAT_MEAN(ux2,uy2,uz2,pre2,phi2,ta2, &
+     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,ta2, &
                                    u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                                    u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean,nr)
                                        
-     if (post_vort) call STAT_VORTICITY(ux2,uy2,uz2,ifile,nr)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,vortxmean,vortymean,vortzmean,nr)
 
   enddo ! closing of the do-loop on the different flow realizations
   
@@ -209,8 +188,8 @@ PROGRAM post
   ! Summation over x and z directions
   if (post_mean) then
      do k=ystart(3),yend(3)
-      do i=ystart(1),yend(1)
-        do j=ystart(2),yend(2)          
+        do i=ystart(1),yend(1)
+           do j=ystart(2),yend(2)          
               u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)/real(nx*nz,mytype)
               v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)/real(nx*nz,mytype)
               w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)/real(nx*nz,mytype)
@@ -233,6 +212,18 @@ PROGRAM post
               uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/real(nx*nz,mytype)
               vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/real(nx*nz,mytype)
               wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/real(nx*nz,mytype)                     
+           enddo
+        enddo
+     enddo
+  endif
+  
+  if (post_vort) then
+     do k=ystart(3),yend(3)
+        do i=ystart(1),yend(1)
+           do j=ystart(2),yend(2)          
+              vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/real(nx*nz,mytype)
+              vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/real(nx*nz,mytype)
+              vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/real(nx*nz,mytype)                   
            enddo
         enddo
      enddo
@@ -264,8 +255,13 @@ PROGRAM post
      call MPI_REDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      call MPI_REDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      call MPI_REDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     
+     call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)    
+  endif
+  
+  if (post_vort) then
+     call MPI_REDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)   
   endif
 
 !--------------MPI process nrank = 0 at work---------------!
@@ -358,69 +354,45 @@ PROGRAM post
                                
         close(iunit)
      endif
-  
-!------------Calculate parameters of the flow--------------!
-  
-     ! Reading the coordinates in y of faces' elements
-     write(filename,"('yp.dat')") 
-               
-     filename = adjustl(filename)
+     
+  if (post_vort) then
+     
+        write(filename,"('vort_stats',F5.1,'.txt')") t
+        write(*,"(3x,A)") filename
         
-     open(newunit=iunit,file=trim(filename),form='formatted')
-     
-     do j = ystart(2),yend(2)
-     
-        read(iunit, *) yp(j)
+        filename = adjustl(filename)
+        
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        do j = ystart(2),yend(2) + 1
+        
+        if (j .eq. 1) then
+        
+        write (iunit, *) 'mean[omega_x]'  , ',', 'mean[omega_y]'  , ',', 'mean[omega_z]'
+                               
+        else
+        
+        write(iunit, *)  vortxmeanHT(j-1),         ',', &
+                         vortymeanHT(j-1),         ',', &       
+                         vortzmeanHT(j-1)
+        
+        end if
+        
+        end do
+                               
+        close(iunit)
+  endif
+  
+  ! Calculate parameters of the flow  
+  call stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
     
-     end do
-     
-     close(iunit)
-     
-     ! These calculations are low-order (just to have an initial reference value)
-     
-     ! delta_99
-     do j = ystart(2),yend(2)
-     
-        delta_99(ie) = yp(j)  
-        
-        if(u1meanHT(j) > 0.99*u1meanHT(yend(2))) exit
-               
-     end do
-     
-     ! Modify the index in u1meanHT: (try the 2 approaches)
-     ! j    :  forward rectangular integration
-     ! j + 1: backward rectangular integration
-     
-     ! displacement thickness
-     do j = ystart(2),yend(2) - 1
-     
-     disp_t(ie) = disp_t(ie) + u1meanHT(j)*(yp(j+1) - yp(j)) 
-                    
-     end do
-     
-     !disp_t(ie) = yp(ysize(2)) - disp_t(ie)  ! valid for a standard spatial BL (otherwise no further calculation for temporal BLs)
-     
-     
-     ! momentum thickness
-     do j = ystart(2),yend(2) - 1
-     
-     mom_t(ie) = mom_t(ie) + (u1meanHT(j) - u1meanHT(j)**2)*(yp(j+1) - yp(j))
-                    
-     end do
-     
-     ! friction or shear velocity
-     sh_vel(ie) = sqrt(xnu*u1meanHT(2)/yp(2))
-     
-     ! Reynolds numbers
-     re_tau  (ie) = delta_99(ie)*sh_vel(ie)/xnu  ! friction Re number (or delta99^+)
-     re_ds   (ie) = disp_t  (ie)*sh_vel(ie)/xnu  ! Re number based on displacement thickness delta star (ds)
-     re_theta(ie) = mom_t   (ie)*sh_vel(ie)/xnu  ! Re number based on momentum thickness theta     
-     
-  call reset_domain()      ! reset to zero the averages on total domain (HT) 
+  ! Reset to zero the averages on total domain (HT)   
+  call reset_domain()       
      
   endif ! closing of the if-statement for processor 0
   
-  call reset_subdomains()  ! reset to zero the average vectors on subdomains (H1)
+  ! Reset to zero the average vectors on subdomains (H1)
+  call reset_subdomains()  
   
  enddo  ! closing of the do-loop for the different time units (or SnapShots) (ie index)
  

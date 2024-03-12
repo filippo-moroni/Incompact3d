@@ -50,6 +50,11 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: delta_99,disp_t,mom_t
   real(mytype), save, allocatable, dimension(:) :: re_tau,re_ds,re_theta
   real(mytype), save, allocatable, dimension(:) :: sh_vel
+  
+  ! Arrays for vorticity
+  real(mytype), save, allocatable, dimension(:,:,:) :: vortxmean,vortymean,vortzmean
+  real(mytype), save, allocatable, dimension(:)     :: vortxmeanH1,vortymeanH1,vortzmeanH1
+  real(mytype), save, allocatable, dimension(:)     :: vortxmeanHT,vortymeanHT,vortzmeanHT
      
 contains
 
@@ -182,6 +187,12 @@ contains
          csi6z(nz),cwi6z(nz),cifi6z(nz),cici6z(nz))
     allocate(cibi6z(nz),cifip6z(nz),cisip6z(nz),ciwip6z(nz),cisi6z(nz),ciwi6z(nz))
 
+    !module mesh
+    allocate(ppy(ny),pp2y(ny),pp4y(ny))
+    allocate(ppyi(ny),pp2yi(ny),pp4yi(ny))
+    allocate(yp(ny),ypi(ny),del(ny))
+    allocate(yeta(ny),yetai(ny))
+  
   end subroutine init_post_variables
   !******************************************************************
   ! Subroutine for allocating the memory for statistics arrays
@@ -278,8 +289,27 @@ contains
        
        allocate(sh_vel  (nt));  sh_vel  =zero  ! shear-velocity
        
-       allocate(yp(ysize(2)));  yp      =zero  ! y-coordinates for the faces' elements
+       !allocate(yp(ysize(2)));  yp      =zero  ! y-coordinates for the faces' elements
     
+    end if
+    
+    if (post_vort) then
+    
+       allocate(vortxmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices 
+       allocate(vortymean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  
+       allocate(vortzmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))
+       vortxmean=zero; vortymean=zero; vortzmean=zero  
+       
+       allocate(vortxmeanH1(ysize(2)));
+       allocate(vortymeanH1(ysize(2)));
+       allocate(vortzmeanH1(ysize(2)));
+       vortxmeanH1=zero;vortymeanH1=zero;vortzmeanH1=zero
+       
+       allocate(vortxmeanHT(ysize(2)));
+       allocate(vortymeanHT(ysize(2)));
+       allocate(vortzmeanHT(ysize(2)));
+       vortxmeanHT=zero;vortymeanHT=zero;vortzmeanHT=zero
+                                                                                                                                                               
     endif
 
   end subroutine init_statistics
@@ -293,6 +323,8 @@ contains
   
   implicit none
   
+  if (post_mean) then
+  
   u1mean=zero;v1mean=zero;w1mean=zero
   u2mean=zero;v2mean=zero;w2mean=zero
   u3mean=zero;v3mean=zero;w3mean=zero
@@ -302,7 +334,15 @@ contains
   
   phi1mean=zero;phi2mean=zero
   uphimean=zero;vphimean=zero;wphimean=zero
-    
+  
+  end if
+  
+  if (post_vort) then
+  
+  vortxmean=zero; vortymean=zero; vortzmean=zero
+  
+  end if
+     
   end subroutine reset_averages
 
   !******************************************************************
@@ -313,6 +353,8 @@ contains
   USE MPI
   
   implicit none
+  
+  if (post_mean) then
      
   u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
   u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
@@ -324,6 +366,14 @@ contains
   phi1meanH1=zero;phi2meanH1=zero
   uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
   
+  end if
+  
+  if (post_vort) then
+  
+  vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
+  
+  end if
+  
   end subroutine reset_subdomains
   
   !******************************************************************
@@ -332,7 +382,9 @@ contains
   subroutine reset_domain
    
   implicit none
-     
+  
+  if (post_mean) then
+    
   u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
   u2meanHT=zero;v2meanHT=zero;w2meanHT=zero
   u3meanHT=zero;v3meanHT=zero;w3meanHT=zero
@@ -342,6 +394,14 @@ contains
   
   phi1meanHT=zero;phi2meanHT=zero
   uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
+  
+  end if
+  
+  if (post_vort) then
+  
+  vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
+  
+  end if
   
   end subroutine reset_domain
    
