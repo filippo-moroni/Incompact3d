@@ -5,7 +5,7 @@
 !               for channel flow simulations.              !
 !----------------------------------------------------------!
 
-module temporal_bl
+module temporal_tbl
 
   use decomp_2d
   use variables
@@ -98,7 +98,8 @@ contains
                   uz1 = zero
                  
                   ux1(i,j,k)= ux1(i,j,k) + um 
-             enddo  
+             enddo 
+             end if 
           enddo
        enddo
        
@@ -114,6 +115,8 @@ contains
 
     implicit none
     
+    integer :: i,j,k
+    
     ! Bottom boundary (other BCs should not be defined explicitly) (to check)
     if (ncly1 == 2) then
       do k = 1, xsize(3)
@@ -127,7 +130,7 @@ contains
     
   end subroutine boundary_conditions_ttbl
   
-end module temporal_bl
+end module temporal_tbl
 
 
 

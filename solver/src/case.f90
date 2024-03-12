@@ -40,6 +40,7 @@ module case
   use dbg_schemes
   use channel
   use tbl
+  use temporal_tbl
 
   use var, only : nzmsize
 
