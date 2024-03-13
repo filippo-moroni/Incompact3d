@@ -206,13 +206,13 @@ PROGRAM post
               uwmeanH1(j)=uwmeanH1(j)+uwmean(i,j,k)/real(nx*nz,mytype)
               vwmeanH1(j)=vwmeanH1(j)+vwmean(i,j,k)/real(nx*nz,mytype)
               pre1meanH1(j)=pre1meanH1(j)+pre1mean(i,j,k)/real(nx*nz,mytype)
-              pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/real(nx*nz,mytype)                                       
+              pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/real(nx*nz,mytype)                                                   
               phi1meanH1(j)=phi1meanH1(j)+phi1mean(i,j,k)/real(nx*nz,mytype)
               phi2meanH1(j)=phi2meanH1(j)+phi2mean(i,j,k)/real(nx*nz,mytype)
               uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/real(nx*nz,mytype)
               vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/real(nx*nz,mytype)
-              wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/real(nx*nz,mytype)                     
-           enddo
+              wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/real(nx*nz,mytype)                                  
+           enddo          
         enddo
      enddo
   endif

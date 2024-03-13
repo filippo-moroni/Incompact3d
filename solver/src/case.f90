@@ -107,7 +107,7 @@ contains
 
     endif
 
-    !! Setup old arrays
+    ! Setup old arrays
     do it = 1, ntime
        drho1(:,:,:,it) = rho1(:,:,:,1)
        dux1(:,:,:,it)=ux1(:,:,:)
@@ -260,7 +260,11 @@ contains
     elseif (itype.eq.itype_tbl) then
 
        call postprocess_tbl (ux, uy, uz, ep)
+        
+    elseif (itype.eq.itype_ttbl) then
 
+       call postprocess_ttbl (ux, uy, uz, pp, phi, ep)
+    
     endif
 
   end subroutine postprocess_case
@@ -282,6 +286,10 @@ contains
     else if (itype .eq. itype_tbl) then
 
        call visu_tbl_init(case_visu_init)    
+    
+    else if (itype .eq. itype_ttbl) then
+
+       call visu_ttbl_init(case_visu_init)
 
     end if
     
@@ -320,6 +328,11 @@ contains
     elseif (itype.eq.itype_tbl) then
 
        call visu_tbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
+       called_visu = .true.
+       
+    elseif (itype.eq.itype_ttbl) then
+
+       call visu_ttbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
        called_visu = .true.
        
     endif
@@ -417,5 +430,4 @@ contains
   !##################################################################
 end module case
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!! case.f90 ends here
+

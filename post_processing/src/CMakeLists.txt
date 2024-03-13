@@ -15,7 +15,7 @@ add_executable(post_incompact3d
                     post_processing_mod.f90
                     reading_sub.f90
                     schemes.f90               
-                    statistics_sub.f90
+                    statistics_subs.f90
                     tools.f90               
                     variables.f90
                     visu.f90)

@@ -97,8 +97,7 @@ contains
     call alloc_x(uz1, opt_global=.true.)  !global indices
     uz1 = zero
     call alloc_x(pre1, opt_global=.true.) !global indices
-    pre1 = zero
-    
+    pre1 = zero    
     allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3))) !global indices
     phi1 = zero
     
@@ -110,15 +109,13 @@ contains
     call alloc_y(uz2)
     uz2=zero
     call alloc_y(pre2)
-    pre2=zero   
-    
+    pre2=zero      
     allocate(phi2(ysize(1),ysize(2),ysize(3)))
-    phi2=zero
-    
+    phi2=zero   
     call alloc_y(ta2)
     ta2 = zero
 
-    ! Allocate memory for vorticity calculation
+    ! Allocate memory for vorticity calculation (these are gradients)
     if (post_vort) then
        if (.not.allocated(ta1)) call alloc_x(ta1)
        if (.not.allocated(tb1)) call alloc_x(tb1)
@@ -148,7 +145,7 @@ contains
        if (.not.allocated(di3)) call alloc_z(di3)
     endif
     
-    !module derivative
+    ! Module derivative
     allocate(ffx(nx),sfx(nx),fsx(nx),fwx(nx),ssx(nx),swx(nx))
     allocate(ffxp(nx),sfxp(nx),fsxp(nx),fwxp(nx),ssxp(nx),swxp(nx))
     allocate(ffy(ny),sfy(ny),fsy(ny),fwy(ny),ssy(ny),swy(ny))
@@ -167,7 +164,7 @@ contains
     allocate(sy(ysize(1),ysize(3)),vy(ysize(1),ysize(3)))
     allocate(sz(zsize(1),zsize(2)),vz(zsize(1),zsize(2)))
 
-    !module derpres
+    ! Module derpres
     allocate(cfx6(nxm),ccx6(nxm),cbx6(nxm),cfxp6(nxm),ciwxp6(nxm),csxp6(nxm),&
          cwxp6(nxm),csx6(nxm),cwx6(nxm),cifx6(nxm),cicx6(nxm),cisx6(nxm))
     allocate(cibx6(nxm),cifxp6(nxm),cisxp6(nxm),ciwx6(nxm))
@@ -187,7 +184,7 @@ contains
          csi6z(nz),cwi6z(nz),cifi6z(nz),cici6z(nz))
     allocate(cibi6z(nz),cifip6z(nz),cisip6z(nz),ciwip6z(nz),cisi6z(nz),ciwi6z(nz))
 
-    !module mesh
+    ! Module mesh
     allocate(ppy(ny),pp2y(ny),pp4y(ny))
     allocate(ppyi(ny),pp2yi(ny),pp4yi(ny))
     allocate(yp(ny),ypi(ny),del(ny))
@@ -257,7 +254,8 @@ contains
        u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
        uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
        pre1meanHT=zero;pre2meanHT=zero
-   
+      
+       ! With the current version, we can deal only with 1 scalar field (otherwise a rank 4 array cannot be transposed)   
        allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
        allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
        allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
@@ -276,7 +274,7 @@ contains
        uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
   
        phi1meanHT=zero;phi2meanHT=zero
-       uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
+       uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero      
        
        ! Variables depending on time
        allocate(delta_99(nt));  delta_99=zero  ! BL thickness delta99
@@ -334,7 +332,7 @@ contains
   
   phi1mean=zero;phi2mean=zero
   uphimean=zero;vphimean=zero;wphimean=zero
-  
+ 
   end if
   
   if (post_vort) then
@@ -365,7 +363,7 @@ contains
   
   phi1meanH1=zero;phi2meanH1=zero
   uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
-  
+ 
   end if
   
   if (post_vort) then
