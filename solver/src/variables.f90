@@ -1323,11 +1323,11 @@ contains
     allocate(duz1(xsize(1),xsize(2),xsize(3),ntime))
     duz1=zero
 
-    !! Scalar
+    ! Scalar
     allocate(dphi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),ntime,1:numscalar)) !global indices
     dphi1=zero
     
-    !! ABL
+    ! ABL
     allocate(heatflux(xsize(1),xsize(3)))
     heatflux = zero
     allocate(PsiM(xsize(1),xsize(3)))
@@ -1337,7 +1337,7 @@ contains
     allocate(Tstat(xsize(2),1))
     Tstat = zero
 
-    !! Turbine Modelling
+    ! Turbine Modelling
     if (iturbine.eq.1) then
        allocate(FTx(xsize(1),xsize(2),xsize(3)))
        FTx = zero
@@ -1356,7 +1356,7 @@ contains
        Gammadisc = zero
     endif
 
-    !! LMN
+    ! LMN
     if (.not.ilmn) then
        nrhotime = 1 !! Save some space
     endif
@@ -1372,7 +1372,7 @@ contains
     call alloc_z(divu3, opt_global=.true.) !global indices
     divu3=zero
 
-    ! !TRIPPING
+    ! TRIPPING
     zs_param=1.7_mytype
     randomseed=4600._mytype
     zs_tr=zs_param/2.853_mytype

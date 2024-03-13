@@ -80,10 +80,10 @@ contains
              if (diff < noise_loc*uwall) then             
              do i=1,xsize(1)
              
-                  ! Rescaling the noise with a percentage of the wall velocity
-                  ux1 = ux1*init_noise*uwall
-                  uy1 = uy1*init_noise*uwall
-                  uz1 = uz1*init_noise*uwall
+                  ! Rescaling the noise with a percentage of the wall velocity and center it with respect to zero
+                  ux1 = (ux1*two - one)*init_noise*uwall
+                  uy1 = (uy1*two - one)*init_noise*uwall
+                  uz1 = (uz1*two - one)*init_noise*uwall
                  
                   ux1(i,j,k)= ux1(i,j,k) + um 
              enddo

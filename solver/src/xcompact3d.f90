@@ -126,7 +126,7 @@ subroutine init_xcompact3d()
   use var
 
   use navier, only : calc_divu_constraint
-  use tools, only : test_speed_min_max, test_scalar_min_max, &
+  use tools,  only : test_speed_min_max, test_scalar_min_max, &
        restart, &
        simu_stats, compute_cfldiff, &
        init_inflow_outflow
