@@ -2,18 +2,22 @@ program xcompact3d_stretching_channel
 
   implicit none
   
-  integer, parameter :: n=128
+  integer, parameter :: n=65
   real(8), dimension(n) ::  yeta, phi
   real(8) :: re, ret, alpha, beta, betamin, eps, pi, betaold
   real(8) :: den, den1, den2, den3, den4, xnum1, y, f, cst
   real(8) :: dy, dymax, dymin, xcx, xl2, xnum, yly, yold, yp, yinf
   integer :: i, npvis
   
-  re=4200.  !#TO CHANGE#!input Reynolds number in Xcompact3d
-                        !based on centreline velocity Poisseuille profile
-  ret=0.123*re**0.875   !corresponding Reynolds number based on u_tau
+  
+  ! Channel flow simulations
+  ! re=4200.0           ! based on centreline velocity Poisseuille profile
+  ! ret=0.123*re**0.875   ! corresponding Reynolds number based on u_tau
+  
+  ! We impose here a generic friction Reynolds number
+  ret = 1500.0  ! imposed as 3 times the target for a temporal BL
     
-  yp=1.      !#TO CHANGE#!targeted resolution at the wall in wall units
+  yp=0.5      !#TO CHANGE#!targeted resolution at the wall in wall units
   y=1000
 
   beta=1.        !initiation stretching parameter

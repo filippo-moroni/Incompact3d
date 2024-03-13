@@ -53,15 +53,15 @@ contains
  
     ! Initialization as Kozul et al. (JFM, 2016) (tanh + noise)
     
-       ! Noise (random numbers from 0 to 1)
-       call system_clock(count=code)
-       if (iin.eq.2) code=0
-       call random_seed(size = ii)
-       call random_seed(put = code+63946*(nrank+1)*(/ (i - 1, i = 1, ii) /))
+    ! Noise (random numbers from 0 to 1)
+    call system_clock(count=code)
+    if (iin.eq.2) code=0
+    call random_seed(size = ii)
+    call random_seed(put = code+63946*(nrank+1)*(/ (i - 1, i = 1, ii) /))
 
-       call random_number(ux1)
-       call random_number(uy1)
-       call random_number(uz1)
+    call random_number(ux1)
+    call random_number(uy1)
+    call random_number(uz1)
              
        ! Noise superimposed to the tanh velocity profile
        do k=1,xsize(3)
@@ -77,9 +77,9 @@ contains
              diff = uwall - um
              
              ! Area near the wall, we add noise to all velocity components
-             if (diff < noise_loc*uwall) then
-             
+             if (diff < noise_loc*uwall) then             
              do i=1,xsize(1)
+             
                   ! Rescaling the noise with a percentage of the wall velocity
                   ux1 = ux1*init_noise*uwall
                   uy1 = uy1*init_noise*uwall
