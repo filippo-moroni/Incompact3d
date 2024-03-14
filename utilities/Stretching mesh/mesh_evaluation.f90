@@ -1,8 +1,8 @@
 !----------------------------------------------------------!
 !     This program is used to estimate the dimension       !
-!    of the grid elements for a temporal BL simulation.   !
+!    of the grid elements for a temporal BL simulation.    !
 !      Adapted from original Incompact3d file (master)     !
-!          stretching_parameter_channel.f90                !
+!            stretching_parameter_channel.f90              !
 !----------------------------------------------------------!
 program mesh_evaluation
 
@@ -24,8 +24,9 @@ program mesh_evaluation
   ! Work variables
   real(8) :: yinf, den, xnum, alpha, xcx, xnum1, cst
   real(8) :: den1, den3, den4
-  integer :: j
   real(8) :: sh_vel, delta_nu
+  real(8) :: delta_y1, delta_yn, height
+  integer :: j, npvis
     
   ! Variables 
   real(8), dimension(ny)  ::  yeta, yp, yetai, ypi
@@ -185,7 +186,10 @@ program mesh_evaluation
         ypi(j)=-beta*cos(pi*yetai(j))/sin(yetai(j)*pi)
      enddo
   endif
-
+  
+  ! This part is valid for meshes with refinement at the bottom boundary only
+  if (istret .eq. 3) then
+   
   ! Calculate shear velocity
   sh_vel = sqrt((cf/2.0))*uwall
 
@@ -195,21 +199,44 @@ program mesh_evaluation
   ! Rescaling the coordinates
   yp = yp/delta_nu
   ypi = ypi/delta_nu
-
-  ! To conclude: add the calculation for the dimension of the first and the last elements of the mesh
-  ! ...
-  !
-
+ 
+  ! First and last elements' dimension
+  delta_y1 = yp(2) - yp(1)
+  delta_yn = yp(ny) - yp(ny-1)
+ 
+  ! Calculation of the number of mesh nodes in the viscous sublayer
+  npvis=0     ! number of points viscous sublayer
+  height=0.0  ! cumulative height in viscous unit (y+)
+  
+  do j=2,ny    
+     if (height + yp(j) - yp(j-1) .le. 5) npvis = npvis + 1 
+     height = height + yp(j) - yp(j-1)
+ enddo
+  
+  ! Printing the useful informations to the screen
+  print *,'Number of mesh nodes in wall normal direction : ',ny
+  print *,'Skin friction coefficient employed = ',cf
+  print *,'Beta parameter = ',beta
+  print *
+  print *,'Mesh size at the first element near the wall: delta_y1+ = ',delta_y1
+  print *,'Mesh size at the last element away from the wall: delta_yn+ = ',delta_yn
+  print *,'Number of mesh nodes in viscous sublayer : ', npvis
+  print *
+  
+  endif
+  
   ! Writing the y coordinates of the trial mesh' nodes and centers
-  open(10,file='yp_trial.dat', form='formatted')
-     do j=1,ny
-        write(10,*)yp(j)
-     enddo
-  close(10)
-  open(10,file='ypi_trial.dat', form='formatted')
-     do j=1,nym
-        write(10,*)ypi(j)
-     enddo
-  close(10)
+  !open(10,file='yp_trial.dat', form='formatted')
+  !   do j=1,ny
+  !      write(10,*)yp(j)
+  !   enddo
+  !close(10)
+  !open(10,file='ypi_trial.dat', form='formatted')
+  !   do j=1,nym
+  !      write(10,*)ypi(j)
+  !   enddo
+  !close(10)
 
 end program mesh_evaluation
+
+
