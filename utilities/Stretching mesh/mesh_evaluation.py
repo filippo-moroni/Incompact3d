@@ -1,6 +1,6 @@
 #!---------------------------------------------------------!
 #! This is the Python version of 'mesh_evaluation.f90'     !
-#! Same values are obtained from both codes                !
+#! Same values are obtained from both codes (tested)       !
 #!                                                         !
 #! Y-coordinates at the center of mesh nodes are not       !
 #! evaluated here.                                         !
