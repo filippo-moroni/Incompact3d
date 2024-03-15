@@ -106,7 +106,7 @@ contains
     return
   end subroutine init_temporal_tbl
   !############################################################################
-  subroutine boundary_conditions_ttbl()
+  subroutine boundary_conditions_ttbl(byx1,byy1,byz1,byxn,byyn,byzn)
 
     use param
     use variables
@@ -131,9 +131,9 @@ contains
     if (nclyn == 2) then
       do k = 1, xsize(3)
         do i = 1, xsize(1)
-          byx1(i,k) = zero  
-          byy1(i,k) = zero
-          byz1(i,k) = zero
+          byxn(i,k) = zero  
+          byyn(i,k) = zero
+          byzn(i,k) = zero
         enddo
       enddo
     endif

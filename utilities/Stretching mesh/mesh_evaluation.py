@@ -9,17 +9,18 @@
 import numpy as np
 
 # Inputs
-xlx = 32.0   # domain dimension in x direction
 nx = 64      # number of points in x direction
-yly = 8.0    # domain dimension in y direction
 ny = 129     # number of points in y direction
-zlz = 16.0   # domain dimension in z direction
 nz = 64      # number of points in z direction
+
+xlx = 8.0    # domain dimension in x direction
+yly = 8.0    # domain dimension in y direction
+zlz = 8.0    # domain dimension in z direction
 
 nym = ny - 1 # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
 
 istret = 3   # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 0.4   # beta parameter for mesh stretching
+beta = 1.5   # beta parameter for mesh stretching
 cf = 0.007   # maximum cf estimated
 nu = 0.002   # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0  # velocity of the wall
@@ -112,6 +113,13 @@ if istret == 3:
     delta_y1 = yp[2] - yp[1]
     delta_yn = yp[ny-1] - yp[ny-2]
     
+    # Aspect ratios (ARs) of 1st and last elements
+    AR_x1 = delta_x / delta_y1	# AR x direction, 1st element
+    AR_xn = delta_x / delta_yn	# AR x direction, nth element
+    
+    AR_z1 = delta_z / delta_y1	# AR z direction, 1st element
+    AR_zn = delta_z / delta_yn	# AR z direction, nth element     
+    
     # Calculation of the number of mesh nodes in the viscous sublayer
     npvis = 0     # number of points viscous sublayer
     height = 0.0  # cumulative height in viscous unit (y+)
@@ -125,12 +133,13 @@ if istret == 3:
     print()
     print('!--- Inputs: ---!')
     print()
-    print('Domain dimension, Lx = ',xlx)
-    print('Number of mesh nodes in streamwise direction, nx = ', nx)  
-    print('Domain dimension, Ly = ',yly)
+    print('Number of mesh nodes in streamwise direction,  nx = ', nx)
     print('Number of mesh nodes in wall normal direction, ny = ', ny)
+    print('Number of mesh nodes in spanwise direction,    nz = ', nz)
+    print()
+    print('Domain dimension, Lx = ',xlx)     
+    print('Domain dimension, Ly = ',yly)
     print('Domain dimension, Lz = ',zlz)
-    print('Number of mesh nodes in spanwise direction, nz = ', nz)
     print()
     print('Beta parameter = ', beta)
     print('Skin friction coefficient employed, cf = ', cf)
@@ -144,10 +153,18 @@ if istret == 3:
     print()
     print('Length of the domain (Lx+):', xlx_nd)
     print('Height of the domain (Ly+):', yp[ny-1])
-    print('Width of the domain (Lz+):', zlz_nd)
+    print('Width  of the domain (Lz+):', zlz_nd)
     print()
     print('Mesh size x-direction: delta_x+ =', delta_x)
     print('Mesh size z-direction: delta_z+ =', delta_z)
+    print()
+    print('Aspect ratio x-direction 1st element: AR_x1 =', AR_x1)
+    print('Aspect ratio x-direction nth element: AR_xn =', AR_xn)
+    print('Aspect ratio z-direction 1st element: AR_z1 =', AR_z1)
+    print('Aspect ratio z-direction nth element: AR_zn =', AR_zn)
+    print()
+    
+    
     
     
     
