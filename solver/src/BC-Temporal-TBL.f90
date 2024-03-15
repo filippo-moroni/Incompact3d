@@ -17,7 +17,8 @@ module temporal_tbl
   character(len=1),parameter :: NL=char(10) !new line character
 
   PRIVATE   ! All functions/subroutines private by default
-  PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl
+  PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl, postprocess_ttbl, &
+            visu_ttbl_init, visu_ttbl
 
 contains
   !############################################################################
@@ -169,10 +170,10 @@ contains
   !############################################################################
   subroutine visu_ttbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
 
-    use var, only : ux2, uy2, uz2, ux3, uy3, uz3
-    use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-    use var, only : ta2,tb2,tc2,td2,te2,tf2,di2,ta3,tb3,tc3,td3,te3,tf3,di3
-    use var, ONLY : nzmsize
+    use var,  only : ux2, uy2, uz2, ux3, uy3, uz3
+    use var,  only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+    use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2,ta3,tb3,tc3,td3,te3,tf3,di3
+    use var,  only : nzmsize
     use visu, only : write_field
     
     use ibm_param, only : ubcx,ubcy,ubcz

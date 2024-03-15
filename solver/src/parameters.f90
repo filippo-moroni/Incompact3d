@@ -127,7 +127,7 @@ subroutine parameter(input_i3d)
   read(10, nml=BasicParam); rewind(10)
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
-  read(10, nml=Statistics); rewind(10)
+  !read(10, nml=Statistics); rewind(10)
   
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
@@ -235,7 +235,7 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-  read(10, nml=CASE); rewind(10)                  ! Read case-specific variables
+  !read(10, nml=CASE); rewind(10)                  ! Read case-specific variables
   
   if (itype.eq.itype_ttbl) then
      read(10, nml=TemporalTBLParam); rewind(10);  ! Read parameters for temporal TBL case
@@ -704,7 +704,7 @@ subroutine parameter_defaults()
 
   imodulo2 = 1
 
-  !! CASE specific variables
+  ! CASE specific variables
   tgv_twod = .FALSE.
 
   ! Tripping

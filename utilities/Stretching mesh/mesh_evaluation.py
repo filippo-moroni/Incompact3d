@@ -9,13 +9,19 @@
 import numpy as np
 
 # Inputs
-yly = 2.0    # domain dimension in y direction
-ny = 65      # number of points in y direction
-nym = 64     # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
+xlx = 32.0   # domain dimension in x direction
+nx = 64      # number of points in x direction
+yly = 8.0    # domain dimension in y direction
+ny = 129     # number of points in y direction
+zlz = 16.0   # domain dimension in z direction
+nz = 64      # number of points in z direction
+
+nym = ny - 1 # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
+
 istret = 3   # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 0.25  # beta parameter for mesh stretching
+beta = 0.4   # beta parameter for mesh stretching
 cf = 0.007   # maximum cf estimated
-nu = 0.002   # kinematic viscosity
+nu = 0.002   # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0  # velocity of the wall
 
 # Declare local constant Pi
@@ -82,20 +88,30 @@ if alpha == 0.0:
 
 # This part is valid for meshes with refinement at the bottom boundary only
 if istret == 3:
-
+    
+    # Calculate the spacings along x and z (uniform)
+    delta_x = xlx / nx
+    delta_z = zlz / nz
+    
     # Calculate shear velocity (temporal BL)
     sh_vel = np.sqrt((cf/2.0)) * uwall
 
     # Calculate viscous unit
     delta_nu = nu / sh_vel
 
-    # Rescaling the coordinates
+    # Rescaling the y coordinates and the spacings along x and z
     yp = yp / delta_nu
+    delta_x = delta_x / delta_nu
+    delta_z = delta_z / delta_nu
+    
+    # Rescaling also domain dimensions
+    xlx_nd = xlx / delta_nu
+    zlz_nd = zlz / delta_nu
 
     # First and last elements' dimension
     delta_y1 = yp[2] - yp[1]
     delta_yn = yp[ny-1] - yp[ny-2]
-
+    
     # Calculation of the number of mesh nodes in the viscous sublayer
     npvis = 0     # number of points viscous sublayer
     height = 0.0  # cumulative height in viscous unit (y+)
@@ -105,12 +121,17 @@ if istret == 3:
             npvis += 1 
         height += yp[j] - yp[j-1]
 
-    # Printing the useful information to the screen
+    # Printing useful information to the screen
     print()
     print('!--- Inputs: ---!')
     print()
+    print('Domain dimension, Lx = ',xlx)
+    print('Number of mesh nodes in streamwise direction, nx = ', nx)  
     print('Domain dimension, Ly = ',yly)
     print('Number of mesh nodes in wall normal direction, ny = ', ny)
+    print('Domain dimension, Lz = ',zlz)
+    print('Number of mesh nodes in spanwise direction, nz = ', nz)
+    print()
     print('Beta parameter = ', beta)
     print('Skin friction coefficient employed, cf = ', cf)
     print('Kinematic viscosity, nu = ', nu)
@@ -121,6 +142,15 @@ if istret == 3:
     print('Mesh size at the last element away from the wall: delta_yn+ =', delta_yn)
     print('Number of mesh nodes in the viscous sublayer:', npvis)
     print()
+    print('Length of the domain (Lx+):', xlx_nd)
+    print('Height of the domain (Ly+):', yp[ny-1])
+    print('Width of the domain (Lz+):', zlz_nd)
+    print()
+    print('Mesh size x-direction: delta_x+ =', delta_x)
+    print('Mesh size z-direction: delta_z+ =', delta_z)
+    
+    
+    
 
 
 
