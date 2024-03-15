@@ -1,29 +1,42 @@
 #!---------------------------------------------------------!
-#! This is the Python version of 'mesh_evaluation.f90'     !
+#! This an improved Python version of 'mesh_evaluation.f90'!
 #! Same values are obtained from both codes (tested)       !
 #!                                                         !
 #! Y-coordinates at the center of mesh nodes are not       !
 #! evaluated here.                                         !
 #!---------------------------------------------------------!
 
+# Libraries
 import numpy as np
+import matplotlib.pyplot as plt
+import math
+import csv
+from tabulate import tabulate
+
+# Font settings
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "Helvetica"
+})
 
 # Inputs
-nx = 64      # number of points in x direction
-ny = 129     # number of points in y direction
-nz = 64      # number of points in z direction
+nx = 64           # number of points in x direction
+ny = 129          # number of points in y direction
+nz = 64           # number of points in z direction
 
-xlx = 8.0    # domain dimension in x direction
-yly = 8.0    # domain dimension in y direction
-zlz = 8.0    # domain dimension in z direction
+xlx = 8.0         # domain dimension in x direction
+yly = 4.0         # domain dimension in y direction
+zlz = 8.0         # domain dimension in z direction
 
-nym = ny - 1 # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
+nym = ny - 1      # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
 
-istret = 3   # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 1.5   # beta parameter for mesh stretching
-cf = 0.007   # maximum cf estimated
-nu = 0.002   # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
-uwall = 1.0  # velocity of the wall
+istret = 3        # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+beta = 0.3        # beta parameter for mesh stretching
+cf = 0.007        # maximum cf estimated
+nu = 0.002        # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
+uwall = 1.0       # velocity of the wall
+delta_t = 0.0005  # time-step
+twd = 1.0         # trip wire diameter D
 
 # Declare local constant Pi
 pi = np.pi
@@ -31,6 +44,7 @@ pi = np.pi
 # Work variables
 yeta = np.zeros(ny)
 yp = np.zeros(ny)
+Uo = np.zeros(ny)
 
 # Start of calculations
 yinf = -yly/2.0
@@ -86,7 +100,6 @@ if alpha == 0.0:
         yeta[j] = j*(1.0/ny)
         yp[j] = -beta * np.cos(pi*yeta[j]) / np.sin(yeta[j]*pi)
 
-
 # This part is valid for meshes with refinement at the bottom boundary only
 if istret == 3:
     
@@ -105,9 +118,10 @@ if istret == 3:
     delta_x = delta_x / delta_nu
     delta_z = delta_z / delta_nu
     
-    # Rescaling also domain dimensions
+    # Rescaling also domain dimensions (nd: non-dimensional)
     xlx_nd = xlx / delta_nu
-    zlz_nd = zlz / delta_nu
+    yly_nd = yly / delta_nu
+    zlz_nd = zlz / delta_nu  
 
     # First and last elements' dimension
     delta_y1 = yp[2] - yp[1]
@@ -120,6 +134,35 @@ if istret == 3:
     AR_z1 = delta_z / delta_y1	# AR z direction, 1st element
     AR_zn = delta_z / delta_yn	# AR z direction, nth element     
     
+    # Estimation of parameters of numerics (CFL, Pe, D) at the beginning of simulation
+    CFL = uwall * delta_t / delta_x
+    Pe =  uwall * delta_x / nu
+    D =   nu * delta_t / (delta_x**2)
+    
+    # Calculating the initial thickness of the shear layer (see Kozul et al. (2016))
+    theta_sl = 54.0 * nu / uwall
+    
+    # Calculating the initial velocity profile
+    for j in range(0, ny):
+    	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh(twd/2.0/theta_sl*(1.0 - yp[j]/twd))))
+    
+    # Rescaling the velocity profile and the shear layer thickness
+    Uo = Uo / sh_vel
+    theta_sl = theta_sl / delta_nu
+    
+    # Plotting of the initial velocity profile in wall units
+    plt.scatter(yp[0:15], Uo[0:15])
+    plt.title("Initial velocity profile near the wall", fontsize=30)
+    plt.xlabel("$y^+$", fontsize=30)
+    plt.ylabel("$U_o^+$", fontsize=30)
+    plt.show()
+    
+    # Calculate the real value of the initial shear layer
+    j = 0
+    while Uo[j] > Uo[0]*0.01:
+    	theta_sl_true = yp[j]
+    	j = j + 1
+    		 
     # Calculation of the number of mesh nodes in the viscous sublayer
     npvis = 0     # number of points viscous sublayer
     height = 0.0  # cumulative height in viscous unit (y+)
@@ -128,7 +171,17 @@ if istret == 3:
         if height + yp[j] - yp[j-1] <= 5:
             npvis += 1 
         height += yp[j] - yp[j-1]
-
+    
+    # Calculation of the number of mesh nodes in the initial shear layer
+    npsl = 0      # number of points shear layer
+    height = 0.0  # cumulative height in viscous unit (y+)
+  
+    for j in range(1, ny):
+        if height + yp[j] - yp[j-1] <= theta_sl_true:
+            npsl += 1 
+        height += yp[j] - yp[j-1]
+    
+     
     # Printing useful information to the screen
     print()
     print('!--- Inputs: ---!')
@@ -145,14 +198,17 @@ if istret == 3:
     print('Skin friction coefficient employed, cf = ', cf)
     print('Kinematic viscosity, nu = ', nu)
     print('Wall velocity, Uwall = ', uwall)
+    print('Time step, delta_t = ', delta_t)
     print()
     print('!--- Outputs: ---!')
+    print()
     print('Mesh size at the first element near the wall: delta_y1+ =', delta_y1)
     print('Mesh size at the last element away from the wall: delta_yn+ =', delta_yn)
     print('Number of mesh nodes in the viscous sublayer:', npvis)
+    print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
     print('Length of the domain (Lx+):', xlx_nd)
-    print('Height of the domain (Ly+):', yp[ny-1])
+    print('Height of the domain (Ly+):', yly_nd)
     print('Width  of the domain (Lz+):', zlz_nd)
     print()
     print('Mesh size x-direction: delta_x+ =', delta_x)
@@ -163,9 +219,30 @@ if istret == 3:
     print('Aspect ratio z-direction 1st element: AR_z1 =', AR_z1)
     print('Aspect ratio z-direction nth element: AR_zn =', AR_zn)
     print()
+    print('Estimated CFL at t = 0:', CFL)
+    print('Estimated Pé  at t = 0:', Pe)
+    print('Estimated D   at t = 0:', D)
+    print()
+    print('Estimated  initial thickness of the shear layer: theta_sl+ =', theta_sl)
+    print('Calculated initial thickness of the shear layer: theta_sl_true+ =', theta_sl_true)
     
+    # Export inputs and outputs in a .txt file
+    data = [
+            ["nx/ny/nz", "Lx/Ly/Lz", "Lx+/Ly+/Lz+", "CFL/Pé/D", "beta", "cf", "nu", "uwall", "delta_t", "delta_y1+", "delta_yn+", "npvis", "npsl"],
+            [nx, xlx, xlx_nd, CFL, beta, cf, nu, uwall, delta_t, delta_y1, delta_yn, npvis, npsl],
+            [ny, yly, yly_nd, Pe],
+            [nz, zlz, zlz_nd, D],
+           ] 
+
+    # Create the table using tabulate
+    table = tabulate(data, headers="firstrow", tablefmt="fancy_grid")
+
+    # Save the table as a text file 
+    with open("sim_settings.txt", "w") as f:
+         f.write(table)
     
-    
+
+
     
     
 

@@ -72,7 +72,7 @@ contains
              if (istret/=0) y=yp(j+xstart(2)-1)
              
              ! Initial streamwise velocity profile
-             um = uwall*(0.5 + 0.5*(tanh_prec(twd/2*theta_sl)*(1.0 - y/twd)))
+             um = uwall*(half + half*(tanh_prec(twd/two/theta_sl)*(one - y/twd)))
              
              ! Difference between wall and mean velocities
              diff = uwall - um
@@ -106,7 +106,7 @@ contains
     return
   end subroutine init_temporal_tbl
   !############################################################################
-  subroutine boundary_conditions_ttbl(byx1,byy1,byz1,byxn,byyn,byzn)
+  subroutine boundary_conditions_ttbl()
 
     use param
     use variables
