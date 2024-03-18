@@ -35,8 +35,10 @@ beta = 0.3        # beta parameter for mesh stretching
 cf = 0.007        # maximum cf estimated
 nu = 0.002        # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0       # velocity of the wall
-delta_t = 0.0005  # time-step
+delta_t = 0.05    # time-step
 twd = 1.0         # trip wire diameter D
+
+re = 1//nu        # Reynolds number as defined in Incompact3d
 
 # Declare local constant Pi
 pi = np.pi
@@ -197,6 +199,7 @@ if istret == 3:
     print('Beta parameter = ', beta)
     print('Skin friction coefficient employed, cf = ', cf)
     print('Kinematic viscosity, nu = ', nu)
+    print('Reynolds number (Re = 1/nu) = ', re) 
     print('Wall velocity, Uwall = ', uwall)
     print('Time step, delta_t = ', delta_t)
     print()
@@ -228,10 +231,13 @@ if istret == 3:
     
     # Export inputs and outputs in a .txt file
     data = [
-            ["nx/ny/nz", "Lx/Ly/Lz", "Lx+/Ly+/Lz+", "CFL/Pé/D", "beta", "cf", "nu", "uwall", "delta_t", "delta_y1+", "delta_yn+", "npvis", "npsl"],
-            [nx, xlx, xlx_nd, CFL, beta, cf, nu, uwall, delta_t, delta_y1, delta_yn, npvis, npsl],
-            [ny, yly, yly_nd, Pe],
-            [nz, zlz, zlz_nd, D],
+            ["nx/ny/nz", "Lx/Ly/Lz", "Lx+/Ly+/Lz+", "CFL/Pé/D", "AR_x1/AR_xn", "AR_z1/AR_zn", "delta_y1+/delta_yn+", "delta_x+/delta_z+"],
+            [nx,          xlx,        xlx_nd,        CFL,        AR_x1,         AR_z1,         delta_y1,              delta_x           ],
+            [ny,          yly,        yly_nd,        Pe,         AR_xn,         AR_zn,         delta_yn,              delta_z           ],
+            [nz,          zlz,        zlz_nd,        D,          "/",           "/",           "/",                   "/"               ],
+            ["---",       "---",      "---",         "---",      "---",         "---",         "---",                 "---"             ],
+            ["beta",      "cf",       "nu",          "Re",       "uwall",       "delta_t",     "npvis",               "npsl",           ],
+            [ beta,        cf,         nu,            re,         uwall,         delta_t,       npvis,                 npsl,            ],
            ] 
 
     # Create the table using tabulate

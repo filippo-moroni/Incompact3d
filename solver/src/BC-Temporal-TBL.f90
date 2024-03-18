@@ -56,7 +56,7 @@ contains
     
     ! Noise (random numbers from 0 to 1)
     call system_clock(count=code)
-    if (iin.eq.2) code=0
+    !if (iin.eq.2) code=0  ! probably not needed, otherwise all noises are the same
     call random_seed(size = ii)
     call random_seed(put = code+63946*(nrank+1)*(/ (i - 1, i = 1, ii) /))
 
