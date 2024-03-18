@@ -33,7 +33,7 @@ contains
     
     implicit none
        
-    real(mytype),intent(inout),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
 
     real(mytype) :: y
     real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
@@ -65,42 +65,47 @@ contains
     call random_number(uz1)
              
        ! Noise superimposed to the tanh velocity profile
-       do k=1,xsize(3)
-          do j=1,xsize(2)
-          
-             if (istret==0) y=real(j+xstart(2)-1-1,mytype)*dy
-             if (istret/=0) y=yp(j+xstart(2)-1)
+       do j=1,xsize(2)
+       
+       ! y-coordinate calculation
+       if (istret==0) y=real(j+xstart(2)-1-1,mytype)*dy
+       if (istret/=0) y=yp(j+xstart(2)-1)
              
-             ! Initial streamwise velocity profile
-             um = uwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
+       ! Initial streamwise velocity profile
+       um = uwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
              
-             ! Difference between wall and mean velocities
-             diff = uwall - um
-             
+       ! Difference between wall and mean velocities
+       diff = uwall - um
+                    
              ! Area near the wall, we add noise to all velocity components
              if (diff < noise_loc*uwall) then             
-             do i=1,xsize(1)
              
-                  ! Rescaling the noise with a percentage of the wall velocity and center it with respect to zero
-                  ux1 = (ux1*two - one)*init_noise*uwall
-                  uy1 = (uy1*two - one)*init_noise*uwall
-                  uz1 = (uz1*two - one)*init_noise*uwall
+             do k=1,xsize(3)
+                do i=1,xsize(1)
+             
+                ! Rescaling the noise with a percentage of the wall velocity and center it with respect to zero
+                ux1(i,j,k) = (ux1(i,j,k)*two - one)*init_noise*uwall
+                uy1(i,j,k) = (uy1(i,j,k)*two - one)*init_noise*uwall
+                uz1(i,j,k) = (uz1(i,j,k)*two - one)*init_noise*uwall
                  
-                  ux1(i,j,k)= ux1(i,j,k) + um 
+                ux1(i,j,k) = ux1(i,j,k) + um 
+                enddo
              enddo
              
              ! Area away from the wall, no noise, only mean velocity profile
              else 
-             do i=1,xsize(1)
-   
-                  ux1 = zero
-                  uy1 = zero
-                  uz1 = zero
+             do k=1,xsize(3)
+                do i=1,xsize(1)
+                  
+                  ! No noise
+                  ux1(i,j,k) = zero
+                  uy1(i,j,k) = zero
+                  uz1(i,j,k) = zero
                  
                   ux1(i,j,k)= ux1(i,j,k) + um 
+                enddo
              enddo 
              end if 
-          enddo
        enddo
        
     return
