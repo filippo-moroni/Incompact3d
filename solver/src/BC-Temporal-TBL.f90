@@ -72,7 +72,7 @@ contains
              if (istret/=0) y=yp(j+xstart(2)-1)
              
              ! Initial streamwise velocity profile
-             um = uwall*(half + half*(tanh_prec(twd/two/theta_sl)*(one - y/twd)))
+             um = uwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
              
              ! Difference between wall and mean velocities
              diff = uwall - um

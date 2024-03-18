@@ -21,7 +21,7 @@ plt.rcParams.update({
 
 # Inputs
 nx = 64           # number of points in x direction
-ny = 129          # number of points in y direction
+ny = 257          # number of points in y direction
 nz = 64           # number of points in z direction
 
 xlx = 8.0         # domain dimension in x direction
@@ -31,7 +31,7 @@ zlz = 8.0         # domain dimension in z direction
 nym = ny - 1      # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
 
 istret = 3        # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 0.3        # beta parameter for mesh stretching
+beta = 10.0        # beta parameter for mesh stretching
 cf = 0.007        # maximum cf estimated
 nu = 0.002        # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0       # velocity of the wall
@@ -202,17 +202,20 @@ if istret == 3:
     print('Reynolds number (Re = 1/nu) = ', re) 
     print('Wall velocity, Uwall = ', uwall)
     print('Time step, delta_t = ', delta_t)
+    print('Tripping wire diameter, twd = ' twd)
     print()
     print('!--- Outputs: ---!')
-    print()
-    print('Mesh size at the first element near the wall: delta_y1+ =', delta_y1)
-    print('Mesh size at the last element away from the wall: delta_yn+ =', delta_yn)
-    print('Number of mesh nodes in the viscous sublayer:', npvis)
-    print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
     print('Length of the domain (Lx+):', xlx_nd)
     print('Height of the domain (Ly+):', yly_nd)
     print('Width  of the domain (Lz+):', zlz_nd)
+    print()
+    print('Estimated CFL at t = 0:', CFL)
+    print('Estimated Pé  at t = 0:', Pe)
+    print('Estimated D   at t = 0:', D)
+    print()
+    print('Mesh size at the first element near the wall: delta_y1+ =', delta_y1)
+    print('Mesh size at the last element away from the wall: delta_yn+ =', delta_yn)
     print()
     print('Mesh size x-direction: delta_x+ =', delta_x)
     print('Mesh size z-direction: delta_z+ =', delta_z)
@@ -222,30 +225,72 @@ if istret == 3:
     print('Aspect ratio z-direction 1st element: AR_z1 =', AR_z1)
     print('Aspect ratio z-direction nth element: AR_zn =', AR_zn)
     print()
-    print('Estimated CFL at t = 0:', CFL)
-    print('Estimated Pé  at t = 0:', Pe)
-    print('Estimated D   at t = 0:', D)
+    print('Number of mesh nodes in the viscous sublayer:', npvis)
+    print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
     print('Estimated  initial thickness of the shear layer: theta_sl+ =', theta_sl)
     print('Calculated initial thickness of the shear layer: theta_sl_true+ =', theta_sl_true)
-    
-    # Export inputs and outputs in a .txt file
+            
+    # Create data arrays with inputs
     data = [
-            ["nx/ny/nz", "Lx/Ly/Lz", "Lx+/Ly+/Lz+", "CFL/Pé/D", "AR_x1/AR_xn", "AR_z1/AR_zn", "delta_y1+/delta_yn+", "delta_x+/delta_z+"],
-            [nx,          xlx,        xlx_nd,        CFL,        AR_x1,         AR_z1,         delta_y1,              delta_x           ],
-            [ny,          yly,        yly_nd,        Pe,         AR_xn,         AR_zn,         delta_yn,              delta_z           ],
-            [nz,          zlz,        zlz_nd,        D,          "/",           "/",           "/",                   "/"               ],
-            ["---",       "---",      "---",         "---",      "---",         "---",         "---",                 "---"             ],
-            ["beta",      "cf",       "nu",          "Re",       "uwall",       "delta_t",     "npvis",               "npsl",           ],
-            [ beta,        cf,         nu,            re,         uwall,         delta_t,       npvis,                 npsl,            ],
+            ["nx/ny/nz", "Lx/Ly/Lz" ],
+            [nx,          xlx       ],
+            [ny,          yly       ],
+            [nz,          zlz       ]
+           ] 
+    
+    data2 = [
+             ["beta", "cf", "nu",  "Re", "uwall", "delta_t", "twd"],
+             [ beta,  cf,    nu,    re,   uwall,   delta_t,   twd ],
+            ]
+
+    # Create the tables using tabulate
+    table = tabulate(data, headers="firstrow", tablefmt="fancy_grid")
+    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
+    
+    # Save the tables as a text file 
+    with open("sim_settings.txt", "w") as f:
+         f.write("!--- Temporal TBL setting parameters ---!\n")
+         f.write("\n")
+         f.write("!--- Inputs: ---!\n")
+         f.write(table)
+         f.write("\n")
+         f.write(table2)
+         f.write("\n")
+                 
+    # Create data array with outputs
+    data = [
+            ["Lx+/Ly+/Lz+", "CFL/Pé/D", "delta_y1+/delta_yn+", "delta_x+/delta_z+", "AR_x1/AR_xn", "AR_z1/AR_zn"],
+            [ xlx_nd,        CFL,        delta_y1,              delta_x,             AR_x1,         AR_z1,      ],
+            [ yly_nd,        Pe,         delta_yn,              delta_z,             AR_xn,         AR_zn,      ],
+            [ zlz_nd,        D,          "/",                   "/",                 "/",           "/"         ],
+            ["---",          "---",      "---",                 "---",               "---",         "---"       ],
+            ["npvis",        "npsl",     "theta_sl",            "theta_sl_true",     "/",           "/"         ],
+            [ npvis,          npsl,       theta_sl,              theta_sl_true,      "/",           "/"         ],
            ] 
 
     # Create the table using tabulate
     table = tabulate(data, headers="firstrow", tablefmt="fancy_grid")
 
     # Save the table as a text file 
-    with open("sim_settings.txt", "w") as f:
+    with open("sim_settings.txt", "a") as f:
+         f.write("\n")
+         f.write("!--- Outputs: ---!\n")
          f.write(table)
+            
+    # Opening to add final informations
+    with open('sim_settings.txt', 'a') as f:
+         f.write("\n")
+         f.write("\n")
+         f.write("!--- List of acronyms & variables: ---!\n")
+         f.write("AR:            Aspect Ratio.\n")
+         f.write("npvis:         Number of points viscous sublayer (y+ < 5).\n")
+         f.write("npsl:          Number of points initial shear layer (y+ < theta_sl_true+).\n")
+         f.write("theta_sl:      Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall).\n")
+         f.write("theta_sl_true: Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall).\n")
+         
+         
+         
     
 
 
