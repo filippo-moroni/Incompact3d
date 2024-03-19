@@ -58,7 +58,7 @@ isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th
 ipinter = 1           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive)
 
 ! Time scheme
-itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler,2->AB2, 3->AB3, 4->AB4,5->RK3,6->RK4, 7-->CN2+AB3
+itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 4->AB4, 5->RK3, 6->RK4, 7-->CN2+AB3
 iimplicit = 1         ! Time integration scheme for diffusive terms:  1->Backward Euler, 2->CN
 
 /End
@@ -97,7 +97,7 @@ nclzSn = 0
 
 uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
 twd = 1.0             ! trip wire diameter (D)
-noise_loc = 0.01      ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al.)
+noise_loc = 0.01      ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al. (2016))
 
 /End
 

@@ -29,8 +29,10 @@ contains
     use variables
     use param
     use MPI
-    use dbg_schemes, only: tanh_prec
-    
+    use dbg_schemes, only : tanh_prec
+    use var,         only : ta1,tb1,tc1,di1
+    use ibm_param    
+        
     implicit none
        
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
@@ -39,6 +41,11 @@ contains
     real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
     real(mytype) :: um        ! mean streamwise initial velocity profile
     real(mytype) :: diff      ! difference between wall and mean velocities
+    
+    real(mytype) :: lind 
+    
+    ! Filtered velocity fields
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1f, uy1f, uz1f
         
     ! For random numbers generation (check better what 'seed' means)
     integer :: ii,code  
@@ -47,23 +54,36 @@ contains
     ! Momentum thickness calculation
     theta_sl = 54.0*xnu/uwall
 
-    ! Initialize velocity fields
-    ux1=zero
-    uy1=zero
-    uz1=zero
+    ! Initialize velocity fields and boundaries
+    ux1=zero; byx1=zero; byxn=zero
+    uy1=zero; byy1=zero; byyn=zero
+    uz1=zero; byz1=zero; byzn=zero    
  
     ! Initialization as Kozul et al. (JFM, 2016) (tanh + noise)
     
     ! Noise (random numbers from 0 to 1)
     call system_clock(count=code)
-    !if (iin.eq.2) code=0  ! probably not needed, otherwise all noises are the same
+    if (iin.eq.2) code=0  ! probably not needed, otherwise all noises are the same
     call random_seed(size = ii)
     call random_seed(put = code+63946*(nrank+1)*(/ (i - 1, i = 1, ii) /))
 
     call random_number(ux1)
     call random_number(uy1)
     call random_number(uz1)
-             
+    
+    ! No ibm considered (see dynsmag subroutine in les_models.f90)
+    ta1 = ux1
+    tb1 = uy1
+    tc1 = uz1
+    
+    ! Initialize the filter
+    call filter(zero)
+
+    ! Low-pass filtering to the white noise (to check how it works and if it works)
+    call filx(ux1f, ta1, di1,fisx,fiffx ,fifsx ,fifwx ,xsize(1),xsize(2),xsize(3),0,ubcx) !ux1
+    call filx(uy1f, tb1, di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcy) !uy1
+    call filx(uz1f, tc1, di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcz) !uz1
+                     
        ! Noise superimposed to the tanh velocity profile
        do j=1,xsize(2)
        
@@ -84,9 +104,9 @@ contains
                 do i=1,xsize(1)
              
                 ! Rescaling the noise with a percentage of the wall velocity and center it with respect to zero
-                ux1(i,j,k) = (ux1(i,j,k)*two - one)*init_noise*uwall
-                uy1(i,j,k) = (uy1(i,j,k)*two - one)*init_noise*uwall
-                uz1(i,j,k) = (uz1(i,j,k)*two - one)*init_noise*uwall
+                ux1(i,j,k) = (ux1f(i,j,k)*two - one)*init_noise*uwall
+                uy1(i,j,k) = (uy1f(i,j,k)*two - one)*init_noise*uwall
+                uz1(i,j,k) = (uz1f(i,j,k)*two - one)*init_noise*uwall
                  
                 ux1(i,j,k) = ux1(i,j,k) + um 
                 enddo
@@ -97,7 +117,7 @@ contains
              do k=1,xsize(3)
                 do i=1,xsize(1)
                   
-                  ! No noise
+                 ! No noise
                   ux1(i,j,k) = zero
                   uy1(i,j,k) = zero
                   uz1(i,j,k) = zero

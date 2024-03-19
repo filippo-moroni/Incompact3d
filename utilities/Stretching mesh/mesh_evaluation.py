@@ -31,14 +31,14 @@ zlz = 128.0       # domain dimension in z direction
 nym = ny - 1      # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
 
 istret = 3        # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 1.5        # beta parameter for mesh stretching
+beta = 20.0       # beta parameter for mesh stretching
 cf = 0.007        # maximum cf estimated
 nu = 0.002        # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0       # velocity of the wall
 delta_t = 0.001   # time-step
 twd = 1.0         # trip wire diameter D
 
-re = 1/nu         # Reynolds number as defined in Incompact3d
+re = 1.0/nu       # Reynolds number as defined in Incompact3d
 
 # Declare local constant Pi
 pi = np.pi
@@ -190,7 +190,7 @@ if istret == 3:
     height = 0.0  # cumulative height in viscous unit (y+)
   
     for j in range(1, ny):
-        if height + yp[j] - yp[j-1] <= 5:
+        if height + yp[j] - yp[j-1] <= 5.0:
             npvis += 1 
         height += yp[j] - yp[j-1]
     
@@ -266,11 +266,11 @@ if istret == 3:
     
     data2 = [
              ["beta", "cf", "nu",  "Re", "uwall", "delta_t", "twd"],
-             [ beta,  cf,    nu,    re,   uwall,   delta_t,   twd ],
+             [ beta,   cf,   nu,    re,   uwall,   delta_t,   twd ],
             ]
 
     # Create the tables using tabulate
-    table = tabulate(data, headers="firstrow", tablefmt="fancy_grid")
+    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
     
     # Save the tables as a text file 
