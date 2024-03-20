@@ -80,9 +80,9 @@ contains
     call filter(zero)
 
     ! Low-pass filtering to the white noise (to check how it works and if it works)
-    call filx(ux1f, ta1, di1,fisx,fiffx ,fifsx ,fifwx ,xsize(1),xsize(2),xsize(3),0,ubcx) !ux1
-    call filx(uy1f, tb1, di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcy) !uy1
-    call filx(uz1f, tc1, di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcz) !uz1
+    call filx(ux1f,ta1,di1,fisx,fiffx ,fifsx ,fifwx ,xsize(1),xsize(2),xsize(3),0,ubcx) !ux1
+    call filx(uy1f,tb1,di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcy) !uy1
+    call filx(uz1f,tc1,di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcz) !uz1
                      
        ! Noise superimposed to the tanh velocity profile
        do j=1,xsize(2)

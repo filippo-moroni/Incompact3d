@@ -31,7 +31,7 @@ zlz = 128.0       # domain dimension in z direction
 nym = ny - 1      # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
 
 istret = 3        # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 20.0       # beta parameter for mesh stretching
+beta = 1.5        # beta parameter for mesh stretching
 cf = 0.007        # maximum cf estimated
 nu = 0.002        # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0       # velocity of the wall
@@ -290,8 +290,8 @@ if istret == 3:
             [ yly_nd,                   yly_nd_ic,           Pe,         delta_yn,              delta_z,             AR_xn,         AR_zn,      ],
             [ zlz_nd,                   zlz_nd_ic,           D,          "/",                   "/",                 "/",           "/"         ],
             ["---",                     "---",               "---",      "---",                 "---",               "---",         "---"       ],
-            ["npvis",                   "npsl",              "theta_sl", "theta_sl_true",       "/",                 "/",           "/"         ],
-            [ npvis,                     npsl,                theta_sl,   theta_sl_true,        "/",                 "/",           "/"         ],
+            ["npvis",                   "npsl",              "theta_sl", "theta_sl_true",       "sh_vel_IC",         "sh_vel_peak", "/"         ],
+            [ npvis,                     npsl,                theta_sl,   theta_sl_true,         sh_vel_ic,           sh_vel,       "/"         ],
            ] 
 
     # Create the table using tabulate
@@ -324,6 +324,8 @@ if istret == 3:
          f.write("npsl:          Number of points initial shear layer (y+ < theta_sl_true+).\n")
          f.write("theta_sl:      Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall).\n")
          f.write("theta_sl_true: Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall).\n")
+         f.write("sh_vel_IC:     Shear velocity of the initial condition.\n")
+         f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")
          f.write("!-------------------------------------!\n")
          
          

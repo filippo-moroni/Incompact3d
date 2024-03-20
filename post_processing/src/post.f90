@@ -291,7 +291,7 @@ PROGRAM post
         enddo
      endif
 
-!------------------Write unformatted data------------------!
+!------------------Write formatted data--------------------!
      
      ! New directory for the statistics
      write(dirname,"('data_post/')") 

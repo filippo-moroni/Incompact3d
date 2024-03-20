@@ -268,7 +268,7 @@ subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_
      
   delta_99(ie) = yp(j)  
         
-  if(u1meanHT(j) > 0.99*u1meanHT(yend(2))) exit
+  if(u1meanHT(j) < 0.01*u1meanHT(ystart(2))) exit  ! This condition is valid only for a temporal TBL (with streamwise translating wall)
                
   end do
      
