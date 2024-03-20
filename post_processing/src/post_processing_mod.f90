@@ -1,10 +1,10 @@
 !********************************************************************
 module post_processing
 
-  USE decomp_2d
-  USE variables
-  USE param
-  USE var
+  use decomp_2d
+  use variables
+  use param
+  use var
 
   implicit none
   
@@ -62,6 +62,8 @@ contains
   subroutine init_post_variables
 
     USE var
+    
+    integer :: i,j,k
 
     TYPE(DECOMP_INFO), save :: ph  ! decomposition object
 
@@ -183,12 +185,59 @@ contains
     allocate(cfi6z(nz),cci6z(nz),cbi6z(nz),cfip6z(nz),csip6z(nz),cwip6z(nz),&
          csi6z(nz),cwi6z(nz),cifi6z(nz),cici6z(nz))
     allocate(cibi6z(nz),cifip6z(nz),cisip6z(nz),ciwip6z(nz),cisi6z(nz),ciwi6z(nz))
+   
+    
+    ! Module mesh 
+    allocate(ppy(ny))
+    ppy=zero
+    allocate(pp2y(ny))
+    pp2y=zero
+    allocate(pp4y(ny))
+    pp4y=zero
 
-    ! Module mesh
-    allocate(ppy(ny),pp2y(ny),pp4y(ny))
-    allocate(ppyi(ny),pp2yi(ny),pp4yi(ny))
-    allocate(yp(ny),ypi(ny),del(ny))
-    allocate(yeta(ny),yetai(ny))
+    allocate(ppyi(ny))
+    ppyi=zero
+    allocate(pp2yi(ny))
+    pp2yi=zero
+    allocate(pp4yi(ny))
+    pp4yi=zero
+
+    allocate(yp(ny))
+    yp=zero
+    allocate(ypi(ny))
+    ypi=zero
+    allocate(del(ny))
+    del=zero
+
+    allocate(yeta(ny))
+    yeta=zero
+    allocate(yetai(ny))
+    yetai=zero
+
+    ! y-position
+    if (istret.eq.0) then
+       do j=1,ny
+          yp(j)=real(j-1,mytype)*dy
+          ypi(j)=(real(j,mytype)-half)*dy
+          ppy(j) = one
+       enddo
+       if (ncly1.eq.1 .or. ncly1.eq.2) then
+          ppy(1) = two
+       endif
+       if (nclyn.eq.1 .or. nclyn.eq.2) then
+          ppy(ny) = two
+       endif
+    else
+       call stretching()
+
+       allocate(dyp(ny))
+       ! compute dy for stretched mesh - Kay
+       do j=2,ny-1
+          dyp(j) = half*(yp(j+1)-yp(j-1))
+       enddo
+       dyp(1)  = yp(2) -yp(1)
+       dyp(ny) = yp(ny)-yp(ny-1)
+    endif
   
   end subroutine init_post_variables
   !******************************************************************

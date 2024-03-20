@@ -310,7 +310,8 @@ module param
        itype_tbl = 9, &
        itype_abl = 10, &
        itype_uniform = 11, &
-       itype_sandbox = 12
+       itype_sandbox = 12, &
+       itype_ttbl = 13
 
   integer :: cont_phi,itr,itime,itest,iprocessing
   integer :: ifft,istret,iforc_entree,iturb
@@ -427,11 +428,13 @@ module param
   real(mytype), allocatable, dimension(:) :: h_coeff1, h_1,phase1
   real(mytype), allocatable, dimension(:) :: h_coeff2, h_2,phase2
   
-  ! Specific realization number of our flow case
-  character :: nrealiz
+  ! Temporal TBL
+  real(mytype) :: uwall      ! velocity of translating bottom wall (U_wall) 
+  real(mytype) :: twd        ! trip wire diameter (D)
+  real(mytype) :: noise_loc  ! location of the noise with respect to a percentage of the total wall velocity U_wall
+  
   
   !numbers
-
   real(mytype),parameter :: zpone=0.1_mytype
   real(mytype),parameter :: zptwo=0.2_mytype
   real(mytype),parameter :: zptwoone=0.21_mytype

@@ -178,7 +178,7 @@ PROGRAM post
                                    u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean)
-                                       
+                                                                          
      if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,vortxmean,vortymean,vortzmean)
 
   enddo ! closing of the do-loop on the different flow realizations
@@ -266,7 +266,8 @@ PROGRAM post
 
 !--------------MPI process nrank = 0 at work---------------!
 
-  if(nrank.eq.0) then  ! only processor 0 is working
+  ! High-order moments (variance, skewness, kurtosis)
+  if(nrank.eq.0) then  
      
      if (post_mean) then
         do j=ystart(2),yend(2)

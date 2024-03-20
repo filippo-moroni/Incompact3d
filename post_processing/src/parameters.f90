@@ -92,22 +92,22 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
+  NAMELIST /TemporalTBLParam/ uwall,twd,noise_loc
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
 #endif
 
   if (nrank==0) then
-     write(*,*) '==========================================================='
-     write(*,*) '===================== PostIncompact3d ====================='
-     write(*,*) '== Copyright (c) 2018 Eric Lamballais and Sylvain Laizet =='
-     write(*,*) '== Modified by Felipe Schuch and Ricardo Frantz ==========='
-     write(*,*) '== Modified by Paul Bartholomew, Georgios Deskos and ======'
-     write(*,*) '== Sylvain Laizet -- 2018- ================================'
-     write(*,*) '==========================================================='
-     write(*,*) '== Modified by Filippo Moroni -- 2024 ====================='
-     write(*,*) '== From original files by Roberto Corsini ================='
-     write(*,*) '==========================================================='
+     write(*,*) '!---------------------------------------------------------!'
+     write(*,*) '!                    ~  Xcompact3D  ~                     !'
+     write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
+     write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
+     write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
+     write(*,*) '!  Sylvain Laizet, 2018                                   !'
+     write(*,*) '!                                                         !'
+     write(*,*) '!  Modified by Filippo Moroni, 2024                       !'
+     write(*,*) '!---------------------------------------------------------!'
      
 #if defined(VERSION)
      write(*,*)'Git version        : ', VERSION
@@ -125,12 +125,12 @@ subroutine parameter(input_i3d)
   read(10, nml=BasicParam); rewind(10)
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
-  read(10, nml=Statistics); rewind(10)
+  !read(10, nml=Statistics); rewind(10)
   
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
   endif
-   
+    
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
@@ -228,8 +228,12 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-  read(10, nml=CASE); rewind(10)                 ! Read case-specific variables
+  !read(10, nml=CASE); rewind(10)                  ! Read case-specific variables
   
+  if (itype.eq.itype_ttbl) then
+     read(10, nml=TemporalTBLParam); rewind(10);  ! Read parameters for temporal TBL case
+  end if
+   
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -325,6 +329,7 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
+
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
@@ -355,7 +360,9 @@ subroutine parameter(input_i3d)
      elseif (itype.eq.itype_uniform) then
         print *,'Uniform flow'
      elseif (itype.eq.itype_sandbox) then
-           print *,'Sandbox'
+        print *,'Sandbox'
+     elseif (itype.eq.itype_ttbl) then
+        print *,'Temporal TBL'
      else
         print *,'Unknown itype: ', itype
         stop
@@ -379,6 +386,57 @@ subroutine parameter(input_i3d)
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
      write(*,*) '==========================================================='
      write(*,"(' Time step dt           : ',F17.8)") dt
+     !
+     if (itimescheme.eq.1) then
+       !print *,'Temporal scheme        : Forwards Euler'
+       write(*,"(' Temporal scheme        : ',A20)") "Forwards Euler"
+     elseif (itimescheme.eq.2) then
+       !print *,'Temporal scheme        : Adams-bashforth 2'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 2"
+     elseif (itimescheme.eq.3) then
+       !print *,'Temporal scheme        : Adams-bashforth 3'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 3"
+     elseif (itimescheme.eq.4) then
+       !print *,'Temporal scheme        : Adams-bashforth 4'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 4"
+       print *,'Error: Adams-bashforth 4 not implemented!'
+       stop
+     elseif (itimescheme.eq.5) then
+       !print *,'Temporal scheme        : Runge-kutta 3'
+       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 3"
+     elseif (itimescheme.eq.6) then
+       !print *,'Temporal scheme        : Runge-kutta 4'
+       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 4"
+       print *,'Error: Runge-kutta 4 not implemented!'
+       stop
+     else
+       print *,'Error: itimescheme must be specified as 1-6'
+       stop
+     endif
+          
+     if (iimplicit.ne.0) then
+       if (iimplicit.eq.1) then
+         write(*,"('            ',A40)") "With backward Euler for Y diffusion"
+       else if (iimplicit.eq.2) then
+         write(*,"('            ',A40)") "With CN for Y diffusion"
+       endif
+     endif
+     
+     ! Displaying the specific model adopted
+     write(*,*) '==========================================================='   
+     if (ilesmod==0) then
+          write(*,"(' Turbulence closure     : ',A17)") "DNS"
+     else
+       if (jles==1) then
+          write(*,"(' Turbulence closure     : ',A17)") "Phys Smag"
+       else if (jles==2) then
+          write(*,"(' Turbulence closure     : ',A17)") "Phys WALE"      
+       else if (jles==3) then
+          write(*,"(' Turbulence closure     : ',A17)") "Phys dyn. Smag"
+       else if (jles==4) then
+          write(*,"(' Turbulence closure     : ',A17)") "iSVV"
+       endif
+     endif
      
      write(*,*) '==========================================================='
      write(*,"(' ifirst                 : ',I17)") ifirst
@@ -431,6 +489,37 @@ subroutine parameter(input_i3d)
              endif
           endif
        end do
+     endif
+     write(*,*) '==========================================================='
+     write(*,"(' spinup_time            : ',I17)") spinup_time
+     write(*,"(' wrotation              : ',F17.8)") wrotation
+     write(*,*) '==========================================================='
+     if (iibm==0) write(*,"(' Immersed boundary      : ',A17)") "off"
+     if (iibm.gt.1) then
+      write(*,"(' Immersed boundary      : ',A17)") "on"
+      write(*,"(' iibm                   : ',I17)") iibm
+     end if
+     if (iibm==1) write(*,*) 'Simple immersed boundary method'
+     if (iibm==2) then
+       write(*,*) 'Lagrangian polynomial reconstruction'
+       write(*,*) '==========================================================='
+       write(*,"(' npif                   : ',I17)") npif
+       write(*,"(' izap                   : ',I17)") izap
+       write(*,"(' nraf                   : ',I17)") nraf
+       write(*,"(' nobjmax                : ',I17)") nobjmax
+     end if
+     write(*,*) '==========================================================='
+     write(*,"(' Boundary condition velocity field: ')")
+     write(*,"(' nclx1, nclxn           : ',I15,',',I1 )") nclx1,nclxn
+     write(*,"(' ncly1, nclyn           : ',I15,',',I1 )") ncly1,nclyn
+     write(*,"(' nclz1, nclzn           : ',I15,',',I1 )") nclz1,nclzn
+     write(*,*) '==========================================================='
+     if ((iscalar==1).or.(ilmn)) then
+       write(*,"(' Boundary condition scalar field: ')")
+       write(*,"(' nclxS1, nclxSn         : ',I15,',',I1 )") nclxS1,nclxSn
+       write(*,"(' nclyS1, nclySn         : ',I15,',',I1 )") nclyS1,nclySn
+       write(*,"(' nclzS1, nclzSn         : ',I15,',',I1 )") nclzS1,nclzSn
+       write(*,*) '==========================================================='
      endif
 
 #ifdef DOUBLE_PREC
@@ -517,11 +606,11 @@ subroutine parameter_defaults()
   t0 = zero
   datapath = './data/'
 
-  !! LES stuff
+  ! LES stuff
   SmagWallDamp=0
   nSmag=1
 
-  !! IBM stuff
+  ! IBM stuff
   nraf = 0
   nobjmax = 0
 
@@ -530,12 +619,12 @@ subroutine parameter_defaults()
   irotation = 0
   itest=1
 
-  !! Gravity field
+  ! Gravity field
   gravx = zero
   gravy = zero
   gravz = zero
 
-  !! LMN stuff
+  ! LMN stuff
   ilmn = .FALSE.
   ilmn_bound = .TRUE.
   pressure0 = one
@@ -551,15 +640,15 @@ subroutine parameter_defaults()
 
   primary_species = -1
 
-  !! Channel
+  ! Channel
   cpg = .false.
   idir_stream = 1
 
-  !! Filter
+  ! Filter
   ifilter=0
   C_filter=0.49_mytype
 
-  !! ABL
+  ! ABL
   z_zero=zpone
   k_roughness=zpfour
   ustar=0.45_mytype
@@ -579,11 +668,11 @@ subroutine parameter_defaults()
   iconcprec=0
   pdl=zero
   
-  !! Turbine modelling
+  ! Turbine modelling
   iturbine=0
   rho_air=one
 
-  !! IO
+  ! IO
   ivisu = 1
   ipost = 0
   iprocessing = huge(i)
@@ -601,14 +690,19 @@ subroutine parameter_defaults()
 
   imodulo2 = 1
 
-  !! CASE specific variables
+  ! CASE specific variables
   tgv_twod = .FALSE.
 
-  !! TRIPPING
+  ! Tripping
   A_tr=zero
   xs_tr_tbl=1.402033_mytype
   ys_tr_tbl=0.350508_mytype
   ts_tr_tbl=1.402033_mytype
   x0_tr_tbl=3.505082_mytype
+  
+  ! Temporal TBL
+  uwall = 1.0       ! velocity of translating bottom wall (U_wall) 
+  twd = 1.0         ! trip wire diameter (D)
+  noise_loc = 0.01  ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al.)
   
 end subroutine parameter_defaults

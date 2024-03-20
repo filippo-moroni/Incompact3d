@@ -55,93 +55,93 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
                                                                                                                                             
   !---x-component---!
   ! average
-  u1mean=u1mean+ux2/nr 
+  u1mean=u1mean+ux2/real(nr,mytype) 
 
   ! variance
   ta2=ux2*ux2
-  u2mean=u2mean+ta2/nr
+  u2mean=u2mean+ta2/real(nr,mytype)
 
   ! skewness
   ta2=ux2*ux2*ux2
-  u3mean=u3mean+ta2/nr
+  u3mean=u3mean+ta2/real(nr,mytype)
 
   ! kurtosis 
   ta2=ux2*ux2*ux2*ux2
-  u4mean=u4mean+ta2/nr
+  u4mean=u4mean+ta2/real(nr,mytype)
   
   !---y-component---!
   ! average
-  v1mean=v1mean+uy2/nr 
+  v1mean=v1mean+uy2/real(nr,mytype) 
 
   ! variance
   ta2=uy2*uy2
-  v2mean=v2mean+ta2/nr
+  v2mean=v2mean+ta2/real(nr,mytype)
 
   ! skewness
   ta2=uy2*uy2*uy2
-  v3mean=v3mean+ta2/nr
+  v3mean=v3mean+ta2/real(nr,mytype)
 
   ! kurtosis 
   ta2=uy2*uy2*uy2*uy2
-  v4mean=v4mean+ta2/nr
+  v4mean=v4mean+ta2/real(nr,mytype)
   
   !---z-component---!
   ! average
-  w1mean=w1mean+uz2/nr 
+  w1mean=w1mean+uz2/real(nr,mytype) 
 
   ! variance
   ta2=uz2*uz2
-  w2mean=w2mean+ta2/nr
+  w2mean=w2mean+ta2/real(nr,mytype)
 
   ! skewness
   ta2=uz2*uz2*uz2
-  w3mean=w3mean+ta2/nr
+  w3mean=w3mean+ta2/real(nr,mytype)
 
   ! kurtosis 
   ta2=uz2*uz2*uz2*uz2
-  w4mean=w4mean+ta2/nr
+  w4mean=w4mean+ta2/real(nr,mytype)
 
 
   !---Reynolds stresses---!
   !<uv>
   ta2=ux2*uy2
-  uvmean=uvmean+ta2/nr
+  uvmean=uvmean+ta2/real(nr,mytype)
 
   !<uw>
   ta2=ux2*uz2
-  uwmean=uwmean+ta2/nr
+  uwmean=uwmean+ta2/real(nr,mytype)
 
   !<vw>
   ta2=uy2*uz2
-  vwmean=vwmean+ta2/nr
+  vwmean=vwmean+ta2/real(nr,mytype)
 
   !---pressure---!
-  pre1mean=pre1mean+pre2/nr
+  pre1mean=pre1mean+pre2/real(nr,mytype)
 
   ta2=pre2*pre2
-  pre2mean=pre2mean+ta2/nr
+  pre2mean=pre2mean+ta2/real(nr,mytype)
 
   !---scalar---!
   if (iscalar==1) then
 
         ! average: phi
-        phi1mean=phi1mean+phi2/nr
+        phi1mean=phi1mean+phi2/real(nr,mytype)
 
         ! variance: phi
         ta2=phi2*phi2
-        phi2mean=phi2mean+ta2/nr
+        phi2mean=phi2mean+ta2/real(nr,mytype)
 
         ! mixed fluctuations: u',phi'
         ta2=ux2*phi2
-        uphimean=uphimean+ta2/nr
+        uphimean=uphimean+ta2/real(nr,mytype)
 
         ! mixed fluctuations: v',phi'
         ta2=uy2*phi2
-        vphimean=vphimean+ta2/nr
+        vphimean=vphimean+ta2/real(nr,mytype)
 
         ! mixed fluctuations: w',phi'
         ta2=uz2*phi2
-        wphimean=wphimean+ta2/nr
+        wphimean=wphimean+ta2/real(nr,mytype)
 
   endif
 
@@ -165,7 +165,6 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2)
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
   
-  character(len=30)  :: filename 
   real(mytype)       :: lind 
   real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1   ! average vorticity components, x-pencils
   real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2   ! average vorticity components, y-pencils
@@ -205,18 +204,19 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2)
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
   
   !---Vorticity average---!
+  di1 = zero
    
   ! Vorticity along x 
   di1 = tf1 - th1  !dw/dy - dv/dz
-  vortxmean1 = vortxmean1 + di1/nr
+  vortxmean1 = vortxmean1 + di1/real(nr,mytype)
     
   ! Vorticity along y
   di1 = tg1 - tc1  !du/dz - dw/dx
-  vortymean1 = vortymean1 + di1/nr
+  vortymean1 = vortymean1 + di1/real(nr,mytype)
      
   ! Vorticity along z
   di1 = tb1 - td1  !dv/dx - du/dy
-  vortzmean1 = vortzmean1 + di1/nr
+  vortzmean1 = vortzmean1 + di1/real(nr,mytype)
    
   ! Transpose vorticity along y
   call transpose_x_to_y(vortxmean1,vortxmean2)

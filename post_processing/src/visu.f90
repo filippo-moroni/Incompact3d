@@ -195,7 +195,6 @@ contains
     use decomp_2d_io, only : decomp_2d_start_io
 
     use param, only : nrhotime, ilmn, iscalar, ioutput, irestart
-    use param, only : nrealiz
 
     use variables, only : sx, cifip6, cisip6, ciwip6, cifx6, cisx6, ciwx6
     use variables, only : sy, cifip6y, cisip6y, ciwip6y, cify6, cisy6, ciwy6
@@ -208,7 +207,7 @@ contains
     use var, only : npress
 
     use tools, only : rescale_pressure
-    
+
     implicit none
 
     !! inputs
@@ -256,7 +255,7 @@ contains
     if (use_xdmf) call write_xdmf_header(".", "snapshot", trim(num))
 
     ! Write velocity
-    call write_field(ux1, ".", "ux", trim(num))             
+    call write_field(ux1, ".", "ux", trim(num))
     call write_field(uy1, ".", "uy", trim(num))
     call write_field(uz1, ".", "uz", trim(num))
 
@@ -361,8 +360,6 @@ contains
     use variables, only : nvisu, yp
     use param, only : dx,dy,dz,istret
     use decomp_2d, only : mytype, nrank, xszV, yszV, zszV, ystV
-    
-    use param, only : nrealiz
 
     implicit none
 
@@ -374,7 +371,7 @@ contains
     real(mytype) :: xp(xszV(1)), zp(zszV(3))
 
     if (nrank.eq.0) then
-      OPEN(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf", nrealiz))
+      OPEN(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf"))
 
       write(ioxdmf,'(A22)')'<?xml version="1.0" ?>'
       write(ioxdmf,*)'<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>'
@@ -496,8 +493,6 @@ contains
     use decomp_2d, only : mytype, xsize, xszV, yszV, zszV
     use decomp_2d, only : nrank, fine_to_coarseV
     use decomp_2d_io, only : decomp_2d_write_one, decomp_2d_write_plane
-    
-    use param, only : nrealiz
 
     implicit none
 
@@ -552,7 +547,7 @@ contains
           else if (output2D.eq.3) then
              write(ioxdmf,*)'            Dimensions="',1,yszV(2),xszV(1),'">'
           endif
-          write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin', nrealiz), num)
+          write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin'), num)
           write(ioxdmf,*)'           </DataItem>'
           write(ioxdmf,*)'        </Attribute>'
        endif
@@ -569,48 +564,40 @@ contains
           uvisu = zero
           
           call fine_to_coarseV(1,local_array,uvisu)
-          call decomp_2d_write_one(1,uvisu,"data",gen_filename(pathname, filename, num, 'bin', nrealiz),2,io_name,&
+          call decomp_2d_write_one(1,uvisu,"data",gen_filename(pathname, filename, num, 'bin'),2,io_name,&
                opt_deferred_writes=.false.)
        else
-          call decomp_2d_write_one(1,f1,"data",gen_filename(pathname, filename, num, 'bin', nrealiz),0,io_name)
+          call decomp_2d_write_one(1,f1,"data",gen_filename(pathname, filename, num, 'bin'),0,io_name)
        end if
     else
-       call decomp_2d_write_plane(1,local_array,output2D,-1,"data",gen_filename(pathname, filename, num, 'bin', nrealiz),io_name)
+       call decomp_2d_write_plane(1,local_array,output2D,-1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
     endif
 
   end subroutine write_field
-  
 
-!--- Modified to account for nr ---!
-
-! In this case nr is named nrealiz
-
-  function gen_snapshotname(pathname, varname, num, ext, nrealiz)
-    character(len=*), intent(in) :: pathname, varname, num, ext, nrealiz
+  function gen_snapshotname(pathname, varname, num, ext)
+    character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
-    character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(nrealiz) + 1 + len(ext))) :: gen_snapshotname
-    write(gen_snapshotname, "(A)") gen_filename(pathname, varname, num, ext, nrealiz)
+    character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_snapshotname
+    write(gen_snapshotname, "(A)") gen_filename(pathname, varname, num, ext)
 #else
-    character(len=(len(varname) + 1 + len(num) + 1 + len(nrealiz) + 1 + len(ext))) :: gen_snapshotname
-    write(gen_snapshotname, "(A)") varname//'-'//num//'_'//nrealiz//'.'//ext
+    character(len=(len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_snapshotname
+    write(gen_snapshotname, "(A)") varname//'-'//num//'.'//ext
 #endif
   end function gen_snapshotname
+  
+  function gen_filename(pathname, varname, num, ext)
 
- 
-  function gen_filename(pathname, varname, num, ext, nrealiz)
-
-    character(len=*), intent(in) :: pathname, varname, num, ext, nrealiz
+    character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
-    character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(nrealiz) + 1 + len(ext))) :: gen_filename
-    write(gen_filename, "(A)") pathname//'/'//varname//'-'//num//'_'//nrealiz//'.'//ext
+    character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename
+    write(gen_filename, "(A)") pathname//'/'//varname//'-'//num//'.'//ext
 #else
     character(len=len(varname)) :: gen_filename
     write(gen_filename, "(A)") varname
 #endif
     
   end function gen_filename
-  
-!----------------------------------!
 
   function gen_h5path(filename, num)
 
