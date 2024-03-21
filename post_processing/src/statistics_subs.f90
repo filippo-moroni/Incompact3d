@@ -261,7 +261,7 @@ subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_
      
   close(iunit)
      
-  ! These calculations are low-order (just to have an initial reference value)
+  ! First-order accurate calculations of integral quantities
      
   ! delta_99
   do j = ystart(2),yend(2)
@@ -272,7 +272,7 @@ subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_
                
   end do
      
-  ! Modify the index in u1meanHT: (try the 2 approaches)
+  ! Modify the index in u1meanHT for:
   ! j    :  forward rectangular integration
   ! j + 1: backward rectangular integration
      
@@ -297,8 +297,8 @@ subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_
      
   ! Reynolds numbers
   re_tau  (ie) = delta_99(ie)*sh_vel(ie)/xnu  ! friction Re number (or delta99^+)
-  re_ds   (ie) = disp_t  (ie)*sh_vel(ie)/xnu  ! Re number based on displacement thickness delta star (ds)
-  re_theta(ie) = mom_t   (ie)*sh_vel(ie)/xnu  ! Re number based on momentum thickness theta 
+  re_ds   (ie) = disp_t  (ie)*uwall/xnu  ! Re number based on displacement thickness delta star (ds)
+  re_theta(ie) = mom_t   (ie)*uwall/xnu  ! Re number based on momentum thickness theta 
 
 end subroutine stat_parameters
 

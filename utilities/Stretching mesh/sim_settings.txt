@@ -30,7 +30,7 @@
 ├──────────────────────────┼─────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼─────────────────────┼────────────────────┤
 │ npvis                    │ npsl                │ theta_sl              │ theta_sl_true         │ sh_vel_IC             │ sh_vel_peak         │ /                  │
 ├──────────────────────────┼─────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼─────────────────────┼────────────────────┤
-│ 3                        │ 30                  │ 0.07170227319319401   │ 28.854146382113917    │ 0.0013278198739480373 │ 0.05916079783099616 │ /                  │
+│ 3                        │ 30                  │ 0.108                 │ 28.854146382113917    │ 0.0013278198739480373 │ 0.05916079783099616 │ /                  │
 ╘══════════════════════════╧═════════════════════╧═══════════════════════╧═══════════════════════╧═══════════════════════╧═════════════════════╧════════════════════╛
 
 !--- INFO: ---!
@@ -48,8 +48,8 @@ Stability parameter, S > 1: 4.0 (Thompson et al. (1985))
 AR:            Aspect Ratio.
 npvis:         Number of points viscous sublayer (y+ < 5).
 npsl:          Number of points initial shear layer (y+ < theta_sl_true+).
-theta_sl:      Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall).
-theta_sl_true: Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall).
+theta_sl:      Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).
+sl_99^+_IC:    Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional).
 sh_vel_IC:     Shear velocity of the initial condition.
 sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).
 !-------------------------------------!

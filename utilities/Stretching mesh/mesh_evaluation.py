@@ -168,10 +168,9 @@ if istret == 3:
     for j in range(0, ny):
     	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh(twd/2.0/theta_sl*(1.0 - yp_dim[j]/twd))))
     
-    # Rescaling the velocity profile and the shear layer thickness with the initial viscous units
+    # Rescaling the velocity profile 
     Uo = Uo / sh_vel_ic
-    theta_sl = theta_sl / delta_nu_ic
-    
+        
     # Plotting of the initial velocity profile in wall units
     plt.scatter(yp_ic[0:15], Uo[0:15])
     plt.title("Initial velocity profile near the wall", fontsize=30)
@@ -179,10 +178,10 @@ if istret == 3:
     plt.ylabel("$U_o^+$", fontsize=30)
     plt.show()
     
-    # Calculate the real value of the initial shear layer
+    # Calculate the thickness delta99^+ of the initial shear layer
     j = 0
     while Uo[j] > Uo[0]*0.01:
-    	theta_sl_true = yp_ic[j]
+    	sl_99_ic = yp_ic[j]
     	j = j + 1
     		 
     # Calculation of the number of mesh nodes in the viscous sublayer (at cf peak)
@@ -199,7 +198,7 @@ if istret == 3:
     height = 0.0  # cumulative height in viscous unit (y+)
   
     for j in range(1, ny):
-        if height + yp_ic[j] - yp_ic[j-1] <= theta_sl_true:
+        if height + yp_ic[j] - yp_ic[j-1] <= sl_99_ic:
             npsl += 1 
         height += yp_ic[j] - yp_ic[j-1]
     
@@ -253,8 +252,8 @@ if istret == 3:
     print('Number of mesh nodes in the viscous sublayer:', npvis)
     print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
-    print('Estimated  initial thickness of the shear layer: theta_sl+ =', theta_sl)
-    print('Calculated initial thickness of the shear layer: theta_sl_true+ =', theta_sl_true)
+    print('Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
+    print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
             
     # Create data arrays with inputs
     data = [
@@ -290,8 +289,8 @@ if istret == 3:
             [ yly_nd,                   yly_nd_ic,           Pe,         delta_yn,              delta_z,             AR_xn,         AR_zn,      ],
             [ zlz_nd,                   zlz_nd_ic,           D,          "/",                   "/",                 "/",           "/"         ],
             ["---",                     "---",               "---",      "---",                 "---",               "---",         "---"       ],
-            ["npvis",                   "npsl",              "theta_sl", "theta_sl_true",       "sh_vel_IC",         "sh_vel_peak", "/"         ],
-            [ npvis,                     npsl,                theta_sl,   theta_sl_true,         sh_vel_ic,           sh_vel,       "/"         ],
+            ["npvis",                   "npsl",              "theta_sl", "sl_99^+_IC",          "sh_vel_IC",         "sh_vel_peak", "/"         ],
+            [ npvis,                     npsl,                theta_sl,   sl_99_ic,              sh_vel_ic,           sh_vel,       "/"         ],
            ] 
 
     # Create the table using tabulate
@@ -322,8 +321,8 @@ if istret == 3:
          f.write("AR:            Aspect Ratio.\n")
          f.write("npvis:         Number of points viscous sublayer (y+ < 5).\n")
          f.write("npsl:          Number of points initial shear layer (y+ < theta_sl_true+).\n")
-         f.write("theta_sl:      Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall).\n")
-         f.write("theta_sl_true: Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall).\n")
+         f.write("theta_sl:      Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).\n")
+         f.write("sl_99^+_IC:    Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional).\n")
          f.write("sh_vel_IC:     Shear velocity of the initial condition.\n")
          f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")
          f.write("!-------------------------------------!\n")

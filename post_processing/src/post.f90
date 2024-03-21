@@ -32,7 +32,7 @@ PROGRAM post
   integer,dimension(2) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
-  character(99):: filename,dirname 
+  character(99):: filename,dirname,time_unit 
   character(1) :: a
   
   ! Integer for MPI
@@ -304,11 +304,15 @@ PROGRAM post
      
      if (post_mean) then
      
-        write(filename,"('mean_stats',F5.1,'.txt')") t
-        write(*,"(3x,A)") filename
+        ! Writing the time unit as character
+        write(time_unit, '(F5.1)') t 
+        time_unit = adjustl(time_unit) 
         
+        ! Write the mean_stats filename
+        write(filename, '(A,A,A)') 'mean_stats', trim(time_unit), '.txt'
         filename = adjustl(filename)
         
+        ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         do j = ystart(2),yend(2) + 1
@@ -357,12 +361,16 @@ PROGRAM post
      endif
      
   if (post_vort) then
-     
-        write(filename,"('vort_stats',F5.1,'.txt')") t
-        write(*,"(3x,A)") filename
         
+        ! Writing the time unit as character
+        write(time_unit, '(F5.1)') t 
+        time_unit = adjustl(time_unit) 
+        
+        ! Write the vort_stats filename
+        write(filename, '(A,A,A)') 'vort_stats', trim(time_unit), '.txt'
         filename = adjustl(filename)
         
+        ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         do j = ystart(2),yend(2) + 1
@@ -384,7 +392,7 @@ PROGRAM post
         close(iunit)
   endif
   
-  ! Calculate parameters of the flow  
+  ! Calculate parameters of the flow (at 1st order for integrals) 
   call stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
     
   ! Reset to zero the averages on total domain (HT)   
@@ -399,14 +407,14 @@ PROGRAM post
  
  if(nrank.eq.0) then
  
- ! New directory for the statistics
-     write(dirname,"('data_post_parameters/')") 
+ ! New directory for the statistics (lo: Low-order)
+     write(dirname,"('data_post_param_lo/')") 
         
      call system('mkdir -p '//trim(dirname))
      
-     write(filename,"('param_stats.txt')") 
+     write(filename,"('param_stats_lo.txt')") 
          
-        filename = adjustl(filename)
+     filename = adjustl(filename)
         
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
@@ -438,6 +446,11 @@ PROGRAM post
         end if
         
         end do
+        
+        ! Adding a footer with useful information
+        write(iunit, *) 
+        write(iunit, *) 'Integral quantities are first-order accurate (backward rectangular rule): disp_thickness and mom_thickness.'
+        write(iunit, *) '6th order accurate calculations are performed in a separate Python script "high_order_integrals.py" (utilities folder).'
  
  end if
    
