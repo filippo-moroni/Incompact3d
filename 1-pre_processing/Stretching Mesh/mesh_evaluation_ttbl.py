@@ -1,6 +1,6 @@
 #!---------------------------------------------------------!
 #! mesh_evaluation_ttbl.py:                                !
-#! Python version of 'mesh_evaluation.f90'.                !
+#! improved Python version of 'mesh_evaluation.f90'.       !
 #!                                                         !
 #! Info:                                                   !
 #!  - Same values are obtained from both codes (tested).   !
