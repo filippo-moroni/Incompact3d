@@ -1,7 +1,8 @@
 #!---------------------------------------------------------!
 #!    With this script, we perform 6th order accurate      !
 #!       calculations of BL thickness parameters           !
-#!     (displacement thickness, momentum thickness).       !
+#! (delta_99,displacement thickness, momentum thickness),  !
+#!     related Reynolds numbers and shear velocity.        !
 #!---------------------------------------------------------!
 
 # Libraries
