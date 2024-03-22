@@ -179,7 +179,7 @@ PROGRAM post
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,vortxmean,vortymean,vortzmean)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,vortxmean,vortymean,vortzmean,mean_gradient)
 
   enddo ! closing of the do-loop on the different flow realizations
   
@@ -223,7 +223,8 @@ PROGRAM post
            do j=ystart(2),yend(2)          
               vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/real(nx*nz,mytype)
               vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/real(nx*nz,mytype)
-              vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/real(nx*nz,mytype)                   
+              vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/real(nx*nz,mytype) 
+              mean_gradientH1(j)=mean_gradientH1(j)+mean_gradient(i,j,k)/real(nx*nz,mytype)                  
            enddo
         enddo
      enddo
@@ -261,7 +262,8 @@ PROGRAM post
   if (post_vort) then
      call MPI_REDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      call MPI_REDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)   
+     call MPI_REDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)  
+     call MPI_REDUCE(mean_gradientH1,mean_gradientHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code) 
   endif
 
 !--------------MPI process nrank = 0 at work---------------!
@@ -377,13 +379,14 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write (iunit, *) 'mean[omega_x]'  , ',', 'mean[omega_y]'  , ',', 'mean[omega_z]'
+        write (iunit, *) 'mean[omega_x]'  , ',', 'mean[omega_y]'  , ',', 'mean[omega_z]', ',', 'dU/dy'
                                
         else
         
-        write(iunit, *)  vortxmeanHT(j-1),  ',', &
-                         vortymeanHT(j-1),  ',', &       
-                         vortzmeanHT(j-1)
+        write(iunit, *)  vortxmeanHT(j-1),    ',', &
+                         vortymeanHT(j-1),    ',', &       
+                         vortzmeanHT(j-1),    ',', &
+                         mean_gradientHT(j-1)
         
         end if
         
@@ -394,8 +397,7 @@ PROGRAM post
   
   ! Calculate parameters of the flow (at 1st order for integrals) 
   call stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
-  
-    
+     
   ! Reset to zero the averages on total domain (HT)   
   call reset_domain()       
      
@@ -408,7 +410,7 @@ PROGRAM post
  
  if(nrank.eq.0) then
  
- ! New directory for the statistics (lo: Low-order)
+     ! New directory for the statistics (lo: Low-order)
      write(dirname,"('data_post_param_lo/')") 
         
      call system('mkdir -p '//trim(dirname))
@@ -429,9 +431,9 @@ PROGRAM post
         
         if (ie .eq. 1) then
         
-        write (iunit, *) 'delta_99'      , ',','disp_thickness', ',','mom_thickness', ',', &
-                         're_tau'        , ',','re_delta*'     , ',','re_theta', ',',      &
-                         'shear_velocity', ',','time unit'                         
+        write (iunit, *) 'delta_99 O(2)'      , ',','disp_thickness O(1)', ',','mom_thickness O(1)', ',', &
+                         're_tau O(2)'        , ',','re_delta* O(1)'     , ',','re_theta O(1)',      ',', &
+                         'shear_velocity O(2)', ',','time unit'                         
                                
         else
         
@@ -452,6 +454,7 @@ PROGRAM post
         write(iunit, *) 
         write(iunit, *) 'Integral quantities are first-order accurate (backward rectangular rule): disp_thickness and mom_thickness.'
         write(iunit, *) '6th order accurate calculations are performed in a separate Python script "high_order_integrals.py" (post_processing folder).'
+        write(iunit, *) 'Shear velocity calculation is second-order accurate (see vort_stats.txt for 6th order accurate mean gradient).'
  
  end if
    
@@ -484,7 +487,7 @@ PROGRAM post
      print *,'Total wallclock (d):',real(ttotal*1.1574e-5,4)
      print *,''
      
-     ! Averages 
+     ! Mean statistics
      if (post_mean) then
      print *,'==========================================================='
      print *,''
@@ -502,6 +505,17 @@ PROGRAM post
      print *,'mean[phi], var[phi]'
      print *,''
      print *,"mean[u'phi'], mean[v'phi'], mean[w'phi']"
+     print *,''    
+     endif
+     
+     ! Vorticity and mean gradient 
+     if (post_vort) then
+     print *,'==========================================================='
+     print *,''
+     print *,'The following statistics have been saved in'
+     print *,'"vort_stats" files:'
+     print *,''
+     print *,'mean[omega_x], mean[omega_y], mean[omega_z], dU/dy'
      print *,''    
      endif
      

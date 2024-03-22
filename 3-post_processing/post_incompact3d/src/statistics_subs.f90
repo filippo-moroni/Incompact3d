@@ -43,14 +43,14 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
   
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                             ! temporary array (local)
   
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean            ! 1st order moment (average)
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean            ! 2nd order moment (variance)
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean            ! 3rd order moment (skewness)
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean            ! 4th order moment (kurtosis)
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean            ! Reynolds stresses
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean               ! average and variance of pressure
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean               ! average and variance of scalar field
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean      ! average of mixed fluctuations
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean        ! 1st order moment (average)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean        ! 2nd order moment (variance)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean        ! 3rd order moment (skewness)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean        ! 4th order moment (kurtosis)
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean        ! Reynolds stresses
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean           ! average and variance of pressure
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean           ! average and variance of scalar field
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations
   
                                                                                                                                             
   !---x-component---!
@@ -148,7 +148,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
 end subroutine stat_mean
 !********************************************************************
 ! Vorticity 
-subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,sh_vel)   
+subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,mean_gradient2)   
 
   use param
   use variables
@@ -165,9 +165,15 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,sh_vel
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
   
-  real(mytype)       :: lind 
-  real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1   ! average vorticity components, x-pencils
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2   ! average vorticity components, y-pencils
+  real(mytype) :: lind
+  
+  ! Vorticity 
+  real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1  ! average vorticity components, x-pencils
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2  ! average vorticity components, y-pencils
+  
+  ! Mean gradient
+  real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: mean_gradient1                    ! mean gradient dU/dy, x-pencils
+  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradient2                    ! mean gradient dU/dy, y-pencils
       
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
@@ -203,9 +209,15 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,sh_vel
   !dv/dx=tb1 dv/dy=te1 and dv/dz=th1
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
   
-  !---Vorticity average---!
   di1 = zero
-   
+  
+  !---- Mean gradient ----!
+  
+  di1 = td1  ! du/dy
+  mean_gradient1 = mean_gradient1 + di1/real(nr,mytype)
+  
+  !---Vorticity average---!
+  
   ! Vorticity along x 
   di1 = tf1 - th1  !dw/dy - dv/dz
   vortxmean1 = vortxmean1 + di1/real(nr,mytype)
@@ -218,15 +230,16 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,sh_vel
   di1 = tb1 - td1  !dv/dx - du/dy
   vortzmean1 = vortzmean1 + di1/real(nr,mytype)
    
-  ! Transpose vorticity along y
+  ! Transpose arrays along y
   call transpose_x_to_y(vortxmean1,vortxmean2)
   call transpose_x_to_y(vortymean1,vortymean2)
   call transpose_x_to_y(vortzmean1,vortzmean2)
+  call transpose_x_to_y(mean_gradient1,mean_gradient2)
 
 end subroutine stat_vorticity
 !********************************************************************
 ! Calculation of flow parameters: delta_99, displacement thickness, momentum thickness, 
-! shear velocity and related Re numbers
+! shear velocity and related Re numbers at low order only for a first quick estimation
 subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
 
   use param
@@ -276,29 +289,31 @@ subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_
   ! j    :  forward rectangular integration
   ! j + 1: backward rectangular integration
      
-  ! displacement thickness
+  ! displacement thickness, (O(1))
   do j = ystart(2),yend(2) - 1
      
   disp_t(ie) = disp_t(ie) + u1meanHT(j)*(yp(j+1) - yp(j)) 
                     
   end do
+  
+  disp_t(ie) = disp_t(ie)/uwall
      
   !disp_t(ie) = yp(ysize(2)) - disp_t(ie)  ! valid for a standard spatial BL (otherwise no further calculation for temporal BLs)
          
-  ! momentum thickness
+  ! momentum thickness, (O(1))
   do j = ystart(2),yend(2) - 1
      
-  mom_t(ie) = mom_t(ie) + (u1meanHT(j) - u1meanHT(j)**2)*(yp(j+1) - yp(j))
+  mom_t(ie) = mom_t(ie) + (u1meanHT(j)/uwall - (u1meanHT(j)/uwall)**2)*(yp(j+1) - yp(j))
                     
   end do
      
-  ! friction or shear velocity
+  ! shear velocity, (O(2)) 
   sh_vel(ie) = sqrt(xnu*u1meanHT(2)/yp(2))
      
   ! Reynolds numbers
   re_tau  (ie) = delta_99(ie)*sh_vel(ie)/xnu  ! friction Re number (or delta99^+)
   re_ds   (ie) = disp_t  (ie)*uwall/xnu       ! Re number based on displacement thickness delta star (ds)
   re_theta(ie) = mom_t   (ie)*uwall/xnu       ! Re number based on momentum thickness theta 
-
+  
 end subroutine stat_parameters
 

@@ -49,12 +49,17 @@ module post_processing
   ! Arrays to save evolution of quantities in time
   real(mytype), save, allocatable, dimension(:) :: delta_99,disp_t,mom_t
   real(mytype), save, allocatable, dimension(:) :: re_tau,re_ds,re_theta
-  real(mytype), save, allocatable, dimension(:) :: sh_vel
+  real(mytype), save, allocatable, dimension(:) :: sh_vel             
   
   ! Arrays for vorticity
   real(mytype), save, allocatable, dimension(:,:,:) :: vortxmean,vortymean,vortzmean
   real(mytype), save, allocatable, dimension(:)     :: vortxmeanH1,vortymeanH1,vortzmeanH1
   real(mytype), save, allocatable, dimension(:)     :: vortxmeanHT,vortymeanHT,vortzmeanHT
+  
+  ! Arrays for mean gradient dU/dy
+  real(mytype), save, allocatable, dimension(:,:,:) :: mean_gradient
+  real(mytype), save, allocatable, dimension(:)     :: mean_gradientH1
+  real(mytype), save, allocatable, dimension(:)     :: mean_gradientHT
      
 contains
 
@@ -117,7 +122,7 @@ contains
     call alloc_y(ta2)
     ta2 = zero
 
-    ! Allocate memory for vorticity calculation (these are gradients)
+    ! Allocate memory for vorticity & mean gradient calculations (these are gradients)
     if (post_vort) then
        if (.not.allocated(ta1)) call alloc_x(ta1)
        if (.not.allocated(tb1)) call alloc_x(tb1)
@@ -326,22 +331,21 @@ contains
        uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero      
        
        ! Variables depending on time
-       allocate(delta_99(nt));  delta_99=zero  ! BL thickness delta99
-       allocate(disp_t  (nt));  disp_t  =zero  ! displacement thickness delta star (ds)
-       allocate(mom_t   (nt));  mom_t   =zero  ! momentum thickness theta
+       allocate(delta_99(nt)); delta_99  = zero ! BL thickness delta99
+       allocate(disp_t  (nt)); disp_t    = zero ! displacement thickness delta star (ds)
+       allocate(mom_t   (nt)); mom_t     = zero ! momentum thickness theta
      
-       allocate(re_tau  (nt));  re_tau  =zero  ! friction Re number (or delta99^+)
-       allocate(re_ds   (nt));  re_ds   =zero  ! Re number based on displacement thickness delta star (ds)
-       allocate(re_theta(nt));  re_theta=zero  ! Re number based on momentum thickness theta
+       allocate(re_tau  (nt)); re_tau    = zero ! friction Re number (or delta99^+)
+       allocate(re_ds   (nt)); re_ds     = zero ! Re number based on displacement thickness delta star (ds)
+       allocate(re_theta(nt)); re_theta  = zero ! Re number based on momentum thickness theta
        
-       allocate(sh_vel  (nt));  sh_vel  =zero  ! shear-velocity
-       
-       !allocate(yp(ysize(2)));  yp      =zero  ! y-coordinates for the faces' elements
-    
+       allocate(sh_vel  (nt)); sh_vel    = zero ! shear-velocity
+           
     end if
     
     if (post_vort) then
-    
+       
+       ! Vorticity
        allocate(vortxmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices 
        allocate(vortymean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  
        allocate(vortzmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))
@@ -356,7 +360,17 @@ contains
        allocate(vortymeanHT(ysize(2)));
        allocate(vortzmeanHT(ysize(2)));
        vortxmeanHT=zero;vortymeanHT=zero;vortzmeanHT=zero
-                                                                                                                                                               
+       
+       ! Mean gradient
+       allocate(mean_gradient(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
+       mean_gradient=zero
+       
+       allocate(mean_gradientH1(ysize(2)));
+       mean_gradientH1=zero
+       
+       allocate(mean_gradientHT(ysize(2)));
+       mean_gradientHT=zero
+                                                                                                                                                                      
     endif
 
   end subroutine init_statistics
@@ -387,6 +401,8 @@ contains
   if (post_vort) then
   
   vortxmean=zero; vortymean=zero; vortzmean=zero
+  
+  mean_gradient=zero
   
   end if
      
@@ -419,6 +435,8 @@ contains
   
   vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
   
+  mean_gradientH1=zero
+  
   end if
   
   end subroutine reset_subdomains
@@ -447,6 +465,8 @@ contains
   if (post_vort) then
   
   vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
+  
+  mean_gradientHT=zero
   
   end if
   
