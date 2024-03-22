@@ -148,7 +148,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
 end subroutine stat_mean
 !********************************************************************
 ! Vorticity 
-subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2)   
+subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,sh_vel)   
 
   use param
   use variables
@@ -297,8 +297,8 @@ subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_
      
   ! Reynolds numbers
   re_tau  (ie) = delta_99(ie)*sh_vel(ie)/xnu  ! friction Re number (or delta99^+)
-  re_ds   (ie) = disp_t  (ie)*uwall/xnu  ! Re number based on displacement thickness delta star (ds)
-  re_theta(ie) = mom_t   (ie)*uwall/xnu  ! Re number based on momentum thickness theta 
+  re_ds   (ie) = disp_t  (ie)*uwall/xnu       ! Re number based on displacement thickness delta star (ds)
+  re_theta(ie) = mom_t   (ie)*uwall/xnu       ! Re number based on momentum thickness theta 
 
 end subroutine stat_parameters
 

@@ -1,9 +1,18 @@
 #!---------------------------------------------------------!
-#! This an improved Python version of 'mesh_evaluation.f90'!
-#! Same values are obtained from both codes (tested)       !
+#! mesh_evaluation_ttbl.py:                                !
+#! Python version of 'mesh_evaluation.f90'.                !
 #!                                                         !
-#! Y-coordinates at the center of mesh nodes are not       !
-#! evaluated here.                                         !
+#! Info:                                                   !
+#!  - Same values are obtained from both codes (tested).   !
+#!  - y-coordinates at the center of mesh nodes are not    !
+#!    evaluated here.                                      !
+#!---------------------------------------------------------!
+
+#!------------------- Description: ------------------------!
+# 
+# In this script we calculate mesh, numerics and 
+# flow parameters for temporal TBL simulations
+# (see the related .pdf file for more details).
 #!---------------------------------------------------------!
 
 # Libraries
@@ -28,11 +37,11 @@ xlx = 128.0       # domain dimension in x direction
 yly = 24.0        # domain dimension in y direction
 zlz = 128.0       # domain dimension in z direction
 
-nym = ny - 1      # if periodic BC is imposed, nym = ny, otherwise nym = ny - 1
+nym = ny - 1      # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
 
 istret = 3        # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 1.5        # beta parameter for mesh stretching
-cf = 0.007        # maximum cf estimated
+cf = 0.007        # maximum cf estimated at peak (Cimarelli et al. (2024))
 nu = 0.002        # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0       # velocity of the wall
 delta_t = 0.001   # time-step
@@ -102,7 +111,7 @@ if alpha == 0.0:
         yeta[j] = j*(1.0/ny)
         yp[j] = -beta * np.cos(pi*yeta[j]) / np.sin(yeta[j]*pi)
 
-# This part is valid for meshes with refinement at the bottom boundary only
+# This part is valid for meshes with refinement at the bottom boundary only 
 if istret == 3:
     
     # Calculate the spacings along x and z (uniform)
@@ -112,7 +121,7 @@ if istret == 3:
     # Calculating the initial thickness of the shear layer (see Kozul et al. (2016))
     theta_sl = 54.0 * nu / uwall
     
-    # Mean gradient due to initial condition   
+    # Mean gradient due to initial condition (analytical derivative)  
     mg = - uwall / (4.0 * theta_sl) * (1.0 / np.cosh(twd / 2.0 / theta_sl))**2
     
     # Shear velocity due to initial condition
@@ -128,7 +137,7 @@ if istret == 3:
     # Storing of the dimensional y-coordinates
     yp_dim = yp
 
-    # Rescaling the y coordinates and the spacings along x and z
+    # Rescaling the y coordinates and the spacings along x and z with peak cf
     yp = yp / delta_nu
     delta_x = delta_x / delta_nu
     delta_z = delta_z / delta_nu
@@ -145,7 +154,7 @@ if istret == 3:
     yly_nd_ic = yly / delta_nu_ic
     zlz_nd_ic = zlz / delta_nu_ic
     
-    # First and last elements' dimension
+    # First and last elements' dimension at peak cf
     delta_y1 = yp[2] - yp[1]
     delta_yn = yp[ny-1] - yp[ny-2]
     
@@ -161,14 +170,14 @@ if istret == 3:
     Pe =  uwall * delta_x / nu
     D =   nu * delta_t / (delta_x**2)
     
-    # Estimation of the stability parameter (see Thompson et al. (1985))
+    # Estimation of the stability parameter (see Thompson et al. (1985)) at the beginning of simulation
     S = 2*nu/(uwall)**2/delta_t
         
-    # Calculating the initial velocity profile
+    # Calculating the initial velocity profile (Kozul et al. (2016))
     for j in range(0, ny):
     	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh(twd/2.0/theta_sl*(1.0 - yp_dim[j]/twd))))
     
-    # Rescaling the velocity profile 
+    # Rescaling the initial velocity profile 
     Uo = Uo / sh_vel_ic
         
     # Plotting of the initial velocity profile in wall units
@@ -238,21 +247,21 @@ if istret == 3:
     print('Estimated D   at t = 0:', D)
     print('Estimated stability parameter S at t = 0:', S)
     print()
-    print('Mesh size at the first element near the wall: delta_y1+ =', delta_y1)
-    print('Mesh size at the last element away from the wall: delta_yn+ =', delta_yn)
+    print('Mesh size at the first element near the wall at cf peak: delta_y1+ =', delta_y1)
+    print('Mesh size at the last element away from the wall at cf peak: delta_yn+ =', delta_yn)
     print()
-    print('Mesh size x-direction: delta_x+ =', delta_x)
-    print('Mesh size z-direction: delta_z+ =', delta_z)
+    print('Mesh size x-direction at cf peak: delta_x+ =', delta_x)
+    print('Mesh size z-direction at cf peak: delta_z+ =', delta_z)
     print()
     print('Aspect ratio x-direction 1st element: AR_x1 =', AR_x1)
     print('Aspect ratio x-direction nth element: AR_xn =', AR_xn)
     print('Aspect ratio z-direction 1st element: AR_z1 =', AR_z1)
     print('Aspect ratio z-direction nth element: AR_zn =', AR_zn)
     print()
-    print('Number of mesh nodes in the viscous sublayer:', npvis)
+    print('Number of mesh nodes in the viscous sublayer at cf peak:', npvis)
     print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
-    print('Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
+    print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
             
     # Create data arrays with inputs
@@ -319,9 +328,9 @@ if istret == 3:
          f.write("\n")
          f.write("!--- List of acronyms & variables: ---!\n")
          f.write("AR:            Aspect Ratio.\n")
-         f.write("npvis:         Number of points viscous sublayer (y+ < 5).\n")
+         f.write("npvis:         Number of points viscous sublayer at cf peak (y+ < 5).\n")
          f.write("npsl:          Number of points initial shear layer (y+ < theta_sl_true+).\n")
-         f.write("theta_sl:      Estimated  initial thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).\n")
+         f.write("theta_sl:      Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).\n")
          f.write("sl_99^+_IC:    Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional).\n")
          f.write("sh_vel_IC:     Shear velocity of the initial condition.\n")
          f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")

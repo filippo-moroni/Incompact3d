@@ -394,6 +394,7 @@ PROGRAM post
   
   ! Calculate parameters of the flow (at 1st order for integrals) 
   call stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
+  
     
   ! Reset to zero the averages on total domain (HT)   
   call reset_domain()       
@@ -450,7 +451,7 @@ PROGRAM post
         ! Adding a footer with useful information
         write(iunit, *) 
         write(iunit, *) 'Integral quantities are first-order accurate (backward rectangular rule): disp_thickness and mom_thickness.'
-        write(iunit, *) '6th order accurate calculations are performed in a separate Python script "high_order_integrals.py" (utilities folder).'
+        write(iunit, *) '6th order accurate calculations are performed in a separate Python script "high_order_integrals.py" (post_processing folder).'
  
  end if
    
