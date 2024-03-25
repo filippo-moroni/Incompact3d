@@ -29,25 +29,27 @@ plt.rcParams.update({
 })
 
 # Inputs
-nx = 110          # number of points in x direction
-ny = 101          # number of points in y direction
-nz = 110          # number of points in z direction
+istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+beta = 8.0               # beta parameter for mesh stretching
+nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
+uwall = 1.0              # velocity of the wall
+delta_t = 0.001          # time-step
+twd = 1.0                # trip wire diameter D
 
-xlx = 128.0       # domain dimension in x direction
-yly = 24.0        # domain dimension in y direction
-zlz = 128.0       # domain dimension in z direction
+bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
+cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
 
-nym = ny - 1      # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
+nx = 32                  # number of points in x direction
+ny = 441                 # number of points in y direction
+nz = 32                  # number of points in z direction
 
-istret = 3        # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 1.5        # beta parameter for mesh stretching
-cf = 0.007        # maximum cf estimated at peak (Cimarelli et al. (2024))
-nu = 0.002        # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
-uwall = 1.0       # velocity of the wall
-delta_t = 0.001   # time-step
-twd = 1.0         # trip wire diameter D
+xlx = 10.0               # domain dimension in x direction
+yly = 3.0*bl_thickness   # domain dimension in y direction
+zlz = 8.0                # domain dimension in z direction
 
-re = 1.0/nu       # Reynolds number as defined in Incompact3d
+nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
+
+re = 1.0/nu              # Reynolds number as defined in Incompact3d
 
 # Declare local constant Pi
 pi = np.pi
@@ -56,6 +58,9 @@ pi = np.pi
 yeta = np.zeros(ny)
 yp = np.zeros(ny)
 Uo = np.zeros(ny)
+
+# Total number of points
+ntot = nx*ny*nz
 
 # Start of calculations
 yinf = -yly/2.0
@@ -171,7 +176,7 @@ if istret == 3:
     D =   nu * delta_t / (delta_x**2)
     
     # Estimation of the stability parameter (see Thompson et al. (1985)) at the beginning of simulation
-    S = 2*nu/(uwall)**2/delta_t
+    S = (2.0*nu)/((uwall**2)*delta_t)
         
     # Calculating the initial velocity profile (Kozul et al. (2016))
     for j in range(0, ny):
@@ -181,7 +186,7 @@ if istret == 3:
     Uo = Uo / sh_vel_ic
         
     # Plotting of the initial velocity profile in wall units
-    plt.scatter(yp_ic[0:15], Uo[0:15])
+    plt.scatter(yp_ic[0:50], Uo[0:50])
     plt.title("Initial velocity profile near the wall", fontsize=30)
     plt.xlabel("$y^+$", fontsize=30)
     plt.ylabel("$U_o^+$", fontsize=30)
@@ -189,7 +194,7 @@ if istret == 3:
     
     # Calculate the thickness delta99^+ of the initial shear layer
     j = 0
-    while Uo[j] > Uo[0]*0.01:
+    while j <= ny - 1 and Uo[j] > Uo[0]*0.01:
     	sl_99_ic = yp_ic[j]
     	j = j + 1
     		 
@@ -298,8 +303,8 @@ if istret == 3:
             [ yly_nd,                   yly_nd_ic,           Pe,         delta_yn,              delta_z,             AR_xn,         AR_zn,      ],
             [ zlz_nd,                   zlz_nd_ic,           D,          "/",                   "/",                 "/",           "/"         ],
             ["---",                     "---",               "---",      "---",                 "---",               "---",         "---"       ],
-            ["npvis",                   "npsl",              "theta_sl", "sl_99^+_IC",          "sh_vel_IC",         "sh_vel_peak", "/"         ],
-            [ npvis,                     npsl,                theta_sl,   sl_99_ic,              sh_vel_ic,           sh_vel,       "/"         ],
+            ["npvis",                   "npsl",              "theta_sl", "sl_99^+_IC",          "sh_vel_IC",         "sh_vel_peak", "n_tot"     ],
+            [ npvis,                     npsl,                theta_sl,   sl_99_ic,              sh_vel_ic,           sh_vel,        ntot       ],
            ] 
 
     # Create the table using tabulate
@@ -319,15 +324,15 @@ if istret == 3:
          f.write("We are employing 2 different cf values:\n")
          f.write("\n")
          f.write("1) Value obtained from the derivative at the wall due to the IC,\n")
-         f.write("   and it is used in order to estimate the number of points in the initial shear layer.\n")
+         f.write("   and it is used in order to estimate the number of points in the initial shear layer and the domain dimensions at IC.\n")
          f.write("\n")     
          f.write("2) Peak value found in literature (e.g. 0.007, see Cimarelli et al. (2024)),\n")
-         f.write("   and it is used to evaluate the spacings of the mesh.\n")
+         f.write("   and it is used to evaluate the spacings of the mesh (delta_x+,delta_y+,delta_z+).\n")
          f.write("\n")
          f.write("Stability parameter, S > 1: "+ str(S) +" (Thompson et al. (1985))\n")
          f.write("\n")
          f.write("!--- List of acronyms & variables: ---!\n")
-         f.write("AR:            Aspect Ratio.\n")
+         f.write("AR:            Aspect Ratio of mesh elements (width/height).\n")
          f.write("npvis:         Number of points viscous sublayer at cf peak (y+ < 5).\n")
          f.write("npsl:          Number of points initial shear layer (y+ < theta_sl_true+).\n")
          f.write("theta_sl:      Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).\n")

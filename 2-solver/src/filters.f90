@@ -41,7 +41,7 @@ subroutine filter(af)
   ! Discrete low-pass filter according to
   !=================================================
   implicit none
-  real(mytype),intent(in) :: af
+  real(mytype),intent(in) :: af   ! this should be the alpha parameter of the filtering operation
 
 #ifdef DEBG
   if (nrank==0) write(*,*) '# filter calculation start'

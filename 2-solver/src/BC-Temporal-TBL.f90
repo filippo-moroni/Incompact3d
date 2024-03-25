@@ -29,8 +29,10 @@ contains
     use variables
     use param
     use MPI
-    use dbg_schemes, only : tanh_prec
+    use dbg_schemes, only : tanh_prec,cosh_prec,sqrt_prec,abs_prec
     use var,         only : ta1,tb1,tc1,di1
+    use var,         only : ta2,tb2,tc2,di2
+    use var,         only : ta3,tb3,tc3,di3
     use ibm_param    
         
     implicit none
@@ -41,11 +43,16 @@ contains
     real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
     real(mytype) :: um        ! mean streamwise initial velocity profile
     real(mytype) :: diff      ! difference between wall and mean velocities
+    real(mytype) :: mg        ! mean gradient of the initial velocity profile
+    real(mytype) :: sh_vel    ! shear velocity of the initial velocity profile
+    real(mytype) :: delta_nu  ! viscous length of the initial velocity profile
     
     real(mytype) :: lind 
     
-    ! Filtered velocity fields
+    ! Filtered velocity fields, with pencils for trasposition for filtering
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1f, uy1f, uz1f
+    real(mytype), dimension(ysize(1), ysize(2), ysize(3)) :: ux2f, uy2f, uz2f
+    real(mytype), dimension(zsize(1), zsize(2), zsize(3)) :: ux3f, uy3f, uz3f
         
     ! For random numbers generation (check better what 'seed' means)
     integer :: ii,code  
@@ -53,17 +60,29 @@ contains
     
     ! Momentum thickness calculation
     theta_sl = 54.0*xnu/uwall
+    
+    ! Initial mean gradient
+    mg = - (uwall / (4.0 * theta_sl)) * (1.0 / cosh_prec(twd / 2.0 / theta_sl))**2
+    
+    ! Initial shear velocity
+    sh_vel = sqrt_prec(xnu * abs_prec(mg))
+    
+    ! Initial viscous length
+    delta_nu = xnu / sh_vel
 
     ! Initialize velocity fields and boundaries
-    ux1=zero; byx1=zero; byxn=zero
-    uy1=zero; byy1=zero; byyn=zero
-    uz1=zero; byz1=zero; byzn=zero    
+    ux1=zero 
+    uy1=zero 
+    uz1=zero   
  
     ! Initialization as Kozul et al. (JFM, 2016) (tanh + noise)
     
     ! Noise (random numbers from 0 to 1)
     call system_clock(count=code)
-    if (iin.eq.2) code=0  ! probably not needed, otherwise all noises are the same
+    
+    ! Uncomment the following line to obtain always the same noise
+    ! if (iin.eq.2) code=0 
+    
     call random_seed(size = ii)
     call random_seed(put = code+63946*(nrank+1)*(/ (i - 1, i = 1, ii) /))
 
@@ -76,21 +95,50 @@ contains
     tb1 = uy1
     tc1 = uz1
     
-    ! Initialize the filter
-    call filter(zero)
+    ! Initialize the filter 
+    call filter(zero)  ! the argument is alpha £ [-0.5, 0.5] (0.5: no filtering, -0.5: maximum filtering)
 
-    ! Low-pass filtering to the white noise (to check how it works and if it works)
+    ! Low-pass filtering of the white noise, x-direction
     call filx(ux1f,ta1,di1,fisx,fiffx ,fifsx ,fifwx ,xsize(1),xsize(2),xsize(3),0,ubcx) !ux1
     call filx(uy1f,tb1,di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcy) !uy1
     call filx(uz1f,tc1,di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcz) !uz1
-                     
+    
+    ! Transposition along y
+    call transpose_x_to_y(ux1f,ta2)
+    call transpose_x_to_y(uy1f,tb2)
+    call transpose_x_to_y(uz1f,tc2)
+    
+    ! Filtering along y   
+    call fily(ux2f,ta2,di2,fisy,fiffyp,fifsyp,fifwyp,ysize(1),ysize(2),ysize(3),1,ubcx) 
+    call fily(uy2f,tb2,di2,fisy,fiffy ,fifsy ,fifwy ,ysize(1),ysize(2),ysize(3),0,ubcy) 
+    call fily(uz2f,tc2,di2,fisy,fiffyp,fifsyp,fifwyp,ysize(1),ysize(2),ysize(3),1,ubcz) 
+    
+    ! Transposition along z
+    call transpose_y_to_z(ux2f,ta3)
+    call transpose_y_to_z(uy2f,tb3)
+    call transpose_y_to_z(uz2f,tc3)
+    
+    ! Filtering along z
+    call filz(ux3f,ta3,di3,fisz,fiffzp,fifszp,fifwzp,zsize(1),zsize(2),zsize(3),1,ubcx) 
+    call filz(uy3f,tb3,di3,fisz,fiffzp,fifszp,fifwzp,zsize(1),zsize(2),zsize(3),1,ubcy) 
+    call filz(uz3f,tc3,di3,fisz,fiffz ,fifsz ,fifwz ,zsize(1),zsize(2),zsize(3),0,ubcz) 
+    
+    ! Back to x pencils
+    call transpose_z_to_y(ux3f,ux2f)
+    call transpose_z_to_y(uy3f,uy2f)
+    call transpose_z_to_y(uz3f,uz2f)
+    
+    call transpose_y_to_x(ux2f,ux1f)
+    call transpose_y_to_x(uy2f,uy1f)
+    call transpose_y_to_x(uz2f,uz1f)
+                          
        ! Noise superimposed to the tanh velocity profile
        do j=1,xsize(2)
        
        ! y-coordinate calculation
        if (istret==0) y=real(j+xstart(2)-1-1,mytype)*dy
        if (istret/=0) y=yp(j+xstart(2)-1)
-             
+                    
        ! Initial streamwise velocity profile
        um = uwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
              
@@ -98,7 +146,7 @@ contains
        diff = uwall - um
                     
              ! Area near the wall, we add noise to all velocity components
-             if (diff < noise_loc*uwall) then             
+             if (diff < noise_loc*uwall .and. y/delta_nu > 1.0) then     ! added condition for noise at y+ > 0.5        
              
              do k=1,xsize(3)
                 do i=1,xsize(1)
@@ -117,7 +165,7 @@ contains
              do k=1,xsize(3)
                 do i=1,xsize(1)
                   
-                 ! No noise
+                  ! No noise
                   ux1(i,j,k) = zero
                   uy1(i,j,k) = zero
                   uz1(i,j,k) = zero
@@ -140,7 +188,7 @@ contains
     implicit none
     
     integer :: i,j,k
-    
+       
     ! Bottom boundary (Dirichlet, imposed velocity of the wall)
     if (ncly1 == 2) then
       do k = 1, xsize(3)
@@ -151,6 +199,8 @@ contains
         enddo
       enddo
     endif
+    
+    ! Top Neumann BC (free-slip) (not needed to be explicitly re-defined)
     
     ! Top boundary (Dirichlet, no-slip condition) 
     if (nclyn == 2) then
