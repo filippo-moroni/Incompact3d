@@ -431,7 +431,8 @@ module param
   ! Temporal TBL
   real(mytype) :: uwall      ! velocity of translating bottom wall (U_wall) 
   real(mytype) :: twd        ! trip wire diameter (D)
-  real(mytype) :: noise_loc  ! location of the noise with respect to a percentage of the total wall velocity U_wall
+  real(mytype) :: uln        ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
+  real(mytype) :: lln        ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   
   
   !numbers

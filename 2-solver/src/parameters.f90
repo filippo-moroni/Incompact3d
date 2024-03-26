@@ -94,7 +94,7 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,noise_loc
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -238,7 +238,7 @@ subroutine parameter(input_i3d)
   !read(10, nml=CASE); rewind(10)                  ! Read case-specific variables
   
   if (itype.eq.itype_ttbl) then
-     read(10, nml=TemporalTBLParam); rewind(10);  ! Read parameters for temporal TBL case
+     read(10, nml=TemporalTBLParam); rewind(10);   ! Read parameters for temporal TBL case
   end if
    
   close(10)
@@ -717,6 +717,7 @@ subroutine parameter_defaults()
   ! Temporal TBL
   uwall = 1.0       ! velocity of translating bottom wall (U_wall) 
   twd = 1.0         ! trip wire diameter (D)
-  noise_loc = 0.01  ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al.)
+  uln = 0.01        ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
+  lln = 0.5         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   
 end subroutine parameter_defaults

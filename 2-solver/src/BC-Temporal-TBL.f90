@@ -39,7 +39,7 @@ contains
        
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
 
-    real(mytype) :: y
+    real(mytype) :: y         ! y-coordinate of grid points
     real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
     real(mytype) :: um        ! mean streamwise initial velocity profile
     real(mytype) :: diff      ! difference between wall and mean velocities
@@ -54,7 +54,7 @@ contains
     real(mytype), dimension(ysize(1), ysize(2), ysize(3)) :: ux2f, uy2f, uz2f
     real(mytype), dimension(zsize(1), zsize(2), zsize(3)) :: ux3f, uy3f, uz3f
         
-    ! For random numbers generation (check better what 'seed' means)
+    ! For random numbers generation
     integer :: ii,code  
     integer :: i,j,k
     
@@ -145,8 +145,8 @@ contains
        ! Difference between wall and mean velocities
        diff = uwall - um
                     
-             ! Area near the wall, we add noise to all velocity components
-             if (diff < noise_loc*uwall .and. y/delta_nu > 1.0) then     ! added condition for noise at y+ > 0.5        
+             ! Add noise in an intermediate region near the wall but excluding first grid points
+             if (diff < uln*uwall .and. y/delta_nu > lln) then            
              
              do k=1,xsize(3)
                 do i=1,xsize(1)
@@ -160,7 +160,7 @@ contains
                 enddo
              enddo
              
-             ! Area away from the wall, no noise, only mean velocity profile
+             ! Area with no noise, only mean velocity profile
              else 
              do k=1,xsize(3)
                 do i=1,xsize(1)
@@ -193,7 +193,7 @@ contains
     if (ncly1 == 2) then
       do k = 1, xsize(3)
         do i = 1, xsize(1)
-          byx1(i,k) = uwall  
+          byx1(i,k) = uwall 
           byy1(i,k) = zero
           byz1(i,k) = zero
         enddo

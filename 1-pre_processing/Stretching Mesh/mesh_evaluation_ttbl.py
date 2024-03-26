@@ -30,7 +30,7 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 8.0               # beta parameter for mesh stretching
+beta = 6.0               # beta parameter for mesh stretching
 nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0              # velocity of the wall
 delta_t = 0.001          # time-step
@@ -39,9 +39,9 @@ twd = 1.0                # trip wire diameter D
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
 
-nx = 32                  # number of points in x direction
-ny = 441                 # number of points in y direction
-nz = 32                  # number of points in z direction
+nx = 34                  # number of points in x direction
+ny = 351                 # number of points in y direction
+nz = 52                  # number of points in z direction
 
 xlx = 10.0               # domain dimension in x direction
 yly = 3.0*bl_thickness   # domain dimension in y direction
@@ -148,7 +148,7 @@ if istret == 3:
     delta_z = delta_z / delta_nu
     
     # y+ at t = 0
-    yp_ic = yp / delta_nu_ic
+    yp_ic = yp_dim / delta_nu_ic
     
     # Rescaling also domain dimensions (nd: non-dimensional) (at IC and at peak)
     xlx_nd = xlx / delta_nu
@@ -180,7 +180,7 @@ if istret == 3:
         
     # Calculating the initial velocity profile (Kozul et al. (2016))
     for j in range(0, ny):
-    	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh(twd/2.0/theta_sl*(1.0 - yp_dim[j]/twd))))
+    	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh((twd/2.0/theta_sl)*(1.0 - yp_dim[j]/twd))))
     
     # Rescaling the initial velocity profile 
     Uo = Uo / sh_vel_ic
