@@ -132,7 +132,8 @@ contains
     call transpose_y_to_x(uy2f,uy1f)
     call transpose_y_to_x(uz2f,uz1f)
                           
-       ! Noise superimposed to the tanh velocity profile
+    ! Noise superimposed to the tanh velocity profile
+    do k=1,xsize(3)
        do j=1,xsize(2)
        
        ! y-coordinate calculation
@@ -147,10 +148,8 @@ contains
                     
              ! Add noise in an intermediate region near the wall but excluding first grid points
              if (diff < uln*uwall .and. y/delta_nu > lln) then            
-             
-             do k=1,xsize(3)
                 do i=1,xsize(1)
-             
+                
                 ! Rescaling the noise with a percentage of the wall velocity and center it with respect to zero
                 ux1(i,j,k) = (ux1f(i,j,k)*two - one)*init_noise*uwall
                 uy1(i,j,k) = (uy1f(i,j,k)*two - one)*init_noise*uwall
@@ -158,11 +157,9 @@ contains
                  
                 ux1(i,j,k) = ux1(i,j,k) + um 
                 enddo
-             enddo
              
              ! Area with no noise, only mean velocity profile
              else 
-             do k=1,xsize(3)
                 do i=1,xsize(1)
                   
                   ! No noise
@@ -172,9 +169,9 @@ contains
                  
                   ux1(i,j,k)= ux1(i,j,k) + um 
                 enddo
-             enddo 
              end if 
        enddo
+    enddo
        
     return
   end subroutine init_temporal_tbl

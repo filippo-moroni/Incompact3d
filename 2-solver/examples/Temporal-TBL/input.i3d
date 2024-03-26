@@ -12,32 +12,32 @@ p_row=0               ! Row partition
 p_col=0               ! Column partition
 
 ! Mesh
-nx=64                 ! X-direction nodes
-ny=129                ! Y-direction nodes
-nz=64                 ! Z-direction nodes
+nx=34                 ! X-direction nodes
+ny=351                ! Y-direction nodes
+nz=52                 ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 
-beta = 0.3            ! Refinement parameter (beta)
+beta = 6.0            ! Refinement parameter (beta)
 
 ! Domain dimensions
-xlx = 8.0             ! Lx (Size of the box in x-direction)
-yly = 4.0             ! Ly (Size of the box in y-direction)
+xlx = 10.0            ! Lx (Size of the box in x-direction)
+yly = 65.1            ! Ly (Size of the box in y-direction)
 zlz = 8.0             ! Lz (Size of the box in z-direction)
 
 ! Flow parameters
 re  = 500             ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.05             ! Time step
-ifirst = 1            ! First iteration
-ilast = 1000          ! Last iteration
+dt = 0.00001          ! Time step
+ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
+ilast = 5000          ! Last iteration
 
 ! Enable modelling tools
 numscalar = 0         ! Number of scalars 
 
 ! Boundary and initial conditions
 iin = 2               ! Inflow conditions (1: classic, 2: turbinit, 4: SEM)
-init_noise = 0.1      ! Turbulence intensity (1=100%)  ! Initial condition
+init_noise = 0.005    ! Turbulence intensity (1=100%)  ! Initial condition
 
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
@@ -58,8 +58,12 @@ isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th
 ipinter = 1           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive)
 
 ! Time scheme
-itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 4->AB4, 5->RK3, 6->RK4, 7-->CN2+AB3
-iimplicit = 1         ! Time integration scheme for diffusive terms:  1->Backward Euler, 2->CN
+itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler,2->AB2, 3->AB3, 4->AB4,5->RK3,6->RK4, 7-->CN2+AB3
+iimplicit = 0         ! Time integration scheme for diffusive terms:  0->Same as convective,1->Backward Euler, 2->CN
+
+! Dissipation control
+nu0nu = 4.0           ! Ratio between hyperviscosity/viscosity at nu
+cnu = 0.44            ! Ratio between hypervisvosity at k_m=2/3pi and k_c= pi
 
 /End
 
@@ -68,7 +72,7 @@ iimplicit = 1         ! Time integration scheme for diffusive terms:  1->Backwar
 !=================
 
 ! Basic I/O
-irestart = 0          ! Read initial flow field ? If not 0, set n+1 with respect to the checkpoint at time step n
+irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
 icheckpoint = 5000    ! Frequency for writing backup file
 ioutput = 1           ! Frequency for saving and visualization
 ilist = 1             ! Frequency for writing to screen        
@@ -97,7 +101,8 @@ nclzSn = 0
 
 uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
 twd = 1.0             ! trip wire diameter (D)
-noise_loc = 0.01      ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al. (2016))
+uln = 0.8             ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
+lln = 0.5             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
 
 /End
 

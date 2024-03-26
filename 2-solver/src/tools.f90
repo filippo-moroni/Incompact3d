@@ -45,7 +45,7 @@ module tools
        restart, &
        simu_stats, &
        apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
-       compute_cfldiff, compute_cfl, &
+       compute_cfldiff, compute_cfl, compute_reynolds_cell, &
        rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z, &
        avg3d
 
@@ -796,11 +796,11 @@ contains
 
      if (nrank==0) then
         write(*,*) '==========================================================='
-        write(*,*) 'Diffusion number'
-        write(*,"(' cfl_diff_x             :        ',F13.8)") cfl_diff_x
-        write(*,"(' cfl_diff_y             :        ',F13.8)") cfl_diff_y
-        write(*,"(' cfl_diff_z             :        ',F13.8)") cfl_diff_z
-        write(*,"(' cfl_diff_sum           :        ',F13.8)") cfl_diff_sum
+        write(*,*) 'Diffusion number (or numerical Fourier, Fo)'
+        write(*,"(' D,x             :        ',F13.8)") cfl_diff_x
+        write(*,"(' D,y             :        ',F13.8)") cfl_diff_y
+        write(*,"(' D,z             :        ',F13.8)") cfl_diff_z
+        write(*,"(' D,sum           :        ',F13.8)") cfl_diff_sum
         write(*,*) '==========================================================='
      endif
 
@@ -836,7 +836,7 @@ contains
           value_x    = maxval(abs(ux(:,jloc,:)) / dx)
           value_y    = maxval(abs(uy(:,jloc,:)) / dy)
           value_z    = maxval(abs(uz(:,jloc,:)) / dz)
-          value_sum  = maxval(abs(ux(:,jloc,:)) / dx + abs(uy(:,jloc,:)) / dy +    abs(uz(:,jloc,:)) / dz)
+          value_sum  = maxval(abs(ux(:,jloc,:)) / dx + abs(uy(:,jloc,:)) / dy + abs(uz(:,jloc,:)) / dz)
           !
           maxvalue_x   = maxval((/maxvalue_x,   value_x /))
           maxvalue_y   = maxval((/maxvalue_y,   value_y /))
@@ -863,13 +863,87 @@ contains
     call    MPI_REDUCE(cflmax_in,cflmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
 
     if (nrank == 0) then
-      write(*,"(' CFL_x                  : ',F17.8)") cflmax_out(1) * dt
-      write(*,"(' CFL_y                  : ',F17.8)") cflmax_out(2) * dt
-      write(*,"(' CFL_z                  : ',F17.8)") cflmax_out(3) * dt
-      !write(*,"(' CFL_sum                : ',F17.8)") cflmax_out(4)*dt
+      write(*,*) '-----------------------------------------------------------'
+      write(*,*) 'CFL Number (or Co)'
+      write(*,"(' CFL,x                  : ',F17.8)") cflmax_out(1) * dt
+      write(*,"(' CFL,y                  : ',F17.8)") cflmax_out(2) * dt
+      write(*,"(' CFL,z                  : ',F17.8)") cflmax_out(3) * dt
+      write(*,"(' CFL,sum                : ',F17.8)") cflmax_out(4) * dt
+      write(*,*) '-----------------------------------------------------------'
     end if
   end subroutine compute_cfl
   !##################################################################
+  !##################################################################
+    !!  SUBROUTINE: compute_reynolds_cell
+    !! DESCRIPTION: Computes Péclet number or Reynolds cell number 
+    !!              for a stretched mesh
+    !!      AUTHOR: Filippo Moroni (adapted from compute_cfl subroutine)
+  !##################################################################
+  subroutine compute_reynolds_cell(ux,uy,uz)
+    use param, only : dx,dy,dz,dt,istret,xnu
+    use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
+    use mpi
+    use variables, only : dyp
+
+    implicit none
+
+    integer      :: code,i,j,k,jloc
+    real(mytype) :: value_x, value_y, value_z, value_sum
+    real(mytype) :: maxvalue_sum, maxvalue_sum_out, maxvalue_x, maxvalue_y,  maxvalue_z
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
+    
+    ! Reynolds cell max in/out
+    real(mytype),dimension(4) :: recmax_in, recmax_out
+   
+    maxvalue_x  =-1609._mytype
+    maxvalue_y  =-1609._mytype
+    maxvalue_z  =-1609._mytype
+    maxvalue_sum=-1609._mytype
+    
+    ! Uniform mesh along y
+    if (istret == 0) then
+       do j = xstart(2), xend(2)
+          jloc = j-xstart(2)+1
+          value_x    = maxval(abs(ux(:,jloc,:)) * dx)
+          value_y    = maxval(abs(uy(:,jloc,:)) * dy)
+          value_z    = maxval(abs(uz(:,jloc,:)) * dz)
+          value_sum  = maxval(abs(ux(:,jloc,:)) * dx + abs(uy(:,jloc,:)) * dy + abs(uz(:,jloc,:)) * dz)
+          
+          maxvalue_x   = maxval((/maxvalue_x,   value_x /))
+          maxvalue_y   = maxval((/maxvalue_y,   value_y /))
+          maxvalue_z   = maxval((/maxvalue_z,   value_z /))
+          maxvalue_sum = maxval((/maxvalue_sum, value_sum /))
+       end do
+    ! Stretched mesh along y
+    else
+       do j = xstart(2), xend(2)
+          jloc = j-xstart(2)+1
+          value_x    = maxval(abs(ux(:,jloc,:)) * dx)
+          value_y    = maxval(abs(uy(:,jloc,:)) * dyp(j))
+          value_z    = maxval(abs(uz(:,jloc,:)) * dz)
+          value_sum  = maxval(abs(ux(:,jloc,:)) * dx + abs(uy(:,jloc,:)) * dyp(j) + abs(uz(:,jloc,:)) * dz)
+          
+          maxvalue_x   = maxval((/maxvalue_x,   value_x /))
+          maxvalue_y   = maxval((/maxvalue_y,   value_y /))
+          maxvalue_z   = maxval((/maxvalue_z,   value_z /))
+          maxvalue_sum = maxval((/maxvalue_sum, value_sum /))
+       end do
+    end if
+
+    recmax_in =  (/maxvalue_x, maxvalue_y, maxvalue_z, maxvalue_sum/)
+
+    call    MPI_REDUCE(recmax_in,recmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
+
+    if (nrank == 0) then
+      write(*,*) 'Reynolds cell (or numerical Péclet, Pé)'
+      write(*,"(' Pé,x                  : ',F17.8)") recmax_out(1) / xnu
+      write(*,"(' Pé,y                  : ',F17.8)") recmax_out(2) / xnu
+      write(*,"(' Pé,z                  : ',F17.8)") recmax_out(3) / xnu
+      write(*,"(' Pé,sum                : ',F17.8)") recmax_out(4) / xnu
+      write(*,*) '-----------------------------------------------------------'
+    end if
+  end subroutine compute_reynolds_cell
+  !################################################################## 
   !##################################################################
   ! Rescale pressure to physical pressure
   ! Written by Kay Schäfer 2019

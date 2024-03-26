@@ -683,18 +683,12 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1)
      bctop(:,:) = tb2(:,ny-1,:)
      !in order to mimick a Neumann BC at the top of the domain for the TBL
   
-  ! Temporal TBL, to be completed
-  ! else if (itype .eq. itype_ttbl .and. isc .eq. 0) then
-  !	do i = 1, ysize(1)
-  !	   do k = 1, ysize(3)	
-  !	   bcbot(i,k) = ...
-  ! 	     
-  !	   enddo
-  !	enddo
-  
+  ! Temporal TBL
+  else if (itype .eq. itype_ttbl .and. isc .eq. 0) then
+     bcbot(:,:) = uwall
+     bctop(:,:) = tb2(:,ny-1,:)  
   
   ! Generic homogeneous cases after
-  
   else if (isc.ne.0) then
      bcbot(:,:) = g_sc(isc, 1)
      bctop(:,:) = g_sc(isc, 2)

@@ -409,7 +409,8 @@ contains
     use navier, only : divergence
 
     use var, only : numscalar, dv3
-    use tools, only : test_speed_min_max, compute_cfl, test_scalar_min_max
+    use tools, only : test_speed_min_max, compute_cfl, &
+                      test_scalar_min_max, compute_reynolds_cell
     implicit none
 
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ux1, uy1, uz1, ep1
@@ -422,6 +423,7 @@ contains
        call divergence(dv3,rho1,ux1,uy1,uz1,ep1,drho1,divu3,2)
        call test_speed_min_max(ux1,uy1,uz1)
        call compute_cfl(ux1,uy1,uz1)
+       call compute_reynolds_cell(ux1,uy1,uz1)
        if (iscalar==1) call test_scalar_min_max(phi1)
     endif
 
