@@ -46,7 +46,7 @@ contains
     real(mytype) :: delta_nu  ! viscous length of the initial velocity profile
     real(mytype) :: wave_num  ! streamwise wavenumber associated to the grid spacing delta_x
     
-    real(mytype) :: fluct
+    real(mytype) :: fluct     ! sinusoidal fluctuations to trigger turbulence
             
     ! For random numbers generation
     integer :: ii,code  
