@@ -29,10 +29,7 @@ contains
     use variables
     use param
     use MPI
-    use dbg_schemes, only : tanh_prec,cosh_prec,sqrt_prec,abs_prec
-    use var,         only : ta1,tb1,tc1,di1
-    use var,         only : ta2,tb2,tc2,di2
-    use var,         only : ta3,tb3,tc3,di3
+    use dbg_schemes, only : tanh_prec,cosh_prec,sqrt_prec,abs_prec,sin_prec
     use ibm_param
     use tools    
         
@@ -40,24 +37,23 @@ contains
        
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
 
-    real(mytype) :: y         ! y-coordinate of grid points
+    real(mytype) :: x,y       ! x and y coordinates of grid points
     real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
     real(mytype) :: um        ! mean streamwise initial velocity profile
     real(mytype) :: diff      ! difference between wall and mean velocities
     real(mytype) :: mg        ! mean gradient of the initial velocity profile
     real(mytype) :: sh_vel    ! shear velocity of the initial velocity profile
     real(mytype) :: delta_nu  ! viscous length of the initial velocity profile
+    real(mytype) :: wave_num  ! streamwise wavenumber associated to the grid spacing delta_x
     
-    real(mytype) :: lind 
-    
-    ! Filtered velocity fields, with pencils for trasposition for filtering
-    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1f, uy1f, uz1f
-    real(mytype), dimension(ysize(1), ysize(2), ysize(3)) :: ux2f, uy2f, uz2f
-    real(mytype), dimension(zsize(1), zsize(2), zsize(3)) :: ux3f, uy3f, uz3f
-        
+    real(mytype) :: fluct
+            
     ! For random numbers generation
     integer :: ii,code  
     integer :: i,j,k
+    
+    ! Streamwise wavenumber
+    wave_num = pi/dx
     
     ! Momentum thickness calculation
     theta_sl = 54.0*xnu/uwall
@@ -90,16 +86,11 @@ contains
     call random_number(ux1)
     call random_number(uy1)
     call random_number(uz1)
-    
-    ! No ibm considered (see dynsmag subroutine in les_models.f90)
-    !ta1 = ux1
-    !tb1 = uy1
-    !tc1 = uz1
-    
+        
     ! Initialize the filter 
     call filter(C_filter)  ! the argument is alpha £ [-0.5, 0.5] (0.5: no filtering, -0.5: maximum filtering)
 
-    ! Filtering (no ibm)
+    ! Filtering (no IBM is condisered, we employ the subroutine from 'tools' module)
     call apply_spatial_filter(ux1,uy1,uz1)
                           
     ! Noise superimposed to the tanh velocity profile
@@ -112,20 +103,27 @@ contains
                     
        ! Initial streamwise velocity profile
        um = uwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
-             
+           
        ! Difference between wall and mean velocities
        diff = uwall - um
                     
              ! Add noise in an intermediate region near the wall but excluding first grid points
              if (diff < uln*uwall .and. y/delta_nu > lln) then            
+                               
                 do i=1,xsize(1)
+                
+                ! x-coordinate calculation
+                x=real(i+xstart(1)-1-1,mytype)*dx
+                
+                ! Modulate with a sinewave the streamwise velocity profile along the x direction
+                fluct = zptwo*um*sin_prec(wave_num/four*x)
                 
                 ! Rescaling the noise with a percentage of the wall velocity and center it with respect to zero
                 ux1(i,j,k) = (ux1(i,j,k)*two - one)*init_noise*uwall
                 uy1(i,j,k) = (uy1(i,j,k)*two - one)*init_noise*uwall
                 uz1(i,j,k) = (uz1(i,j,k)*two - one)*init_noise*uwall
                  
-                ux1(i,j,k) = ux1(i,j,k) + um 
+                ux1(i,j,k) = ux1(i,j,k) + um + fluct
                 enddo
              
              ! Area with no noise, only mean velocity profile
