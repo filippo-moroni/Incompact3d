@@ -123,7 +123,9 @@ contains
                 uy1(i,j,k) = (uy1(i,j,k)*two - one)*init_noise*uwall
                 uz1(i,j,k) = (uz1(i,j,k)*two - one)*init_noise*uwall
                  
-                ux1(i,j,k) = ux1(i,j,k) + um + fluct
+                ux1(i,j,k) = ux1(i,j,k) + um 
+                
+                !ux1(i,j,k) = ux1(i,j,k) + fluct
                 enddo
              
              ! Area with no noise, only mean velocity profile
