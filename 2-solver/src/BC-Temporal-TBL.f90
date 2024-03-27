@@ -33,7 +33,8 @@ contains
     use var,         only : ta1,tb1,tc1,di1
     use var,         only : ta2,tb2,tc2,di2
     use var,         only : ta3,tb3,tc3,di3
-    use ibm_param    
+    use ibm_param
+    use tools    
         
     implicit none
        
@@ -70,12 +71,12 @@ contains
     ! Initial viscous length
     delta_nu = xnu / sh_vel
 
-    ! Initialize velocity fields and boundaries
+    ! Initialize velocity fields
     ux1=zero 
     uy1=zero 
     uz1=zero   
  
-    ! Initialization as Kozul et al. (JFM, 2016) (tanh + noise)
+    !--- Initialization as Kozul et al. (JFM, 2016) (tanh + noise) ---!
     
     ! Noise (random numbers from 0 to 1)
     call system_clock(count=code)
@@ -91,46 +92,15 @@ contains
     call random_number(uz1)
     
     ! No ibm considered (see dynsmag subroutine in les_models.f90)
-    ta1 = ux1
-    tb1 = uy1
-    tc1 = uz1
+    !ta1 = ux1
+    !tb1 = uy1
+    !tc1 = uz1
     
     ! Initialize the filter 
-    call filter(zero)  ! the argument is alpha £ [-0.5, 0.5] (0.5: no filtering, -0.5: maximum filtering)
+    call filter(C_filter)  ! the argument is alpha £ [-0.5, 0.5] (0.5: no filtering, -0.5: maximum filtering)
 
-    ! Low-pass filtering of the white noise, x-direction
-    call filx(ux1f,ta1,di1,fisx,fiffx ,fifsx ,fifwx ,xsize(1),xsize(2),xsize(3),0,ubcx) !ux1
-    call filx(uy1f,tb1,di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcy) !uy1
-    call filx(uz1f,tc1,di1,fisx,fiffxp,fifsxp,fifwxp,xsize(1),xsize(2),xsize(3),1,ubcz) !uz1
-    
-    ! Transposition along y
-    call transpose_x_to_y(ux1f,ta2)
-    call transpose_x_to_y(uy1f,tb2)
-    call transpose_x_to_y(uz1f,tc2)
-    
-    ! Filtering along y   
-    call fily(ux2f,ta2,di2,fisy,fiffyp,fifsyp,fifwyp,ysize(1),ysize(2),ysize(3),1,ubcx) 
-    call fily(uy2f,tb2,di2,fisy,fiffy ,fifsy ,fifwy ,ysize(1),ysize(2),ysize(3),0,ubcy) 
-    call fily(uz2f,tc2,di2,fisy,fiffyp,fifsyp,fifwyp,ysize(1),ysize(2),ysize(3),1,ubcz) 
-    
-    ! Transposition along z
-    call transpose_y_to_z(ux2f,ta3)
-    call transpose_y_to_z(uy2f,tb3)
-    call transpose_y_to_z(uz2f,tc3)
-    
-    ! Filtering along z
-    call filz(ux3f,ta3,di3,fisz,fiffzp,fifszp,fifwzp,zsize(1),zsize(2),zsize(3),1,ubcx) 
-    call filz(uy3f,tb3,di3,fisz,fiffzp,fifszp,fifwzp,zsize(1),zsize(2),zsize(3),1,ubcy) 
-    call filz(uz3f,tc3,di3,fisz,fiffz ,fifsz ,fifwz ,zsize(1),zsize(2),zsize(3),0,ubcz) 
-    
-    ! Back to x pencils
-    call transpose_z_to_y(ux3f,ux2f)
-    call transpose_z_to_y(uy3f,uy2f)
-    call transpose_z_to_y(uz3f,uz2f)
-    
-    call transpose_y_to_x(ux2f,ux1f)
-    call transpose_y_to_x(uy2f,uy1f)
-    call transpose_y_to_x(uz2f,uz1f)
+    ! Filtering (no ibm)
+    call apply_spatial_filter(ux1,uy1,uz1)
                           
     ! Noise superimposed to the tanh velocity profile
     do k=1,xsize(3)
@@ -151,9 +121,9 @@ contains
                 do i=1,xsize(1)
                 
                 ! Rescaling the noise with a percentage of the wall velocity and center it with respect to zero
-                ux1(i,j,k) = (ux1f(i,j,k)*two - one)*init_noise*uwall
-                uy1(i,j,k) = (uy1f(i,j,k)*two - one)*init_noise*uwall
-                uz1(i,j,k) = (uz1f(i,j,k)*two - one)*init_noise*uwall
+                ux1(i,j,k) = (ux1(i,j,k)*two - one)*init_noise*uwall
+                uy1(i,j,k) = (uy1(i,j,k)*two - one)*init_noise*uwall
+                uz1(i,j,k) = (uz1(i,j,k)*two - one)*init_noise*uwall
                  
                 ux1(i,j,k) = ux1(i,j,k) + um 
                 enddo

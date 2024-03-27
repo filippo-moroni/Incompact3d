@@ -564,8 +564,8 @@ contains
     use ibm_param, only : ubcx,ubcy,ubcz
 
     implicit none
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(inout) :: ux1,uy1,uz1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3), numscalar), intent(inout) :: phi1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)),            intent(inout)           :: ux1,uy1,uz1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3), numscalar), intent(inout), optional :: phi1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: phi11
     real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2, phi2
     real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3, phi3
