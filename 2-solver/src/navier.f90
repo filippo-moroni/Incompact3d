@@ -271,7 +271,7 @@ contains
     return
   end subroutine cor_vel
   !############################################################################
-  !subroutine DIVERGENCe
+  !subroutine DIVERGENCE
   !Calculation of div u* for nlock=1 and of div u^{n+1} for nlock=2
   ! input : ux1,uy1,uz1,ep1 (on velocity mesh)
   ! output : pp3 (on pressure mesh)
@@ -396,9 +396,9 @@ contains
   !Computation of the pressure gradient from the pressure mesh to the
   !velocity mesh
   !Saving pressure gradients on boundaries for correct imposition of
-  !BCs on u* via the fractional step methodi (it is not possible to
+  !BCs on u* via the fractional step method (it is not possible to
   !impose BC after correction by pressure gradient otherwise lost of
-  !incompressibility--> BCs are imposed on u*
+  !incompressibility--> BCs are imposed on u*)
   !
   ! input: pp3 - pressure field (on pressure mesh)
   ! output: px1, py1, pz1 - pressure gradients (on velocity mesh)

@@ -531,7 +531,7 @@ subroutine second_derivative(alsa1,as1,bs1,&
      endif
   endif
 
-  ! Defined for the bounadies when dirichlet conditions are used
+  ! Defined for the boundaries when Dirichlet conditions are used
   alsa1= eleven
   as1  = (thirteen)/d2
   bs1  =-(twentyseven)/d2

@@ -30,17 +30,17 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 6.0               # beta parameter for mesh stretching
+beta = 10.0              # beta parameter for mesh stretching
 nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0              # velocity of the wall
-delta_t = 0.001          # time-step
+delta_t = 0.01           # time-step
 twd = 1.0                # trip wire diameter D
 
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
 
 nx = 34                  # number of points in x direction
-ny = 351                 # number of points in y direction
+ny = 501                 # number of points in y direction
 nz = 52                  # number of points in z direction
 
 xlx = 10.0               # domain dimension in x direction
