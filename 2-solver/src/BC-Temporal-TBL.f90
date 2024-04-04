@@ -22,7 +22,7 @@ module temporal_tbl
 
 contains
   !############################################################################
-  subroutine init_temporal_tbl (ux1,uy1,uz1)
+  subroutine init_temporal_tbl (ux1,uy1,uz1,phi1)
 
     use decomp_2d
     use decomp_2d_io
@@ -36,6 +36,7 @@ contains
     implicit none
        
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
 
     real(mytype) :: y         ! y coordinate of grid points
     real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
@@ -157,7 +158,7 @@ contains
     return
   end subroutine init_temporal_tbl
   !############################################################################
-  subroutine boundary_conditions_ttbl()
+  subroutine boundary_conditions_ttbl(phi)
 
     use param
     use variables
@@ -166,6 +167,8 @@ contains
     implicit none
     
     integer :: i,j,k
+    
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
     
     ! Top boundary Neumann BCs (e.g. free-slip for velocity) 
     ! do not need to be explicitly re-defined (both for velocity and scalar fields).
@@ -197,12 +200,12 @@ contains
     
        ! Bottom boundary (Dirichlet, imposed scalar value at the wall)   
        if ((nclyS1 == 2).and.(xstart(2) == 1)) then
-         phi1(:,1,:,:) = phiwall
+         phi(:,1,:,:) = phiwall
        endif
        
        ! Top boundary (Dirichlet, imposed scalar value at the freestream)
        if ((nclySn == 2).and.(xend(2) == ny)) then
-         phi1(:,xsize(2),:,:) = zero
+         phi(:,xsize(2),:,:) = zero
        endif
        
     endif

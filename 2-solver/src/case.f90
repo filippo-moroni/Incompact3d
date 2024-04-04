@@ -96,7 +96,7 @@ contains
     
     elseif (itype.eq.itype_ttbl) then
 
-       call init_temporal_tbl (ux1, uy1, uz1)
+       call init_temporal_tbl (ux1, uy1, uz1, phi1)
 
     else
   
@@ -152,7 +152,7 @@ contains
     
     elseif (itype.eq.itype_ttbl) then
 
-       call boundary_conditions_ttbl ()   
+       call boundary_conditions_ttbl (phi)   
        
     endif
 

@@ -13,11 +13,11 @@ p_col=0               ! Column partition
 
 ! Mesh
 nx=34                 ! X-direction nodes
-ny=351                ! Y-direction nodes
+ny=501                ! Y-direction nodes
 nz=52                 ! Z-direction nodes
-istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+istret = 2            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 
-beta = 6.0            ! Refinement parameter (beta)
+beta = 20.0           ! Refinement parameter (beta)
 
 ! Domain dimensions
 xlx = 10.0            ! Lx (Size of the box in x-direction)
@@ -28,16 +28,16 @@ zlz = 8.0             ! Lz (Size of the box in z-direction)
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.001            ! Time step
+dt = 0.01             ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 5000          ! Last iteration
+ilast = 1000          ! Last iteration
 
 ! Enable modelling tools
 numscalar = 0         ! Number of scalars 
 
 ! Boundary and initial conditions
-iin = 2               ! Inflow conditions (1: classic, 2: turbinit, 4: SEM)
-init_noise = 0.01     ! Turbulence intensity (1=100%)  ! Initial condition
+iin = 0               ! Noise conditions: 0: same noise for all simulations, 1: pseudo-random noise based on system clock (default: 0)
+init_noise = 0.1      ! Turbulence intensity (1=100%)  ! Initial condition
 
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
@@ -47,7 +47,7 @@ nclz1 = 0
 nclzn = 0
 
 ! Filtering of the initial noise
-ifilter=1             ! 0: no filtering, 1: all directions, 2: x and z directions, 3: only y direction
+ifilter=0             ! 0: no filtering, 1: all directions, 2: x and z directions, 3: only y direction
 C_filter=0.49         ! alpha coefficient of the filter alpha £ (-0.5, 0.5) (maximum to no effect of the low pass compact filter)
 
 /End
@@ -66,8 +66,8 @@ itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler,2
 iimplicit = 0         ! Time integration scheme for diffusive terms:  0->Same as convective,1->Backward Euler, 2->CN
 
 ! Dissipation control
-nu0nu = 4.0           ! Ratio between hyperviscosity/viscosity at nu (default: 4.0)
-cnu = 0.44            ! Ratio between hyperviscosity/viscosity at k_m=2/3pi and k_c=pi (default: 0.44)
+nu0nu = 4.0           ! Ratio between coefficient of hyperviscosity nu0 and viscosity nu (default: 4.0)  ** to be completed
+cnu = 0.33            ! Ratio between hyperviscosity/viscosity at k_m = 2/3pi and k_c = pi (channel flow: 0.44, TBL: 0.33)
 
 /End
 
@@ -77,7 +77,7 @@ cnu = 0.44            ! Ratio between hyperviscosity/viscosity at k_m=2/3pi and 
 
 ! Basic I/O
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
-icheckpoint = 5000    ! Frequency for writing backup file
+icheckpoint = 100000  ! Frequency for writing backup file
 ioutput = 1           ! Frequency for saving and visualization
 ilist = 1             ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
@@ -106,7 +106,8 @@ nclzSn = 0
 uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
 twd = 1.0             ! trip wire diameter (D)
 uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
-lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
+lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+phiwall = 1.0         ! scalar value at the wall       
 
 /End
 
