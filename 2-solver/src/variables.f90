@@ -38,26 +38,26 @@ module var
   USE complex_geometry
   
   ! define all major arrays here
-  real(mytype), save, allocatable, dimension(:,:,:) :: ux1, ux2, ux3, po3, dv3
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: pp3
-  real(mytype), save, allocatable, dimension(:,:,:) :: uy1, uy2, uy3
-  real(mytype), save, allocatable, dimension(:,:,:) :: uz1, uz2, uz3
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: rho1, drho1
-  real(mytype), save, allocatable, dimension(:,:,:) :: rho2, rho3
-  real(mytype), save, allocatable, dimension(:,:,:) :: divu3
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: phi1, phi2, phi3
-  real(mytype), save, allocatable, dimension(:,:,:) :: px1, py1, pz1
-  real(mytype), save, allocatable, dimension(:,:,:) :: ep1, diss1, pre1
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: dux1,duy1,duz1  ! Output of convdiff
+  real(mytype), save, allocatable, dimension(:,:,:)     :: ux1, ux2, ux3, po3, dv3
+  real(mytype), save, allocatable, dimension(:,:,:,:)   :: pp3
+  real(mytype), save, allocatable, dimension(:,:,:)     :: uy1, uy2, uy3
+  real(mytype), save, allocatable, dimension(:,:,:)     :: uz1, uz2, uz3
+  real(mytype), save, allocatable, dimension(:,:,:,:)   :: rho1, drho1
+  real(mytype), save, allocatable, dimension(:,:,:)     :: rho2, rho3
+  real(mytype), save, allocatable, dimension(:,:,:)     :: divu3
+  real(mytype), save, allocatable, dimension(:,:,:,:)   :: phi1, phi2, phi3
+  real(mytype), save, allocatable, dimension(:,:,:)     :: px1, py1, pz1
+  real(mytype), save, allocatable, dimension(:,:,:)     :: ep1, diss1, pre1
+  real(mytype), save, allocatable, dimension(:,:,:,:)   :: dux1,duy1,duz1  ! Output of convdiff
   real(mytype), save, allocatable, dimension(:,:,:,:,:) :: dphi1
-  real(mytype), save, allocatable, dimension(:,:,:) :: mu1,mu2,mu3
-  real(mytype), save, allocatable, dimension(:,:,:) :: uxf1, uxf2, uxf3, uyf1, uyf2, uyf3, uzf1, uzf2, uzf3, phif1, phif2, phif3
+  real(mytype), save, allocatable, dimension(:,:,:)     :: mu1,mu2,mu3
+  real(mytype), save, allocatable, dimension(:,:,:)     :: uxf1, uxf2, uxf3, uyf1, uyf2, uyf3, uzf1, uzf2, uzf3, phif1, phif2, phif3
 
   !arrays for post processing
   real(mytype), save, allocatable, dimension(:,:,:) :: f1,fm1
 
   !arrays for statistic collection
-  real(mytype), save, allocatable, dimension(:,:,:) :: umean,vmean,wmean,pmean,uumean,vvmean,wwmean,uvmean,uwmean,vwmean,tmean
+  real(mytype), save, allocatable, dimension(:,:,:)   :: umean,vmean,wmean,pmean,uumean,vvmean,wwmean,uvmean,uwmean,vwmean,tmean
   real(mytype), save, allocatable, dimension(:,:,:,:) :: phimean,phiphimean,uphimean,vphimean,wphimean
 
   !arrays for visualization
@@ -77,21 +77,21 @@ module var
   integer, save :: nxmsize, nymsize, nzmsize
 
   ! working arrays for LES
-  real(mytype), save, allocatable, dimension(:,:,:) :: sgsx1,sgsy1,sgsz1,nut1,sxx1,syy1,szz1,sxy1,sxz1,syz1
-  real(mytype), save, allocatable, dimension(:,:,:) :: sgsx2,sgsy2,sgsz2,nut2,sxx2,syy2,szz2,sxy2,sxz2,syz2
-  real(mytype), save, allocatable, dimension(:,:,:) :: sgsx3,sgsy3,sgsz3,nut3,sxx3,syy3,szz3,sxy3,sxz3,syz3
+  real(mytype), save, allocatable, dimension(:,:,:)   :: sgsx1,sgsy1,sgsz1,nut1,sxx1,syy1,szz1,sxy1,sxz1,syz1
+  real(mytype), save, allocatable, dimension(:,:,:)   :: sgsx2,sgsy2,sgsz2,nut2,sxx2,syy2,szz2,sxy2,sxz2,syz2
+  real(mytype), save, allocatable, dimension(:,:,:)   :: sgsx3,sgsy3,sgsz3,nut3,sxx3,syy3,szz3,sxy3,sxz3,syz3
 
-  real(mytype), save, allocatable, dimension(:,:,:) :: sdxx1,sdyy1,sdzz1,sdxy1,sdxz1,sdyz1
-  real(mytype), save, allocatable, dimension(:,:,:) :: sdxx2,sdyy2,sdzz2,sdxy2,sdxz2,sdyz2
-  real(mytype), save, allocatable, dimension(:,:,:) :: sdxx3,sdyy3,sdzz3,sdxy3,sdxz3,sdyz3
+  real(mytype), save, allocatable, dimension(:,:,:)   :: sdxx1,sdyy1,sdzz1,sdxy1,sdxz1,sdyz1
+  real(mytype), save, allocatable, dimension(:,:,:)   :: sdxx2,sdyy2,sdzz2,sdxy2,sdxz2,sdyz2
+  real(mytype), save, allocatable, dimension(:,:,:)   :: sdxx3,sdyy3,sdzz3,sdxy3,sdxz3,sdyz3
 
-  real(mytype), save, allocatable, dimension(:,:,:) :: gxx1,gyx1,gzx1,gxy1,gyy1,gzy1,gxz1,gyz1,gzz1
-  real(mytype), save, allocatable, dimension(:,:,:) :: gxy2,gyy2,gzy2,gxz2,gyz2,gzz2
-  real(mytype), save, allocatable, dimension(:,:,:) :: gxz3,gyz3,gzz3
+  real(mytype), save, allocatable, dimension(:,:,:)   :: gxx1,gyx1,gzx1,gxy1,gyy1,gzy1,gxz1,gyz1,gzz1
+  real(mytype), save, allocatable, dimension(:,:,:)   :: gxy2,gyy2,gzy2,gxz2,gyz2,gzz2
+  real(mytype), save, allocatable, dimension(:,:,:)   :: gxz3,gyz3,gzz3
   real(mytype), save, allocatable, dimension(:,:,:,:) :: sgsphi1,sgsphi2,sgsphi3
 
-  real(mytype), save, allocatable, dimension(:,:,:) :: srt_smag, srt_smag2
-  real(mytype), save, allocatable, dimension(:,:,:) :: srt_wale, srt_wale2, srt_wale3, srt_wale4
+  real(mytype), save, allocatable, dimension(:,:,:)   :: srt_smag, srt_smag2
+  real(mytype), save, allocatable, dimension(:,:,:)   :: srt_wale, srt_wale2, srt_wale3, srt_wale4
 
   ! working arrays for ABL
   real(mytype), save, allocatable, dimension(:,:) :: heatflux

@@ -45,7 +45,7 @@ module tools
        restart, &
        simu_stats, &
        apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
-       compute_cfldiff, compute_cfl, compute_reynolds_cell, &
+       compute_cfldiff, compute_cfl, compute_reynolds_cell, compute_stab_param, &
        rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z, &
        avg3d
 
@@ -796,7 +796,7 @@ contains
 
      if (nrank==0) then
         write(*,*) '==========================================================='
-        write(*,*) 'Diffusion number (or numerical Fourier, Fo)'
+        write(*,*) 'Diffusion number D (or numerical Fourier, Fo)'
         write(*,"(' D,x             :        ',F13.8)") cfl_diff_x
         write(*,"(' D,y             :        ',F13.8)") cfl_diff_y
         write(*,"(' D,z             :        ',F13.8)") cfl_diff_z
@@ -864,7 +864,7 @@ contains
 
     if (nrank == 0) then
       write(*,*) '-----------------------------------------------------------'
-      write(*,*) 'CFL Number (or Co)'
+      write(*,*) 'CFL Number (or Courant, Co)'
       write(*,"(' CFL,x                  : ',F17.8)") cflmax_out(1) * dt
       write(*,"(' CFL,y                  : ',F17.8)") cflmax_out(2) * dt
       write(*,"(' CFL,z                  : ',F17.8)") cflmax_out(3) * dt
@@ -944,19 +944,16 @@ contains
     end if
   end subroutine compute_reynolds_cell
   !##################################################################
-  
-  ! to be completed
   !##################################################################
     !!  SUBROUTINE: compute_stab_param
-    !! DESCRIPTION: Computes stability parameter S (Thompson et al. (1985)) 
-    !!              for a stretched mesh
+    !! DESCRIPTION: Computes stability parameter S < 1
+    !!              (Thompson et al. (1985) 
     !!      AUTHOR: Filippo Moroni (adapted from compute_cfl subroutine)
   !##################################################################
   subroutine compute_stab_param(ux,uy,uz)
-    use param, only : dx,dy,dz,dt,istret,xnu
+    use param, only : dt,xnu,two
     use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
     use mpi
-    use variables, only : dyp
 
     implicit none
 
@@ -965,54 +962,38 @@ contains
     real(mytype) :: maxvalue_sum, maxvalue_sum_out, maxvalue_x, maxvalue_y,  maxvalue_z
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
     
-    ! Reynolds cell max in/out
-    real(mytype),dimension(4) :: recmax_in, recmax_out
+    ! Stability parameter S max in/out
+    real(mytype),dimension(4) :: stparmax_in, stparmax_out
    
     maxvalue_x  =-1609._mytype
     maxvalue_y  =-1609._mytype
     maxvalue_z  =-1609._mytype
     maxvalue_sum=-1609._mytype
     
-    ! Uniform mesh along y
-    if (istret == 0) then
-       do j = xstart(2), xend(2)
-          jloc = j-xstart(2)+1
-          value_x    = maxval(one/abs(ux(:,jloc,:)) * dx)
-          value_y    = maxval(abs(uy(:,jloc,:)) * dy)
-          value_z    = maxval(abs(uz(:,jloc,:)) * dz)
-          value_sum  = maxval(abs(ux(:,jloc,:)) * dx + abs(uy(:,jloc,:)) * dy + abs(uz(:,jloc,:)) * dz)
+    ! Unique cycle, since S does not depend on the mesh but just on velocity field
+    do j = xstart(2), xend(2)
+       jloc = j-xstart(2)+1
+       value_x    = maxval((ux(:,jloc,:))**2)
+       value_y    = maxval((uy(:,jloc,:))**2)
+       value_z    = maxval((uz(:,jloc,:))**2)
+       value_sum  = maxval((ux(:,jloc,:))**2 + (uy(:,jloc,:))**2 + (uz(:,jloc,:))**2)
           
-          maxvalue_x   = maxval((/maxvalue_x,   value_x /))
-          maxvalue_y   = maxval((/maxvalue_y,   value_y /))
-          maxvalue_z   = maxval((/maxvalue_z,   value_z /))
-          maxvalue_sum = maxval((/maxvalue_sum, value_sum /))
-       end do
-    ! Stretched mesh along y
-    else
-       do j = xstart(2), xend(2)
-          jloc = j-xstart(2)+1
-          value_x    = maxval(abs(ux(:,jloc,:)) * dx)
-          value_y    = maxval(abs(uy(:,jloc,:)) * dyp(j))
-          value_z    = maxval(abs(uz(:,jloc,:)) * dz)
-          value_sum  = maxval(abs(ux(:,jloc,:)) * dx + abs(uy(:,jloc,:)) * dyp(j) + abs(uz(:,jloc,:)) * dz)
-          
-          maxvalue_x   = maxval((/maxvalue_x,   value_x /))
-          maxvalue_y   = maxval((/maxvalue_y,   value_y /))
-          maxvalue_z   = maxval((/maxvalue_z,   value_z /))
-          maxvalue_sum = maxval((/maxvalue_sum, value_sum /))
-       end do
-    end if
+       maxvalue_x   = maxval((/maxvalue_x,   value_x /))
+       maxvalue_y   = maxval((/maxvalue_y,   value_y /))
+       maxvalue_z   = maxval((/maxvalue_z,   value_z /))
+       maxvalue_sum = maxval((/maxvalue_sum, value_sum /))
+    end do
 
-    recmax_in =  (/maxvalue_x, maxvalue_y, maxvalue_z, maxvalue_sum/)
+    stparmax_in =  (/maxvalue_x, maxvalue_y, maxvalue_z, maxvalue_sum/)
 
-    call    MPI_REDUCE(recmax_in,recmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
+    call    MPI_REDUCE(stparmax_in,stparmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
 
     if (nrank == 0) then
-      write(*,*) 'Reynolds cell (or numerical Péclet, Pé)'
-      write(*,"(' Pé,x                  : ',F17.8)") recmax_out(1) / xnu
-      write(*,"(' Pé,y                  : ',F17.8)") recmax_out(2) / xnu
-      write(*,"(' Pé,z                  : ',F17.8)") recmax_out(3) / xnu
-      write(*,"(' Pé,sum                : ',F17.8)") recmax_out(4) / xnu
+      write(*,*) 'Stability parameter S (Thompson et al. (1985)'
+      write(*,"(' S,x                  : ',F17.8)") stparmax_out(1) * dt / two / xnu
+      write(*,"(' S,y                  : ',F17.8)") stparmax_out(2) * dt / two / xnu
+      write(*,"(' S,z                  : ',F17.8)") stparmax_out(3) * dt / two / xnu
+      write(*,"(' S,sum                : ',F17.8)") stparmax_out(4) * dt / two / xnu
       write(*,*) '-----------------------------------------------------------'
     end if
   end subroutine compute_stab_param

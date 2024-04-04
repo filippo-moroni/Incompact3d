@@ -94,7 +94,7 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -718,6 +718,7 @@ subroutine parameter_defaults()
   uwall = 1.0       ! velocity of translating bottom wall (U_wall) 
   twd = 1.0         ! trip wire diameter (D)
   uln = 0.01        ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
-  lln = 0.5         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
+  lln = 0.5         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+  phiwall = 1.0     ! scalar value at the wall 
   
 end subroutine parameter_defaults

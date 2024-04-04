@@ -170,13 +170,13 @@ if istret == 3:
     AR_z1 = delta_z / delta_y1	# AR z direction, 1st element
     AR_zn = delta_z / delta_yn	# AR z direction, nth element     
     
-    # Estimation of parameters of numerics (CFL, Pe, D) at the beginning of simulation
-    CFL = uwall * delta_t / delta_x
+    # Estimation of parameters of numerics (CFL, D, Pé) at the beginning of simulation
+    CFL = uwall * delta_t / delta_x      
+    D =   nu * delta_t / (delta_x**2)    
     Pe =  uwall * delta_x / nu
-    D =   nu * delta_t / (delta_x**2)
-    
-    # Estimation of the stability parameter (see Thompson et al. (1985)) at the beginning of simulation
-    S = (2.0*nu)/((uwall**2)*delta_t)
+        
+    # Estimation of the stability parameter (see Thompson et al. (1985)) at the beginning of simulation (S < 1)
+    S = ((uwall**2)*delta_t)/(2.0*nu)
         
     # Calculating the initial velocity profile (Kozul et al. (2016))
     for j in range(0, ny):
@@ -248,8 +248,8 @@ if istret == 3:
     print('Width  of the domain (Lz+) at IC:', zlz_nd_ic)
     print()
     print('Estimated CFL at t = 0:', CFL)
-    print('Estimated Pé  at t = 0:', Pe)
     print('Estimated D   at t = 0:', D)
+    print('Estimated Pé  at t = 0:', Pe)
     print('Estimated stability parameter S at t = 0:', S)
     print()
     print('Mesh size at the first element near the wall at cf peak: delta_y1+ =', delta_y1)
@@ -329,7 +329,7 @@ if istret == 3:
          f.write("2) Peak value found in literature (e.g. 0.007, see Cimarelli et al. (2024)),\n")
          f.write("   and it is used to evaluate the spacings of the mesh (delta_x+,delta_y+,delta_z+).\n")
          f.write("\n")
-         f.write("Stability parameter, S > 1: "+ str(S) +" (Thompson et al. (1985))\n")
+         f.write("Stability parameter, S < 1: "+ str(S) +" (Thompson et al. (1985))\n")
          f.write("\n")
          f.write("!--- List of acronyms & variables: ---!\n")
          f.write("AR:            Aspect Ratio of mesh elements (width/height).\n")

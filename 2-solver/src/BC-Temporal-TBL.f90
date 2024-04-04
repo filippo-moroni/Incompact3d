@@ -39,7 +39,8 @@ contains
 
     real(mytype) :: y         ! y coordinate of grid points
     real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
-    real(mytype) :: um        ! mean streamwise initial velocity profile
+    real(mytype) :: um        ! initial mean streamwise velocity profile 
+    real(mytype) :: phim      ! initial mean scalar profile
     real(mytype) :: diff      ! difference between wall and mean velocities
     real(mytype) :: mg        ! mean gradient of the initial velocity profile
     real(mytype) :: sh_vel    ! shear velocity of the initial velocity profile
@@ -128,6 +129,30 @@ contains
              end if 
        enddo
     enddo
+    
+    !--- Initialization of scalar fields ---!  
+    
+    ! Initialize only if scalar fields are present
+    if(iscalar==1) then
+    
+    phi1=zero
+    
+       do k=1,xsize(3)
+          do j=1,xsize(2)
+             if (istret==0) y=real(j+xstart(2)-2,mytype)*dy
+             if (istret/=0) y=yp(j+xstart(2)-1)
+             
+             ! Initial scalar profile (same thickness of the velocity BL, change if Pr =/ 1)
+             phim = phiwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
+            
+             ! Only mean profile, no noise            
+             do i=1,xsize(1)
+                phi1(i,j,k,:) = phim
+             enddo
+             
+          enddo
+       enddo
+    end if   
        
     return
   end subroutine init_temporal_tbl
@@ -141,6 +166,9 @@ contains
     implicit none
     
     integer :: i,j,k
+    
+    ! Top boundary Neumann BCs (e.g. free-slip for velocity) 
+    ! do not need to be explicitly re-defined (both for velocity and scalar fields).
        
     ! Bottom boundary (Dirichlet, imposed velocity of the wall)
     if (ncly1 == 2) then
@@ -152,9 +180,7 @@ contains
         enddo
       enddo
     endif
-    
-    ! Top Neumann BC (free-slip) (not needed to be explicitly re-defined)
-    
+        
     ! Top boundary (Dirichlet, no-slip condition) 
     if (nclyn == 2) then
       do k = 1, xsize(3)
@@ -165,7 +191,22 @@ contains
         enddo
       enddo
     endif
+    
+    ! Scalar fields
+    if(iscalar==1) then
+    
+       ! Bottom boundary (Dirichlet, imposed scalar value at the wall)   
+       if ((nclyS1 == 2).and.(xstart(2) == 1)) then
+         phi1(:,1,:,:) = phiwall
+       endif
        
+       ! Top boundary (Dirichlet, imposed scalar value at the freestream)
+       if ((nclySn == 2).and.(xend(2) == ny)) then
+         phi1(:,xsize(2),:,:) = zero
+       endif
+       
+    endif
+      
   end subroutine boundary_conditions_ttbl
   !############################################################################
   subroutine postprocess_ttbl(ux1,uy1,uz1,pp3,phi1,ep1)
