@@ -59,7 +59,7 @@ yp = np.zeros(ny)
 Uo = np.zeros(ny)
 
 # Total number of points
-ntot = nx*ny*nz
+n_tot = nx*ny*nz
 
 # Start of calculations
 yinf = -yly/2.0
@@ -151,6 +151,11 @@ if istret == 3:
     # First element y-dimension
     delta_y1 = yp[1] - yp[0]
     
+    # Rescaling the mesh spacings with viscous unit at IC
+    delta_x_nd_ic  = delta_x  / delta_nu_ic
+    delta_y1_nd_ic = delta_y1 / delta_nu_ic
+    delta_z_nd_ic  = delta_z  / delta_nu_ic
+    
     # Rescaling the mesh spacings with viscous unit at peak cf
     delta_x_nd_peak  = delta_x  / delta_nu_peak
     delta_y1_nd_peak = delta_y1 / delta_nu_peak
@@ -168,7 +173,7 @@ if istret == 3:
     #!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC ---!
    
     CFL = uwall * delta_t / delta_x      
-    D =   nu * delta_t / (delta_x**2)    
+    D =   nu * delta_t / (delta_y1**2)    
     Pe =  uwall * delta_x / nu
         
     # Stability parameter (S < 1) (see Thompson et al. (1985)) 
@@ -268,6 +273,7 @@ if istret == 3:
     print('Boundary layer thickness at Re_tau = 500, bl_thickness = ', bl_thickness)
     print('Skin friction at peak, cf = ', cf)
     print()
+    print()
     print('!----- Outputs: -----!')
     print()
     print('!--- Non-dimensional domain dimensions: ---!')
@@ -282,19 +288,18 @@ if istret == 3:
     print()
     print('!--- Numerics-related parameters: ---!')
     print()
-    print('Estimated CFL at IC:', CFL)
-    print('Estimated D   at IC:', D)
-    print('Estimated Pé  at IC:', Pe)
+    print('Estimated CFL,x at IC:', CFL)
+    print('Estimated D,y   at IC:', D)
+    print('Estimated Pé,x  at IC:', Pe)
     print('Estimated stability parameter S at IC:', S)
     print()
-    print()
-    print('!--- Mesh sizes at peak cf (cf_max ~ 0.007, Cimarelli et al. (2024)) ---!)
+    print('!--- Mesh sizes at peak cf (cf_max ~ 0.007, Cimarelli et al. (2024)) ---!')
     print()
     print('Mesh size x-direction: delta_x+ =', delta_x_nd_peak)
     print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_peak)
     print('Mesh size z-direction: delta_z+ =', delta_z_nd_peak)
     print()
-    print('!--- Mesh sizes at Re_tau = 500 (imarelli et al. (2024)) ---!)
+    print('!--- Mesh sizes at Re_tau = 500 (Cimarelli et al. (2024)) ---!')
     print()
     print('Mesh size x-direction: delta_x+ =', delta_x_nd_500)
     print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_500)
@@ -304,8 +309,6 @@ if istret == 3:
     print()
     print('!--- Number of discretization points ---!')
     print()
-    
-    # to be completed
     print('Number of mesh nodes in the viscous sublayer at cf peak:', npvis)
     print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
@@ -321,67 +324,102 @@ if istret == 3:
            ] 
     
     data2 = [
-             ["beta", "cf", "nu",  "Re", "uwall", "delta_t", "twd"],
-             [ beta,   cf,   nu,    re,   uwall,   delta_t,   twd ],
+             ["beta", "nu", "uwall", "delta_t", "twd", "Re"],
+             [ beta,   nu,   uwall,   delta_t,   twd,   re ],
+            ]
+            
+    data3 = [
+             ["bl_thickness", "cf_max"],
+             [ bl_thickness,   cf     ],
             ]
 
     # Create the tables using tabulate
     table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
+    table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
     
     # Save the tables as a text file 
     with open("sim_settings.txt", "w") as f:
-         f.write("!--- Temporal TBL setting parameters ---!\n")
+         f.write("!----- Temporal TBL setting parameters -----!\n")
          f.write("\n")
-         f.write("!--- Inputs: ---!\n")
+         f.write("!----- Inputs: -----!\n")
          f.write(table)
          f.write("\n")
          f.write(table2)
          f.write("\n")
+         f.write("!--- BL thickness @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!\n")
+         f.write(table3)
                  
-    # Create data array with outputs
+    # Create data arrays with outputs
     data = [
-            ["Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at IC", "CFL/Pé/D", "delta_y1+/delta_yd+/delta_yn+", "delta_x+/delta_z+", "AR_x1/AR_xn", "AR_z1/AR_zn"],
-            [ xlx_nd,                   xlx_nd_ic,           CFL,        delta_y1,                        delta_x,             AR_x1,         AR_z1,      ],
-            [ yly_nd,                   yly_nd_ic,           Pe,         delta_yd,                        delta_z,             AR_xn,         AR_zn,      ],
-            [ zlz_nd,                   zlz_nd_ic,           D,          delta_yn,                        "/",                 "/",           "/"         ],
-            ["---",                     "---",               "---",      "---",                           "---",               "---",         "---"       ],
-            ["npvis",                   "npsl",              "theta_sl", "sl_99^+_IC",                    "sh_vel_IC",         "sh_vel_peak", "n_tot"     ],
-            [ npvis,                     npsl,                theta_sl,   sl_99_ic,                        sh_vel_ic,           sh_vel,        ntot       ],
-           ] 
+            ["Lx+/Ly+/Lz+ at IC", "Lx+/Ly+/Lz+ at peak cf" ],
+            [ xlx_nd_ic,           xlx_nd_peak             ],
+            [ yly_nd_ic,           yly_nd_peak             ],
+            [ zlz_nd_ic,           zlz_nd_peak             ],
+           ]
+           
+    data2 = [
+             ["CFL,x", "D,y", "Pé,x", "S"],
+             [ CFL,     D,     Pe,     S ],
+            ]
+            
+    data3 = [
+             ["/",           "IC",           "peak cf",        "Re_tau = 500"   ],
+             ["delta_x+",     delta_x_nd_ic,  delta_x_nd_peak,  delta_x_nd_500  ],
+             ["delta_y1+",    delta_y1_nd_ic, delta_y1_nd_peak, delta_y1_nd_500 ],
+             ["delta_z+",     delta_z_nd_ic,  delta_z_nd_peak,  delta_z_nd_500  ],
+             ["delta_yd+",   "/",            "/",               delta_yd_nd_500 ],       
+            ]
+           
+    data4 = [
+             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel Re_tau = 500", "n_tot" ],
+             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,            n_tot  ],
+            ] 
 
-    # Create the table using tabulate
-    table = tabulate(data, headers="firstrow", tablefmt="fancy_grid")
+    # Create the tables using tabulate
+    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
+    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
+    table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
+    table4 = tabulate(data4, headers="firstrow", tablefmt="fancy_grid")
 
-    # Save the table as a text file 
+    # Save the table as a text file and final informations
     with open("sim_settings.txt", "a") as f:
          f.write("\n")
-         f.write("!--- Outputs: ---!\n")
-         f.write(table)
-            
-    # Opening to add final informations
-    with open('sim_settings.txt', 'a') as f: 
+         f.write("!----- Outputs: -----!\n")
+         f.write("\n")
+         f.write("!--- Non-dimensional domain dimensions: ---!\n")
+         f.write(table) 
+         f.write("\n")
+         f.write("!--- Numerics-related parameters: ---!\n")
+         f.write(table2) 
+         f.write("\n")
+         f.write("!--- Mesh sizes at IC, at peak cf and at Re_tau = 500: ---!\n")
+         f.write(table3) 
+         f.write("\n")
+         f.write("!--- Miscellaneous ---!\n")
+         f.write(table4) 
          f.write("\n")
          f.write("\n")
          f.write("!--- INFO: ---!\n")
-         f.write("We are employing 2 different cf values:\n")
+         f.write("We are employing 3 different cf values:\n")
          f.write("\n")
-         f.write("1) Value obtained from the derivative at the wall due to the IC,\n")
-         f.write("   and it is used in order to estimate the number of points in the initial shear layer and the domain dimensions at IC.\n")
+         f.write("1) Value obtained from the derivative at the wall due to the IC.\n")
          f.write("\n")     
-         f.write("2) Peak value found in literature (e.g. 0.007, see Cimarelli et al. (2024)),\n")
-         f.write("   and it is used to evaluate the spacings of the mesh (delta_x+,delta_y+,delta_z+).\n")
+         f.write("2) Peak value found in literature (e.g. 0.007, see Cimarelli et al. (2024)).\n")
          f.write("\n")
-         f.write("Stability parameter, S < 1: "+ str(S) +" (Thompson et al. (1985))\n")
+         f.write("3) Value at Re_tau = 500, again according to Cimarelli et al. (2024)).\n")
          f.write("\n")
          f.write("!--- List of acronyms & variables: ---!\n")
-         f.write("AR:            Aspect Ratio of mesh elements (width/height).\n")
+         f.write("\n")
+         f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")
          f.write("npvis:         Number of points viscous sublayer at cf peak (y+ < 5).\n")
          f.write("npsl:          Number of points initial shear layer (y+ < theta_sl_true+).\n")
          f.write("theta_sl:      Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).\n")
          f.write("sl_99^+_IC:    Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional).\n")
          f.write("sh_vel_IC:     Shear velocity of the initial condition.\n")
          f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")
+         f.write("sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).\n")
+         f.write("\n")
          f.write("!-------------------------------------!\n")
          
          
