@@ -30,17 +30,18 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 10.0              # beta parameter for mesh stretching
+beta = 3.0               # beta parameter for mesh stretching
 nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0              # velocity of the wall
 delta_t = 0.01           # time-step
 twd = 1.0                # trip wire diameter D
+re = 1.0/nu              # Reynolds number as defined in Incompact3d
 
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
 
 nx = 34                  # number of points in x direction
-ny = 501                 # number of points in y direction
+ny = 651                 # number of points in y direction
 nz = 52                  # number of points in z direction
 
 xlx = 10.0               # domain dimension in x direction
@@ -48,8 +49,6 @@ yly = 3.0*bl_thickness   # domain dimension in y direction
 zlz = 8.0                # domain dimension in z direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
-
-re = 1.0/nu              # Reynolds number as defined in Incompact3d
 
 # Declare local constant Pi
 pi = np.pi
@@ -116,97 +115,90 @@ if alpha == 0.0:
         yeta[j] = j*(1.0/ny)
         yp[j] = -beta * np.cos(pi*yeta[j]) / np.sin(yeta[j]*pi)
 
-# This part is valid for meshes with refinement at the bottom boundary only 
+
+# Calculate the spacings along x and z (uniform)
+delta_x = xlx / nx
+delta_z = zlz / nz
+
+# This part is valid for meshes with refinement at the bottom boundary and for temporal TBL cases 
 if istret == 3:
-    
-    # Calculate the spacings along x and z (uniform)
-    delta_x = xlx / nx
-    delta_z = zlz / nz
-    
+   
     # Calculating the initial thickness of the shear layer (see Kozul et al. (2016))
     theta_sl = 54.0 * nu / uwall
     
     # Mean gradient due to initial condition (analytical derivative)  
     mg = - uwall / (4.0 * theta_sl) * (1.0 / np.cosh(twd / 2.0 / theta_sl))**2
     
+    
+    #!--- Shear velocities (IC, peak cf and Re_tau = 500): ---!
+    
     # Shear velocity due to initial condition
     sh_vel_ic = np.sqrt(nu * np.abs(mg))
-    
+       
     # Shear velocity peak (reference value of cf = 0.07, Cimarelli et al. (2024))
-    sh_vel = np.sqrt((cf/2.0)) * uwall
-
-    # Calculate viscous unit at t = 0 and at peak
-    delta_nu_ic = nu / sh_vel_ic
-    delta_nu    = nu / sh_vel
-
-    # Storing of the dimensional y-coordinates
-    yp_dim = yp
-
-    # Rescaling the y coordinates and the spacings along x and z with peak cf
-    yp = yp / delta_nu
-    delta_x = delta_x / delta_nu
-    delta_z = delta_z / delta_nu
+    sh_vel_peak = np.sqrt((cf/2.0)) * uwall
     
-    # y+ at t = 0
-    yp_ic = yp_dim / delta_nu_ic
+    # Shear velocity at Re_tau = 500:
+    sh_vel_500 = 500.0 * nu / bl_thickness
     
-    # Rescaling also domain dimensions (nd: non-dimensional) (at IC and at peak)
-    xlx_nd = xlx / delta_nu
-    yly_nd = yly / delta_nu
-    zlz_nd = zlz / delta_nu  
+    #!--------------------------------------------------------!
+
+    # Calculate viscous unit at IC, at peak cf and at Re_tau = 500
+    delta_nu_ic   = nu / sh_vel_ic
+    delta_nu_peak = nu / sh_vel_peak
+    delta_nu_500  = nu / sh_vel_500
+
+    # First element y-dimension
+    delta_y1 = yp[1] - yp[0]
     
+    # Rescaling the mesh spacings with viscous unit at peak cf
+    delta_x_nd_peak  = delta_x  / delta_nu_peak
+    delta_y1_nd_peak = delta_y1 / delta_nu_peak
+    delta_z_nd_peak  = delta_z  / delta_nu_peak
+        
+    # Non-dimensional domain dimensions (nd: non-dimensional) (at IC and at peak cf)  
     xlx_nd_ic = xlx / delta_nu_ic
     yly_nd_ic = yly / delta_nu_ic
     zlz_nd_ic = zlz / delta_nu_ic
     
-    # First and last elements' dimension at peak cf
-    delta_y1 = yp[2] - yp[1]
-    delta_yn = yp[ny-1] - yp[ny-2]
+    xlx_nd_peak = xlx / delta_nu_peak
+    yly_nd_peak = yly / delta_nu_peak
+    zlz_nd_peak = zlz / delta_nu_peak
     
-    # Aspect ratios (ARs) of 1st and last elements
-    AR_x1 = delta_x / delta_y1	# AR x direction, 1st element
-    AR_xn = delta_x / delta_yn	# AR x direction, nth element
-    
-    AR_z1 = delta_z / delta_y1	# AR z direction, 1st element
-    AR_zn = delta_z / delta_yn	# AR z direction, nth element     
-    
-    # Estimation of parameters of numerics (CFL, D, Pé) at the beginning of simulation
+    #!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC ---!
+   
     CFL = uwall * delta_t / delta_x      
     D =   nu * delta_t / (delta_x**2)    
     Pe =  uwall * delta_x / nu
         
-    # Estimation of the stability parameter (see Thompson et al. (1985)) at the beginning of simulation (S < 1)
+    # Stability parameter (S < 1) (see Thompson et al. (1985)) 
     S = ((uwall**2)*delta_t)/(2.0*nu)
-        
-    # Calculating the initial velocity profile (Kozul et al. (2016))
-    for j in range(0, ny):
-    	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh((twd/2.0/theta_sl)*(1.0 - yp_dim[j]/twd))))
     
-    # Rescaling the initial velocity profile 
-    Uo = Uo / sh_vel_ic
+    #!-----------------------------------------------------------------------!
+    
+    #!--- Check on the initial velocity profile ---!
         
-    # Plotting of the initial velocity profile in wall units
+    # Initial velocity profile (tanh) (Kozul et al. (2016))
+    for j in range(0, ny):
+    	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh((twd/2.0/theta_sl)*(1.0 - yp[j]/twd))))
+    
+    # Rescaling the initial velocity profile and the y-coordinates
+    Uo = Uo / sh_vel_ic
+    yp_ic = yp / delta_nu_ic
+        
+    # Plotting of the initial velocity profile in wall units, first 50 points
     plt.scatter(yp_ic[0:50], Uo[0:50])
     plt.title("Initial velocity profile near the wall", fontsize=30)
     plt.xlabel("$y^+$", fontsize=30)
     plt.ylabel("$U_o^+$", fontsize=30)
     plt.show()
-    
+        
     # Calculate the thickness delta99^+ of the initial shear layer
     j = 0
     while j <= ny - 1 and Uo[j] > Uo[0]*0.01:
     	sl_99_ic = yp_ic[j]
     	j = j + 1
-    		 
-    # Calculation of the number of mesh nodes in the viscous sublayer (at cf peak)
-    npvis = 0     # number of points viscous sublayer
-    height = 0.0  # cumulative height in viscous unit (y+)
-  
-    for j in range(1, ny):
-        if height + yp[j] - yp[j-1] <= 5.0:
-            npvis += 1 
-        height += yp[j] - yp[j-1]
-    
+    	
     # Calculation of the number of mesh nodes in the initial shear layer
     npsl = 0      # number of points shear layer
     height = 0.0  # cumulative height in viscous unit (y+)
@@ -215,11 +207,46 @@ if istret == 3:
         if height + yp_ic[j] - yp_ic[j-1] <= sl_99_ic:
             npsl += 1 
         height += yp_ic[j] - yp_ic[j-1]
+    	
+    #!---------------------------------------------!	
+    			 
+    # Calculation of the number of mesh nodes in the viscous sublayer at cf peak
+    npvis = 0     # number of points viscous sublayer
+    height = 0.0  # cumulative height in viscous unit (y+)
     
+    # Rescaling y-coordinates with viscous unit at peak cf
+    yp_peak = yp / delta_nu_peak
+      
+    for j in range(1, ny):
+        if height + yp_peak[j] - yp_peak[j-1] <= 5.0:
+            npvis += 1 
+        height += yp_peak[j] - yp_peak[j-1]
+    
+    #!---------------------------------------------!
+        
+    # Delta y+ at the BL thickness (d: delta) at Re_tau = 500
+    c = 0         # integer to store the index (c: counter)
+    
+    for j in range(1,ny):
+        if yp[j] < bl_thickness:
+            c = c + 1
+    
+    # We consider the element just above the estimated BL edge
+    delta_yd = yp[c+1] - yp[c]
+    
+    # Mesh sizes at Re_tau = 500
+    delta_x_nd_500  = delta_x  / delta_nu_500
+    delta_y1_nd_500 = delta_y1 / delta_nu_500
+    delta_z_nd_500  = delta_z  / delta_nu_500
+    
+    # BL edge
+    delta_yd_nd_500 = delta_yd / delta_nu_500
+    
+    #!---------------------------------------------!  
      
     # Printing useful information to the screen
     print()
-    print('!--- Inputs: ---!')
+    print('!----- Inputs: -----!')
     print()
     print('Number of mesh nodes in streamwise direction,  nx = ', nx)
     print('Number of mesh nodes in wall normal direction, ny = ', ny)
@@ -230,44 +257,60 @@ if istret == 3:
     print('Domain dimension, Lz = ',zlz)
     print()
     print('Beta parameter = ', beta)
-    print('Skin friction at peak, cf = ', cf)
     print('Kinematic viscosity, nu = ', nu)
-    print('Reynolds number (Re = 1/nu) = ', re) 
     print('Wall velocity, Uwall = ', uwall)
     print('Time step, delta_t = ', delta_t)
     print('Tripping wire diameter, twd = ', twd)
+    print('Reynolds number (Re = 1/nu) = ', re)
     print()
-    print('!--- Outputs: ---!')
+    print('!--- Reference data according to Cimarelli et al. (2024): ---!')
     print()
-    print('Length of the domain (Lx+) at peak cf:', xlx_nd)
-    print('Height of the domain (Ly+) at peak cf:', yly_nd)
-    print('Width  of the domain (Lz+) at peak cf:', zlz_nd)
+    print('Boundary layer thickness at Re_tau = 500, bl_thickness = ', bl_thickness)
+    print('Skin friction at peak, cf = ', cf)
+    print()
+    print('!----- Outputs: -----!')
+    print()
+    print('!--- Non-dimensional domain dimensions: ---!')
     print()
     print('Length of the domain (Lx+) at IC:', xlx_nd_ic)
     print('Height of the domain (Ly+) at IC:', yly_nd_ic)
     print('Width  of the domain (Lz+) at IC:', zlz_nd_ic)
     print()
-    print('Estimated CFL at t = 0:', CFL)
-    print('Estimated D   at t = 0:', D)
-    print('Estimated Pé  at t = 0:', Pe)
-    print('Estimated stability parameter S at t = 0:', S)
+    print('Length of the domain (Lx+) at peak cf:', xlx_nd_peak)
+    print('Height of the domain (Ly+) at peak cf:', yly_nd_peak)
+    print('Width  of the domain (Lz+) at peak cf:', zlz_nd_peak)
     print()
-    print('Mesh size at the first element near the wall at cf peak: delta_y1+ =', delta_y1)
-    print('Mesh size at the last element away from the wall at cf peak: delta_yn+ =', delta_yn)
+    print('!--- Numerics-related parameters: ---!')
     print()
-    print('Mesh size x-direction at cf peak: delta_x+ =', delta_x)
-    print('Mesh size z-direction at cf peak: delta_z+ =', delta_z)
+    print('Estimated CFL at IC:', CFL)
+    print('Estimated D   at IC:', D)
+    print('Estimated Pé  at IC:', Pe)
+    print('Estimated stability parameter S at IC:', S)
     print()
-    print('Aspect ratio x-direction 1st element: AR_x1 =', AR_x1)
-    print('Aspect ratio x-direction nth element: AR_xn =', AR_xn)
-    print('Aspect ratio z-direction 1st element: AR_z1 =', AR_z1)
-    print('Aspect ratio z-direction nth element: AR_zn =', AR_zn)
     print()
+    print('!--- Mesh sizes at peak cf (cf_max ~ 0.007, Cimarelli et al. (2024)) ---!)
+    print()
+    print('Mesh size x-direction: delta_x+ =', delta_x_nd_peak)
+    print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_peak)
+    print('Mesh size z-direction: delta_z+ =', delta_z_nd_peak)
+    print()
+    print('!--- Mesh sizes at Re_tau = 500 (imarelli et al. (2024)) ---!)
+    print()
+    print('Mesh size x-direction: delta_x+ =', delta_x_nd_500)
+    print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_500)
+    print('Mesh size z-direction: delta_z+ =', delta_z_nd_500)
+    print()
+    print('Mesh size (y) at the estimated BL edge: delta_yd+ =', delta_yd_nd_500)
+    print()
+    print('!--- Number of discretization points ---!')
+    print()
+    
+    # to be completed
     print('Number of mesh nodes in the viscous sublayer at cf peak:', npvis)
     print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
-    print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
-    print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
+    #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
+    #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
             
     # Create data arrays with inputs
     data = [
@@ -298,13 +341,13 @@ if istret == 3:
                  
     # Create data array with outputs
     data = [
-            ["Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at IC", "CFL/Pé/D", "delta_y1+/delta_yn+", "delta_x+/delta_z+", "AR_x1/AR_xn", "AR_z1/AR_zn"],
-            [ xlx_nd,                   xlx_nd_ic,           CFL,        delta_y1,              delta_x,             AR_x1,         AR_z1,      ],
-            [ yly_nd,                   yly_nd_ic,           Pe,         delta_yn,              delta_z,             AR_xn,         AR_zn,      ],
-            [ zlz_nd,                   zlz_nd_ic,           D,          "/",                   "/",                 "/",           "/"         ],
-            ["---",                     "---",               "---",      "---",                 "---",               "---",         "---"       ],
-            ["npvis",                   "npsl",              "theta_sl", "sl_99^+_IC",          "sh_vel_IC",         "sh_vel_peak", "n_tot"     ],
-            [ npvis,                     npsl,                theta_sl,   sl_99_ic,              sh_vel_ic,           sh_vel,        ntot       ],
+            ["Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at IC", "CFL/Pé/D", "delta_y1+/delta_yd+/delta_yn+", "delta_x+/delta_z+", "AR_x1/AR_xn", "AR_z1/AR_zn"],
+            [ xlx_nd,                   xlx_nd_ic,           CFL,        delta_y1,                        delta_x,             AR_x1,         AR_z1,      ],
+            [ yly_nd,                   yly_nd_ic,           Pe,         delta_yd,                        delta_z,             AR_xn,         AR_zn,      ],
+            [ zlz_nd,                   zlz_nd_ic,           D,          delta_yn,                        "/",                 "/",           "/"         ],
+            ["---",                     "---",               "---",      "---",                           "---",               "---",         "---"       ],
+            ["npvis",                   "npsl",              "theta_sl", "sl_99^+_IC",                    "sh_vel_IC",         "sh_vel_peak", "n_tot"     ],
+            [ npvis,                     npsl,                theta_sl,   sl_99_ic,                        sh_vel_ic,           sh_vel,        ntot       ],
            ] 
 
     # Create the table using tabulate
