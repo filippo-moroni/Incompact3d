@@ -12,9 +12,9 @@ p_row=0               ! Row partition
 p_col=0               ! Column partition
 
 ! Mesh
-nx=34                 ! X-direction nodes
-ny=651                ! Y-direction nodes
-nz=52                 ! Z-direction nodes
+nx=36                 ! X-direction nodes
+ny=649                ! Y-direction nodes
+nz=54                 ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 
 beta = 3.0            ! Refinement parameter (beta)
@@ -28,7 +28,7 @@ zlz = 8.0             ! Lz (Size of the box in z-direction)
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.01             ! Time step
+dt = 0.001            ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
 ilast = 1000          ! Last iteration
 
@@ -59,11 +59,13 @@ C_filter=0.49         ! alpha coefficient of the filter alpha £ (-0.5, 0.5) (ma
 ! Spatial derivatives
 ifirstder = 4         ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact)
 isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact, 5-> hyperviscous 6th, 6-> default scheme Incompact3d v2.0)
-ipinter = 1           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive)
+ipinter = 2           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2)
 
 ! Time scheme
-itimescheme = 5       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 4->AB4, 5->RK3, 6->RK4, 7-->CN2+AB3
+itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3, 7-->CN2+AB3
 iimplicit = 0         ! Time integration scheme for diffusive terms:  0->Same as convective,1->Backward Euler, 2->CN
+                      ! Implicit diffusion valid only for Dirichlet conditions on both boundaries
+                      ! and it is experimental with the hyperviscous operator
 
 ! Dissipation control
 nu0nu = 4.0           ! Ratio between coefficient of hyperviscosity nu0 and viscosity nu (default: 4.0)  ** complete the description

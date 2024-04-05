@@ -685,7 +685,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1)
   
   ! Temporal TBL
   else if (itype .eq. itype_ttbl .and. isc .eq. 0) then
-     bcbot(:,:) = uwall
+     bcbot(:,:) = zero
      bctop(:,:) = tb2(:,ny-1,:)  
   
   ! Generic homogeneous cases after

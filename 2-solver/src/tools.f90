@@ -789,7 +789,7 @@ contains
      if (istret == 0) then
         cfl_diff_y = xnu * dt / (dy**2)
      else
-        cfl_diff_y = xnu * dt / (minval(dyp)**2)
+        cfl_diff_y = xnu * dt / ((minval(dyp))**2)
      end if
 
      cfl_diff_sum = cfl_diff_x + cfl_diff_y + cfl_diff_z

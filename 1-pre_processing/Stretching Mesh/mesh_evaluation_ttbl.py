@@ -40,9 +40,9 @@ re = 1.0/nu              # Reynolds number as defined in Incompact3d
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
 
-nx = 34                  # number of points in x direction
-ny = 651                 # number of points in y direction
-nz = 52                  # number of points in z direction
+nx = 36                  # number of points in x direction
+ny = 649                 # number of points in y direction
+nz = 54                  # number of points in z direction
 
 xlx = 10.0               # domain dimension in x direction
 yly = 3.0*bl_thickness   # domain dimension in y direction
