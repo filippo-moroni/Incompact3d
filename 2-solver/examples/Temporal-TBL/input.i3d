@@ -28,7 +28,7 @@ zlz = 8.0             ! Lz (Size of the box in z-direction)
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.01             ! Time step
+dt = 0.0001           ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
 ilast = 1000          ! Last iteration
 
@@ -106,7 +106,7 @@ nclzSn = 0
 !================
 
 uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
-twd = 1.0             ! trip wire diameter (D)
+twd = 1.0             ! tripping wire diameter (D)
 uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (default value: 0.01 (Kozul et al.))
 lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
 phiwall = 1.0         ! scalar value at the wall       

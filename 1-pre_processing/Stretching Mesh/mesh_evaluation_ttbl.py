@@ -30,7 +30,7 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 0.7               # beta parameter for mesh stretching
+beta = 3.0               # beta parameter for mesh stretching
 nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0              # velocity of the wall
 delta_t = 0.01           # time-step
@@ -43,14 +43,10 @@ cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024)
 
 nx = 36                  # number of points in x direction
 ny = 649                 # number of points in y direction
-
-#ny = 129
-
 nz = 54                  # number of points in z direction
 
 xlx = 10.0               # domain dimension in x direction
 yly = 3.0*bl_thickness   # domain dimension in y direction
-#yly = 20.0
 zlz = 8.0                # domain dimension in z direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1

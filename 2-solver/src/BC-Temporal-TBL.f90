@@ -1,5 +1,5 @@
 !----------------------------------------------------------!
-!         This module is used to run temporal BLs          !
+!         This module is used to run temporal TBLs         !
 !                       simulations.                       !
 !      Adapted from original Incompact3d files (v4.0)      !
 !               for channel flow simulations.              !
@@ -47,11 +47,10 @@ contains
     real(mytype) :: sh_vel    ! shear velocity of the initial velocity profile
     real(mytype) :: delta_nu  ! viscous length of the initial velocity profile    
             
-    ! For random numbers generation
-    integer :: ii,code  
-    integer :: i,j,k
+    integer      :: ii,code   ! for random numbers generation 
+    integer      :: i,j,k
         
-    ! Momentum thickness calculation
+    ! Momentum thickness calculation 
     theta_sl = 54.0*xnu/uwall
     
     ! Initial mean gradient
