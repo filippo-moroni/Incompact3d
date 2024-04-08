@@ -28,7 +28,7 @@ zlz = 8.0             ! Lz (Size of the box in z-direction)
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.001            ! Time step
+dt = 0.01             ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
 ilast = 1000          ! Last iteration
 
@@ -42,7 +42,7 @@ init_noise = 0.1      ! Noise intensity at IC (1=100%)
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
 ncly1 = 2
-nclyn = 1
+nclyn = 2
 nclz1 = 0
 nclzn = 0
 

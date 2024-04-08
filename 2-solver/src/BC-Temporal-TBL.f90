@@ -103,7 +103,7 @@ contains
        ! Difference between wall and mean velocities
        diff = uwall - um
                     
-             ! Add noise near the wall, excluding first grid points if requested
+             ! Add noise near the wall, excluding first grid points if requested 
              if (diff < uln*uwall .and. y/delta_nu > lln) then            
                                
                 do i=1,xsize(1)

@@ -30,7 +30,7 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 3.0               # beta parameter for mesh stretching
+beta = 0.7               # beta parameter for mesh stretching
 nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0              # velocity of the wall
 delta_t = 0.01           # time-step
@@ -38,14 +38,19 @@ twd = 1.0                # trip wire diameter D
 re = 1.0/nu              # Reynolds number as defined in Incompact3d
 
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
+
 cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
 
 nx = 36                  # number of points in x direction
 ny = 649                 # number of points in y direction
+
+#ny = 129
+
 nz = 54                  # number of points in z direction
 
 xlx = 10.0               # domain dimension in x direction
 yly = 3.0*bl_thickness   # domain dimension in y direction
+#yly = 20.0
 zlz = 8.0                # domain dimension in z direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
@@ -55,8 +60,17 @@ pi = np.pi
 
 # Work variables
 yeta = np.zeros(ny)
-yp = np.zeros(ny)
-Uo = np.zeros(ny)
+yp   = np.zeros(ny)
+Uo   = np.zeros(ny)
+
+# Delta y
+delta_y = np.zeros(ny)
+
+# Growth-Rate (GR) of grid elements in y-direction
+gr_y = np.zeros(ny)
+
+# AR xy-plane
+AR_xy = np.zeros(ny)
 
 # Total number of points
 n_tot = nx*ny*nz
@@ -68,7 +82,23 @@ xnum = -yinf - np.sqrt(pi*pi*beta*beta + yinf*yinf)
 alpha = np.abs(xnum/den)
 xcx = 1.0/beta/alpha
 
+# First point initialization
+if istret == 1:
+    yp[0] = 0.0
+if istret == 2:
+    yp[0] = 0.0
+if istret == 1:
+    yeta[0] = 0.0
+if istret == 2:
+    yeta[0] = -0.5
+if istret == 3:
+    yp[0] = 0.0
+if istret == 3:
+    yeta[0] = -0.5
+
+# Stretched mesh
 if alpha != 0.0:
+    # Loop from j = 1 to ny - 1
     for j in range(1, ny):
         if istret == 1:
             yeta[j] = j*(1.0/nym)
@@ -109,6 +139,7 @@ if alpha != 0.0:
             elif yeta[j] > 0.5:
                 yp[j] = (xnum1 + cst + yly) * 2.0
 
+# Uniform mesh
 if alpha == 0.0:
     yp[0] = -1.e10
     for j in range(1, ny):
@@ -236,8 +267,8 @@ if istret == 3:
         if yp[j] < bl_thickness:
             c = c + 1
     
-    # We consider the element just above the estimated BL edge
-    delta_yd = yp[c+1] - yp[c]
+    # We consider the element just below the estimated BL edge
+    delta_yd = yp[c] - yp[c-1]
     
     # Mesh sizes at Re_tau = 500
     delta_x_nd_500  = delta_x  / delta_nu_500
@@ -247,7 +278,20 @@ if istret == 3:
     # BL edge
     delta_yd_nd_500 = delta_yd / delta_nu_500
     
-    #!---------------------------------------------!  
+    #!---------------------------------------------!
+        
+    # Delta y of grid elements
+    for j in range(1,ny):
+        delta_y[j] = yp[j] - yp[j-1]
+            
+    # Calculate the GR (Growth-Rate) of the elements in y-direction
+    for j in range(2,ny):
+        gr_y[j] = delta_y[j]/delta_y[j-1]
+        
+    # AR of the elements in xy plane (width / heigth)
+    for j in range(1,ny):
+        AR_xy[j] = delta_x / delta_y[j]
+     
      
     # Printing useful information to the screen
     print()
@@ -314,7 +358,17 @@ if istret == 3:
     print()
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
-            
+    
+
+    # Column width for writing to .txt file
+    c_w = 24  
+
+    # Write yp, delta_y and GR_y in a .txt file
+    with open('mesh_y.txt', 'w') as f:
+        f.write(f"{'yp':<{c_w}}, {'delta_y':<{c_w}}, {'gr_y':<{c_w}}, {'AR_xy':<{c_w}}\n")
+        for j in range(0,ny):
+            f.write(f"{yp[j]:<{c_w}}, {delta_y[j]:<{c_w}}, {gr_y[j]:<{c_w}}, {AR_xy[j]:<{c_w}}\n")
+     
     # Create data arrays with inputs
     data = [
             ["nx/ny/nz", "Lx/Ly/Lz" ],
