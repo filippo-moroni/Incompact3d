@@ -50,22 +50,28 @@ program xcompact3d
   call init_xcompact3d()
 
   do itime=ifirst,ilast
+     
      !t=itime*dt
      t=t0 + (itime0 + itime + 1 - ifirst)*dt
+     
      call simu_stats(2)
 
      if (iin.eq.3.and.mod(itime,ntimesteps)==1) then
         call read_inflow(ux_inflow,uy_inflow,uz_inflow,itime/ntimesteps)
      endif
 
-     if ((itype.eq.itype_abl.or.iturbine.ne.0).and.(ifilter.ne.0).and.(ilesmod.ne.0)) then
-        call filter(C_filter)
-        call apply_spatial_filter(ux1,uy1,uz1,phi1)
-     endif
-
+     !if ((itype.eq.itype_abl.or.iturbine.ne.0).and.(ifilter.ne.0).and.(ilesmod.ne.0)) then
+     !   call filter(C_filter)
+     !   call apply_spatial_filter(ux1,uy1,uz1,phi1)
+     !endif
+ 
+     ! Sub-time steps cycle (for RK schemes)
      do itr=1,iadvance_time
 
         call set_fluid_properties(rho1,mu1)
+        
+        ! probably here is the place to add the updating of the transverse BC for oscillating wall
+        
         call boundary_conditions(rho1,ux1,uy1,uz1,phi1,ep1)
 
         if (imove.eq.1) then ! update epsi for moving objects
@@ -75,15 +81,16 @@ program xcompact3d
              call body(ux1,uy1,uz1,ep1)
           endif
         endif
+        
         call calculate_transeq_rhs(drho1,dux1,duy1,duz1,dphi1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
 #ifdef DEBG
         call check_transients()
 #endif
         
-        if (ilmn) then
-           !! XXX N.B. from this point, X-pencil velocity arrays contain momentum (LMN only).
-           call velocity_to_momentum(rho1,ux1,uy1,uz1)
-        endif
+        !if (ilmn) then
+        !   !! XXX N.B. from this point, X-pencil velocity arrays contain momentum (LMN only).
+        !   call velocity_to_momentum(rho1,ux1,uy1,uz1)
+        !endif
 
         call int_time(rho1,ux1,uy1,uz1,phi1,drho1,dux1,duy1,duz1,dphi1)
         call pre_correc(ux1,uy1,uz1,ep1)
@@ -92,15 +99,15 @@ program xcompact3d
         call solve_poisson(pp3,px1,py1,pz1,rho1,ux1,uy1,uz1,ep1,drho1,divu3)
         call cor_vel(ux1,uy1,uz1,px1,py1,pz1)
 
-        if (ilmn) then
-           call momentum_to_velocity(rho1,ux1,uy1,uz1)
-           !! XXX N.B. from this point, X-pencil velocity arrays contain velocity (LMN only).
-           !! Note - all other solvers work on velocity always
-        endif
+        !if (ilmn) then
+        !   call momentum_to_velocity(rho1,ux1,uy1,uz1)
+        !   !! XXX N.B. from this point, X-pencil velocity arrays contain velocity (LMN only).
+        !   !! Note - all other solvers work on velocity always
+        !endif
         
         call test_flow(rho1,ux1,uy1,uz1,phi1,ep1,drho1,divu3)
 
-     enddo !! End sub timesteps
+     enddo ! End of sub-time steps cycle
 
      call restart(ux1,uy1,uz1,dux1,duy1,duz1,ep1,pp3(:,:,:,1),phi1,dphi1,px1,py1,pz1,rho1,drho1,mu1,1)
 
@@ -108,7 +115,7 @@ program xcompact3d
 
      call postprocessing(rho1,ux1,uy1,uz1,pp3,phi1,ep1)
 
-  enddo !! End time loop
+  enddo ! End time loop
 
   call finalise_xcompact3d()
 
@@ -228,7 +235,8 @@ subroutine init_xcompact3d()
                            !! Ensures additional case-specific variables declared for IO
      call visu_ready()
   end if
-  ! compute diffusion number of simulation
+  
+  ! Compute diffusion number D of simulation (Numerical Fourier)
   call compute_cfldiff()
   !####################################################################
   if (irestart==0) then
