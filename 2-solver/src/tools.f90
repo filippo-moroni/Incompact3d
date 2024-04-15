@@ -989,7 +989,7 @@ contains
     call    MPI_REDUCE(stparmax_in,stparmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
 
     if (nrank == 0) then
-      write(*,*) 'Stability parameter S (Thompson et al. (1985)'
+      write(*,*) 'Stability parameter S (Thompson et al. (1985))'
       write(*,"(' S,x                  : ',F17.8)") stparmax_out(1) * dt / two / xnu
       write(*,"(' S,y                  : ',F17.8)") stparmax_out(2) * dt / two / xnu
       write(*,"(' S,z                  : ',F17.8)") stparmax_out(3) * dt / two / xnu
