@@ -236,7 +236,8 @@ contains
     use variables
     use param
     use MPI
-    use navier,       only : gradp
+    use navier,         only : gradp
+    use tools_for_ttbl, only : calculate_friction_coefficient
 
     implicit none
 

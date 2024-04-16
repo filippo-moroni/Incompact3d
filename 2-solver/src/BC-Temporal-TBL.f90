@@ -18,8 +18,7 @@ module temporal_tbl
 
   PRIVATE   ! All functions/subroutines private by default
   PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl, postprocess_ttbl, &
-            visu_ttbl_init, visu_ttbl, calculate_friction_coefficient, &
-            spanwise_wall_oscillations
+            visu_ttbl_init, visu_ttbl, spanwise_wall_oscillations
 
 contains
   !---------------------------------------------------------------------------!
@@ -329,7 +328,8 @@ contains
   !---------------------------------------------------------------------------!
   subroutine spanwise_wall_oscillations(ux1,uz1)
   
-  use dbg_schemes, only : sin_prec
+  use dbg_schemes,    only : sin_prec
+  use tools_for_ttbl, only : calculate_friction_coefficient
   
   implicit none
   

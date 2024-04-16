@@ -1,16 +1,24 @@
   
   
-  ! make this file a module
+module tools_for_ttbl
+
+  implicit none
   
+  private 
+  
+  public :: calculate_friction_coefficient
+
+contains
+
   !---------------------------------------------------------------------------!
   ! Calculate skin friction coefficient at the bottom wall and shear velocity
   ! Adapted from visu_ttbl subroutine.
   !---------------------------------------------------------------------------!
   subroutine calculate_friction_coefficient(ux1,uz1)
-  
-    use var,   only : ux2,uz2
-    use var,   only : ta2,tc2,di2
-    use param, only : fric_coeff,uwall,xnu
+      
+    use param
+    use variables
+    use var
     
     use ibm_param,   only : ubcx,ubcy,ubcz
     use dbg_schemes, only : sqrt_prec
@@ -21,7 +29,7 @@
     
     implicit none
 
-    real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+    real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
     
     real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
     real(mytype) :: mean_gw_tot  ! mean gradient at the wall total
@@ -68,3 +76,6 @@
     return 
   
   end subroutine calculate_friction_coefficient
+
+end module tools_for_ttbl
+
