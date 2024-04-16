@@ -27,6 +27,7 @@ add_executable(xcompact3d
                     statistics.f90
                     time_integrators.f90
                     tools.f90
+                    tools_for_ttbl.f90
                     transeq.f90                 
                     variables.f90
                     visu.f90

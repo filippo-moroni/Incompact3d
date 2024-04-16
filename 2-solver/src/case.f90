@@ -197,8 +197,6 @@ contains
 
     use probes, only : write_probes
     
-    use temporal_tbl, only : calculate_friction_coefficient 
-
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime), intent(in) :: rho1
@@ -229,14 +227,7 @@ contains
        call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
 
        call end_snapshot(itime, num)
-       
-       ! Calculate skin friction coefficient for a temporal TBL case
-       if (itype .eq. itype_ttbl) then
               
-          call calculate_friction_coefficient(ux1,uz1)
-       
-       end if
-       
     end if
 
     call postprocess_case(rho1, ux1, uy1, uz1, pp3, T, ep1)

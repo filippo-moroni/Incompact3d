@@ -236,7 +236,7 @@ contains
     use variables
     use param
     use MPI
-    use navier, only : gradp
+    use navier,       only : gradp
 
     implicit none
 
@@ -262,6 +262,7 @@ contains
     NAMELIST /Time/ tfield, itime
     NAMELIST /NumParam/ nx, ny, nz, istret, beta, dt, itimescheme
 
+
     write(filename,"('restart',I7.7)") itime
     write(filestart,"('restart',I7.7)") ifirst-1
 
@@ -282,6 +283,12 @@ contains
     end if
 
     if (iresflg==1) then !write
+        
+        ! Calculate skin friction coefficient for a temporal TBL case
+        if (itype .eq. itype_ttbl) then
+           call calculate_friction_coefficient(ux1,uz1)   
+        end if
+    
        call decomp_2d_open_io(io_restart, resfile, decomp_2d_write_mode)
        call decomp_2d_start_io(io_restart, resfile)
 
@@ -364,8 +371,10 @@ contains
          write(111,'(A,I14)') 'itimescheme=',itimescheme
          write(111,fmt2) 'iimplicit=',iimplicit
          
+         ! Print skin friction coefficient and 
          if (itype .eq. itype_ttbl) then
          write(111,fmt4) 'cf=       ',fric_coeff
+         write(111,fmt4) 'sh_vel=   ',sh_vel
          end if
          
          write(111,'(A)')'/End'
