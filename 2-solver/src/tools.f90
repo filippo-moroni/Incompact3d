@@ -363,6 +363,11 @@ contains
          write(111,fmt2) 'numscalar=',numscalar
          write(111,'(A,I14)') 'itimescheme=',itimescheme
          write(111,fmt2) 'iimplicit=',iimplicit
+         
+         if (itype .eq. itype_ttbl) then
+         write(111,fmt4) 'cf=       ',fric_coeff
+         end if
+         
          write(111,'(A)')'/End'
          write(111,'(A)')'!========================='
 

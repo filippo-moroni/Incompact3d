@@ -18,7 +18,7 @@ module temporal_tbl
 
   PRIVATE   ! All functions/subroutines private by default
   PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl, postprocess_ttbl, &
-            visu_ttbl_init, visu_ttbl
+            visu_ttbl_init, visu_ttbl, calculate_friction_coefficient
 
 contains
   !############################################################################
@@ -308,6 +308,69 @@ contains
 
   end subroutine visu_ttbl
   !############################################################################
+  ! Calculate skin friction coefficient at the bottom wall
+  ! Adapted from visu_ttbl subroutine
+  subroutine calculate_friction_coefficient(ux1,uz1)
+  
+    use var,   only : ux2,uz2
+    use var,   only : ta2,tc2,di2
+    use param, only : fric_coeff
+    
+    use ibm_param,   only : ubcx,ubcy,ubcz
+    use dbg_schemes, only : sqrt_prec
+    
+    use MPI
+    use decomp_2d
+    use decomp_2d_io
+    
+    implicit none
+
+    real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+    
+    real(mytype)              :: temp         ! temporary variable for mean gradient at the wall
+    real(mytype)              :: mean_gw      ! mean gradient at the wall at each processor
+    
+    integer :: ierr  ! for MPI (initialized in init_xcompact3d subroutine)
+    integer :: i, k
+    
+    ! Set again variables to zero
+    fric_coeff = zero
+    mean_gw = zero
+    
+    ! Perform communications if needed
+    if (sync_vel_needed) then
+      call transpose_x_to_y(ux1,ux2)
+      call transpose_x_to_y(uz1,uz2)
+      sync_vel_needed = .false.
+    endif
+
+    ! y-derivatives
+    call dery (ta2,ux2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcx)
+    call dery (tc2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcz)
+    
+    ! du/dy=ta2   
+    ! dw/dy=tc2
+    
+    ! Mean velocity gradient at the wall, sqrt(du/dy**2 + dw/dy**2)
+    do k=ystart(3),yend(3)
+       do i=ystart(1),yend(1)
+             mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2)) / real(nx*nz,mytype)                  
+       enddo
+    enddo
+    
+    ! Summation over all MPI processes
+    call MPI_REDUCE(fric_coeff,mean_gw,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    
+    ! Rescale wall shear stress to obtain skin friction coefficient
+    if(nrank.eq.0) then
+    
+       fric_coeff = fric_coeff * two * xnu / (uwall**2)
+    
+    end if
+    
+    return 
+  
+  end subroutine calculate_friction_coefficient
    
 end module temporal_tbl
 

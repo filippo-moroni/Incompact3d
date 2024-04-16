@@ -682,7 +682,7 @@ subroutine parameter_defaults()
   rho_air=one
 
   ! IO
-  ivisu = 1
+  ivisu = 1  ! save snapshots: 1, do not save snapshots: 0
   ipost = 0
   iprocessing = huge(i)
   initstat = huge(i)

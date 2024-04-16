@@ -56,9 +56,9 @@ program xcompact3d
      
      call simu_stats(2)
 
-     if (iin.eq.3.and.mod(itime,ntimesteps)==1) then
-        call read_inflow(ux_inflow,uy_inflow,uz_inflow,itime/ntimesteps)
-     endif
+     !if (iin.eq.3.and.mod(itime,ntimesteps)==1) then
+     !   call read_inflow(ux_inflow,uy_inflow,uz_inflow,itime/ntimesteps)
+     !endif
 
      !if ((itype.eq.itype_abl.or.iturbine.ne.0).and.(ifilter.ne.0).and.(ilesmod.ne.0)) then
      !   call filter(C_filter)
@@ -74,13 +74,13 @@ program xcompact3d
         
         call boundary_conditions(rho1,ux1,uy1,uz1,phi1,ep1)
 
-        if (imove.eq.1) then ! update epsi for moving objects
-          if ((iibm.eq.2).or.(iibm.eq.3)) then
-             call genepsi3d(ep1)
-          else if (iibm.eq.1) then
-             call body(ux1,uy1,uz1,ep1)
-          endif
-        endif
+        !if (imove.eq.1) then ! update epsi for moving objects
+        !  if ((iibm.eq.2).or.(iibm.eq.3)) then
+        !     call genepsi3d(ep1)
+        !  else if (iibm.eq.1) then
+        !     call body(ux1,uy1,uz1,ep1)
+        !  endif
+        !endif
         
         call calculate_transeq_rhs(drho1,dux1,duy1,duz1,dphi1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
 #ifdef DEBG
@@ -238,6 +238,7 @@ subroutine init_xcompact3d()
   
   ! Compute diffusion number D of simulation (Numerical Fourier)
   call compute_cfldiff()
+  
   !####################################################################
   if (irestart==0) then
      call init(rho1,ux1,uy1,uz1,ep1,phi1,drho1,dux1,duy1,duz1,dphi1,pp3,px1,py1,pz1)

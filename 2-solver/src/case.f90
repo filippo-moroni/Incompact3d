@@ -193,6 +193,8 @@ contains
     use var, only : numscalar, nrhotime, npress
 
     use probes, only : write_probes
+    
+    use temporal_tbl, only : calculate_friction_coefficient 
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
@@ -203,7 +205,7 @@ contains
     integer :: j
     character(len=32) :: num
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: T ! FIXME This can be huge
-
+    
     T = zero
 
     ! Recover temperature when decomposed (pressure to be recovered externally)
@@ -215,6 +217,7 @@ contains
       T = phi1
     endif
 
+    ! Writing the snapshot if requested from the user and if we are at the right time step
     if ((ivisu.ne.0).and.(mod(itime, ioutput).eq.0)) then
        call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
 
@@ -223,6 +226,14 @@ contains
        call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
 
        call end_snapshot(itime, num)
+       
+       ! Calculate skin friction coefficient for a temporal TBL case
+       if (itype .eq. itype_ttbl) then
+              
+          call calculate_friction_coefficient(ux1,uz1)
+       
+       end if
+       
     end if
 
     call postprocess_case(rho1, ux1, uy1, uz1, pp3, T, ep1)
