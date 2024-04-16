@@ -105,9 +105,12 @@ program xcompact3d
         !   !! Note - all other solvers work on velocity always
         !endif
         
-        call test_flow(rho1,ux1,uy1,uz1,phi1,ep1,drho1,divu3)
-
+        ! test_flow was here
+        
      enddo ! End of sub-time steps cycle
+     
+     ! Calculation of numerics-related parameters (CFL, Pé, S) and if the simulation diverged
+     call test_flow(rho1,ux1,uy1,uz1,phi1,ep1,drho1,divu3)
 
      call restart(ux1,uy1,uz1,dux1,duy1,duz1,ep1,pp3(:,:,:,1),phi1,dphi1,px1,py1,pz1,rho1,drho1,mu1,1)
 

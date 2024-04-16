@@ -366,24 +366,21 @@ contains
     ! du/dy=ta2   
     ! dw/dy=tc2
     
-    ! Mean velocity gradient at the wall, sqrt(du/dy**2 + dw/dy**2)
+    ! Mean velocity gradient at the wall, sqrt(du/dy**2 + dw/dy**2) and summation over all points
     do k=ystart(3),yend(3)
        do i=ystart(1),yend(1)
+             ! Index for j is 1, since we are in global coordinates (y-pencils)
              mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2)) / real(nx*nz,mytype)                  
        enddo
     enddo
     
-    ! Summation over all MPI processes
-    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    ! Summation over all MPI processes and broadcast the result
+    call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
-    ! Rescale wall shear stress to obtain skin friction coefficient
-    if(nrank.eq.0) then
-    
-       fric_coeff = mean_gw_tot * two * xnu / (uwall**2)
-       sh_vel     = sqrt_prec(xnu * mean_gw_tot)
-    
-    end if
-    
+    ! Calculate cf and shear velocity from the mean gradient at the wall    
+    fric_coeff = mean_gw_tot * two * xnu / (uwall**2)
+    sh_vel     = sqrt_prec(xnu * mean_gw_tot)
+        
     return 
   
   end subroutine calculate_friction_coefficient
