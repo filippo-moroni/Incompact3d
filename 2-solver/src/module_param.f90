@@ -428,16 +428,24 @@ module param
   real(mytype), allocatable, dimension(:) :: h_coeff1, h_1,phase1
   real(mytype), allocatable, dimension(:) :: h_coeff2, h_2,phase2
   
-  ! Temporal TBL
+  ! Temporal TBL input parameters
   real(mytype) :: uwall       ! velocity of translating bottom wall (U_wall) 
   real(mytype) :: twd         ! trip wire diameter (D)
   real(mytype) :: uln         ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
   real(mytype) :: lln         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall     ! scalar value at the wall
   
-  ! Skin friction for temporal TBL
-  real(mytype),save :: fric_coeff    
+  ! Temporal TBL parameters for wall oscillations
+  real(mytype) :: a_plus_cap  ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  real(mytype) :: t_plus_cap  ! period of spanwise wall oscillations in friction units (cap: capital letter)
   
+  ! Spanwise wall oscillation
+  real(mytype),save :: span_vel     ! spanwise velocity at the wall
+ 
+  ! Quantities evolving in time for a temporal TBL
+  real(mytype),save :: fric_coeff   ! skin friction coefficient
+  real(mytype),save :: sh_vel       ! shear velocity
+      
   !numbers
   real(mytype),parameter :: zpone=0.1_mytype
   real(mytype),parameter :: zptwo=0.2_mytype

@@ -134,7 +134,7 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho
     
-    if (itype == itype_user) then
+    if (itype .eq. itype_user) then
 
        call boundary_conditions_user (ux,uy,uz,phi,ep)
 
@@ -151,7 +151,10 @@ contains
        call boundary_conditions_tbl (ux, uy, uz, phi)
     
     elseif (itype.eq.itype_ttbl) then
-
+       
+       ! Comment the following line to speed up the code if no wall oscillations are present
+       !call spanwise_wall_oscillations (ux,uz)
+       
        call boundary_conditions_ttbl (phi)   
        
     endif

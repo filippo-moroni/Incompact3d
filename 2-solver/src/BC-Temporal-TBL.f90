@@ -18,10 +18,11 @@ module temporal_tbl
 
   PRIVATE   ! All functions/subroutines private by default
   PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl, postprocess_ttbl, &
-            visu_ttbl_init, visu_ttbl, calculate_friction_coefficient
+            visu_ttbl_init, visu_ttbl, calculate_friction_coefficient, &
+            spanwise_wall_oscillations
 
 contains
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine init_temporal_tbl (ux1,uy1,uz1,phi1)
 
     use decomp_2d
@@ -38,16 +39,16 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
 
-    real(mytype) :: y         ! y coordinate of grid points
-    real(mytype) :: theta_sl  ! momentum thickness of the initial shear layer
-    real(mytype) :: um        ! initial mean streamwise velocity profile 
-    real(mytype) :: phim      ! initial mean scalar profile
-    real(mytype) :: diff      ! difference between wall and mean velocities
-    real(mytype) :: mg        ! mean gradient of the initial velocity profile
-    real(mytype) :: sh_vel    ! shear velocity of the initial velocity profile
-    real(mytype) :: delta_nu  ! viscous length of the initial velocity profile    
+    real(mytype) :: y          ! y coordinate of grid points
+    real(mytype) :: theta_sl   ! momentum thickness of the initial shear layer
+    real(mytype) :: um         ! initial mean streamwise velocity profile 
+    real(mytype) :: phim       ! initial mean scalar profile
+    real(mytype) :: diff       ! difference between wall and mean velocities
+    real(mytype) :: mg         ! mean gradient of the initial velocity profile
+    real(mytype) :: sh_vel_ic  ! shear velocity of the initial velocity profile
+    real(mytype) :: delta_nu   ! viscous length of the initial velocity profile    
             
-    integer      :: ii,code   ! for random numbers generation 
+    integer      :: ii,code    ! for random numbers generation 
     integer      :: i,j,k
         
     ! Momentum thickness calculation 
@@ -57,15 +58,23 @@ contains
     mg = - (uwall / (4.0 * theta_sl)) * (1.0 / cosh_prec(twd / 2.0 / theta_sl))**2
     
     ! Initial shear velocity
-    sh_vel = sqrt_prec(xnu * abs_prec(mg))
+    sh_vel_ic = sqrt_prec(xnu * abs_prec(mg))
     
     ! Initial viscous length
-    delta_nu = xnu / sh_vel
+    delta_nu = xnu / sh_vel_ic
 
     ! Initialize velocity fields
-    ux1=zero 
-    uy1=zero 
-    uz1=zero   
+    ux1 = zero 
+    uy1 = zero 
+    uz1 = zero   
+    
+    ! Initialize BC of the bottom wall
+    byx1 = uwall 
+    byy1 = zero
+    byz1 = zero
+    
+    ! Initialize the spanwise velocity at the bottom wall+
+    span_vel = zero
  
     !--- Initialization as Kozul et al. (JFM, 2016) (tanh + noise) ---!
     
@@ -156,7 +165,7 @@ contains
        
     return
   end subroutine init_temporal_tbl
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine boundary_conditions_ttbl(phi)
 
     use param
@@ -171,14 +180,17 @@ contains
     
     ! Top boundary Neumann BCs (e.g. free-slip for velocity) 
     ! do not need to be explicitly re-defined (both for velocity and scalar fields).
-       
+     
+    ! If spanwise motion is present, span_vel is calculated at each sub-time step,
+    ! otherwise it is zero.
+     
     ! Bottom boundary (Dirichlet, imposed velocity of the wall)
     if (ncly1 == 2) then
       do k = 1, xsize(3)
         do i = 1, xsize(1)
           byx1(i,k) = uwall 
           byy1(i,k) = zero
-          byz1(i,k) = zero
+          byz1(i,k) = span_vel
         enddo
       enddo
     endif
@@ -210,7 +222,7 @@ contains
     endif
       
   end subroutine boundary_conditions_ttbl
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine postprocess_ttbl(ux1,uy1,uz1,pp3,phi1,ep1)
 
     use var, only : nzmsize
@@ -222,7 +234,7 @@ contains
     real(mytype), intent(in), dimension(ph1%zst(1):ph1%zen(1),ph1%zst(2):ph1%zen(2),nzmsize,npress) :: pp3
 
   end subroutine postprocess_ttbl
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine visu_ttbl_init(visu_initialised)
 
     use decomp_2d,    only : mytype
@@ -238,7 +250,7 @@ contains
     visu_initialised = .true.
     
   end subroutine visu_ttbl_init
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine visu_ttbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
 
     use var,  only : ux2, uy2, uz2, ux3, uy3, uz3
@@ -307,9 +319,10 @@ contains
     call write_field(di1, ".", "critq", trim(num), flush = .true.)  ! Reusing temporary array, force flush
 
   end subroutine visu_ttbl
-  !############################################################################
-  ! Calculate skin friction coefficient at the bottom wall
-  ! Adapted from visu_ttbl subroutine
+  !---------------------------------------------------------------------------!
+  ! Calculate skin friction coefficient at the bottom wall and shear velocity
+  ! Adapted from visu_ttbl subroutine.
+  !---------------------------------------------------------------------------!
   subroutine calculate_friction_coefficient(ux1,uz1)
   
     use var,   only : ux2,uz2
@@ -328,13 +341,16 @@ contains
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
     
     real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
+    real(mytype) :: mean_gw_tot  ! mean gradient at the wall total
     
     integer :: ierr  ! for MPI (initialized in init_xcompact3d subroutine)
     integer :: i, k
     
     ! Set again variables to zero
-    fric_coeff = zero
-    mean_gw = zero
+    mean_gw     = zero
+    mean_gw_tot = zero
+    fric_coeff  = zero
+    sh_vel      = zero
     
     ! Perform communications if needed
     if (sync_vel_needed) then
@@ -358,19 +374,51 @@ contains
     enddo
     
     ! Summation over all MPI processes
-    call MPI_REDUCE(mean_gw,fric_coeff,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
     ! Rescale wall shear stress to obtain skin friction coefficient
     if(nrank.eq.0) then
     
-       fric_coeff = fric_coeff * two * xnu / (uwall**2)
+       fric_coeff = mean_gw_tot * two * xnu / (uwall**2)
+       sh_vel     = sqrt_prec(xnu * mean_gw_tot)
     
     end if
     
     return 
   
   end subroutine calculate_friction_coefficient
-   
+
+  !---------------------------------------------------------------------------!
+  ! Calculate the spanwise velocity at the bottom wall due to the imposed
+  ! sinusoidal oscillation.
+  ! 
+  ! Parameters of the non-dimensional oscillation (A^+ and T^+) are read from
+  ! the input file.
+  !---------------------------------------------------------------------------!
+  subroutine spanwise_wall_oscillations(ux1,uz1)
+  
+  use dbg_schemes, only : sin_prec
+  
+  implicit none
+  
+  real(mytype) :: amplitude, period
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+  
+  call calculate_friction_coefficient(ux1,uz1)
+  
+  ! Maximum amplitude of spanwise oscillations
+  amplitude = sh_vel * a_plus_cap
+  
+  ! Period of oscillation
+  period = xnu * t_plus_cap / (sh_vel**2)
+  
+  ! Calculation of the spanwise wall velocity
+  span_vel = amplitude * sin_prec(two*pi*t/period)
+  
+  return
+  
+  end subroutine spanwise_wall_oscillations
+  
 end module temporal_tbl
 
 
