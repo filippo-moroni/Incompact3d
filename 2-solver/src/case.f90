@@ -153,7 +153,7 @@ contains
     elseif (itype.eq.itype_ttbl) then
        
        ! Comment the following line to speed up the code if no wall oscillations are present
-       !call spanwise_wall_oscillations (ux,uz)
+       call spanwise_wall_oscillations (ux,uz)
        
        call boundary_conditions_ttbl (phi)   
        

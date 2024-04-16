@@ -30,7 +30,7 @@ re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference sc
 ! Time stepping
 dt = 0.002            ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 10000         ! Last iteration
+ilast = 1000          ! Last iteration
 
 ! Enable modelling tools
 numscalar = 1         ! Number of scalars 
@@ -80,8 +80,8 @@ cnu = 0.33            ! Ratio between hyperviscosity/viscosity at k_m = 2/3pi an
 ! Basic I/O
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
 icheckpoint = 1000    ! Frequency for writing backup file
-ioutput = 1000        ! Frequency for saving and visualization
-ilist = 50            ! Frequency for writing to screen        
+ioutput = 100         ! Frequency for saving and visualization
+ilist = 25            ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
 /End
@@ -109,7 +109,9 @@ uwall = 1.0           ! velocity of translating bottom wall (U_wall)
 twd = 1.0             ! tripping wire diameter (D)
 uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (default value: 0.01 (Kozul et al. (2016)))
 lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-phiwall = 1.0         ! scalar value at the wall       
+phiwall = 1.0         ! scalar value at the wall 
+a_plus_cap = 12.0     ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (cap: capital letter)      
 
 /End
 
