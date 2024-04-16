@@ -28,12 +28,12 @@ zlz = 8.0             ! Lz (Size of the box in z-direction)
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.0001           ! Time step
+dt = 0.002            ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 1000          ! Last iteration
+ilast = 10000         ! Last iteration
 
 ! Enable modelling tools
-numscalar = 0         ! Number of scalars 
+numscalar = 1         ! Number of scalars 
 
 ! Boundary and initial conditions
 iin = 0               ! Noise conditions: 0: same noise for all simulations, 1: pseudo-random noise based on system clock (default: 0)
@@ -42,7 +42,7 @@ init_noise = 0.1      ! Noise intensity at IC (1=100%)
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
 ncly1 = 2
-nclyn = 2
+nclyn = 1
 nclz1 = 0
 nclzn = 0
 
@@ -62,9 +62,9 @@ isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th
 ipinter = 2           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2)
 
 ! Time scheme
-itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3, 7-->CN2+AB3
+itimescheme = 5       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3, 7-->CN2+AB3
 iimplicit = 0         ! Time integration scheme for diffusive terms:  0->Same as convective,1->Backward Euler, 2->CN
-                      ! Implicit diffusion valid only for Dirichlet conditions on both boundaries
+                      ! Implicit diffusion valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
                       ! and it is experimental with the hyperviscous operator
 
 ! Dissipation control
@@ -80,8 +80,8 @@ cnu = 0.33            ! Ratio between hyperviscosity/viscosity at k_m = 2/3pi an
 ! Basic I/O
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
 icheckpoint = 1000    ! Frequency for writing backup file
-ioutput = 1           ! Frequency for saving and visualization
-ilist = 1             ! Frequency for writing to screen        
+ioutput = 1000        ! Frequency for saving and visualization
+ilist = 50            ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
 /End
