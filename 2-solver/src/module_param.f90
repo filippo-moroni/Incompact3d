@@ -434,8 +434,9 @@ module param
   real(mytype) :: uln         ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
   real(mytype) :: lln         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall     ! scalar value at the wall
-  real(mytype) :: fric_coeff  ! skin friction coefficient
   
+  ! Skin friction for temporal TBL
+  real(mytype),save :: fric_coeff    
   
   !numbers
   real(mytype),parameter :: zpone=0.1_mytype

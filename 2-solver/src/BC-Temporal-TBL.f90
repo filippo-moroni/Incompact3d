@@ -314,7 +314,7 @@ contains
   
     use var,   only : ux2,uz2
     use var,   only : ta2,tc2,di2
-    use param, only : fric_coeff
+    use param, only : fric_coeff,uwall,xnu
     
     use ibm_param,   only : ubcx,ubcy,ubcz
     use dbg_schemes, only : sqrt_prec
@@ -327,8 +327,7 @@ contains
 
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
     
-    real(mytype)              :: temp         ! temporary variable for mean gradient at the wall
-    real(mytype)              :: mean_gw      ! mean gradient at the wall at each processor
+    real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
     
     integer :: ierr  ! for MPI (initialized in init_xcompact3d subroutine)
     integer :: i, k
@@ -359,7 +358,7 @@ contains
     enddo
     
     ! Summation over all MPI processes
-    call MPI_REDUCE(fric_coeff,mean_gw,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    call MPI_REDUCE(mean_gw,fric_coeff,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
     ! Rescale wall shear stress to obtain skin friction coefficient
     if(nrank.eq.0) then
