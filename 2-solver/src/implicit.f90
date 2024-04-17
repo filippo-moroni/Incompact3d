@@ -572,7 +572,7 @@ module ydiff_implicit
 !    isc : 0 for momentum, id of the scalar otherwise
 !    forcing1 : r.h.s. term not present in dvar1 (pressure gradient)
 !
-subroutine  inttimp (var1,dvar1,npaire,isc,forcing1)
+subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
 
   USE MPI
   USE param
@@ -589,6 +589,9 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1)
   !! IN
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)), optional, intent(in) :: forcing1
   integer, intent(in) :: npaire, isc
+  
+  ! Wall-velocity BC, in order to differentiate between different directions
+  real(mytype) :: wall_vel
 
   !! IN/OUT
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: var1
@@ -662,7 +665,6 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1)
 
   !Y-PENCIL FOR MATRIX INVERSION
   call transpose_x_to_y(var1,tb2)
-
   call transpose_x_to_y(ta1,ta2)
 
   !
@@ -685,7 +687,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1)
   
   ! Temporal TBL
   else if (itype .eq. itype_ttbl .and. isc .eq. 0) then
-     bcbot(:,:) = zero
+     bcbot(:,:) = wall_vel
      bctop(:,:) = tb2(:,ny-1,:)  
   
   ! Generic homogeneous cases after
