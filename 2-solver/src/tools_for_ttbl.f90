@@ -1,6 +1,13 @@
-  
-  
+!----------------------------------------------------------!
+!         This module is used to store useful              !
+!      subroutines for temporal TBLs simulations.          !
+!----------------------------------------------------------!
 module tools_for_ttbl
+
+  use decomp_2d
+  use decomp_2d_io
+  use variables
+  use param 
 
   implicit none
   
@@ -13,23 +20,21 @@ contains
   !---------------------------------------------------------------------------!
   ! Calculate skin friction coefficient at the bottom wall and shear velocity
   ! Adapted from visu_ttbl subroutine.
+  !
+  ! - Used in BC-Temporal-TBL for the spanwise oscillations.
+  ! - Used in tools module to calculate cf at the restart.
   !---------------------------------------------------------------------------!
-  subroutine calculate_friction_coefficient(ux1,uz1)
-      
-    use param
-    use variables
-    use var
+  subroutine calculate_friction_coefficient(ux,uz)
     
+    use var     
     use ibm_param,   only : ubcx,ubcy,ubcz
     use dbg_schemes, only : sqrt_prec
     
     use MPI
-    use decomp_2d
-    use decomp_2d_io
     
     implicit none
 
-    real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+    real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
     
     real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
     real(mytype) :: mean_gw_tot  ! mean gradient at the wall total
@@ -45,8 +50,8 @@ contains
     
     ! Perform communications if needed
     if (sync_vel_needed) then
-      call transpose_x_to_y(ux1,ux2)
-      call transpose_x_to_y(uz1,uz2)
+      call transpose_x_to_y(ux,ux2)
+      call transpose_x_to_y(uz,uz2)
       sync_vel_needed = .false.
     endif
 

@@ -217,6 +217,7 @@ subroutine parameter(input_i3d)
      nu0nu=four
      cnu=0.44_mytype
   endif
+  
   if(ilesmod.ne.0) then
      read(10, nml=LESModel); rewind(10)
   endif
@@ -396,25 +397,25 @@ subroutine parameter(input_i3d)
      write(*,"(' Time step dt           : ',F17.8)") dt
      !
      if (itimescheme.eq.1) then
-       !print *,'Temporal scheme        : Forwards Euler'
-       write(*,"(' Temporal scheme        : ',A20)") "Forwards Euler"
+       !print *,'Temporal scheme        : Forward Euler'
+       write(*,"(' Temporal scheme        : ',A20)") "Forward Euler"
      elseif (itimescheme.eq.2) then
-       !print *,'Temporal scheme        : Adams-bashforth 2'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 2"
+       !print *,'Temporal scheme        : Adams-Bashforth 2'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 2"
      elseif (itimescheme.eq.3) then
-       !print *,'Temporal scheme        : Adams-bashforth 3'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 3"
+       !print *,'Temporal scheme        : Adams-Bashforth 3'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 3"
      elseif (itimescheme.eq.4) then
-       !print *,'Temporal scheme        : Adams-bashforth 4'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 4"
+       !print *,'Temporal scheme        : Adams-Bashforth 4'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 4"
        print *,'Error: Adams-bashforth 4 not implemented!'
        stop
      elseif (itimescheme.eq.5) then
-       !print *,'Temporal scheme        : Runge-kutta 3'
-       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 3"
+       !print *,'Temporal scheme        : Runge-Kutta 3'
+       write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 3"
      elseif (itimescheme.eq.6) then
-       !print *,'Temporal scheme        : Runge-kutta 4'
-       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 4"
+       !print *,'Temporal scheme        : Runge-Kutta 4'
+       write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 4"
        print *,'Error: Runge-kutta 4 not implemented!'
        stop
      else

@@ -66,7 +66,7 @@ itimescheme = 3
 
 ! Dissipation control
 nu0nu = 4.0             ! Ratio between hyperviscosity/viscosity at nu
-cnu = 0.33               ! Ratio between hypervisvosity at k_m=2/3pi and k_c= pi
+cnu = 0.33              ! Ratio between hyperviscosity at k_m=2/3pi and k_c= pi
 
 /End
 

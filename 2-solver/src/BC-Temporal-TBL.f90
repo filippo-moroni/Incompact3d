@@ -72,7 +72,7 @@ contains
     byy1 = zero
     byz1 = zero
     
-    ! Initialize the spanwise velocity at the bottom wall+
+    ! Initialize the spanwise velocity at the bottom wall
     span_vel = zero
  
     !--- Initialization as Kozul et al. (JFM, 2016) (tanh + noise) ---!

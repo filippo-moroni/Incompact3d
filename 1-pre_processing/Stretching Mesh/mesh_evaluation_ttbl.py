@@ -30,10 +30,10 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 3.0               # beta parameter for mesh stretching
+beta = 2.5               # beta parameter for mesh stretching
 nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
 uwall = 1.0              # velocity of the wall
-delta_t = 0.01           # time-step
+delta_t = 0.002          # time-step
 twd = 1.0                # trip wire diameter D
 re = 1.0/nu              # Reynolds number as defined in Incompact3d
 
@@ -162,7 +162,7 @@ if istret == 3:
     # Shear velocity due to initial condition
     sh_vel_ic = np.sqrt(nu * np.abs(mg))
        
-    # Shear velocity peak (reference value of cf = 0.07, Cimarelli et al. (2024))
+    # Shear velocity peak (reference value of cf = 0.007, Cimarelli et al. (2024))
     sh_vel_peak = np.sqrt((cf/2.0)) * uwall
     
     # Shear velocity at Re_tau = 500:
@@ -457,13 +457,13 @@ if istret == 3:
          f.write("\n")     
          f.write("2) Peak value found in literature (e.g. 0.007, see Cimarelli et al. (2024)).\n")
          f.write("\n")
-         f.write("3) Value at Re_tau = 500, again according to Cimarelli et al. (2024)).\n")
+         f.write("3) Value at Re_tau = 500, again according to Cimarelli et al. (2024).\n")
          f.write("\n")
          f.write("!--- List of acronyms & variables: ---!\n")
          f.write("\n")
          f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")
          f.write("npvis:         Number of points viscous sublayer at cf peak (y+ < 5).\n")
-         f.write("npsl:          Number of points initial shear layer (y+ < theta_sl_true+).\n")
+         f.write("npsl:          Number of points initial shear layer (y+ < sl_99^+_IC).\n")
          f.write("theta_sl:      Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).\n")
          f.write("sl_99^+_IC:    Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional).\n")
          f.write("sh_vel_IC:     Shear velocity of the initial condition.\n")

@@ -17,7 +17,7 @@ ny=649                ! Y-direction nodes
 nz=54                 ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 
-beta = 3.0            ! Refinement parameter (beta)
+beta = 2.5            ! Refinement parameter (beta)
 
 ! Domain dimensions
 xlx = 10.0            ! Lx (Size of the box in x-direction)
@@ -37,7 +37,7 @@ numscalar = 1         ! Number of scalars
 
 ! Boundary and initial conditions
 iin = 0               ! Noise conditions: 0: same noise for all simulations, 1: pseudo-random noise based on system clock (default: 0)
-init_noise = 0.1      ! Noise intensity at IC (1=100%)  
+init_noise = 0.1      ! Noise maximum half-amplitude at IC (1=100%), symmetric with respect to zero 
 
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
@@ -60,17 +60,13 @@ C_filter=0.49         ! alpha coefficient of the filter alpha £ (-0.5, 0.5) (ma
 ifirstder = 4         ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact)
 isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact, 5-> hyperviscous 6th, 6-> default scheme Incompact3d v2.0)
 ipinter = 2           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2)
+                      ! Hyperviscous operator constants cannot be modified if LES is disabled.
 
 ! Time scheme
 itimescheme = 5       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3, 7-->CN2+AB3
 iimplicit = 0         ! Time integration scheme for diffusive terms:  0->Same as convective,1->Backward Euler, 2->CN
-                      ! Implicit diffusion valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
-                      ! and it is experimental with the hyperviscous operator
-
-! Dissipation control
-nu0nu = 4.0           ! Ratio between coefficient of hyperviscosity nu0 and viscosity nu (default: 4.0)  ** complete the description
-cnu = 0.33            ! Ratio between hyperviscosity/viscosity at k_m = 2/3pi and k_c = pi (channel flow: 0.44, TBL: 0.33)
-
+                      ! Implicit diffusion in y is valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
+                      ! and it is experimental with the hyperviscous operator.
 /End
 
 !=================
@@ -79,8 +75,8 @@ cnu = 0.33            ! Ratio between hyperviscosity/viscosity at k_m = 2/3pi an
 
 ! Basic I/O
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
-icheckpoint = 1000    ! Frequency for writing backup file
-ioutput = 100         ! Frequency for saving and visualization
+icheckpoint = 25      ! Frequency for writing backup file
+ioutput = 25          ! Frequency for saving and visualization
 ilist = 25            ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
