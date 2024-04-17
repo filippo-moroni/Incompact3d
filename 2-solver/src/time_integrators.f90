@@ -61,7 +61,7 @@ contains
     integer, intent(in), optional :: npaire, isc
     
     ! Wall-velocity BC, in order to differentiate between different directions
-    real(mytype) :: wall_vel
+    real(mytype), intent(in), optional :: wall_vel
 
     !! LOCAL
     integer :: is, code, ierror
@@ -91,9 +91,9 @@ contains
           is = 0
        endif
        if (present(npaire).and.present(forcing1)) then
-          call inttimp(var1, dvar1, npaire=npaire, isc=is, forcing1=forcing1, wall_vel)
+          call inttimp(var1, dvar1, npaire=npaire, isc=is, forcing1=forcing1, wall_vel=wall_vel)
        else if (present(npaire)) then
-          call inttimp(var1, dvar1, npaire=npaire, isc=is, wall_vel)
+          call inttimp(var1, dvar1, npaire=npaire, isc=is, wall_vel=wall_vel)
        else
           if (nrank  == 0) write(*,*) "Error in intt call."
           call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
@@ -367,9 +367,9 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1, duy1, duz1
 
     if (iimplicit.ge.1) then
-       call intt(ux1, dux1, npaire=1, isc=0, forcing1=px1, uwall)
-       call intt(uy1, duy1, npaire=0, isc=0, forcing1=py1, zero)
-       call intt(uz1, duz1, npaire=1, isc=0, forcing1=pz1, span_vel)
+       call intt(ux1, dux1, npaire=1, isc=0, forcing1=px1, wall_vel=uwall)
+       call intt(uy1, duy1, npaire=0, isc=0, forcing1=py1, wall_vel=zero)
+       call intt(uz1, duz1, npaire=1, isc=0, forcing1=pz1, wall_vel=span_vel)
     else
        call intt(ux1, dux1)
        call intt(uy1, duy1)

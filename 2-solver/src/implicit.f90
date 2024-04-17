@@ -591,7 +591,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   integer, intent(in) :: npaire, isc
   
   ! Wall-velocity BC, in order to differentiate between different directions
-  real(mytype) :: wall_vel
+  real(mytype), intent(in), optional :: wall_vel
 
   !! IN/OUT
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: var1
