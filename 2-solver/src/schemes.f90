@@ -458,8 +458,8 @@ subroutine second_derivative(alsa1,as1,bs1,&
   if (isecondder==1) then    ! Second-order central
      alsai=zero
      asi  =one/d2  !((six-nine*alsai)/four)/d2
-     bsi  =zero !((-three+twentyfour*alsai)/five)/(four*d2)
-     csi  =zero !((two-eleven*alsai)/twenty)/(nine*d2)
+     bsi  =zero    !((-three+twentyfour*alsai)/five)/(four*d2)
+     csi  =zero    !((two-eleven*alsai)/twenty)/(nine*d2)
      dsi  =zero
 
      alsa4= alsai

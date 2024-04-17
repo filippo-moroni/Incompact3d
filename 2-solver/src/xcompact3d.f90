@@ -70,8 +70,7 @@ program xcompact3d
 
         call set_fluid_properties(rho1,mu1)
         
-        ! probably here is the place to add the updating of the transverse BC for oscillating wall
-        
+        ! BCs are updated at each sub-time step        
         call boundary_conditions(rho1,ux1,uy1,uz1,phi1,ep1)
 
         !if (imove.eq.1) then ! update epsi for moving objects

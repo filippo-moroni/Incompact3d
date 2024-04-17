@@ -685,10 +685,13 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      bctop(:,:) = tb2(:,ny-1,:)
      !in order to mimick a Neumann BC at the top of the domain for the TBL
   
-  ! Temporal TBL
+  ! Temporal TBL (velocity BCs and scalar BCs)
   else if (itype .eq. itype_ttbl .and. isc .eq. 0) then
      bcbot(:,:) = wall_vel
-     bctop(:,:) = tb2(:,ny-1,:)  
+     bctop(:,:) = tb2(:,ny-1,:)
+  else if (itype .eq. itype_ttbl .and. isc .ne. 0) then
+     bcbot(:,:) = phiwall
+     bctop(:,:) = tb2(:,ny-1,:) 
   
   ! Generic homogeneous cases after
   else if (isc.ne.0) then
