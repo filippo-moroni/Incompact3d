@@ -879,7 +879,7 @@ contains
 
     cflmax_in =  (/maxvalue_x, maxvalue_y, maxvalue_z, maxvalue_sum/)
 
-    call    MPI_REDUCE(cflmax_in,cflmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
+    call MPI_ALLREDUCE(cflmax_in,cflmax_out,4,real_type,MPI_MAX,MPI_COMM_WORLD,code)
     
     if (nrank == 0) then
       write(*,*) '-----------------------------------------------------------'
@@ -891,11 +891,11 @@ contains
       write(*,*) '-----------------------------------------------------------'
     end if
     
-    ! Adjust time-step if adjustable time-step option is enabled and if we are overcoming the specified threshold (valid only for TTBL)
-    if(icfllim .eq. 1 .and. cflmax_out(4)*dt > cfl_limit) then
+    ! Adjust time-step if adjustable time-step option is enabled and if we are exiting the specified interval (valid only for TTBL) (cfl_lim - 0.05, cfl_lim)
+    if(icfllim .eq. 1 .and. cflmax_out(4)*dt > cfl_limit .or. icfllim .eq. 1 .and. cflmax_out(4)*dt < cfl_limit - 0.05) then
        
         dt = cfl_limit / cflmax_out(4)
-    
+            
     end if
   end subroutine compute_cfl
   !##################################################################
