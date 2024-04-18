@@ -813,13 +813,12 @@ contains
      cfl_diff_sum = cfl_diff_x + cfl_diff_y + cfl_diff_z
 
      if (nrank==0) then
-        write(*,*) '==========================================================='
         write(*,*) 'Diffusion number D (or numerical Fourier, Fo)'
-        write(*,"(' D,x             :        ',F13.8)") cfl_diff_x
-        write(*,"(' D,y             :        ',F13.8)") cfl_diff_y
-        write(*,"(' D,z             :        ',F13.8)") cfl_diff_z
-        write(*,"(' D,sum           :        ',F13.8)") cfl_diff_sum
-        write(*,*) '==========================================================='
+        write(*,"(' D,x                    :        ',F13.8)") cfl_diff_x
+        write(*,"(' D,y                    :        ',F13.8)") cfl_diff_y
+        write(*,"(' D,z                    :        ',F13.8)") cfl_diff_z
+        write(*,"(' D,sum                  :        ',F13.8)") cfl_diff_sum
+        write(*,*) '-----------------------------------------------------------'
      endif
 
      return
@@ -831,10 +830,11 @@ contains
     !      AUTHOR: Kay Schäfer, Filippo Moroni
   !##################################################################
   subroutine compute_cfl(ux,uy,uz)
-    use param, only : dx,dy,dz,dt,istret,cfl_limit,icfllim
+    use param, only : dx,dy,dz,dt,istret,cfl_limit,icfllim,t
     use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
     use mpi
-    use variables, only : dyp
+    use variables,      only : dyp
+    use tools_for_ttbl, only : update_time_int_coeff
 
     implicit none
 
@@ -892,10 +892,13 @@ contains
     end if
     
     ! Adjust time-step if adjustable time-step option is enabled and if we are exiting the specified interval (valid only for TTBL) (cfl_lim - 0.05, cfl_lim)
-    if(icfllim .eq. 1 .and. cflmax_out(4)*dt > cfl_limit .or. icfllim .eq. 1 .and. cflmax_out(4)*dt < cfl_limit - 0.05) then
-       
-        dt = cfl_limit / cflmax_out(4)
-            
+    if (icfllim == 1 .and. (cflmax_out(4)*dt > cfl_limit .or. cflmax_out(4)*dt < (cfl_limit - 0.05))) then
+    
+        dt = (cfl_limit / cflmax_out(4))
+        
+        ! Update coefficients for time integration schemes
+        call update_time_int_coeff()
+                   
     end if
   end subroutine compute_cfl
   !##################################################################
@@ -962,10 +965,10 @@ contains
 
     if (nrank == 0) then
       write(*,*) 'Reynolds cell (or numerical Péclet, Pé)'
-      write(*,"(' Pé,x                  : ',F17.8)") recmax_out(1) / xnu
-      write(*,"(' Pé,y                  : ',F17.8)") recmax_out(2) / xnu
-      write(*,"(' Pé,z                  : ',F17.8)") recmax_out(3) / xnu
-      write(*,"(' Pé,sum                : ',F17.8)") recmax_out(4) / xnu
+      write(*,"(' Pé,x                   : ',F17.8)") recmax_out(1) / xnu
+      write(*,"(' Pé,y                   : ',F17.8)") recmax_out(2) / xnu
+      write(*,"(' Pé,z                   : ',F17.8)") recmax_out(3) / xnu
+      write(*,"(' Pé,sum                 : ',F17.8)") recmax_out(4) / xnu
       write(*,*) '-----------------------------------------------------------'
     end if
   end subroutine compute_reynolds_cell
@@ -1016,10 +1019,10 @@ contains
 
     if (nrank == 0) then
       write(*,*) 'Stability parameter S (Thompson et al. (1985))'
-      write(*,"(' S,x                  : ',F17.8)") stparmax_out(1) * dt / two / xnu
-      write(*,"(' S,y                  : ',F17.8)") stparmax_out(2) * dt / two / xnu
-      write(*,"(' S,z                  : ',F17.8)") stparmax_out(3) * dt / two / xnu
-      write(*,"(' S,sum                : ',F17.8)") stparmax_out(4) * dt / two / xnu
+      write(*,"(' S,x                    : ',F17.8)") stparmax_out(1) * dt / two / xnu
+      write(*,"(' S,y                    : ',F17.8)") stparmax_out(2) * dt / two / xnu
+      write(*,"(' S,z                    : ',F17.8)") stparmax_out(3) * dt / two / xnu
+      write(*,"(' S,sum                  : ',F17.8)") stparmax_out(4) * dt / two / xnu
       write(*,*) '-----------------------------------------------------------'
     end if
   end subroutine compute_stab_param

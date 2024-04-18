@@ -239,7 +239,7 @@ subroutine init_xcompact3d()
   end if
   
   ! Compute diffusion number D of simulation (Numerical Fourier)
-  call compute_cfldiff()
+  ! call compute_cfldiff()
   
   !####################################################################
   if (irestart==0) then
