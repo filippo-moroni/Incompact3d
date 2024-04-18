@@ -28,12 +28,12 @@ zlz = 8.0             ! Lz (Size of the box in z-direction)
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.03             ! Time step
-ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
+dt = 0.02             ! Time step
+ifirst = 4501         ! First iteration (set to n+1 if we have a checkpoint at time step n)
 ilast = 50000         ! Last iteration
 
 ! Enable modelling tools
-numscalar = 1         ! Number of scalars 
+numscalar = 0         ! Number of scalars 
 
 ! Boundary and initial conditions
 iin = 0               ! Noise conditions: 0: same noise for all simulations, 1: pseudo-random noise based on system clock (default: 0)
@@ -73,9 +73,9 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 !=================
 
 ! Basic I/O
-irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
-icheckpoint = 50000   ! Frequency for writing backup file
-ioutput = 1000        ! Frequency for saving and visualization
+irestart = 1          ! Read initial flow field? (0: No, 1: Yes) 
+icheckpoint = 500     ! Frequency for writing backup file
+ioutput = 500         ! Frequency for saving and visualization
 ilist = 1             ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
@@ -106,7 +106,9 @@ uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (def
 lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
 phiwall = 1.0         ! scalar value at the wall 
 a_plus_cap = 0.0      ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (cap: capital letter)      
+t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (cap: capital letter)    
+icfllim = 1           ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+cfl_limit = 0.3       ! CFL limit to adjust the time-step
 
 /End
 
