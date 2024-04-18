@@ -94,7 +94,7 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap,cfl_limit,icfllim  
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -236,12 +236,14 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-  !read(10, nml=CASE); rewind(10)                  ! Read case-specific variables
+  ! Read case-specific variables
+  !read(10, nml=CASE); rewind(10)                  
   
+  ! Read parameters for temporal TBL case
   if (itype.eq.itype_ttbl) then
-     read(10, nml=TemporalTBLParam); rewind(10);   ! Read parameters for temporal TBL case
+     read(10, nml=TemporalTBLParam); rewind(10);   
   end if
-   
+    
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -723,5 +725,7 @@ subroutine parameter_defaults()
   phiwall = 1.0       ! scalar value at the wall 
   a_plus_cap = 12.0   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
   t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  cfl_limit = 0.95    ! CFL limit to adjust the time-step
+  icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   
 end subroutine parameter_defaults

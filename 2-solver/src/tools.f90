@@ -371,9 +371,12 @@ contains
          write(111,fmt2) 'numscalar=',numscalar
          write(111,'(A,I14)') 'itimescheme=',itimescheme
          write(111,fmt2) 'iimplicit=',iimplicit
-         
+                  
          ! Print skin friction coefficient and shear velocity for a TTBL case
          if (itype .eq. itype_ttbl) then
+         write(111,'(A)')'!========================='
+         write(111,'(A)')'&Temporal TBL quantities'
+         write(111,'(A)')'!========================='
          write(111,fmt4) 'cf=       ',fric_coeff
          write(111,fmt4) 'sh_vel=   ',sh_vel
          end if
@@ -822,12 +825,13 @@ contains
      return
   end subroutine compute_cfldiff
   !##################################################################
-    !!  SUBROUTINE: compute_cfl
-    !! DESCRIPTION: Computes CFl number for stretched mesh
-    !!      AUTHOR: Kay Schäfer
+    !  SUBROUTINE: compute_cfl
+    ! DESCRIPTION: Computes CFl number for stretched mesh
+    !              and adjust time-step if required.
+    !      AUTHOR: Kay Schäfer, Filippo Moroni
   !##################################################################
   subroutine compute_cfl(ux,uy,uz)
-    use param, only : dx,dy,dz,dt,istret
+    use param, only : dx,dy,dz,dt,istret,cfl_limit,icfllim
     use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
     use mpi
     use variables, only : dyp
@@ -876,7 +880,7 @@ contains
     cflmax_in =  (/maxvalue_x, maxvalue_y, maxvalue_z, maxvalue_sum/)
 
     call    MPI_REDUCE(cflmax_in,cflmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
-
+    
     if (nrank == 0) then
       write(*,*) '-----------------------------------------------------------'
       write(*,*) 'CFL Number (or Courant, Co)'
@@ -885,6 +889,13 @@ contains
       write(*,"(' CFL,z                  : ',F17.8)") cflmax_out(3) * dt
       write(*,"(' CFL,sum                : ',F17.8)") cflmax_out(4) * dt
       write(*,*) '-----------------------------------------------------------'
+    end if
+    
+    ! Adjust time-step if adjustable time-step option is enabled and if we are overcoming the specified threshold (valid only for TTBL)
+    if(icfllim .eq. 1 .and. cflmax_out(4)*dt > cfl_limit) then
+       
+        dt = cfl_limit / cflmax_out(4)
+    
     end if
   end subroutine compute_cfl
   !##################################################################
