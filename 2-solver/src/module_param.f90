@@ -447,8 +447,9 @@ module param
   real(mytype),save :: sh_vel       ! shear velocity
   
   ! Extra controls for numerics for a temporal TBL
-  real(mytype),save :: cfl_limit    ! CFL limit to adjust the time-step
   integer           :: icfllim      ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  real(mytype),save :: cfl_limit    ! CFL limit to adjust the time-step
+  
       
   !numbers
   real(mytype),parameter :: zpone=0.1_mytype

@@ -94,7 +94,7 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap,cfl_limit,icfllim  
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap,icfllim,cfl_limit  
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -725,7 +725,7 @@ subroutine parameter_defaults()
   phiwall = 1.0       ! scalar value at the wall 
   a_plus_cap = 12.0   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
   t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
-  cfl_limit = 0.95    ! CFL limit to adjust the time-step
   icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  cfl_limit = 0.95    ! CFL limit to adjust the time-step  
   
 end subroutine parameter_defaults
