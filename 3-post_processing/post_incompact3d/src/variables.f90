@@ -34,7 +34,7 @@ module var
 
   use decomp_2d
   use variables
-  use param, disabled => sh_vel
+  use param
   use complex_geometry
   
   ! define all major arrays here

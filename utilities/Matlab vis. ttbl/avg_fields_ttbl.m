@@ -8,7 +8,7 @@ clear
 Re = 500.0;               % Reynolds number (1/nu)
 nu = 1/Re;                % kinematic viscosity
 
-ny = 101;                 % number of points in y-direction
+ny = 649;                 % number of points in y-direction
 Ly = 24.0;                % total height of the domain
 
 %% Latex interpreter
@@ -30,10 +30,10 @@ grey   = [0.5 0.5 0.5];
 %% Reading of file and variables
 
 % Mean stats - modified code
-M1 = readtable('mean_stats 20.0.txt',NumHeaderLines=1);
+M1 = readtable('mean_stats152.5.txt',NumHeaderLines=1);
 
 % Vorticity - modified code
-M3 = readtable('vort_stats 20.0.txt',NumHeaderLines=1);
+M3 = readtable('vort_stats152.5.txt',NumHeaderLines=1);
 
 %% Default code variables
 mean_u  = M1{:,1};          % mean of u default code
@@ -41,6 +41,9 @@ mean_v  = M1{:,2};          % mean of v default code
 var_u   = M1{:,4};          % variance of u
 var_v   = M1{:,5};          % variance of v
 mean_uv = M1{:,13};         % <u'v'>
+
+uwall = 1.0;
+mean_u = uwall - mean_u;
 
 %% Vorticity
 vort_x = M3{:,1};
@@ -125,7 +128,7 @@ ylim([0,yaxis_lim]);
 set(h4,'PaperSize',[22 12]);
 
 caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))';
-text(0.05, -1, sprintf(caption), 'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', 'FontSize', 12, 'FontWeight', 'bold');
+text(0.35, -1, sprintf(caption), 'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', 'FontSize', 12, 'FontWeight', 'bold');
 
 
 %% Vorticity plot
