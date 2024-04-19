@@ -891,15 +891,17 @@ contains
       write(*,*) '-----------------------------------------------------------'
     end if
     
+    ! Not completed: different time steps must be stored! 
+    !
     ! Adjust time-step if adjustable time-step option is enabled and if we are exiting the specified interval (valid only for TTBL) (cfl_lim - 0.05, cfl_lim)
-    if (icfllim == 1 .and. (cflmax_out(4)*dt > cfl_limit .or. cflmax_out(4)*dt < (cfl_limit - 0.05))) then
+    !if (icfllim == 1 .and. (cflmax_out(4)*dt > cfl_limit .or. cflmax_out(4)*dt < (cfl_limit - 0.05))) then
     
-        dt = (cfl_limit / cflmax_out(4))
+    !    dt = (cfl_limit / cflmax_out(4))
         
         ! Update coefficients for time integration schemes
-        call update_time_int_coeff()
+    !    call update_time_int_coeff()
                    
-    end if
+    !end if
   end subroutine compute_cfl
   !##################################################################
   !##################################################################
@@ -961,7 +963,7 @@ contains
 
     recmax_in =  (/maxvalue_x, maxvalue_y, maxvalue_z, maxvalue_sum/)
 
-    call    MPI_REDUCE(recmax_in,recmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
+    call MPI_REDUCE(recmax_in,recmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
 
     if (nrank == 0) then
       write(*,*) 'Reynolds cell (or numerical Péclet, Pé)'

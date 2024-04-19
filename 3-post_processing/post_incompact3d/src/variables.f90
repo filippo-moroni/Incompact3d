@@ -33,9 +33,9 @@
 module var
 
   use decomp_2d
-  USE variables
-  USE param
-  USE complex_geometry
+  use variables
+  use param, disabled => sh_vel
+  use complex_geometry
   
   ! define all major arrays here
   real(mytype), save, allocatable, dimension(:,:,:) :: ux1, ux2, ux3, po3, dv3

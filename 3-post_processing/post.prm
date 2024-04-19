@@ -1,8 +1,8 @@
 #
 #  INCOMPACT 3D post processing parameters
 #
-1    # file1    ! First time of saving
-1    # filen    ! Final time of saving
+10   # file1    ! First time of saving
+12   # filen    ! Final time of saving
 1    # icrfile  ! File increment in time
 1    # nr       ! Number of flow realizations 
 #

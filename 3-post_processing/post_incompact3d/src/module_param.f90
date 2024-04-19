@@ -48,7 +48,7 @@ module variables
   !2-->every 2 mesh nodes
   !4-->every 4 mesh nodes
   !nvisu = size for visualization collection
-  !nprobe =  size for probe collection (energy spectra)
+  !nprobe = size for probe collection (energy spectra)
 
   !Possible n points: 3 5 7 9 11 13 17 19 21 25 31 33 37 41 49 51 55 61 65 73 81 91 97 101 109 121 129 145 151 161 163 181 193 201 217 241 251 257 271 289 301 321 325 361 385 401 433 451 481 487 501 513 541 577 601 641 649 721 751 769 801 811 865 901 961 973 1001 1025 1081 1153 1201 1251 1281 1297 1351 1441 1459 1501 1537 1601 1621 1729 1801 1921 1945 2001 2049 2161 2251 2305 2401 2431 2501 2561 2593 2701 2881 2917 3001 3073 3201 3241 3457 3601 3751 3841 3889 4001 4051 4097 4321 4375 4501 4609 4801 4861 5001 5121 5185 5401 5761 5833 6001 6145 6251 6401 6481 6751 6913 7201 7291 7501 7681 7777 8001 8101 8193 8641 8749 9001 9217 9601 9721 enough
 
@@ -428,12 +428,29 @@ module param
   real(mytype), allocatable, dimension(:) :: h_coeff1, h_1,phase1
   real(mytype), allocatable, dimension(:) :: h_coeff2, h_2,phase2
   
-  ! Temporal TBL
-  real(mytype) :: uwall      ! velocity of translating bottom wall (U_wall) 
-  real(mytype) :: twd        ! trip wire diameter (D)
-  real(mytype) :: noise_loc  ! location of the noise with respect to a percentage of the total wall velocity U_wall
+  ! Temporal TBL input parameters
+  real(mytype) :: uwall       ! velocity of translating bottom wall (U_wall) 
+  real(mytype) :: twd         ! trip wire diameter (D)
+  real(mytype) :: uln         ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
+  real(mytype) :: lln         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
+  real(mytype) :: phiwall     ! scalar value at the wall
   
+  ! Temporal TBL parameters for wall oscillations
+  real(mytype) :: a_plus_cap  ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  real(mytype) :: t_plus_cap  ! period of spanwise wall oscillations in friction units (cap: capital letter)
   
+  ! Spanwise wall oscillation
+  real(mytype),save :: span_vel     ! spanwise velocity at the wall
+ 
+  ! Quantities evolving in time for a temporal TBL
+  real(mytype),save :: fric_coeff   ! skin friction coefficient
+  real(mytype),save :: sh_vel       ! shear velocity
+  
+  ! Extra controls for numerics for a temporal TBL
+  integer           :: icfllim      ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  real(mytype),save :: cfl_limit    ! CFL limit to adjust the time-step
+  
+      
   !numbers
   real(mytype),parameter :: zpone=0.1_mytype
   real(mytype),parameter :: zptwo=0.2_mytype
@@ -446,6 +463,7 @@ module param
   real(mytype),parameter :: zpseven=0.7_mytype
   real(mytype),parameter :: zpeight=0.8_mytype
   real(mytype),parameter :: zpnine=0.9_mytype
+  real(mytype),parameter :: zpninefive=0.95_mytype
 
   real(mytype),parameter :: half=0.5_mytype
   real(mytype),parameter :: twothird=2._mytype/3._mytype

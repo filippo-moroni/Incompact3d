@@ -242,7 +242,7 @@ end subroutine stat_vorticity
 ! shear velocity and related Re numbers at low order only for a first quick estimation
 subroutine stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
 
-  use param
+  use param, disabled => sh_vel
   use variables
   use decomp_2d
   use decomp_2d_io

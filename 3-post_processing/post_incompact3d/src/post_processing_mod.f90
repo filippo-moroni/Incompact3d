@@ -3,7 +3,7 @@ module post_processing
 
   use decomp_2d
   use variables
-  use param
+  !use param, disabled => sh_vel
   use var
 
   implicit none

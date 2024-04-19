@@ -52,6 +52,7 @@ subroutine parameter(input_i3d)
 
   use var, only : dphi1
 
+  use probes, only : nprobes, setup_probes, flag_all_digits, flag_extra_probes, xyzprobes
   use visu, only : output2D
 
   implicit none
@@ -73,8 +74,9 @@ subroutine parameter(input_i3d)
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
   NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, nvisu, ilist, iprocessing, &
-       ninflows, ntimesteps, inflowpath, ioutflow, output2D
+       ninflows, ntimesteps, inflowpath, ioutflow, output2D, nprobes
   NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
+  NAMELIST /ProbesParam/ flag_all_digits, flag_extra_probes, xyzprobes
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
        scalar_lbound, scalar_ubound, sc_even, sc_skew, &
@@ -92,7 +94,7 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,noise_loc
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap,icfllim,cfl_limit  
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -130,7 +132,12 @@ subroutine parameter(input_i3d)
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
   endif
-    
+  
+  if (nprobes.gt.0) then
+     call setup_probes()
+     read(10, nml=ProbesParam); rewind(10)
+  endif
+  
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
@@ -210,6 +217,7 @@ subroutine parameter(input_i3d)
      nu0nu=four
      cnu=0.44_mytype
   endif
+  
   if(ilesmod.ne.0) then
      read(10, nml=LESModel); rewind(10)
   endif
@@ -228,12 +236,14 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-  !read(10, nml=CASE); rewind(10)                  ! Read case-specific variables
+  ! Read case-specific variables
+  !read(10, nml=CASE); rewind(10)                  
   
+  ! Read parameters for temporal TBL case
   if (itype.eq.itype_ttbl) then
-     read(10, nml=TemporalTBLParam); rewind(10);  ! Read parameters for temporal TBL case
+     read(10, nml=TemporalTBLParam); rewind(10);   
   end if
-   
+    
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -329,6 +339,7 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
+  if (nrank==0) call system('mkdir data out probes 2> /dev/null')
 
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
@@ -388,25 +399,25 @@ subroutine parameter(input_i3d)
      write(*,"(' Time step dt           : ',F17.8)") dt
      !
      if (itimescheme.eq.1) then
-       !print *,'Temporal scheme        : Forwards Euler'
-       write(*,"(' Temporal scheme        : ',A20)") "Forwards Euler"
+       !print *,'Temporal scheme        : Forward Euler'
+       write(*,"(' Temporal scheme        : ',A20)") "Forward Euler"
      elseif (itimescheme.eq.2) then
-       !print *,'Temporal scheme        : Adams-bashforth 2'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 2"
+       !print *,'Temporal scheme        : Adams-Bashforth 2'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 2"
      elseif (itimescheme.eq.3) then
-       !print *,'Temporal scheme        : Adams-bashforth 3'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 3"
+       !print *,'Temporal scheme        : Adams-Bashforth 3'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 3"
      elseif (itimescheme.eq.4) then
-       !print *,'Temporal scheme        : Adams-bashforth 4'
-       write(*,"(' Temporal scheme        : ',A20)") "Adams-bashforth 4"
+       !print *,'Temporal scheme        : Adams-Bashforth 4'
+       write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 4"
        print *,'Error: Adams-bashforth 4 not implemented!'
        stop
      elseif (itimescheme.eq.5) then
-       !print *,'Temporal scheme        : Runge-kutta 3'
-       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 3"
+       !print *,'Temporal scheme        : Runge-Kutta 3'
+       write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 3"
      elseif (itimescheme.eq.6) then
-       !print *,'Temporal scheme        : Runge-kutta 4'
-       write(*,"(' Temporal scheme        : ',A20)") "Runge-kutta 4"
+       !print *,'Temporal scheme        : Runge-Kutta 4'
+       write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 4"
        print *,'Error: Runge-kutta 4 not implemented!'
        stop
      else
@@ -579,6 +590,7 @@ subroutine parameter_defaults()
   use decomp_2d
   use complex_geometry
 
+  use probes, only : nprobes, flag_all_digits, flag_extra_probes
   use visu, only : output2D
   
   implicit none
@@ -673,7 +685,7 @@ subroutine parameter_defaults()
   rho_air=one
 
   ! IO
-  ivisu = 1
+  ivisu = 1  ! save snapshots: 1, do not save snapshots: 0
   ipost = 0
   iprocessing = huge(i)
   initstat = huge(i)
@@ -682,6 +694,11 @@ subroutine parameter_defaults()
   inflowpath='./'
   ioutflow=0
   output2D = 0
+  nprobes=0
+
+  ! Probes
+  flag_all_digits = .false.
+  flag_extra_probes = .false.
 
   ipost = 0
   iibm=0
@@ -701,8 +718,14 @@ subroutine parameter_defaults()
   x0_tr_tbl=3.505082_mytype
   
   ! Temporal TBL
-  uwall = 1.0       ! velocity of translating bottom wall (U_wall) 
-  twd = 1.0         ! trip wire diameter (D)
-  noise_loc = 0.01  ! location of the noise with respect to a percentage of the total wall velocity U_wall (value as Kozul et al.)
+  uwall = 1.0         ! velocity of translating bottom wall (U_wall) 
+  twd = 1.0           ! trip wire diameter (D)
+  uln = 0.01          ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
+  lln = 0.5           ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+  phiwall = 1.0       ! scalar value at the wall 
+  a_plus_cap = 12.0   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  cfl_limit = 0.95    ! CFL limit to adjust the time-step  
   
 end subroutine parameter_defaults
