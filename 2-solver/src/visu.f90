@@ -358,7 +358,7 @@ contains
   subroutine write_xdmf_header(pathname, filename, num)
 
     use variables, only : nvisu, yp
-    use param, only : dx,dy,dz,istret
+    use param,     only : dx,dy,dz,istret
     use decomp_2d, only : mytype, nrank, xszV, yszV, zszV, ystV
 
     implicit none

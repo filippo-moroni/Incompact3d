@@ -10,16 +10,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import InterpolatedUnivariateSpline
 
+
 # Parameters
 uwall = np.float64(1.0)
 re = np.float64(500.0)  
-nu = 1/re
+nu = 1.0/re
 ii = 0
 
 # Inputs
-t1  = 20  # initial time unit
-tn  = 40  # final time unit
-icr = 20  # increment between different savings in time units
+t1  = 430  # initial time unit
+tn  = 430  # final time unit
+icr = 1    # increment between different savings in time units
 
 # Number of snapshots
 ns = (tn - t1)//icr + 1 
@@ -94,19 +95,32 @@ re_tau   = delta_99*sh_vel*re
 re_ds    = disp_t*uwall*re
 re_theta = mom_t*uwall*re
 
-# Combine the vectors into a 2D array
-data = np.column_stack((delta_99, disp_t, mom_t, re_tau, re_ds, re_theta, sh_vel, t_unit))
+# Column width for writing to .txt file
+c_w = 20  
 
-# Specify the file name (ho: High-order) 
-filename = 'param_stats_ho.txt'  
+# Format for numbers
+fs = f"<{c_w}.3f"
 
-# Define the header
-header = "delta_99 O(6), disp_t O(6), mom_t O(6), Re_tau O(6), Re_ds O(6), Re_theta O(6), sh_vel O(6), T_unit\n" 
+with open('param_stats_ho.txt', 'w') as f:
+    f.write(f"{'delta_99 O(6)':<{c_w}}, " +
+            f"{'disp_t O(6)':<{c_w}}, " +
+            f"{'mom_t O(6)':<{c_w}}, " +
+            f"{'Re_tau O(6)':<{c_w}}, " +
+            f"{'Re_ds O(6)':<{c_w}}, " +
+            f"{'Re_theta O(6)':<{c_w}}, " +
+            f"{'sh_vel O(6)':<{c_w}}, " +
+            f"{'sh_vel O(6)':<{c_w}}\n")
 
-# Write the header and the data to the file
-with open(filename, 'w') as file:
-     file.write(header)  
-     np.savetxt(file, data, delimiter=',')  
+    for j in range(0, ii):
+        f.write(f"{delta_99[j]:{fs}}, " +
+            f"{disp_t[j]:{fs}}, " +
+            f"{mom_t[j]:{fs}}, " +
+            f"{re_tau[j]:{fs}}, " +
+            f"{re_ds[j]:{fs}}, " +
+            f"{re_theta[j]:{fs}}, " +
+            f"{sh_vel[j]:{fs}}, " +
+            f"{t_unit[j]:{fs}}")
+
 
 #!---------------------------------------------------------!
 # Check section (everything works)
