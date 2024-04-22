@@ -52,7 +52,9 @@ program xcompact3d
   do itime=ifirst,ilast
      
      !t=itime*dt
-     t=t0 + (itime0 + itime + 1 - ifirst)*dt
+     !t=t0 + (itime0 + itime + 1 - ifirst)*dt
+     
+     t = t0 + itime*dt
      
      call simu_stats(2)
 

@@ -314,10 +314,10 @@ subroutine parameter(input_i3d)
 #endif
 
   if (iimplicit.ne.0) then
-     if ((itimescheme==5).or.(itimescheme==6)) then
-        if (nrank==0) write(*,*) 'Error: implicit Y diffusion not yet compatible with RK time schemes'
-        stop
-     endif
+     !if ((itimescheme==5).or.(itimescheme==6)) then
+     !   if (nrank==0) write(*,*) 'Error: implicit Y diffusion not yet compatible with RK time schemes'
+     !   stop
+     !endif
      if (isecondder==5) then
         if (nrank==0) write(*,*)  "Warning : support for implicit Y diffusion and isecondder=5 is experimental"
      endif

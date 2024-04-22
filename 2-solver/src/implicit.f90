@@ -647,6 +647,15 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
         print *, "AB4 not implemented!"
         STOP
      endif
+     
+  !>>> Runge-Kutta (low storage) RK3
+  elseif(itimescheme.eq.5) then
+     if(itr.eq.1) then
+        ta1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)
+     else
+        ta1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)
+     endif
+     dvar1(:,:,:,2)=dvar1(:,:,:,1)
 
   else
      !>>> We should not be here
@@ -656,6 +665,13 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
 
   endif
+  
+  
+  !--- Perform semi-implicit time integration only at the last iteration of the RK cycle ---!
+  ! For Adams-Bashforth schemes, we always enter into semi-implicit time integration,
+  ! since we have no sub-time steps.
+  
+  if((itimescheme .le. 3) .or. (itimescheme.eq.5 .and. itr.eq.3)) then
 
   if (present(forcing1)) then
      if ( (irestart.eq.1).or.(itime.gt.1) ) then
@@ -813,6 +829,8 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      endif
   endif
 
+  ! Closing of the if for semi-implicit time integration (only at last sub-time step for RK3)
+  end if
 
   return
 end subroutine inttimp

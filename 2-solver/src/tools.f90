@@ -830,7 +830,7 @@ contains
     !      AUTHOR: Kay Schäfer, Filippo Moroni
   !##################################################################
   subroutine compute_cfl(ux,uy,uz)
-    use param, only : dx,dy,dz,dt,istret,cfl_limit,icfllim,t
+    use param, only : dx,dy,dz,dt,istret,cfl_limit,icfllim,t,itimescheme
     use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
     use mpi
     use variables,      only : dyp
@@ -891,17 +891,16 @@ contains
       write(*,*) '-----------------------------------------------------------'
     end if
     
-    ! Not completed: different time steps must be stored! 
-    !
-    ! Adjust time-step if adjustable time-step option is enabled and if we are exiting the specified interval (valid only for TTBL) (cfl_lim - 0.05, cfl_lim)
-    !if (icfllim == 1 .and. (cflmax_out(4)*dt > cfl_limit .or. cflmax_out(4)*dt < (cfl_limit - 0.05))) then
+    ! Adjust time-step if adjustable time-step option is enabled and if we are exiting the specified interval (cfl_lim - 0.05, cfl_lim)
+    ! Valid only for TTBL and RK3
+    if (icfllim == 1 .and. itimescheme.eq.5 .and. (cflmax_out(4)*dt > cfl_limit .or. cflmax_out(4)*dt < (cfl_limit - 0.05))) then
     
-    !    dt = (cfl_limit / cflmax_out(4))
+        dt = (cfl_limit / cflmax_out(4))
         
         ! Update coefficients for time integration schemes
-    !    call update_time_int_coeff()
+        call update_time_int_coeff()
                    
-    !end if
+    end if
   end subroutine compute_cfl
   !##################################################################
   !##################################################################

@@ -137,47 +137,6 @@ contains
           stop
        endif
 
-       !if (itime.eq.1.and.ilit.eq.0) then
-       !var(:,:,:)=gdt(itr)*hx(:,:,:)+var(:,:,:)
-       !uy(:,:,:)=gdt(itr)*hy(:,:,:)+uy(:,:,:)
-       !uz(:,:,:)=gdt(itr)*hz(:,:,:)+uz(:,:,:)
-       !gx(:,:,:)=hx(:,:,:)
-       !gy(:,:,:)=hy(:,:,:)
-       !gz(:,:,:)=hz(:,:,:)
-       !elseif (itime.eq.2.and.ilit.eq.0) then
-       !var(:,:,:)=adt(itr)*hx(:,:,:)+bdt(itr)*gx(:,:,:)+var(:,:,:)
-       !uy(:,:,:)=adt(itr)*hy(:,:,:)+bdt(itr)*gy(:,:,:)+uy(:,:,:)
-       !uz(:,:,:)=adt(itr)*hz(:,:,:)+bdt(itr)*gz(:,:,:)+uz(:,:,:)
-       !gox(:,:,:)=gx(:,:,:)
-       !goy(:,:,:)=gy(:,:,:)
-       !goz(:,:,:)=gz(:,:,:)
-       !gx(:,:,:)=hx(:,:,:)
-       !gy(:,:,:)=hy(:,:,:)
-       !gz(:,:,:)=hz(:,:,:)
-       !elseif (itime.eq.3.and.ilit.eq.0) then
-       !var(:,:,:)=adt(itr)*hx(:,:,:)+bdt(itr)*gx(:,:,:)+cdt(itr)*gox(:,:,:)+var(:,:,:)
-       !uy(:,:,:)=adt(itr)*hy(:,:,:)+bdt(itr)*gy(:,:,:)+cdt(itr)*goy(:,:,:)+uy(:,:,:)
-       !uz(:,:,:)=adt(itr)*hz(:,:,:)+bdt(itr)*gz(:,:,:)+cdt(itr)*goz(:,:,:)+uz(:,:,:)
-       !gox(:,:,:)=gx(:,:,:)
-       !goy(:,:,:)=gy(:,:,:)
-       !goz(:,:,:)=gz(:,:,:)
-       !gx(:,:,:)=hx(:,:,:)
-       !gy(:,:,:)=hy(:,:,:)
-       !gz(:,:,:)=hz(:,:,:)
-       !else
-       !var(:,:,:)=adt(itr)*hx(:,:,:)+bdt(itr)*gx(:,:,:)+cdt(itr)*gox(:,:,:)+ddt(itr)*gax(:,:,:)+var(:,:,:)
-       !uy(:,:,:)=adt(itr)*hy(:,:,:)+bdt(itr)*gy(:,:,:)+cdt(itr)*goy(:,:,:)+ddt(itr)*gay(:,:,:)+uy(:,:,:)
-       !uz(:,:,:)=adt(itr)*hz(:,:,:)+bdt(itr)*gz(:,:,:)+cdt(itr)*goz(:,:,:)+ddt(itr)*gaz(:,:,:)+uz(:,:,:)
-       !gax(:,:,:)=gox(:,:,:)
-       !gay(:,:,:)=goy(:,:,:)
-       !gaz(:,:,:)=goz(:,:,:)
-       !gox(:,:,:)=gx(:,:,:)
-       !goy(:,:,:)=gy(:,:,:)
-       !goz(:,:,:)=gz(:,:,:)
-       !gx(:,:,:)=hx(:,:,:)
-       !gy(:,:,:)=hy(:,:,:)
-       !gz(:,:,:)=hz(:,:,:)
-       !endif
        !>>> Runge-Kutta (low storage) RK3
     elseif(itimescheme.eq.5) then
        if(itr.eq.1) then
