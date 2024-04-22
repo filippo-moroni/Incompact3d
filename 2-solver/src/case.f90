@@ -41,6 +41,7 @@ module case
   use channel
   use tbl
   use temporal_tbl
+  use extra_tools
 
   use var, only : nzmsize
 
@@ -139,6 +140,9 @@ contains
        call boundary_conditions_user (ux,uy,uz,phi,ep)
 
     elseif (itype.eq.itype_channel) then
+
+       ! Comment the following line to speed up the code if no wall oscillations are present
+       call spanwise_wall_oscillations (ux,uz)
 
        call boundary_conditions_channel (ux, uy, uz, phi)
 

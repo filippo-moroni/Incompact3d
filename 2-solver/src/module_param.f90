@@ -434,11 +434,7 @@ module param
   real(mytype) :: uln         ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
   real(mytype) :: lln         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall     ! scalar value at the wall
-  
-  ! Temporal TBL parameters for wall oscillations
-  real(mytype) :: a_plus_cap  ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  real(mytype) :: t_plus_cap  ! period of spanwise wall oscillations in friction units (cap: capital letter)
-  
+    
   ! Spanwise wall oscillation
   real(mytype),save :: span_vel     ! spanwise velocity at the wall
  
@@ -449,6 +445,10 @@ module param
   ! Extra controls for numerics 
   integer           :: icfllim      ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   real(mytype),save :: cfl_limit    ! CFL limit to adjust the time-step
+  
+  ! Parameters for wall oscillations (used for channel flows and TTBLs)
+  real(mytype) :: a_plus_cap        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  real(mytype) :: t_plus_cap        ! period of spanwise wall oscillations in friction units (cap: capital letter)
   
       
   !numbers

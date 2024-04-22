@@ -94,8 +94,9 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap 
-  NAMELIST /ExtraNumControl/ icfllim,cfl_limit 
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
+  NAMELIST /ExtraNumControl/ icfllim,cfl_limit
+  NAMELIST /WallOscillations/ a_plus_cap,t_plus_cap
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -103,7 +104,7 @@ subroutine parameter(input_i3d)
 
   if (nrank==0) then
      write(*,*) '!---------------------------------------------------------!'
-     write(*,*) '!                    ~  Xcompact3D  ~                     !'
+     write(*,*) '!                   ~  Incompact3D  ~                     !'
      write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
      write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
      write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
@@ -246,7 +247,10 @@ subroutine parameter(input_i3d)
   end if
   
   ! Read extra numerics control (Adjustable time-step)
-  read(10, nml=ExtraNumControl); rewind(10);   
+  read(10, nml=ExtraNumControl); rewind(10);
+  
+  ! Controls for wall oscillations
+  read(10, nml=WallOscillations); rewind(10);  
      
   close(10)
 
@@ -723,16 +727,18 @@ subroutine parameter_defaults()
   x0_tr_tbl=3.505082_mytype
   
   ! Temporal TBL
-  uwall = 1.0         ! velocity of translating bottom wall (U_wall) 
+  uwall = zero        ! velocity of translating bottom wall (U_wall) 
   twd = 1.0           ! trip wire diameter (D)
   uln = 0.01          ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
   lln = 0.5           ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-  phiwall = 1.0       ! scalar value at the wall 
-  a_plus_cap = 12.0   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  phiwall = zero      ! scalar value at the wall 
   
   ! Extra numerics control
   icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-  cfl_limit = 0.95    ! CFL limit to adjust the time-step  
+  cfl_limit = 0.95    ! CFL limit to adjust the time-step 
   
+  ! Controls for wall oscillations
+  a_plus_cap = zero   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
+   
 end subroutine parameter_defaults

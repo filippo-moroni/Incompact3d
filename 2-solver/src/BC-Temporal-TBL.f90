@@ -318,38 +318,6 @@ contains
     call write_field(di1, ".", "critq", trim(num), flush = .true.)  ! Reusing temporary array, force flush
 
   end subroutine visu_ttbl
-
-  !---------------------------------------------------------------------------!
-  ! Calculate the spanwise velocity at the bottom wall due to the imposed
-  ! sinusoidal oscillation.
-  ! 
-  ! Parameters of the non-dimensional oscillation (A^+ and T^+) are read from
-  ! the input file.
-  !---------------------------------------------------------------------------!
-  subroutine spanwise_wall_oscillations(ux1,uz1)
-  
-  use dbg_schemes,    only : sin_prec
-  use tools_for_ttbl, only : calculate_friction_coefficient
-  
-  implicit none
-  
-  real(mytype) :: amplitude, period
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
-  
-  call calculate_friction_coefficient(ux1,uz1)
-  
-  ! Maximum amplitude of spanwise oscillations
-  amplitude = sh_vel * a_plus_cap
-  
-  ! Period of oscillation
-  period = xnu * t_plus_cap / (sh_vel**2)
-  
-  ! Calculation of the spanwise wall velocity
-  span_vel = amplitude * sin_prec(two*pi*t/period)
-  
-  return
-  
-  end subroutine spanwise_wall_oscillations
   
 end module temporal_tbl
 

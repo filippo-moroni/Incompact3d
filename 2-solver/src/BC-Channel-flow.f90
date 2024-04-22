@@ -88,6 +88,8 @@ contains
     real(mytype) avg_param
 #endif
 
+    ! Zero streamwise velocity of the wall
+    uwall = zero
 
     if (idir_stream /= 1 .and. idir_stream /= 3) then
        if (nrank == 0) then
@@ -313,6 +315,28 @@ contains
           call channel_cfr(uz,two/three)
        endif
     end if
+    
+    ! Bottom boundary (Dirichlet)
+    if (ncly1 == 2) then
+      do k = 1, xsize(3)
+        do i = 1, xsize(1)
+          byx1(i,k) = zero 
+          byy1(i,k) = zero
+          byz1(i,k) = span_vel
+        enddo
+      enddo
+    endif
+        
+    ! Top boundary (Dirichlet) 
+    if (nclyn == 2) then
+      do k = 1, xsize(3)
+        do i = 1, xsize(1)
+          byxn(i,k) = zero  
+          byyn(i,k) = zero
+          byzn(i,k) = span_vel
+        enddo
+      enddo
+    endif
 
     if (iscalar /= 0) then
        if (iimplicit <= 0) then
@@ -324,7 +348,7 @@ contains
              phi(:,xsize(2),:,:) = zero
           endif
        else
-          !
+
           ! Implicit boundary conditions are usually given in input file
           ! It is possible to modify g_sc here
           ! It is not possible to modify alpha_sc and beta_sc here
@@ -333,6 +357,7 @@ contains
           !if (nclyS1.eq.2) g_sc(:,1) = one
           ! Top temperature if alpha_sc(:,2)=1 and beta_sc(:,2)=0 (default)
           !if (nclySn.eq.2) g_sc(:,2) = zero
+          
        endif
     endif
 
