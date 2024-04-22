@@ -30,10 +30,10 @@ grey   = [0.5 0.5 0.5];
 %% Reading of file and variables
 
 % Mean stats - modified code
-M1 = readtable('mean_stats152.5.txt',NumHeaderLines=1);
+M1 = readtable('mean_stats430.0.txt',NumHeaderLines=1);
 
 % Vorticity - modified code
-M3 = readtable('vort_stats152.5.txt',NumHeaderLines=1);
+M3 = readtable('vort_stats430.0.txt',NumHeaderLines=1);
 
 %% Default code variables
 mean_u  = M1{:,1};          % mean of u default code
@@ -103,7 +103,7 @@ semilogx(y_plus_vsl,u_plus_vsl,'Color',grey,'LineStyle', '--',LineWidth=1.5)
 hold on
 semilogx(y_plus_k,u_plus_k,'Color',grey,'LineStyle', '--',LineWidth=1.5)
 
-legend({'Present', 'Viscous sublayer and log law (Kozul et al. (2016))'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
+legend({'Present', 'Viscous sublayer and log law (Kozul et al. (2016))'}, 'Interpreter', 'latex',Location='northwest',FontSize=18);
 
 grid on;
 grid minor;
@@ -111,14 +111,14 @@ grid minor;
 xlim([0,180]);
 xticks([0 5 30 60 100 180])
 set(gca,'xscale','log')
-xlabel('$y^+$','FontSize',40)
+xlabel('$y^+$','FontSize',50)
 
 yaxis_lim = 20;  % upper bound of y axes
 
 yyaxis left
 ax = gca;
 ax.YColor = 'black'; 
-ylabel('$U^+$','FontSize',40)
+ylabel('$U^+$','FontSize',50)
 ylim([0,yaxis_lim]);
 yyaxis right
 ax = gca;
@@ -128,7 +128,7 @@ ylim([0,yaxis_lim]);
 set(h4,'PaperSize',[22 12]);
 
 caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))';
-text(0.35, -1, sprintf(caption), 'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', 'FontSize', 12, 'FontWeight', 'bold');
+text(0.32, -1, sprintf(caption), 'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', 'FontSize', 16, 'FontWeight', 'bold');
 
 
 %% Vorticity plot
