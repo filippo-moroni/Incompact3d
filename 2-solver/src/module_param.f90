@@ -446,7 +446,7 @@ module param
   real(mytype),save :: fric_coeff   ! skin friction coefficient
   real(mytype),save :: sh_vel       ! shear velocity
   
-  ! Extra controls for numerics for a temporal TBL
+  ! Extra controls for numerics 
   integer           :: icfllim      ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   real(mytype),save :: cfl_limit    ! CFL limit to adjust the time-step
   

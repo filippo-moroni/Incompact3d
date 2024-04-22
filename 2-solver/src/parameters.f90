@@ -94,7 +94,8 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap,icfllim,cfl_limit  
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap 
+  NAMELIST /ExtraNumControl/ icfllim,cfl_limit 
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -243,7 +244,10 @@ subroutine parameter(input_i3d)
   if (itype.eq.itype_ttbl) then
      read(10, nml=TemporalTBLParam); rewind(10);   
   end if
-    
+  
+  ! Read extra numerics control (Adjustable time-step)
+  read(10, nml=ExtraNumControl); rewind(10);   
+     
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -395,8 +399,13 @@ subroutine parameter(input_i3d)
      write(*,"(' xnu                    : ',F17.8)") xnu
      write(*,*) '==========================================================='
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
+     
      write(*,*) '==========================================================='
+     if(icfllim .eq. 0) then
      write(*,"(' Time step dt           : ',F17.8)") dt
+     else if(icfllim .eq. 1) then
+     write(*,"(' CFL max                : ',F17.8)") cfl_limit     
+     
      !
      if (itimescheme.eq.1) then
        !print *,'Temporal scheme        : Forward Euler'
@@ -725,6 +734,8 @@ subroutine parameter_defaults()
   phiwall = 1.0       ! scalar value at the wall 
   a_plus_cap = 12.0   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
   t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  
+  ! Extra numerics control
   icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   cfl_limit = 0.95    ! CFL limit to adjust the time-step  
   
