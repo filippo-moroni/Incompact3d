@@ -696,10 +696,11 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   ! Specific cases first
   ! This is the location for exotic / nonhomogeneous boundary conditions
   
+  ! In order to mimick a Neumann BC at the top of the domain for the TBL
   if (itype.eq.itype_tbl .and. isc.eq.0) then
      bcbot(:,:) = zero
      bctop(:,:) = tb2(:,ny-1,:)
-     !in order to mimick a Neumann BC at the top of the domain for the TBL
+
   
   ! Temporal TBL (velocity BCs and scalar BCs)
   else if (itype .eq. itype_ttbl .and. isc .eq. 0) then

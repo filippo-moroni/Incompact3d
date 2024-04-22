@@ -814,10 +814,10 @@ contains
 
      if (nrank==0) then
         write(*,*) 'Diffusion number D (or numerical Fourier, Fo)'
-        write(*,"(' D,x                    :        ',F13.8)") cfl_diff_x
-        write(*,"(' D,y                    :        ',F13.8)") cfl_diff_y
-        write(*,"(' D,z                    :        ',F13.8)") cfl_diff_z
-        write(*,"(' D,sum                  :        ',F13.8)") cfl_diff_sum
+        write(*,"(' D,x                    : ',F17.8)") cfl_diff_x
+        write(*,"(' D,y                    : ',F17.8)") cfl_diff_y
+        write(*,"(' D,z                    : ',F17.8)") cfl_diff_z
+        write(*,"(' D,sum                  : ',F17.8)") cfl_diff_sum
         write(*,*) '-----------------------------------------------------------'
      endif
 

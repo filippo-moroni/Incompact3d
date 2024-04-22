@@ -147,7 +147,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
 
 end subroutine stat_mean
 !********************************************************************
-! Vorticity 
+! Vorticity and mean gradient along x (dU/dy)
 subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,mean_gradient2)   
 
   use param
