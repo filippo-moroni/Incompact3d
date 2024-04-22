@@ -405,27 +405,22 @@ subroutine parameter(input_i3d)
      write(*,"(' Time step dt           : ',F17.8)") dt
      else if(icfllim .eq. 1) then
      write(*,"(' CFL max                : ',F17.8)") cfl_limit     
+     end if
      
-     !
+     ! Time schemes
      if (itimescheme.eq.1) then
-       !print *,'Temporal scheme        : Forward Euler'
        write(*,"(' Temporal scheme        : ',A20)") "Forward Euler"
      elseif (itimescheme.eq.2) then
-       !print *,'Temporal scheme        : Adams-Bashforth 2'
        write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 2"
      elseif (itimescheme.eq.3) then
-       !print *,'Temporal scheme        : Adams-Bashforth 3'
        write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 3"
      elseif (itimescheme.eq.4) then
-       !print *,'Temporal scheme        : Adams-Bashforth 4'
        write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 4"
        print *,'Error: Adams-bashforth 4 not implemented!'
        stop
      elseif (itimescheme.eq.5) then
-       !print *,'Temporal scheme        : Runge-Kutta 3'
        write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 3"
      elseif (itimescheme.eq.6) then
-       !print *,'Temporal scheme        : Runge-Kutta 4'
        write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 4"
        print *,'Error: Runge-kutta 4 not implemented!'
        stop
@@ -433,7 +428,8 @@ subroutine parameter(input_i3d)
        print *,'Error: itimescheme must be specified as 1-6'
        stop
      endif
-          
+     
+     ! Semi-implicit y-diffusion     
      if (iimplicit.ne.0) then
        if (iimplicit.eq.1) then
          write(*,"('            ',A40)") "With backward Euler for Y diffusion"
