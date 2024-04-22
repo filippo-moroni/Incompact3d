@@ -45,16 +45,17 @@ program xcompact3d
   use genepsi, only : genepsi3d
 
   implicit none
-
-
+  
   call init_xcompact3d()
+
+  t = t0
 
   do itime=ifirst,ilast
      
      !t=itime*dt
      !t=t0 + (itime0 + itime + 1 - ifirst)*dt
-     
-     t = t0 + itime*dt
+      
+     t = t + dt
      
      call simu_stats(2)
 
