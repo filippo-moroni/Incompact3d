@@ -18,7 +18,7 @@ module temporal_tbl
 
   PRIVATE   ! All functions/subroutines private by default
   PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl, postprocess_ttbl, &
-            visu_ttbl_init, visu_ttbl, spanwise_wall_oscillations
+            visu_ttbl_init, visu_ttbl
 
 contains
   !---------------------------------------------------------------------------!

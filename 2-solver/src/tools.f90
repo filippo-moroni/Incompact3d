@@ -236,8 +236,8 @@ contains
     use variables
     use param
     use MPI
-    use navier,         only : gradp
-    use tools_for_ttbl, only : calculate_friction_coefficient
+    use navier,      only : gradp
+    use extra_tools, only : calculate_friction_coefficient
 
     implicit none
 
@@ -286,7 +286,7 @@ contains
     if (iresflg==1) then !write
         
        ! Calculate skin friction coefficient for a temporal TBL case
-       if (itype .eq. itype_ttbl) then
+       if (itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
           call calculate_friction_coefficient(ux1,uz1)   
        end if
     
@@ -372,10 +372,10 @@ contains
          write(111,'(A,I14)') 'itimescheme=',itimescheme
          write(111,fmt2) 'iimplicit=',iimplicit
                   
-         ! Print skin friction coefficient and shear velocity for a TTBL case
+         ! Print skin friction coefficient and shear velocity at the bottom wall (TTBL and Channel)
          if (itype .eq. itype_ttbl) then
          write(111,'(A)')'!========================='
-         write(111,'(A)')'&Temporal TBL quantities'
+         write(111,'(A)')'&FrictParamBottomWall'
          write(111,'(A)')'!========================='
          write(111,fmt4) 'cf=       ',fric_coeff
          write(111,fmt4) 'sh_vel=   ',sh_vel

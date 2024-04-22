@@ -88,9 +88,6 @@ contains
     real(mytype) avg_param
 #endif
 
-    ! Zero streamwise velocity of the wall
-    uwall = zero
-
     if (idir_stream /= 1 .and. idir_stream /= 3) then
        if (nrank == 0) then
           write(*,*) '!! ERROR in imposing sorce term for momentum !!'
@@ -305,6 +302,7 @@ contains
 
     implicit none
 
+    integer :: i,j,k
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
 
