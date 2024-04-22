@@ -101,7 +101,7 @@ c_w = 20
 # Format for numbers
 fs = f"<{c_w}.3f"
 
-with open('param_stats_ho.txt', 'w') as f:
+with open('integral_statistics.txt', 'w') as f:
     f.write(f"{'delta_99 O(6)':<{c_w}}, " +
             f"{'disp_t O(6)':<{c_w}}, " +
             f"{'mom_t O(6)':<{c_w}}, " +
@@ -109,7 +109,7 @@ with open('param_stats_ho.txt', 'w') as f:
             f"{'Re_ds O(6)':<{c_w}}, " +
             f"{'Re_theta O(6)':<{c_w}}, " +
             f"{'sh_vel O(6)':<{c_w}}, " +
-            f"{'sh_vel O(6)':<{c_w}}\n")
+            f"{'time_unit':<{c_w}}\n")
 
     for j in range(0, ii):
         f.write(f"{delta_99[j]:{fs}}, " +

@@ -47,9 +47,9 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: uphimeanHT,vphimeanHT,wphimeanHT
   
   ! Arrays to save evolution of quantities in time
-  real(mytype), save, allocatable, dimension(:) :: delta_99,disp_t,mom_t
-  real(mytype), save, allocatable, dimension(:) :: re_tau,re_ds,re_theta
-  real(mytype), save, allocatable, dimension(:) :: sh_vel             
+  !real(mytype), save, allocatable, dimension(:) :: delta_99,disp_t,mom_t
+  !real(mytype), save, allocatable, dimension(:) :: re_tau,re_ds,re_theta
+  !real(mytype), save, allocatable, dimension(:) :: sh_vel             
   
   ! Arrays for vorticity
   real(mytype), save, allocatable, dimension(:,:,:) :: vortxmean,vortymean,vortzmean
@@ -331,15 +331,15 @@ contains
        uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero      
        
        ! Variables depending on time
-       allocate(delta_99(nt)); delta_99  = zero ! BL thickness delta99
-       allocate(disp_t  (nt)); disp_t    = zero ! displacement thickness delta star (ds)
-       allocate(mom_t   (nt)); mom_t     = zero ! momentum thickness theta
+       !allocate(delta_99(nt)); delta_99  = zero ! BL thickness delta99
+       !allocate(disp_t  (nt)); disp_t    = zero ! displacement thickness delta star (ds)
+       !allocate(mom_t   (nt)); mom_t     = zero ! momentum thickness theta
      
-       allocate(re_tau  (nt)); re_tau    = zero ! friction Re number (or delta99^+)
-       allocate(re_ds   (nt)); re_ds     = zero ! Re number based on displacement thickness delta star (ds)
-       allocate(re_theta(nt)); re_theta  = zero ! Re number based on momentum thickness theta
+       !allocate(re_tau  (nt)); re_tau    = zero ! friction Re number (or delta99^+)
+       !allocate(re_ds   (nt)); re_ds     = zero ! Re number based on displacement thickness delta star (ds)
+       !allocate(re_theta(nt)); re_theta  = zero ! Re number based on momentum thickness theta
        
-       allocate(sh_vel  (nt)); sh_vel    = zero ! shear-velocity
+       !allocate(sh_vel  (nt)); sh_vel    = zero ! shear-velocity
            
     end if
     

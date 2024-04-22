@@ -394,10 +394,7 @@ PROGRAM post
                                
         close(iunit)
   endif
-  
-  ! Calculate parameters of the flow (at 1st order for integrals) 
-  call stat_parameters(u1meanHT,ie,nt,delta_99,disp_t,mom_t,re_tau,re_ds,re_theta,sh_vel)
-     
+       
   ! Reset to zero the averages on total domain (HT)   
   call reset_domain()       
      
@@ -407,57 +404,7 @@ PROGRAM post
   call reset_subdomains()  
   
  enddo  ! closing of the do-loop for the different time units (or SnapShots) (ie index)
- 
- if(nrank.eq.0) then
- 
-     ! New directory for the statistics (lo: Low-order)
-     write(dirname,"('data_post_param_lo/')") 
-        
-     call system('mkdir -p '//trim(dirname))
-     
-     write(filename,"('param_stats_lo.txt')") 
-         
-     filename = adjustl(filename)
-        
-        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
-        
-        do ie = 1,nt + 1
-        
-        ! Number of snapshot  
-        ifile = (ie-2)*icrfile+file1
-     
-        ! Time-unit (T)
-        t=dt*real(ioutput*ifile,mytype)
-        
-        if (ie .eq. 1) then
-        
-        write (iunit, *) 'delta_99 O(2)'      , ',','disp_thickness O(1)', ',','mom_thickness O(1)', ',', &
-                         're_tau O(2)'        , ',','re_delta* O(1)'     , ',','re_theta O(1)',      ',', &
-                         'shear_velocity O(2)', ',','time unit'                         
-                               
-        else
-        
-        write(iunit, *)  delta_99(ie-1), ',', &
-                         disp_t  (ie-1), ',', &
-                         mom_t   (ie-1), ',', &
-                         re_tau  (ie-1), ',', &
-                         re_ds   (ie-1), ',', &
-                         re_theta(ie-1), ',', &
-                         sh_vel  (ie-1), ',', &
-                         t
-        
-        end if
-        
-        end do
-        
-        ! Adding a footer with useful information
-        write(iunit, *) 
-        write(iunit, *) 'Integral quantities are first-order accurate (backward rectangular rule): disp_thickness and mom_thickness.'
-        write(iunit, *) '6th order accurate calculations are performed in a separate Python script "high_order_integrals.py" (post_processing folder).'
-        write(iunit, *) 'Shear velocity calculation is second-order accurate (see vort_stats.txt for 6th order accurate mean gradient).'
- 
- end if
-   
+    
   !-----------------------------!
   !  Post-processing ends here  !
   !-----------------------------!
