@@ -138,10 +138,12 @@ else(ADIOS_FOUND)
 endif()
 
 # Add option for TTBL post-processing
-option(TTBL_MODE "Enable TTBL post-processing" ON)
+option(TTBL_MODE "Enable TTBL post-processing" OFF)
 if(TTBL_MODE)
   message(STATUS "TTBL_MODE: ${TTBL_MODE}")
   add_definitions("-DTTBL_MODE")
+else(TTBL_MODE)
+  message(STATUS "TTBL_MODE: ${TTBL_MODE}")
 endif()
 
 # Create a static library for the fft
