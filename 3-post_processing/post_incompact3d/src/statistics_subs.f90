@@ -15,15 +15,10 @@
 
 ! Two-points statistics:
 ! - (to be implemented, e.g. correlations) 
-
-! Flow parameters: 
-! - delta_99, displacement thickness, momentum thickness
-! - shear velocity
-! - related Re numbers
 !----------------------------------------------------------!
 
 ! Mean statistics (average, variance, skewness, kurtosis)
-subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
+subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
                      u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                      u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                      uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
@@ -40,6 +35,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2     ! velocity components and pressure
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: phi2                 ! scalar field
   integer,     intent(in) :: nr                                                         ! number of flow realizations
+  integer,     intent(in) :: nt                                                         ! number of snapshots
   
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                             ! temporary array (local)
   
@@ -52,103 +48,110 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
   real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean           ! average and variance of scalar field
   real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations
   
-                                                                                                                                            
+  real(mytype) :: den  ! denominator of the divisions
+  
+#ifdef TTBL_MODE 
+  den = real(nr,mytype)
+#else
+  den = real(nr*nt,mytype)
+#endif
+                                                                                                                                           
   !---x-component---!
   ! average
-  u1mean=u1mean+ux2/real(nr,mytype) 
+  u1mean=u1mean+ux2/den 
 
   ! variance
   ta2=ux2*ux2
-  u2mean=u2mean+ta2/real(nr,mytype)
+  u2mean=u2mean+ta2/den
 
   ! skewness
   ta2=ux2*ux2*ux2
-  u3mean=u3mean+ta2/real(nr,mytype)
+  u3mean=u3mean+ta2/den
 
   ! kurtosis 
   ta2=ux2*ux2*ux2*ux2
-  u4mean=u4mean+ta2/real(nr,mytype)
+  u4mean=u4mean+ta2/den
   
   !---y-component---!
   ! average
-  v1mean=v1mean+uy2/real(nr,mytype) 
+  v1mean=v1mean+uy2/den 
 
   ! variance
   ta2=uy2*uy2
-  v2mean=v2mean+ta2/real(nr,mytype)
+  v2mean=v2mean+ta2/den
 
   ! skewness
   ta2=uy2*uy2*uy2
-  v3mean=v3mean+ta2/real(nr,mytype)
+  v3mean=v3mean+ta2/den
 
   ! kurtosis 
   ta2=uy2*uy2*uy2*uy2
-  v4mean=v4mean+ta2/real(nr,mytype)
+  v4mean=v4mean+ta2/den
   
   !---z-component---!
   ! average
-  w1mean=w1mean+uz2/real(nr,mytype) 
+  w1mean=w1mean+uz2/den
 
   ! variance
   ta2=uz2*uz2
-  w2mean=w2mean+ta2/real(nr,mytype)
+  w2mean=w2mean+ta2/den
 
   ! skewness
   ta2=uz2*uz2*uz2
-  w3mean=w3mean+ta2/real(nr,mytype)
+  w3mean=w3mean+ta2/den
 
   ! kurtosis 
   ta2=uz2*uz2*uz2*uz2
-  w4mean=w4mean+ta2/real(nr,mytype)
+  w4mean=w4mean+ta2/den
 
 
   !---Reynolds stresses---!
   !<uv>
   ta2=ux2*uy2
-  uvmean=uvmean+ta2/real(nr,mytype)
+  uvmean=uvmean+ta2/den
 
   !<uw>
   ta2=ux2*uz2
-  uwmean=uwmean+ta2/real(nr,mytype)
+  uwmean=uwmean+ta2/den
 
   !<vw>
   ta2=uy2*uz2
-  vwmean=vwmean+ta2/real(nr,mytype)
+  vwmean=vwmean+ta2/den
 
   !---pressure---!
-  pre1mean=pre1mean+pre2/real(nr,mytype)
+  pre1mean=pre1mean+pre2/den
 
   ta2=pre2*pre2
-  pre2mean=pre2mean+ta2/real(nr,mytype)
+  pre2mean=pre2mean+ta2/den
 
   !---scalar---!
   if (iscalar==1) then
 
         ! average: phi
-        phi1mean=phi1mean+phi2/real(nr,mytype)
+        phi1mean=phi1mean+phi2/den
 
         ! variance: phi
         ta2=phi2*phi2
-        phi2mean=phi2mean+ta2/real(nr,mytype)
+        phi2mean=phi2mean+ta2/den
 
         ! mixed fluctuations: u',phi'
         ta2=ux2*phi2
-        uphimean=uphimean+ta2/real(nr,mytype)
+        uphimean=uphimean+ta2/den
 
         ! mixed fluctuations: v',phi'
         ta2=uy2*phi2
-        vphimean=vphimean+ta2/real(nr,mytype)
+        vphimean=vphimean+ta2/den
 
         ! mixed fluctuations: w',phi'
         ta2=uz2*phi2
-        wphimean=wphimean+ta2/real(nr,mytype)
+        wphimean=wphimean+ta2/den
 
   endif
 
 end subroutine stat_mean
 !********************************************************************
 ! Vorticity and mean gradient along x (dU/dy)
-subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,mean_gradient2)   
+subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mean_gradient2)   
 
   use param
   use variables
@@ -159,7 +162,8 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,mean_g
   implicit none
   
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
-  integer,intent(in) :: nr
+  integer,     intent(in) :: nr                                                 ! number of flow realizations
+  integer,     intent(in) :: nt                                                 ! number of snapshots
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
@@ -211,24 +215,30 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,vortxmean2,vortymean2,vortzmean2,mean_g
   
   di1 = zero
   
+#ifdef TTBL_MODE 
+  den = real(nr,mytype)
+#else
+  den = real(nr*nt,mytype)
+#endif
+  
   !---- Mean gradient ----!
   
   di1 = td1  ! du/dy
-  mean_gradient1 = mean_gradient1 + di1/real(nr,mytype)
+  mean_gradient1 = mean_gradient1 + di1/den
   
   !---Vorticity average---!
   
   ! Vorticity along x 
   di1 = tf1 - th1  !dw/dy - dv/dz
-  vortxmean1 = vortxmean1 + di1/real(nr,mytype)
+  vortxmean1 = vortxmean1 + di1/den
     
   ! Vorticity along y
   di1 = tg1 - tc1  !du/dz - dw/dx
-  vortymean1 = vortymean1 + di1/real(nr,mytype)
+  vortymean1 = vortymean1 + di1/den
      
   ! Vorticity along z
   di1 = tb1 - td1  !dv/dx - du/dy
-  vortzmean1 = vortzmean1 + di1/real(nr,mytype)
+  vortzmean1 = vortzmean1 + di1/den
    
   ! Transpose arrays along y
   call transpose_x_to_y(vortxmean1,vortxmean2)

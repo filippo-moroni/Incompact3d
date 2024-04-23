@@ -329,18 +329,7 @@ contains
   
        phi1meanHT=zero;phi2meanHT=zero
        uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero      
-       
-       ! Variables depending on time
-       !allocate(delta_99(nt)); delta_99  = zero ! BL thickness delta99
-       !allocate(disp_t  (nt)); disp_t    = zero ! displacement thickness delta star (ds)
-       !allocate(mom_t   (nt)); mom_t     = zero ! momentum thickness theta
-     
-       !allocate(re_tau  (nt)); re_tau    = zero ! friction Re number (or delta99^+)
-       !allocate(re_ds   (nt)); re_ds     = zero ! Re number based on displacement thickness delta star (ds)
-       !allocate(re_theta(nt)); re_theta  = zero ! Re number based on momentum thickness theta
-       
-       !allocate(sh_vel  (nt)); sh_vel    = zero ! shear-velocity
-           
+                  
     end if
     
     if (post_vort) then
@@ -378,7 +367,7 @@ contains
   !******************************************************************
   ! Subroutine to reset to zero the arrays of averages on same position 
   
-  subroutine reset_averages
+  subroutine reset_averages()
   
   USE MPI
   
@@ -411,7 +400,7 @@ contains
   !******************************************************************
   ! Subroutine to reset to zero the arrays of averages on subdomains 
   
-  subroutine reset_subdomains
+  subroutine reset_subdomains()
   
   USE MPI
   
@@ -444,7 +433,7 @@ contains
   !******************************************************************
   ! Subroutine to reset to zero the arrays of averages on total domain
   
-  subroutine reset_domain
+  subroutine reset_domain()
    
   implicit none
   

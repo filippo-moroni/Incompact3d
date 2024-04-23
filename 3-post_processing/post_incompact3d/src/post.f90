@@ -173,13 +173,13 @@ PROGRAM post
      call transpose_x_to_y(phi1,phi2)
 
      ! Statistics computation through external subroutines
-     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr, &
+     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
                                    u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
                                    u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,vortxmean,vortymean,vortzmean,mean_gradient)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradient)
 
   enddo ! closing of the do-loop on the different flow realizations
   
@@ -229,9 +229,15 @@ PROGRAM post
         enddo
      enddo
   endif
-  
-  call reset_averages()  ! reset to zero the arrays used to collect the averages locally
 
+#ifdef TTBL_MODE  
+   ! Reset to zero the arrays used to collect the averages locally
+   call reset_averages()  
+#else
+   ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
+   enddo 
+#endif
+ 
 !---------Mean over all MPI processes (T = Total)----------!
 
   if (post_mean) then
@@ -294,6 +300,7 @@ PROGRAM post
      endif
 
 !------------------Write formatted data--------------------!
+#ifdef TTBL_MODE
      
      ! New directory for the statistics
      write(dirname,"('data_post/')") 
@@ -394,17 +401,24 @@ PROGRAM post
                                
         close(iunit)
   endif
+ 
+
+   ! Reset to zero the averages on total domain (HT)   
+   call reset_domain()
        
-  ! Reset to zero the averages on total domain (HT)   
-  call reset_domain()       
+   endif ! closing of the if-statement for processor 0
+
+   ! Reset to zero the average vectors on subdomains (H1)
+   call reset_subdomains()  
+
+   ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
+   enddo  
+
+#else
+   ! Add the writing of the post-processing quantity for channel flow simulations
+   ! ...
+#endif   
      
-  endif ! closing of the if-statement for processor 0
-  
-  ! Reset to zero the average vectors on subdomains (H1)
-  call reset_subdomains()  
-  
- enddo  ! closing of the do-loop for the different time units (or SnapShots) (ie index)
-    
   !-----------------------------!
   !  Post-processing ends here  !
   !-----------------------------!
@@ -420,6 +434,12 @@ PROGRAM post
      print *,'==========================================================='
      print *,''
      print *,'Post-processing finished successfully!'
+     print *,''
+#ifdef TTBL_MODE
+     print *,'Temporal TBL mode'
+#else
+     print *,'Channel flow mode'
+#endif
      print *,''
      print *,'2DECOMP with p_row*p_col=',p_row,p_col
      print *,''

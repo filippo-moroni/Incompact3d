@@ -26,7 +26,7 @@ INCLUDE(CMakeParseArguments)
 # make sure that the default is a RELEASE
 if (NOT CMAKE_BUILD_TYPE)
   set (CMAKE_BUILD_TYPE RELEASE CACHE STRING
-      "Choose the type of build, options are: None Debug Release."
+      "Choose the type of build, options are: None, Debug, Release."
       FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
@@ -37,10 +37,10 @@ message(STATUS "Fortran compiler version ${CMAKE_Fortran_COMPILER_VERSION}")
 if (Fortran_COMPILER_NAME MATCHES "GNU")
   # gfortran
   message(STATUS "Setting gfortran flags")
-  set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none -fcheck=all -Wall")
+  set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none")
   if (CMAKE_Fortran_COMPILER_VERSION GREATER_EQUAL "10")
     message(STATUS "Set New Fortran basic flags")
-    set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none -fallow-argument-mismatch -fcheck=all -Wall")
+    set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none -fallow-argument-mismatch")
   endif (CMAKE_Fortran_COMPILER_VERSION GREATER_EQUAL "10")
   set(CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
   set(CMAKE_Fortran_FLAGS_DEBUG   "-DDEBG -O0 -g")
@@ -142,6 +142,15 @@ add_subdirectory(decomp2d)
 
 # Create the PostIncompact3d executable
 add_subdirectory(src)
+
+# Add option for TTBL post-processing
+option(TTBL_MODE "Enable TTBL post-processing" ON)
+if (TTBL_MODE)
+  add_definitions("-DTTBL_MODE")
+endif()
+
+
+
 
 
 
