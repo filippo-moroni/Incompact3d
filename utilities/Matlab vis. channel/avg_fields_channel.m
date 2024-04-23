@@ -36,7 +36,7 @@ grey   = [0.5 0.5 0.5];
 
 % CFR - default code & modified code
 M1 = readtable('mean_stats400.0_default_extra_diss.txt',NumHeaderLines=1);
-M2 = readtable('mean_stats400.0_mycode_extra_diss.txt',NumHeaderLines=1);
+M2 = readtable('mean_stats.txt',NumHeaderLines=1);
 
 % CPG
 % M2 = readtable('mean_stats400.0_mycode_cpg.txt',NumHeaderLines=1);

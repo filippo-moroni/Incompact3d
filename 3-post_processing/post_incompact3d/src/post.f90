@@ -182,6 +182,13 @@ PROGRAM post
      if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradient)
 
   enddo ! closing of the do-loop on the different flow realizations
+
+#ifdef TTBL_MODE
+
+#else  
+  ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
+  enddo 
+#endif
   
 !----Mean over homogeneous directions (H = Homogeneous)----!
 
@@ -233,9 +240,6 @@ PROGRAM post
 #ifdef TTBL_MODE
    ! Reset to zero the arrays used to collect the averages locally
    call reset_averages()  
-#else
-   ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
-   enddo 
 #endif
  
 !---------Mean over all MPI processes (T = Total)----------!

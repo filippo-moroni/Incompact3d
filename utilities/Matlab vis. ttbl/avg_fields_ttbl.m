@@ -30,7 +30,7 @@ grey   = [0.5 0.5 0.5];
 %% Reading of file and variables
 
 % Mean stats - modified code
-M1 = readtable('mean_stats430.0.txt',NumHeaderLines=1);
+M1 = readtable('mean_stats.txt',NumHeaderLines=1);
 
 % Vorticity - modified code
 M3 = readtable('vort_stats430.0.txt',NumHeaderLines=1);
@@ -132,34 +132,34 @@ text(0.32, -1, sprintf(caption), 'HorizontalAlignment', 'left', 'VerticalAlignme
 
 
 %% Vorticity plot
-
-h4 = figure;
-
-scatter(y_plus,vort_z,"MarkerEdgeColor",blue,'Marker','o',LineWidth=1.5)
-
-legend({'Present'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
-
-grid on;
-grid minor;
-
-xlim([0,y_plus(ny)]);
-xticks([0 1 5 30 60 100 180, 300, y_plus(ny)])
-set(gca,'xscale','log')
-xlabel('$y^+$','FontSize',40)
-
-yaxis_lim = 20;  % upper bound of y axes
-
-yyaxis left
-ax = gca;
-ax.YColor = 'black'; 
-ylabel('$\langle \omega_z \rangle$','FontSize',40)
-%ylim([0,yaxis_lim]);
-yyaxis right
-ax = gca;
-ax.YColor = 'black'; 
-%ylim([0,yaxis_lim]);
-
-set(h4,'PaperSize',[22 12]);
+% 
+% h4 = figure;
+% 
+% scatter(y_plus,vort_z,"MarkerEdgeColor",blue,'Marker','o',LineWidth=1.5)
+% 
+% legend({'Present'}, 'Interpreter', 'latex',Location='northwest',FontSize=12);
+% 
+% grid on;
+% grid minor;
+% 
+% xlim([0,y_plus(ny)]);
+% xticks([0 1 5 30 60 100 180, 300, y_plus(ny)])
+% set(gca,'xscale','log')
+% xlabel('$y^+$','FontSize',40)
+% 
+% yaxis_lim = 20;  % upper bound of y axes
+% 
+% yyaxis left
+% ax = gca;
+% ax.YColor = 'black'; 
+% ylabel('$\langle \omega_z \rangle$','FontSize',40)
+% %ylim([0,yaxis_lim]);
+% yyaxis right
+% ax = gca;
+% ax.YColor = 'black'; 
+% %ylim([0,yaxis_lim]);
+% 
+% set(h4,'PaperSize',[22 12]);
 
 
 
