@@ -75,7 +75,7 @@ else (Fortran_COMPILER_NAME MATCHES "GNU")
   message ("Fortran compiler: " ${Fortran_COMPILER_NAME})
   message ("No optimized Fortran compiler flags are known, we just try -O2...")
   set (CMAKE_Fortran_FLAGS_RELEASE "-O2")
-  set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
+  set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")  
 endif (Fortran_COMPILER_NAME MATCHES "GNU")
 
 if (CMAKE_BUILD_TYPE MATCHES "DEBUG")
@@ -137,17 +137,22 @@ else(ADIOS_FOUND)
   message(STATUS "ADIOS2 not found")
 endif()
 
+# Add option for TTBL post-processing
+option(TTBL_MODE "Enable TTBL post-processing" ON)
+if(TTBL_MODE)
+  message(STATUS "TTBL_MODE: ${TTBL_MODE}")
+  add_definitions("-DTTBL_MODE")
+endif()
+
 # Create a static library for the fft
 add_subdirectory(decomp2d)
 
 # Create the PostIncompact3d executable
 add_subdirectory(src)
 
-# Add option for TTBL post-processing
-option(TTBL_MODE "Enable TTBL post-processing" ON)
-if (TTBL_MODE)
-  add_definitions("-DTTBL_MODE")
-endif()
+
+
+
 
 
 

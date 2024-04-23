@@ -230,7 +230,7 @@ PROGRAM post
      enddo
   endif
 
-#ifdef TTBL_MODE  
+#ifdef TTBL_MODE
    ! Reset to zero the arrays used to collect the averages locally
    call reset_averages()  
 #else
@@ -300,7 +300,6 @@ PROGRAM post
      endif
 
 !------------------Write formatted data--------------------!
-#ifdef TTBL_MODE
      
      ! New directory for the statistics
      write(dirname,"('data_post/')") 
@@ -312,14 +311,20 @@ PROGRAM post
      write(*,"(1x,'Writing output data in formatted .txt files :')")
      
      if (post_mean) then
-     
+
+#ifdef TTBL_MODE  
         ! Writing the time unit as character
         write(time_unit, '(F5.1)') t 
         time_unit = adjustl(time_unit) 
         
-        ! Write the mean_stats filename
+        ! Write the mean_stats filename for TTBL
         write(filename, '(A,A,A)') 'mean_stats', trim(time_unit), '.txt'
         filename = adjustl(filename)
+#else
+        ! Write the mean_stats filename for channel flow
+        write(filename, '(A)') 'mean_stats.txt'
+        filename = adjustl(filename)
+#endif
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
@@ -370,15 +375,21 @@ PROGRAM post
      endif
      
   if (post_vort) then
-        
+
+#ifdef TTBL_MODE     
         ! Writing the time unit as character
         write(time_unit, '(F5.1)') t 
         time_unit = adjustl(time_unit) 
         
-        ! Write the vort_stats filename
+        ! Write the vort_stats filename for TTBL
         write(filename, '(A,A,A)') 'vort_stats', trim(time_unit), '.txt'
         filename = adjustl(filename)
-        
+#else
+        ! Write the vort_stats filename for channel flow
+        write(filename, '(A)') 'vort_stats.txt'
+        filename = adjustl(filename)
+#endif
+               
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
@@ -401,23 +412,16 @@ PROGRAM post
                                
         close(iunit)
   endif
- 
+     
+  endif ! closing of the if-statement for processor 0
 
-   ! Reset to zero the averages on total domain (HT)   
-   call reset_domain()
-       
-   endif ! closing of the if-statement for processor 0
-
-   ! Reset to zero the average vectors on subdomains (H1)
-   call reset_subdomains()  
-
+#ifdef TTBL_MODE   
+   ! Reset to zero the average vectors on subdomains (H1) and on total domain (HT)
+   call reset_subdomains_and_domain() 
+   
    ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
    enddo  
-
-#else
-   ! Add the writing of the post-processing quantity for channel flow simulations
-   ! ...
-#endif   
+#endif
      
   !-----------------------------!
   !  Post-processing ends here  !
@@ -459,7 +463,7 @@ PROGRAM post
      print *,'==========================================================='
      print *,''
      print *,'The following statistics have been saved in'
-     print *,'"mean_stats" files:'
+     print *,'"mean_stats" file(s):'
      print *,''
      print *,'mean[u], mean[v], mean[w]'
      print *,' var[u],  var[v],  var[w]'
@@ -480,7 +484,7 @@ PROGRAM post
      print *,'==========================================================='
      print *,''
      print *,'The following statistics have been saved in'
-     print *,'"vort_stats" files:'
+     print *,'"vort_stats" file(s):'
      print *,''
      print *,'mean[omega_x], mean[omega_y], mean[omega_z], dU/dy'
      print *,''    

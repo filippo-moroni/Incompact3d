@@ -169,6 +169,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
   
+  real(mytype) :: den  ! denominator of the divisions 
   real(mytype) :: lind
   
   ! Vorticity 

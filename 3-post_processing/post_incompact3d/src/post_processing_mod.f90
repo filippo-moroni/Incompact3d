@@ -398,69 +398,53 @@ contains
   end subroutine reset_averages
 
   !******************************************************************
-  ! Subroutine to reset to zero the arrays of averages on subdomains 
+  ! Subroutine to reset to zero the arrays of averages on subdomains
+  ! and on total domain 
   
-  subroutine reset_subdomains()
+  subroutine reset_subdomains_and_domain()
   
   USE MPI
   
   implicit none
   
   if (post_mean) then
-     
+  
+  ! Subdomains   
   u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
   u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
   u3meanH1=zero;v3meanH1=zero;w3meanH1=zero
   u4meanH1=zero;v4meanH1=zero;w4meanH1=zero
   uvmeanH1=zero;uwmeanH1=zero;vwmeanH1=zero
   pre1meanH1=zero;pre2meanH1=zero
-  
   phi1meanH1=zero;phi2meanH1=zero
   uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
- 
-  end if
   
-  if (post_vort) then
-  
-  vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
-  
-  mean_gradientH1=zero
-  
-  end if
-  
-  end subroutine reset_subdomains
-  
-  !******************************************************************
-  ! Subroutine to reset to zero the arrays of averages on total domain
-  
-  subroutine reset_domain()
-   
-  implicit none
-  
-  if (post_mean) then
-    
+  ! Total domain
   u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
   u2meanHT=zero;v2meanHT=zero;w2meanHT=zero
   u3meanHT=zero;v3meanHT=zero;w3meanHT=zero
   u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
   uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
   pre1meanHT=zero;pre2meanHT=zero
-  
   phi1meanHT=zero;phi2meanHT=zero
   uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
-  
+ 
   end if
   
   if (post_vort) then
   
-  vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
+  ! Subdomains
+  vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
+  mean_gradientH1=zero
   
+  ! Total domain
+  vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
   mean_gradientHT=zero
   
   end if
   
-  end subroutine reset_domain
-   
+  end subroutine reset_subdomains_and_domain
+     
 end module post_processing
 !********************************************************************
 
