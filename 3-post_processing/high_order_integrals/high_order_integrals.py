@@ -2,7 +2,8 @@
 #!    With this script, we perform 6th order accurate      !
 #!       calculations of BL thickness parameters           !
 #! (delta_99, displacement thickness, momentum thickness), !
-#!     related Reynolds numbers and shear velocity.        !
+#!      related Reynolds numbers, shear velocity and       !
+#!           friction coefficient for a TTBL.              !
 #!---------------------------------------------------------!
 
 # Libraries
@@ -30,6 +31,7 @@ delta_99 = np.zeros(ns)
 disp_t   = np.zeros(ns)
 mom_t    = np.zeros(ns)
 sh_vel   = np.zeros(ns)
+cf       = np.zeros(ns)
 t_unit   = np.zeros(ns)
 
 # Reading of yp coordinates
@@ -83,6 +85,9 @@ for i in range(t1, tn + icr, icr):
     # Shear velocity
     sh_vel[ii] = np.sqrt(nu*np.absolute(mg[0]))
     
+    # Friction coefficient
+    cf[ii] = 2 * (sh_vel[ii] / uwall)**2
+    
     # Time-unit
     t_unit[ii] = t1 + icr*ii
     
@@ -109,6 +114,7 @@ with open('integral_statistics.txt', 'w') as f:
             f"{'Re_ds O(6)':<{c_w}}, " +
             f"{'Re_theta O(6)':<{c_w}}, " +
             f"{'sh_vel O(6)':<{c_w}}, " +
+            f"{'cf O(6)':<{c_w}}, " +
             f"{'time_unit':<{c_w}}\n")
 
     for j in range(0, ii):
@@ -119,7 +125,8 @@ with open('integral_statistics.txt', 'w') as f:
             f"{re_ds[j]:{fs}}, " +
             f"{re_theta[j]:{fs}}, " +
             f"{sh_vel[j]:{fs}}, " +
-            f"{t_unit[j]:{fs}}")
+            f"{cf[j]:{fs}}, " +
+            f"{t_unit[j]:{fs}}\n")
 
 
 #!---------------------------------------------------------!

@@ -1,2 +1,0 @@
-delta_99 O(6)       , disp_t O(6)         , mom_t O(6)          , Re_tau O(6)         , Re_ds O(6)          , Re_theta O(6)       , sh_vel O(6)         , time_unit           
-7.895               , 1.532               , 0.985               , 209.646             , 765.869             , 492.443             , 0.053               , 430.000             
