@@ -138,7 +138,7 @@ else(ADIOS_FOUND)
 endif()
 
 # Add option for TTBL post-processing
-option(TTBL_MODE "Enable TTBL post-processing" OFF)
+option(TTBL_MODE "Enable TTBL post-processing" ON)
 if(TTBL_MODE)
   message(STATUS "TTBL_MODE: ${TTBL_MODE}")
   add_definitions("-DTTBL_MODE")

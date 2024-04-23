@@ -30,7 +30,7 @@ grey   = [0.5 0.5 0.5];
 %% Reading of file and variables
 
 % Mean stats - modified code
-M1 = readtable('mean_stats.txt',NumHeaderLines=1);
+M1 = readtable('mean_stats430.0.txt',NumHeaderLines=1);
 
 % Vorticity - modified code
 M3 = readtable('vort_stats430.0.txt',NumHeaderLines=1);
