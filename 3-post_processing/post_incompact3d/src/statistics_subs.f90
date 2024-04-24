@@ -1,5 +1,5 @@
 !----------------------------------------------------------!
-! This file contains subroutines for post-processing       !
+!   This file contains subroutines for post-processing     !
 !                 of Incompact3d Snapshots.                !
 !      Adapted from original Incompact3d file (v2.0)       !
 !                    of R. Corsini                         !
