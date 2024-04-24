@@ -9,4 +9,4 @@
 #  STATISTICS (0:no, 1:yes)
 #
 1    # post_mean  ! Compute mean statistics
-0    # post_vort  ! Compute instantaneous vorticity vector
+0    # post_vort  ! Compute mean vorticity and mean gradient
