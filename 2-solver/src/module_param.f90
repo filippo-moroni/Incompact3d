@@ -450,6 +450,9 @@ module param
   real(mytype) :: a_plus_cap        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
   real(mytype) :: t_plus_cap        ! period of spanwise wall oscillations in friction units (cap: capital letter)
   
+  ! Variable to save and show the maximum CFL in the restart file
+  real(mytype) :: cflmax
+  
       
   !numbers
   real(mytype),parameter :: zpone=0.1_mytype

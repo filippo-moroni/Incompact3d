@@ -257,7 +257,7 @@ contains
     logical, dimension(2) :: dummy_periods
     logical :: fexists
     character(len=30) :: filename, filestart
-    character(len=32) :: fmt2,fmt3,fmt4
+    character(len=32) :: fmt2,fmt3,fmt4,fmt5
     character(len=7) :: fmt1
     character(len=80) :: varname
     NAMELIST /Time/ tfield, itime
@@ -348,29 +348,36 @@ contains
          write(fmt2,'("(A,I16)")')
          write(fmt3,'("(A,F16.4)")')
          write(fmt4,'("(A,F16.12)")')
+         write(fmt5,'("(A,I14)")')
+         
          !
          open (111,file=filename,action='write',status='replace')
          write(111,'(A)')'!========================='
          write(111,'(A)')'&Time'
          write(111,'(A)')'!========================='
-         write(111,fmt3) 'tfield=   ',t
-         write(111,fmt2) 'itime=    ',itime
+         write(111,fmt3) 'tfield=     ',t
+         write(111,fmt2) 'itime=      ',itime
          write(111,'(A)')'/End'
          write(111,'(A)')'!========================='
          write(111,'(A)')'&NumParam'
          write(111,'(A)')'!========================='
-         write(111,fmt2) 'nx=       ',nx
-         write(111,fmt2) 'ny=       ',ny
-         write(111,fmt2) 'nz=       ',nz
-         write(111,fmt3) 'Lx=       ',xlx
-         write(111,fmt3) 'Ly=       ',yly
-         write(111,fmt3) 'Lz=       ',zlz
-         write(111,fmt2) 'istret=   ',istret
-         write(111,fmt4) 'beta=     ',beta
-         write(111,fmt2) 'iscalar=  ',iscalar
-         write(111,fmt2) 'numscalar=',numscalar
-         write(111,'(A,I14)') 'itimescheme=',itimescheme
-         write(111,fmt2) 'iimplicit=',iimplicit
+         write(111,fmt2) 'nx=         ',nx
+         write(111,fmt2) 'ny=         ',ny
+         write(111,fmt2) 'nz=         ',nz
+         write(111,fmt3) 'Lx=         ',xlx
+         write(111,fmt3) 'Ly=         ',yly
+         write(111,fmt3) 'Lz=         ',zlz
+         write(111,fmt2) 'istret=     ',istret
+         write(111,fmt4) 'beta=       ',beta
+         write(111,fmt2) 'iscalar=    ',iscalar
+         write(111,fmt2) 'numscalar=  ',numscalar
+         write(111,fmt5) 'itimescheme=',itimescheme
+         write(111,fmt2) 'iimplicit=  ',iimplicit
+         write(111,'(A)')'!========================='
+         write(111,'(A)')'&NumStability'
+         write(111,'(A)')'!========================='
+         write(111,fmt3) 'dt=         ',dt
+         write(111,fmt3) 'CFL,max,sum=',cflmax
                   
          ! Print skin friction coefficient and shear velocity at the bottom wall (TTBL and Channel)
          if (itype .eq. itype_ttbl) then
@@ -830,7 +837,7 @@ contains
     !      AUTHOR: Kay Schäfer, Filippo Moroni
   !##################################################################
   subroutine compute_cfl(ux,uy,uz)
-    use param, only : dx,dy,dz,dt,istret,cfl_limit,icfllim,t,itimescheme
+    use param, only : dx,dy,dz,dt,istret,cfl_limit,icfllim,t,itimescheme,cflmax
     use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
     use mpi
     use variables,   only : dyp
@@ -890,6 +897,9 @@ contains
       write(*,"(' CFL,sum                : ',F17.8)") cflmax_out(4) * dt
       write(*,*) '-----------------------------------------------------------'
     end if
+    
+    ! Store the maximum CFL
+    cflmax = cflmax_out(4) * dt
     
     ! Adjust time-step if adjustable time-step option is enabled and if we are exiting the specified interval (cfl_lim - 0.05, cfl_lim)
     ! Valid only for RK3
