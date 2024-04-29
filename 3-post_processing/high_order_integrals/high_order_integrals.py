@@ -10,7 +10,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import InterpolatedUnivariateSpline
-
+import os 
 
 # Parameters
 uwall = np.float64(1.0)
@@ -106,7 +106,11 @@ c_w = 20
 # Format for numbers
 fs = f"<{c_w}.3f"
 
-with open('integral_statistics.txt', 'w') as f:
+# Create the folder to store the results
+os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
+
+# Create the file and write  
+with open('integral_statistics/integral_statistics.txt', 'w') as f:
     f.write(f"{'delta_99 O(6)':<{c_w}}, " +
             f"{'disp_t O(6)':<{c_w}}, " +
             f"{'mom_t O(6)':<{c_w}}, " +

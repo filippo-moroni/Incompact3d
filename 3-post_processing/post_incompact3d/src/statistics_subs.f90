@@ -165,6 +165,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
   integer,     intent(in) :: nr                                                 ! number of flow realizations
   integer,     intent(in) :: nt                                                 ! number of snapshots
+  integer                 :: i,j,k
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
@@ -224,8 +225,14 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
 #endif
   
   !---- Mean gradient ----!
+  do i=1,xsize(1)
+    do j=1,xsize(2)
+      do k=1,xsize(3)
+        di1(i,j,k) = sqrt_prec(td1(i,j,k)**2 + tf1(i,j,k)**2) ! sqrt[ (dU/dy)**2 + (dW/dy)**2 ]
+      enddo
+    enddo
+  enddo
   
-  di1 = sqrt_prec(td1**2 + tf1**2) ! sqrt[ (dU/dy)**2 + (dW/dy)**2 ]
   mean_gradient1 = mean_gradient1 + di1/den
   
   !---Vorticity average---!
