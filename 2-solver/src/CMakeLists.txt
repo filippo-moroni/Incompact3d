@@ -23,7 +23,6 @@ add_executable(xcompact3d
                     navier.f90
                     parameters.f90
                     poisson.f90
-                    probes.f90
                     schemes.f90
                     statistics.f90
                     time_integrators.f90

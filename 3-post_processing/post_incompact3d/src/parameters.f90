@@ -340,8 +340,6 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
-  if (nrank==0) call system('mkdir data out probes 2> /dev/null')
-
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
