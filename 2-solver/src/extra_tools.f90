@@ -80,7 +80,7 @@ contains
     call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
     ! Calculate cf and shear velocity from the mean gradient at the wall    
-    fric_coeff = mean_gw_tot * two * xnu / (uwall**2)
+    fric_coeff = two * xnu * mean_gw_tot / (uwall**2)
     sh_vel     = sqrt_prec(xnu * mean_gw_tot)
         
     return 

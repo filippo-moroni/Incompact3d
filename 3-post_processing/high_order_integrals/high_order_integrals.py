@@ -86,7 +86,7 @@ for i in range(t1, tn + icr, icr):
     sh_vel[ii] = np.sqrt(nu*np.absolute(mg[0]))
     
     # Friction coefficient
-    cf[ii] = 2 * ((sh_vel[ii] / uwall)**2)
+    cf[ii] = 2.0 * ((sh_vel[ii] / uwall)**2)
     
     # Time-unit
     t_unit[ii] = t1 + icr*ii
