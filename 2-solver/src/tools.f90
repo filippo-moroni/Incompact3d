@@ -368,7 +368,7 @@ contains
          write(111,fmt3) 'Lz=         ',zlz
          write(111,fmt2) 'istret=     ',istret
          write(111,fmt4) 'beta=       ',beta
-         write(111,fmt2) 'iscalar=    ',iscalar
+         !write(111,fmt2) 'iscalar=    ',iscalar
          write(111,fmt2) 'numscalar=  ',numscalar
          write(111,fmt2) 'itimescheme=',itimescheme
          write(111,fmt2) 'iimplicit=  ',iimplicit
