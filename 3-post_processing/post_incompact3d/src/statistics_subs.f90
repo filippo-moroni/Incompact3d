@@ -158,6 +158,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   use decomp_2d
   use decomp_2d_io
   use MPI
+  use dbg_schemes, only : sqrt_prec
   
   implicit none
   
@@ -224,7 +225,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   
   !---- Mean gradient ----!
   
-  di1 = td1  ! du/dy
+  di1 = sqrt_prec(td1**2 + tf1**2) ! sqrt[ (dU/dy)**2 + (dW/dy)**2 ]
   mean_gradient1 = mean_gradient1 + di1/den
   
   !---Vorticity average---!

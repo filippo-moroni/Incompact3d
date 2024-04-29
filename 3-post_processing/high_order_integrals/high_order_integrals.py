@@ -19,9 +19,9 @@ nu = 1.0/re
 ii = 0
 
 # Inputs
-t1  = 430  # initial time unit
-tn  = 430  # final time unit
-icr = 1    # increment between different savings in time units
+t1  = 400  # initial time unit
+tn  = 600  # final time unit
+icr = 20   # increment between different savings in time units
 
 # Number of snapshots
 ns = (tn - t1)//icr + 1 
@@ -51,7 +51,7 @@ yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 for i in range(t1, tn + icr, icr):
          
     # Reading of mean streamwise velocity
-    file_path = f"mean_stats{i}.0.txt"
+    file_path = f"data_post/mean_stats{i}.0.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     umean = data[:, 0]
@@ -77,7 +77,7 @@ for i in range(t1, tn + icr, icr):
     mom_t[ii] = spl.integral(y0, yn)
     
     # Reading of the mean gradient
-    file_path = f"vort_stats{i}.0.txt"
+    file_path = f"data_post/vort_stats{i}.0.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     mg = data[:, 3]
