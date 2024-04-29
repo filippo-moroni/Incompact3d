@@ -77,7 +77,9 @@ contains
     enddo
     
     ! Summation over all MPI processes and broadcast the result
-    call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+    !call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+    
+    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
     ! Calculate cf and shear velocity from the mean gradient at the wall    
     fric_coeff = two * xnu * mean_gw_tot / (uwall**2)
