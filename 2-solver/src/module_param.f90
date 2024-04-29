@@ -439,9 +439,10 @@ module param
   real(mytype),save :: span_vel     ! spanwise velocity at the wall
  
   ! Quantities evolving in time for a temporal TBL
-  real(mytype),save :: fric_coeff   ! skin friction coefficient
-  real(mytype),save :: sh_vel       ! shear velocity
-  
+  real(mytype), save :: fric_coeff   ! skin friction coefficient
+  real(mytype), save :: sh_vel       ! shear velocity
+  real(mytype), save :: mean_gw_tot  ! mean gradient at the wall total
+    
   ! Extra controls for numerics 
   integer           :: icfllim      ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   real(mytype),save :: cfl_limit    ! CFL limit to adjust the time-step

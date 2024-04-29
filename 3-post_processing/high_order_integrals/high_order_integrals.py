@@ -18,10 +18,12 @@ re = np.float64(500.0)
 nu = 1.0/re
 ii = 0
 
+# To add: reading post.prm for time-unit reading
+
 # Inputs
-t1  = 400  # initial time unit
-tn  = 600  # final time unit
-icr = 20   # increment between different savings in time units
+t1  = 1  # initial time unit
+tn  = 1  # final time unit
+icr = 1  # increment between different savings in time units
 
 # Number of snapshots
 ns = (tn - t1)//icr + 1 
@@ -52,7 +54,7 @@ for i in range(t1, tn + icr, icr):
          
     # Reading of mean streamwise velocity
     file_path = f"data_post/mean_stats{i}.0.txt"
-    
+       
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     umean = data[:, 0]
     
@@ -106,6 +108,9 @@ c_w = 20
 # Format for numbers
 fs = f"<{c_w}.3f"
 
+# Format for cf only
+fs2 = f"<{c_w}.6f"
+
 # Create the folder to store the results
 os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
 
@@ -129,7 +134,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{re_ds[j]:{fs}}, " +
             f"{re_theta[j]:{fs}}, " +
             f"{sh_vel[j]:{fs}}, " +
-            f"{cf[j]:{fs}}, " +
+            f"{cf[j]:{fs2}}, " +
             f"{t_unit[j]:{fs}}\n")
 
 
