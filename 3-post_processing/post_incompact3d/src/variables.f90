@@ -116,7 +116,7 @@ contains
 
   subroutine init_variables
 
-    TYPE(DECOMP_INFO), save :: ph! decomposition object
+    TYPE(DECOMP_INFO), save :: ph ! decomposition object
 
 #ifdef DEBG
     if (nrank == 0) write(*,*) '# Init_variables start'
