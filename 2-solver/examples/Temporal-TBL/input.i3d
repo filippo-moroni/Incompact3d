@@ -29,8 +29,8 @@ re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference sc
 
 ! Time stepping
 dt = 0.01             ! Time step
-ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 5000          ! Last iteration
+ifirst = 201          ! First iteration (set to n+1 if we have a checkpoint at time step n)
+ilast = 300           ! Last iteration
 
 ! Enable modelling tools
 numscalar = 0         ! Number of scalars 
@@ -73,9 +73,9 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 !=================
 
 ! Basic I/O
-irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
-icheckpoint = 1000    ! Frequency for writing backup file
-ioutput = 1000        ! Frequency for saving and visualization
+irestart = 1          ! Read initial flow field? (0: No, 1: Yes) 
+icheckpoint = 100     ! Frequency for writing backup file
+ioutput = 100         ! Frequency for saving and visualization
 ilist = 1             ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
@@ -104,9 +104,7 @@ uwall = 1.0           ! velocity of translating bottom wall (U_wall)
 twd = 1.0             ! tripping wire diameter (D)
 uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (default value: 0.01 (Kozul et al. (2016)))
 lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-phiwall = 1.0         ! scalar value at the wall 
-a_plus_cap = 0.0      ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (cap: capital letter)    
+phiwall = 1.0         ! scalar value at the wall  
 
 /End
 
@@ -116,6 +114,15 @@ t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (
 
 icfllim = 0           ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
 cfl_limit = 0.95      ! CFL limit to adjust the time-step
+
+/End
+
+!================
+&WallOscillations
+!================
+
+a_plus_cap = 0.0      ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (cap: capital letter) 
 
 /End
 
