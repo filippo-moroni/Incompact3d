@@ -18,12 +18,14 @@ re = np.float64(500.0)
 nu = 1.0/re
 ii = 0
 
-# To add: reading post.prm for time-unit reading
+# Reading of the post-processing input file for indexes calculation of snapshots
+file_path = f"post.prm"
+data = np.loadtxt(file_path, delimiter=None, dtype=int, comments='#', skiprows=3)
 
 # Inputs
-t1  = 1  # initial time unit
-tn  = 1  # final time unit
-icr = 1  # increment between different savings in time units
+t1  = data[0]  # initial time unit
+tn  = data[1]  # final time unit
+icr = data[2]  # increment between different savings in time units
 
 # Number of snapshots
 ns = (tn - t1)//icr + 1 

@@ -50,9 +50,7 @@ subroutine parameter(input_i3d)
   use ibm_param
   use dbg_schemes, only: sin_prec, cos_prec
 
-  use var, only : dphi1
-
-  use probes, only : nprobes, setup_probes, flag_all_digits, flag_extra_probes, xyzprobes
+  use var,  only : dphi1
   use visu, only : output2D
 
   implicit none
@@ -74,9 +72,8 @@ subroutine parameter(input_i3d)
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
   NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, nvisu, ilist, iprocessing, &
-       ninflows, ntimesteps, inflowpath, ioutflow, output2D, nprobes
+       ninflows, ntimesteps, inflowpath, ioutflow, output2D
   NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
-  NAMELIST /ProbesParam/ flag_all_digits, flag_extra_probes, xyzprobes
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
        scalar_lbound, scalar_ubound, sc_even, sc_skew, &
@@ -134,12 +131,7 @@ subroutine parameter(input_i3d)
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
   endif
-  
-  if (nprobes.gt.0) then
-     call setup_probes()
-     read(10, nml=ProbesParam); rewind(10)
-  endif
-  
+    
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
@@ -347,8 +339,6 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
-  if (nrank==0) call system('mkdir data out probes 2> /dev/null')
-
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
@@ -599,7 +589,6 @@ subroutine parameter_defaults()
   use decomp_2d
   use complex_geometry
 
-  use probes, only : nprobes, flag_all_digits, flag_extra_probes
   use visu, only : output2D
   
   implicit none
@@ -703,11 +692,6 @@ subroutine parameter_defaults()
   inflowpath='./'
   ioutflow=0
   output2D = 0
-  nprobes=0
-
-  ! Probes
-  flag_all_digits = .false.
-  flag_extra_probes = .false.
 
   ipost = 0
   iibm=0

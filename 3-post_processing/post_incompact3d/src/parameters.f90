@@ -92,7 +92,9 @@ subroutine parameter(input_i3d)
   NAMELIST /CASE/ tgv_twod
   NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
-  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall,a_plus_cap,t_plus_cap,icfllim,cfl_limit  
+  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
+  NAMELIST /ExtraNumControl/ icfllim,cfl_limit
+  NAMELIST /WallOscillations/ a_plus_cap,t_plus_cap
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -100,7 +102,7 @@ subroutine parameter(input_i3d)
 
   if (nrank==0) then
      write(*,*) '!---------------------------------------------------------!'
-     write(*,*) '!                    ~  Xcompact3D  ~                     !'
+     write(*,*) '!                   ~  Incompact3D  ~                     !'
      write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
      write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
      write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
@@ -130,7 +132,7 @@ subroutine parameter(input_i3d)
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
   endif
-    
+   
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
@@ -236,7 +238,13 @@ subroutine parameter(input_i3d)
   if (itype.eq.itype_ttbl) then
      read(10, nml=TemporalTBLParam); rewind(10);   
   end if
-    
+  
+  ! Read extra numerics control (Adjustable time-step)
+  read(10, nml=ExtraNumControl); rewind(10);
+  
+  ! Controls for wall oscillations
+  read(10, nml=WallOscillations); rewind(10);  
+     
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -307,10 +315,10 @@ subroutine parameter(input_i3d)
 #endif
 
   if (iimplicit.ne.0) then
-     if ((itimescheme==5).or.(itimescheme==6)) then
-        if (nrank==0) write(*,*) 'Error: implicit Y diffusion not yet compatible with RK time schemes'
-        stop
-     endif
+     !if ((itimescheme==5).or.(itimescheme==6)) then
+     !   if (nrank==0) write(*,*) 'Error: implicit Y diffusion not yet compatible with RK time schemes'
+     !   stop
+     !endif
      if (isecondder==5) then
         if (nrank==0) write(*,*)  "Warning : support for implicit Y diffusion and isecondder=5 is experimental"
      endif
@@ -388,28 +396,28 @@ subroutine parameter(input_i3d)
      write(*,"(' xnu                    : ',F17.8)") xnu
      write(*,*) '==========================================================='
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
+     
      write(*,*) '==========================================================='
+     if(icfllim .eq. 0) then
      write(*,"(' Time step dt           : ',F17.8)") dt
-     !
+     else if(icfllim .eq. 1) then
+     write(*,"(' CFL max                : ',F17.8)") cfl_limit     
+     end if
+     
+     ! Time schemes
      if (itimescheme.eq.1) then
-       !print *,'Temporal scheme        : Forward Euler'
        write(*,"(' Temporal scheme        : ',A20)") "Forward Euler"
      elseif (itimescheme.eq.2) then
-       !print *,'Temporal scheme        : Adams-Bashforth 2'
        write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 2"
      elseif (itimescheme.eq.3) then
-       !print *,'Temporal scheme        : Adams-Bashforth 3'
        write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 3"
      elseif (itimescheme.eq.4) then
-       !print *,'Temporal scheme        : Adams-Bashforth 4'
        write(*,"(' Temporal scheme        : ',A20)") "Adams-Bashforth 4"
        print *,'Error: Adams-bashforth 4 not implemented!'
        stop
      elseif (itimescheme.eq.5) then
-       !print *,'Temporal scheme        : Runge-Kutta 3'
        write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 3"
      elseif (itimescheme.eq.6) then
-       !print *,'Temporal scheme        : Runge-Kutta 4'
        write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 4"
        print *,'Error: Runge-kutta 4 not implemented!'
        stop
@@ -417,7 +425,8 @@ subroutine parameter(input_i3d)
        print *,'Error: itimescheme must be specified as 1-6'
        stop
      endif
-          
+     
+     ! Semi-implicit y-diffusion     
      if (iimplicit.ne.0) then
        if (iimplicit.eq.1) then
          write(*,"('            ',A40)") "With backward Euler for Y diffusion"
@@ -687,6 +696,7 @@ subroutine parameter_defaults()
   ioutflow=0
   output2D = 0
 
+
   ipost = 0
   iibm=0
   npif = 2
@@ -705,14 +715,18 @@ subroutine parameter_defaults()
   x0_tr_tbl=3.505082_mytype
   
   ! Temporal TBL
-  uwall = 1.0         ! velocity of translating bottom wall (U_wall) 
+  uwall = zero        ! velocity of translating bottom wall (U_wall) 
   twd = 1.0           ! trip wire diameter (D)
   uln = 0.01          ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
   lln = 0.5           ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-  phiwall = 1.0       ! scalar value at the wall 
-  a_plus_cap = 12.0   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
-  icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-  cfl_limit = 0.95    ! CFL limit to adjust the time-step  
+  phiwall = zero      ! scalar value at the wall 
   
+  ! Extra numerics control
+  icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  cfl_limit = 0.95    ! CFL limit to adjust the time-step 
+  
+  ! Controls for wall oscillations
+  a_plus_cap = zero   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
+   
 end subroutine parameter_defaults

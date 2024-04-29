@@ -157,8 +157,6 @@ subroutine init_xcompact3d()
   use genepsi, only : genepsi3d, epsi_init
   use ibm, only : body
 
-  use probes, only : init_probes
-
   implicit none
 
   integer :: ierr
@@ -273,8 +271,6 @@ subroutine init_xcompact3d()
 
   call calc_divu_constraint(divu3, rho1, phi1)
 
-  call init_probes()
-
   if (itype==2) then
      if(nrank.eq.0)then
         open(42,file='time_evol.dat',form='formatted')
@@ -298,7 +294,6 @@ subroutine finalise_xcompact3d()
 
   use tools, only : simu_stats
   use param, only : itype
-  use probes, only : finalize_probes
   use visu, only : visu_finalise
 
   implicit none
@@ -317,7 +312,6 @@ subroutine finalise_xcompact3d()
   endif
   
   call simu_stats(4)
-  call finalize_probes()
   call visu_finalise()
   call decomp_2d_io_finalise()
   call decomp_2d_finalize
