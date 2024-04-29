@@ -257,8 +257,8 @@ contains
     logical, dimension(2) :: dummy_periods
     logical :: fexists
     character(len=30) :: filename, filestart
-    character(len=32) :: fmt2,fmt3,fmt4,fmt5
-    character(len=7) :: fmt1
+    character(len=32) :: fmt2,fmt3,fmt4
+    character(len=7)  :: fmt1
     character(len=80) :: varname
     NAMELIST /Time/ tfield, itime
     NAMELIST /NumParam/ nx, ny, nz, istret, beta, dt, itimescheme
@@ -348,19 +348,18 @@ contains
          write(fmt2,'("(A,I16)")')
          write(fmt3,'("(A,F16.4)")')
          write(fmt4,'("(A,F16.12)")')
-         write(fmt5,'("(A,I14)")')
          
          !
          open (111,file=filename,action='write',status='replace')
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,'(A)')'&Time'
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,fmt3) 'tfield=     ',t
          write(111,fmt2) 'itime=      ',itime
          write(111,'(A)')'/End'
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,'(A)')'&NumParam'
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,fmt2) 'nx=         ',nx
          write(111,fmt2) 'ny=         ',ny
          write(111,fmt2) 'nz=         ',nz
@@ -371,25 +370,25 @@ contains
          write(111,fmt4) 'beta=       ',beta
          write(111,fmt2) 'iscalar=    ',iscalar
          write(111,fmt2) 'numscalar=  ',numscalar
-         write(111,fmt5) 'itimescheme=',itimescheme
+         write(111,fmt2) 'itimescheme=',itimescheme
          write(111,fmt2) 'iimplicit=  ',iimplicit
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,'(A)')'&NumStability'
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,fmt3) 'dt=         ',dt
          write(111,fmt3) 'CFL,max,sum=',cflmax
                   
          ! Print skin friction coefficient and shear velocity at the bottom wall (TTBL and Channel)
          if (itype .eq. itype_ttbl) then
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,'(A)')'&FrictParamBottomWall'
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
          write(111,fmt4) 'cf=       ',fric_coeff
          write(111,fmt4) 'sh_vel=   ',sh_vel
          end if
          
          write(111,'(A)')'/End'
-         write(111,'(A)')'!========================='
+         write(111,'(A)')'!==========================='
 
          close(111)
        end if
