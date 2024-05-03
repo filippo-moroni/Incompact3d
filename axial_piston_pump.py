@@ -68,23 +68,40 @@ den     = np.double(0.0)               # denominator of the method (g'(pn+1))
 f       = np.double(0.0)               # RHS of the differential equation or function of NR method
 fprime  = np.double(0.0)               # First derivative for NR method
 
+# Shifts for ports
+xshift_del = pi/6.0                    # shift for delivery port [rad]
+xshift_suc = pi/-6.0                   # shift for suction  port [rad]
+
+# Coefficient for the straight line
+q = 0.0
+
 # Delivery area
 for j in range(0,ntot):
+
     temp = dtheta*j
+    
     if temp < pi/6.0:
         adeliv[j] = A_max/(pi/6.0) * j * dtheta
-    elif temp >= pi/6.0 and temp < pi*5.0/6.0:
+        
+    elif temp >= pi/6.0 and temp < pi*5.0/6.0 + xshift_del:
         adeliv[j] = A_max
-    elif temp >= pi*5.0/6.0 and temp < pi:
-        adeliv[j] = - A_max/(pi/6.0) * j * dtheta + 6.0*A_max
+        
+    elif temp >= pi*5.0/6.0 + xshift_del and temp < pi + xshift_del:
+        q = 6.0*A_max/pi*(pi + xshift_del)
+        adeliv[j] = - A_max/(pi/6.0) * j * dtheta + q
             
 # Suction area
 for j in range(0,ntot):
+
     temp = dtheta*j
-    if temp >= pi and temp < 7.0/6.0*pi:
-        asuct[j] = A_max/(pi/6.0) * j * dtheta - 6.0*A_max
-    elif temp >= 7.0/6.0*pi and temp < 11.0/6.0*pi:
+    
+    if temp >= pi + xshift_suc and temp < 7.0/6.0*pi + xshift_suc:
+        q = -6.0*A_max/pi*(pi + xshift_suc)
+        asuct[j] = A_max/(pi/6.0) * j * dtheta + q
+        
+    elif temp >= 7.0/6.0*pi + xshift_suc and temp < 11.0/6.0*pi:
         asuct[j] = A_max
+        
     elif temp >= 11.0/6.0*pi and temp <= 2.0*pi:
         asuct[j] = - A_max/(pi/6.0) * j * dtheta + 12.0*A_max
                      
@@ -209,7 +226,7 @@ for j in range(0,ntot-1):
     elif j == 1:
         pp[j+1] = 4.0/3.0*pp[j] - 1.0/3.0*pp[j-1] + 2.0/3.0*f*dtheta
     
-    # Backward differencing 3nd order (BDF3)    
+    # Backward differencing 3rd order (BDF3)    
     elif j > 1:
         pp[j+1] = 18.0/11.0*pp[j] - 9.0/11.0*pp[j-1] + 2.0/11.0*pp[j-2] + 6.0/11.0*f*dtheta
     
