@@ -3,7 +3,7 @@
 #! for a swash plate single-piston pump.                              !
 #!                                                                    !
 #! For the solution of the non-linear differential equation,          !
-#! we employ backward Euler and Newton-Raphson methods.               ! 
+#! we employ BDF3 and Newton-Raphson.                                 ! 
 #!--------------------------------------------------------------------!
 
 # Libraries
@@ -19,7 +19,7 @@ plt.rcParams.update({
 
 # Parameters
 pi    = np.pi    # greek pi
-ntot  = 36000    # total number of discretization points for the angular interval
+ntot  = 7200     # total number of discretization points for the angular interval
 temp  = 0.0      # temporary variable for theta calculation
 
 cd    = 0.7      # discharge coefficient (same for delivery and suction)
@@ -33,7 +33,7 @@ rho   = 850.0    # density [kg/m^3]
 pd    = 100.0    # delivery pressure [bar]
 ps    = 0.001    # suction  pressure [bar]
 p0    = 100.0    # initial  pressure [bar]
-eps   = 0.01     # tolerance for the Newton-Raphson method
+eps   = 0.001    # tolerance for the Newton-Raphson method
 B     = 15000.0  # bulk modulus [bar]
 
 # Conversion of units
@@ -69,8 +69,8 @@ f       = np.double(0.0)               # RHS of the differential equation or fun
 fprime  = np.double(0.0)               # First derivative for NR method
 
 # Shifts for ports
-xshift_del = pi/6.0                    # shift for delivery port [rad]
-xshift_suc = pi/-6.0                   # shift for suction  port [rad]
+xshift_del =  pi/12.0                  # shift for delivery port [rad]
+xshift_suc = -pi/12.0                  # shift for suction  port [rad]
 
 # Coefficient for the straight line
 q = 0.0
@@ -230,15 +230,15 @@ for j in range(0,ntot-1):
     elif j > 1:
         pp[j+1] = 18.0/11.0*pp[j] - 9.0/11.0*pp[j-1] + 2.0/11.0*pp[j-2] + 6.0/11.0*f*dtheta
     
-    #pp[j] = pjp1
 
+# Rescaling of pressure for plotting
+pp = pp/(10**5)  # [bar]
 
 ## Plot of pressure
-lw = 3  # linewidth for plots
-plt.scatter(theta, pp, label="pressure", linewidth=lw) 
+plt.scatter(theta, pp, label="pressure", marker="o", s=20, facecolors='none', edgecolors='C0') 
 plt.title("Pressure", fontsize=30)
 plt.xlabel(r'$\theta \,[rad]$', fontsize=30)
-plt.ylabel(r'$P \,[Pa]$', fontsize=30)
+plt.ylabel(r'$P \,[bar]$', fontsize=30)
 labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{5}{6}\pi$", r"$\pi$", r"$\frac{7}{6}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
 
 # Color 'k' is black
