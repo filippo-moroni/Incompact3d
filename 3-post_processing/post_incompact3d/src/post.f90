@@ -134,9 +134,16 @@ PROGRAM post
 !---------Start of the ensemble average cycle--------------!
 
   do ii=1,nr 
-                                         
-     ! Writing the directory where snapshots are saved (different realizations)
-     write(dirname,"('./data_r',I1.1)") nr
+     
+     ! Writing the directories where snapshots are saved (different realizations)
+     if(nr .eq. 1) then
+     
+        ! nr = 1 (only /data folder is present)
+        write(dirname,"('./data')")  
+     else
+        ! nr > 1 (/data_r1, /data_r2, etc. folders) 
+        write(dirname,"('./data_r',I1.1)") ii
+     end if
      
      ! Reading of velocity, pressure and scalar fields if required     
      if (read_vel) then  
