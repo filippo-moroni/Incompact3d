@@ -19,7 +19,7 @@ plt.rcParams.update({
 
 # Parameters
 pi    = np.pi    # greek pi
-ntot  = 3600     # total number of discretization points for the angular interval
+ntot  = 360      # total number of discretization points for the angular interval
 temp  = 0.0      # temporary variable for theta calculation
 
 cd    = 0.7      # discharge coefficient (same for delivery and suction)
@@ -48,6 +48,9 @@ ps    = ps*(10**5)         # suction  pressure [Pa]
 p0    = p0*(10**5)         # initial  pressure [Pa]
 B     = B*(10**5)          # bulk modulus [Pa]
 
+#
+delta = pd/2.0   # delta for N-R method
+
 # Variables
 theta  = np.linspace(0.0,2.0*pi,ntot)  # theta angle of rotation in radiants
 dtheta = 2.0*pi/ntot                   # delta theta (angular step)
@@ -60,13 +63,14 @@ volumd  = np.zeros(ntot)               # volume derivative
 pp      = np.zeros(ntot)               # pressure
 
 # Newton-Raphson method
-pjp1    = 0.0                          # pressure at the j+1 iteration
-pj      = 0.0                          # pressure at the j   iteration 
-num     = 0.0                          # numerator of the method (g(pn+1))
-den     = 0.0                          # denominator of the method (g'(pn+1))
+pjp1    = np.double(0.0)               # pressure at the j+1 iteration
+pj      = np.double(0.0)               # pressure at the j   iteration 
+num     = np.double(0.0)               # numerator of the method (g(pn+1))
+den     = np.double(0.0)               # denominator of the method (g'(pn+1))
 
 # Backward Euler method
-f       = 0.0                          # RHS of the differential equation (or for N-R method) 
+f       = np.double(0.0)               # RHS of the differential equation
+fprime  = np.double(0.0) 
 
 # Delivery area
 for j in range(0,ntot):
@@ -151,12 +155,14 @@ plt.legend(lines, labels, loc="lower right", fontsize=16)
 plt.show()
 
 ## Initialize pressure
-pjp1 = pd*1.5
+pp[0] = pd
 
 ## Backward Euler cycle
 for j in range(0,ntot-1):
 
-    temp = 100
+    temp = 1.0
+    
+    pjp1 = pp[j] + delta
     
     # Newton-Raphson cycle
     while temp > eps:
@@ -168,11 +174,11 @@ for j in range(0,ntot-1):
         # Numerator of N-R  
         num = pjp1 - pp[j] - f*dtheta
         
-        f = B/omega/volum[j+1] * (- cd * asuct [j+1] * 1.0 / rho / np.sqrt(2.0 / rho * np.abs(ps - pjp1)) + \
-                                  - cd * adeliv[j+1] * 1.0 / rho / np.sqrt(2.0 / rho * np.abs(pd - pjp1)))
+        fprime = B/omega/volum[j+1] * (- cd * asuct [j+1] * 1.0 / rho / np.sqrt(2.0 / rho * np.abs(ps - pjp1)) + \
+                                       - cd * adeliv[j+1] * 1.0 / rho / np.sqrt(2.0 / rho * np.abs(pd - pjp1)))
         
         # Denominator of N-R
-        den = 1.0 - f*dtheta
+        den = 1.0 - fprime*dtheta
         
         # Save this iteration of Newton-Raphson
         pj = pjp1
@@ -180,14 +186,16 @@ for j in range(0,ntot-1):
         # Newton-Raphson method
         pjp1 = pjp1 - num/den
         
-        # Residual calculation
-        temp = pjp1 - pj
-    
-    # Proceed with time integration
-    f = B/omega/volum[j+1] * (cd * asuct [j+1] * np.sqrt(2.0/rho*np.abs(ps - pjp1)) * np.sign(ps - pjp1) + \
-                              cd * adeliv[j+1] * np.sqrt(2.0/rho*np.abs(pd - pjp1)) * np.sign(pd - pjp1) + \
-                              - omega * volumd[j+1])
-    
+        # New estimation of f
+        f = B/omega/volum[j+1] * (cd * asuct [j+1] * np.sqrt(2.0/rho*np.abs(ps - pjp1)) * np.sign(ps - pjp1) + \
+                                  cd * adeliv[j+1] * np.sqrt(2.0/rho*np.abs(pd - pjp1)) * np.sign(pd - pjp1) + \
+                                  - omega * volumd[j+1])
+        
+        # Residual calculation (total function of N-R to be forced to zero)
+        temp = pjp1 - pj - dtheta*f
+        
+        temp = np.abs(temp)
+        
     # Time-integration
     pp[j+1] = pp[j] + f*dtheta
 
