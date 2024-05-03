@@ -174,10 +174,10 @@ pp[:] = p0
 for j in range(0,ntot-1):
 
     # Initial temporary value for the residual
-    temp = 1.0
+    temp = 100.0
     
     # Initial guess for Newton-Raphson method
-    pjp1 = pp[j] + 0.5 * (10**5)
+    pjp1 = pp[j] * 2.0
     
     # Newton-Raphson cycle, with exit condition with tolerance equal to 'eps'
     while temp > eps:
