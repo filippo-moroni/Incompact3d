@@ -19,7 +19,7 @@ plt.rcParams.update({
 
 # Parameters
 pi    = np.pi    # greek pi
-ntot  = 360      # total number of discretization points for the angular interval
+ntot  = 36000    # total number of discretization points for the angular interval
 temp  = 0.0      # temporary variable for theta calculation
 
 cd    = 0.7      # discharge coefficient (same for delivery and suction)
@@ -31,15 +31,15 @@ V0    = 252.796  # dead volume [mm^3]
 A_max = 90.0     # maximum area of suction and delivery ports [mm^2]
 rho   = 850.0    # density [kg/m^3]
 pd    = 100.0    # delivery pressure [bar]
-ps    = 0.0      # suction  pressure [bar]
+ps    = 0.001    # suction  pressure [bar]
 p0    = 100.0    # initial  pressure [bar]
-eps   = 0.01     # tolerance for the Newton-Rapshon method
-B     = 17000.0  # bulk modulus [bar]
+eps   = 0.01     # tolerance for the Newton-Raphson method
+B     = 15000.0  # bulk modulus [bar]
 
 # Conversion of units
 omega = 2.0*pi*omega/60.0  # angular velocity of the shaft of the pump [rad/s]
 dp    = dp / 1000.0        # piston diameter [m]
-R     = 23.0 /1000.0       # cylinder block diameter [m]
+R     = R / 1000.0         # cylinder block diameter [m]
 beta  = np.radians(beta)   # swashplate angle [rad]
 V0    = V0*(10**-9)        # dead volume [m^3]
 A_max = A_max*(10**-6)     # maximum area of suction and delivery ports [m^2]
@@ -47,9 +47,6 @@ pd    = pd*(10**5)         # delivery pressure [Pa]
 ps    = ps*(10**5)         # suction  pressure [Pa]
 p0    = p0*(10**5)         # initial  pressure [Pa]
 B     = B*(10**5)          # bulk modulus [Pa]
-
-#
-delta = pd/2.0   # delta for N-R method
 
 # Variables
 theta  = np.linspace(0.0,2.0*pi,ntot)  # theta angle of rotation in radiants
@@ -59,7 +56,6 @@ asuct   = np.zeros(ntot)               # suction area
 adeliv  = np.zeros(ntot)               # delivery area
 volum   = np.zeros(ntot)               # volume
 volumd  = np.zeros(ntot)               # volume derivative
-
 pp      = np.zeros(ntot)               # pressure
 
 # Newton-Raphson method
@@ -68,9 +64,9 @@ pj      = np.double(0.0)               # pressure at the j   iteration
 num     = np.double(0.0)               # numerator of the method (g(pn+1))
 den     = np.double(0.0)               # denominator of the method (g'(pn+1))
 
-# Backward Euler method
-f       = np.double(0.0)               # RHS of the differential equation
-fprime  = np.double(0.0) 
+# Numerics 
+f       = np.double(0.0)               # RHS of the differential equation or function of NR method
+fprime  = np.double(0.0)               # First derivative for NR method
 
 # Delivery area
 for j in range(0,ntot):
@@ -115,8 +111,8 @@ plt.show()
 # Volume and volume derivative
 for j in range(0,ntot):
     temp = dtheta*j
-    volum[j]  = V0 + pi/4.0*(dp**2)*np.tan(beta)*R*(1-0 + np.cos(temp))
-    volumd[j] = - pi/4.0*(dp**2)*np.tan(beta)*np.sin(temp)
+    volum[j]  = V0 + pi/4.0*(dp**2)*np.tan(beta)*R*(1.0 + np.cos(temp))
+    volumd[j] = - pi/4.0*(dp**2)*np.tan(beta)*np.sin(temp)*R
     
 # Plot volume and volume derivative
 labels = ["$0$", r"$\pi$", "$2 \pi$"]
@@ -155,49 +151,58 @@ plt.legend(lines, labels, loc="lower right", fontsize=16)
 plt.show()
 
 ## Initialize pressure
-pp[0] = pd
+pp[:] = p0
 
 ## Backward Euler cycle
 for j in range(0,ntot-1):
 
+    # Initial temporary value for the residual
     temp = 1.0
     
-    pjp1 = pp[j] + delta
+    # Initial guess for Newton-Raphson method
+    pjp1 = pp[j] + 0.5 * (10**5)
     
-    # Newton-Raphson cycle
+    # Newton-Raphson cycle, with exit condition with tolerance equal to 'eps'
     while temp > eps:
         
-        f = B/omega/volum[j+1] * (cd * asuct [j+1] * np.sqrt(2.0/rho*np.abs(ps - pjp1)) * np.sign(ps - pjp1) + \
-                                  cd * adeliv[j+1] * np.sqrt(2.0/rho*np.abs(pd - pjp1)) * np.sign(pd - pjp1) + \
-                                  - omega * volumd[j+1])
+        f = (B/omega/volum[j+1] * (cd * asuct [j+1] * np.sqrt(2.0/rho*np.abs(ps - pjp1)) * np.sign(ps - pjp1) + \
+                                +  cd * adeliv[j+1] * np.sqrt(2.0/rho*np.abs(pd - pjp1)) * np.sign(pd - pjp1) + \
+                                - omega * volumd[j+1]))
     
         # Numerator of N-R  
         num = pjp1 - pp[j] - f*dtheta
         
-        fprime = B/omega/volum[j+1] * (- cd * asuct [j+1] * 1.0 / rho / np.sqrt(2.0 / rho * np.abs(ps - pjp1)) + \
-                                       - cd * adeliv[j+1] * 1.0 / rho / np.sqrt(2.0 / rho * np.abs(pd - pjp1)))
+
+        fprime = (- B/omega/volum[j+1] * (cd * asuct [j+1] / np.sqrt(2.0 * rho * np.abs(ps - pjp1))   + \
+                                       +  cd * adeliv[j+1] / np.sqrt(2.0 * rho * np.abs(pd - pjp1))))
         
         # Denominator of N-R
         den = 1.0 - fprime*dtheta
         
-        # Save this iteration of Newton-Raphson
-        pj = pjp1
-        
+        # Store of current iteration
+        #pj = pjp1
+                
         # Newton-Raphson method
         pjp1 = pjp1 - num/den
         
         # New estimation of f
-        f = B/omega/volum[j+1] * (cd * asuct [j+1] * np.sqrt(2.0/rho*np.abs(ps - pjp1)) * np.sign(ps - pjp1) + \
-                                  cd * adeliv[j+1] * np.sqrt(2.0/rho*np.abs(pd - pjp1)) * np.sign(pd - pjp1) + \
-                                  - omega * volumd[j+1])
+        f = (B/omega/volum[j+1] * (cd * asuct [j+1] * np.sqrt(2.0/rho*np.abs(ps - pjp1)) * np.sign(ps - pjp1) + \
+                                +  cd * adeliv[j+1] * np.sqrt(2.0/rho*np.abs(pd - pjp1)) * np.sign(pd - pjp1) + \
+                                - omega * volumd[j+1]))
         
         # Residual calculation (total function of N-R to be forced to zero)
-        temp = pjp1 - pj - dtheta*f
+        temp = pjp1 - pp[j] - f*dtheta
         
+        # We can also enforce the residual on the pressure calculation itself (relative residual)
+        #temp = (pjp1 - pj)/pjp1
+        
+        # Absolute value for the residual
         temp = np.abs(temp)
         
-    # Time-integration
+    # Time-integration (backward Euler)
     pp[j+1] = pp[j] + f*dtheta
+    
+    #pp[j] = pjp1
 
 
 ## Plot of pressure
@@ -215,9 +220,10 @@ plt.tick_params(which='both', width=1)
 plt.tick_params(which='major', length=7)
 plt.tick_params(which='minor', length=4)
 
-plt.legend(loc="upper left", fontsize=16)
+plt.legend(loc="lower left", fontsize=16)
 plt.grid(which='both', color='0.65', linestyle='--', linewidth=1)
 plt.show()
+
 
 
 
