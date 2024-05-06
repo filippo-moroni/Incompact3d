@@ -70,9 +70,12 @@ f       = np.double(0.0)               # RHS of the differential equation or fun
 fprime  = np.double(0.0)               # First derivative for NR method
 
 # Shifts for ports 
-xshift_del =  pi/12.0                  # shift for delivery port [rad]
-xshift_suc = -pi/12.0                  # shift for suction  port [rad]
+xshift_del =  -2.0                  # shift for delivery port [°]
+xshift_suc =   2.0                  # shift for suction  port [°]
 q          = 0.0                       # coefficient for the straight line for ports (known term, y = mx + q)
+
+xshift_del = np.radians(xshift_del)
+xshift_suc = np.radians(xshift_suc)
 
 # Delivery area
 for j in range(0,ntot):
@@ -108,13 +111,13 @@ for j in range(0,ntot):
 lw = 3  # linewidth for plots
 plt.plot(theta, adeliv, label="delivery", linewidth=lw) 
 plt.plot(theta, asuct, label="suction", linewidth=lw)
-plt.title("Delivery and suction areas", fontsize=30)
+#plt.title("Delivery and suction areas", fontsize=30)
 plt.xlabel(r'$\theta \,[rad]$', fontsize=30)
 plt.ylabel(r'$A_s,A_d \,[m^2]$', fontsize=30)
-labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{5}{6}\pi$", r"$\pi$", r"$\frac{7}{6}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
+labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{11}{12}\pi$", r"$\pi$", r"$\frac{13}{12}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
 
 # Color 'k' is black
-plt.xticks([0,pi/6.0, 5.0/6.0*pi, pi, 7.0/6.0*pi, 11.0/6.0*pi, 2.0*pi], labels, color="k", size=20, rotation='horizontal')
+plt.xticks([0, pi/6.0, 11.0/12.0*pi, pi, 13.0/12.0*pi, 11.0/6.0*pi, 2.0*pi], labels, color="k", size=20, rotation='horizontal')
 plt.yticks(fontsize=14)
 plt.tick_params(which='both', width=1)
 plt.tick_params(which='major', length=7)
@@ -134,7 +137,7 @@ for j in range(0,ntot):
 labels = ["$0$", r"$\pi$", "$2 \pi$"]
 
 fig, ax1 = plt.subplots()
-plt.title("Volume and volume derivative", fontsize=30)
+#plt.title("Volume and volume derivative", fontsize=30)
 
 color = 'tab:orange'
 ax1.set_xlabel(r'$\theta \,[rad]$', fontsize=30)
@@ -158,6 +161,9 @@ color = 'tab:blue'
 ax2.set_ylabel(r'$\frac{d V}{d \theta} \,[m^3/rad]$', fontsize=30, color=color, rotation='horizontal', ha='left')  
 ax2.plot(theta, volumd, color=color, label="volume derivative", linewidth=lw)
 ax2.tick_params(axis='y', labelcolor=color, labelsize=14)
+ax2.tick_params(which='both', width=1)
+ax2.tick_params(which='major', length=7)
+ax2.tick_params(which='minor', length=4)
 
 fig.tight_layout() 
 
@@ -165,6 +171,7 @@ lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
 lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
 plt.legend(lines, labels, loc="lower right", fontsize=16)
 plt.show()
+
 
 ## Initialize pressure
 pp[:] = p0
@@ -233,20 +240,40 @@ for j in range(0,ntot-1):
 # Rescaling of pressure for plotting
 pp = pp/(10**5)  # [bar]
 
+# Maximum and minimum of pressure
+max_pp = max(pp)
+min_pp = min(pp)
+
+# Angle theta for the minimum pressure
+index = np.where(pp == min_pp)
+min_theta = theta[index]
+
 ## Plot of pressure
-plt.scatter(theta, pp, label="pressure", marker="o", s=20, facecolors='none', edgecolors='C0') 
-plt.title("Pressure", fontsize=30)
-plt.xlabel(r'$\theta \,[rad]$', fontsize=30)
-plt.ylabel(r'$P \,[bar]$', fontsize=30)
-labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{5}{6}\pi$", r"$\pi$", r"$\frac{7}{6}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
+fig, ax = plt.subplots()
 
-# Color 'k' is black
-plt.xticks([0,pi/6.0, 5.0/6.0*pi, pi, 7.0/6.0*pi, 11.0/6.0*pi, 2.0*pi], labels, color="k", size=20, rotation='horizontal')
-plt.yticks(fontsize=14)
-plt.tick_params(which='both', width=1)
-plt.tick_params(which='major', length=7)
-plt.tick_params(which='minor', length=4)
+ax.scatter(theta, pp, label="pressure", marker="o", s=20, facecolors='C0', edgecolors='C0') 
+#plt.title("Pressure", fontsize=30)
+ax.set_xlabel(r'$\theta \,[rad]$', fontsize=30)
+ax.set_ylabel(r'$P \,[bar]$', fontsize=30)
 
+# Limits for axes and labels
+labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{11}{12}\pi$", r"$\pi$", r"$\frac{13}{12}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
+values = [0,pi/6.0, 11.0/12.0*pi, pi, 13.0/12.0*pi, 11.0/6.0*pi, 2.0*pi]
+ax.set_xticks(values, labels=labels, size=20)
+
+
+values = [min_pp, 0.0, 50.0, 100.0, max_pp]
+ax.set_yticks(values, size=20)
+
+ax.tick_params(axis='y', labelcolor='k', labelsize=14)
+ax.tick_params(which='both', width=1)
+ax.tick_params(which='major', length=7)
+ax.tick_params(which='minor', length=4)
+
+#ax.scatter(min_theta,min_pp,marker='o',s=20,facecolors='none', edgecolors='r')
+ax.plot(min_theta,min_pp,marker='o',ms=20,mfc=(1.0,0.0,0.0,0.5),mec='None')
+
+fig.tight_layout()
 plt.legend(loc="lower left", fontsize=16)
 plt.grid(which='both', color='0.65', linestyle='--', linewidth=1)
 plt.show()
