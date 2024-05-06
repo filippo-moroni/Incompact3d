@@ -3,7 +3,7 @@
 #! for a swash plate single-piston pump.                              !
 #!                                                                    !
 #! For the solution of the non-linear differential equation,          !
-#! we employ BDF3 and Newton-Raphson.                                 ! 
+#! we employ backward Euler and Newton-Raphson.                       ! 
 #!--------------------------------------------------------------------!
 
 # Libraries
@@ -248,20 +248,8 @@ for j in range(0,ntot-1):
         # Absolute value for the residual
         temp = np.abs(temp)
         
-    ## Time-integration
-    
-    # Start with backward Euler
-    if j == 0:
-        pp[j+1] = pp[j] + f*dtheta
-    
-    # Backward differencing 2nd order (BDF2)    
-    elif j == 1:
-        pp[j+1] = 4.0/3.0*pp[j] - 1.0/3.0*pp[j-1] + 2.0/3.0*f*dtheta
-    
-    # Backward differencing 3rd order (BDF3)    
-    elif j > 1:
-        pp[j+1] = 18.0/11.0*pp[j] - 9.0/11.0*pp[j-1] + 2.0/11.0*pp[j-2] + 6.0/11.0*f*dtheta
-    
+    ## Time-integration, backward Euler
+    pp[j+1] = pp[j] + f*dtheta    
 
 # Rescaling of pressure for plotting
 pp = pp/(10**5)  # [bar]
