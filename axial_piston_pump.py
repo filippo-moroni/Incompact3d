@@ -128,12 +128,20 @@ v2 = pi + xshift_del
 v4 = 7.0/6.0*pi + xshift_suc
 
 values = [0, pi/6.0, v1, v2, pi, v3, v4, 11.0/6.0*pi, 2.0*pi]
+temp = len(values)
 
 # Color 'k' is black
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=14, rotation=90, ha='center')  
+ax.set_xticklabels(labels, fontsize=14, rotation=0, ha='left')  
 
-ax.tick_params(axis='x', pad=6)  
+# Shifting to the bottom pi label to avoid superposed labels
+i = - 1
+for tick in ax.xaxis.get_major_ticks():
+    i = i + 1
+    if i == 4:
+        tick.set_pad(20)
+    
+#ax.tick_params(axis='x', pad=6)  
 ax.tick_params(axis='y', labelcolor="k", labelsize=14)
 
 ax.tick_params(which='both', width=1)
@@ -277,8 +285,10 @@ ax.set_ylabel(r'$P \,[bar]$', fontsize=30)
 
 # Color 'k' is black
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=14, rotation=90, ha='center')  
+ax.set_xticklabels(labels, fontsize=14, rotation=0, ha='center')  
 
+for tick in ax.xaxis.get_major_ticks()[1::2]:
+    tick.set_pad(20)
 
 # New values for y axis
 values = [min_pp, 0.0, 50.0, 100.0, max_pp]
