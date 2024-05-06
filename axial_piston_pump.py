@@ -114,12 +114,12 @@ fig, ax = plt.subplots()
 ax.plot(theta, adeliv, label="delivery", linewidth=lw) 
 ax.plot(theta, asuct, label="suction", linewidth=lw)
 #plt.title("Delivery and suction areas", fontsize=30)
-ax.set_xlabel(r'$\theta \,[\deg]$', fontsize=30)
+ax.set_xlabel(r'$\theta \,[deg]$', fontsize=30)
 ax.set_ylabel(r'$A_s,A_d \,[m^2]$', fontsize=30)
 
 # Limits for axes and labels
 #labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{5}{6}\pi$", r"$\pi$", r"$\frac{7}{6}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
-labels = ["$0\degree$", r"$30\deg$", r"$155\deg$", r"$175\deg$", r"$180\deg$", r"$185\deg$", r"$205\deg$","$330\deg$","$360\deg$"]
+labels = [r"$0^\circ$", r"$30^\circ$", r"$155^\circ$", r"$175^\circ$", r"$180^\circ$", r"$185^\circ$", r"$205^\circ$","$330^\circ$",r"$360^\circ$"]
 
 
 v1 = pi*5.0/6.0 + xshift_del
@@ -272,14 +272,16 @@ fig, ax = plt.subplots()
 
 ax.scatter(theta, pp, label="pressure", marker="o", s=20, facecolors='C0', edgecolors='C0') 
 #plt.title("Pressure", fontsize=30)
-ax.set_xlabel(r'$\theta \,[rad]$', fontsize=30)
+ax.set_xlabel(r'$\theta \,[deg]$', fontsize=30)
 ax.set_ylabel(r'$P \,[bar]$', fontsize=30)
 
-ax.set_xticks(values, labels=labels, size=20)
+# Color 'k' is black
+ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
+ax.set_xticklabels(labels, fontsize=14, rotation=90, ha='center')  
 
 # New values for y axis
 #values = [min_pp, 0.0, 50.0, 100.0, max_pp]
-values = [min_pp, 0.0, 50.0, 100.0]
+values = [0.0, 50.0, 100.0]
 ax.set_yticks(values, size=20)
 
 ax.tick_params(axis='y', labelcolor='k', labelsize=14)
