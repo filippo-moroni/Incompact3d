@@ -19,8 +19,8 @@ plt.rcParams.update({
 
 # Parameters
 pi    = np.pi    # greek pi
-ntot  = 7200     # total number of discretization points for the angular interval
-temp  = 0.0      # temporary variable for theta calculation
+ntot  = 7200     # total number of discretization points for the angular interval [0, 2*pi]
+temp  = 0.0      # temporary variable 
 
 cd    = 0.7      # discharge coefficient (same for delivery and suction)
 omega = 3000.0   # angular velocity of the shaft of the pump [rpm]
@@ -29,12 +29,13 @@ R     = 23.0     # cylinder block diameter [mm]
 beta  = 15.0     # swashplate angle [°]
 V0    = 252.796  # dead volume [mm^3]
 A_max = 90.0     # maximum area of suction and delivery ports [mm^2]
-rho   = 850.0    # density [kg/m^3]
+rho   = 850.0    # density of work fluid [kg/m^3]
 pd    = 100.0    # delivery pressure [bar]
-ps    = 0.001    # suction  pressure [bar]
+ps    = 0.0      # suction  pressure [bar]
 p0    = 100.0    # initial  pressure [bar]
 eps   = 0.001    # tolerance for the Newton-Raphson method
-B     = 15000.0  # bulk modulus [bar]
+B     = 15000.0  # bulk modulus of work fluid [bar]
+huge  = 10**9    # a generic large number 
 
 # Conversion of units
 omega = 2.0*pi*omega/60.0  # angular velocity of the shaft of the pump [rad/s]
@@ -68,12 +69,10 @@ den     = np.double(0.0)               # denominator of the method (g'(pn+1))
 f       = np.double(0.0)               # RHS of the differential equation or function of NR method
 fprime  = np.double(0.0)               # First derivative for NR method
 
-# Shifts for ports
+# Shifts for ports 
 xshift_del =  pi/12.0                  # shift for delivery port [rad]
 xshift_suc = -pi/12.0                  # shift for suction  port [rad]
-
-# Coefficient for the straight line
-q = 0.0
+q          = 0.0                       # coefficient for the straight line for ports (known term, y = mx + q)
 
 # Delivery area
 for j in range(0,ntot):
@@ -174,7 +173,7 @@ pp[:] = p0
 for j in range(0,ntot-1):
 
     # Initial temporary value for the residual
-    temp = 100.0
+    temp = huge
     
     # Initial guess for Newton-Raphson method
     pjp1 = pp[j] * 2.0
