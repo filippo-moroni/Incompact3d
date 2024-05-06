@@ -121,18 +121,17 @@ ax.set_ylabel(r'$A_s,A_d \,[m^2]$', fontsize=30)
 #labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{5}{6}\pi$", r"$\pi$", r"$\frac{7}{6}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
 labels = [r"$0^\circ$", r"$30^\circ$", r"$145^\circ$", r"$175^\circ$", r"$180^\circ$", r"$185^\circ$", r"$215^\circ$","$330^\circ$",r"$360^\circ$"]
 
-
+# Values for ticks
 v1 = pi*5.0/6.0 + xshift_del
 v3 = pi + xshift_suc
 v2 = pi + xshift_del
 v4 = 7.0/6.0*pi + xshift_suc
 
 values = [0, pi/6.0, v1, v2, pi, v3, v4, 11.0/6.0*pi, 2.0*pi]
-temp = len(values)
 
 # Color 'k' is black
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=14, rotation=0, ha='left')  
+ax.set_xticklabels(labels, fontsize=14, rotation=0, ha='center')  
 
 # Shifting to the bottom pi label to avoid superposed labels
 i = - 1
@@ -141,7 +140,6 @@ for tick in ax.xaxis.get_major_ticks():
     if i == 4:
         tick.set_pad(20)
     
-#ax.tick_params(axis='x', pad=6)  
 ax.tick_params(axis='y', labelcolor="k", labelsize=14)
 
 ax.tick_params(which='both', width=1)
@@ -287,15 +285,27 @@ ax.set_ylabel(r'$P \,[bar]$', fontsize=30)
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
 ax.set_xticklabels(labels, fontsize=14, rotation=0, ha='center')  
 
-for tick in ax.xaxis.get_major_ticks()[1::2]:
-    tick.set_pad(20)
+# Shifting to the bottom pi label to avoid superposed labels
+i = - 1
+for tick in ax.xaxis.get_major_ticks():
+    i = i + 1
+    if i == 4:
+        tick.set_pad(20)
 
 # New values for y axis
 values = [min_pp, 0.0, 50.0, 100.0, max_pp]
 #values = [0.0, 50.0, 100.0]
-ax.set_yticks(values, size=20)
 
-ax.tick_params(axis='y', labelcolor='k', labelsize=12, rotation=30)
+ax.set_yticks(values, size=20)
+ax.tick_params(axis='y', labelcolor='k', labelsize=14, rotation=30)
+
+# Shifting to the bottom label to avoid superposition
+i = - 1
+for tick in ax.yaxis.get_major_ticks():
+    i = i + 1
+    if i != 0:
+        tick.set_pad(20)
+
 ax.tick_params(which='both', width=1)
 ax.tick_params(which='major', length=7)
 ax.tick_params(which='minor', length=4)
