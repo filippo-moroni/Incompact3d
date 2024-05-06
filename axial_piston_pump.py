@@ -74,6 +74,7 @@ xshift_del = 0.0                       # shift for delivery port [rad] or [°]
 xshift_suc = 0.0                       # shift for suction  port [rad] or [°]
 q          = 0.0                       # coefficient for the straight line for ports (known term, y = mx + q)
 
+# Conversion to [rad] if necessary
 #xshift_del = np.radians(xshift_del)
 #xshift_suc = np.radians(xshift_suc)
 
