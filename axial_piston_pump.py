@@ -70,8 +70,8 @@ f       = np.double(0.0)               # RHS of the differential equation or fun
 fprime  = np.double(0.0)               # First derivative for NR method
 
 # Shifts for ports 
-xshift_del = -pi/36.0                       # shift for delivery port [rad] or [°]
-xshift_suc = +pi/36.0                       # shift for suction  port [rad] or [°]
+xshift_del = 0.0                       # shift for delivery port [rad] or [°]
+xshift_suc = 0.0                       # shift for suction  port [rad] or [°]
 q          = 0.0                       # coefficient for the straight line for ports (known term, y = mx + q)
 
 #xshift_del = np.radians(xshift_del)
@@ -119,26 +119,28 @@ ax.set_ylabel(r'$A_s,A_d \,[m^2]$', fontsize=30)
 
 # Limits for axes and labels
 #labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{5}{6}\pi$", r"$\pi$", r"$\frac{7}{6}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
-labels = [r"$0^\circ$", r"$30^\circ$", r"$145^\circ$", r"$175^\circ$", r"$180^\circ$", r"$185^\circ$", r"$215^\circ$","$330^\circ$",r"$360^\circ$"]
+labels = [r"$0^\circ$", r"$30^\circ$", r"$155^\circ$", r"$175^\circ$", r"$180^\circ$", r"$185^\circ$", r"$205^\circ$","$330^\circ$",r"$360^\circ$"]
+labels = [r"$0^\circ$", r"$30^\circ$", r"$150^\circ$", r"$180^\circ$", r"$210^\circ$","$330^\circ$",r"$360^\circ$"]
 
 # Values for ticks
 v1 = pi*5.0/6.0 + xshift_del
-v3 = pi + xshift_suc
-v2 = pi + xshift_del
+v2 = pi + xshift_suc
+v3 = pi + xshift_del
 v4 = 7.0/6.0*pi + xshift_suc
 
-values = [0, pi/6.0, v1, v2, pi, v3, v4, 11.0/6.0*pi, 2.0*pi]
+#values = [0, pi/6.0, v1, v2, pi, v3, v4, 11.0/6.0*pi, 2.0*pi]
+values = [0, pi/6.0, v1, pi, v4, 11.0/6.0*pi, 2.0*pi]
 
 # Color 'k' is black
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
 ax.set_xticklabels(labels, fontsize=14, rotation=0, ha='center')  
 
 # Shifting to the bottom pi label to avoid superposed labels
-i = - 1
-for tick in ax.xaxis.get_major_ticks():
-    i = i + 1
-    if i == 4:
-        tick.set_pad(20)
+#i = - 1
+#for tick in ax.xaxis.get_major_ticks():
+#    i = i + 1
+#    if i == 4:
+#        tick.set_pad(20)
     
 ax.tick_params(axis='y', labelcolor="k", labelsize=14)
 
@@ -188,7 +190,6 @@ ax2.tick_params(axis='y', labelcolor=color, labelsize=14)
 ax2.tick_params(which='both', width=1)
 ax2.tick_params(which='major', length=7)
 ax2.tick_params(which='minor', length=4)
-
 
 fig.tight_layout() 
 
@@ -293,7 +294,8 @@ for tick in ax.xaxis.get_major_ticks():
         tick.set_pad(20)
 
 # New values for y axis
-values = [min_pp, 0.0, 50.0, 100.0, max_pp]
+#values = [min_pp, 0.0, 50.0, 100.0, max_pp]
+values = [min_pp, 0.0, 50.0, 100.0]
 #values = [0.0, 50.0, 100.0]
 
 ax.set_yticks(values, size=20)
