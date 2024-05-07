@@ -110,7 +110,6 @@ for j in range(0,ntot):
                      
 # Plot of delivery and suction areas
 lw = 3  # linewidth for plots
-#fig, ax = plt.subplots()
 fig, ax = plt.subplots(1, 1, figsize=(14,10))
 
 ax.plot(theta, adeliv, label="delivery", linewidth=lw) 
@@ -150,8 +149,8 @@ ax.tick_params(which='both', width=1)
 ax.tick_params(which='major', length=7)
 ax.tick_params(which='minor', length=4)
 
-ax.legend(loc="upper left", fontsize=16)
 ax.grid(which='both', color='0.65', linestyle='--', linewidth=1)
+fig.legend(loc="center left", fontsize=20, bbox_to_anchor=(1.0, 0.5))
 
 plt.savefig('delivery_suction_areas.pdf', format='pdf', bbox_inches='tight')
 
