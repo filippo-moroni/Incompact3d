@@ -17,6 +17,8 @@ plt.rcParams.update({
     "font.sans-serif": "Computer Modern Sans serif",
 })
 
+plt.rcParams.update({'figure.autolayout': True})
+
 # Parameters
 pi    = np.pi    # greek pi
 ntot  = 7200     # total number of discretization points for the angular interval [0, 2*pi]
@@ -70,8 +72,8 @@ f       = np.double(0.0)               # RHS of the differential equation or fun
 fprime  = np.double(0.0)               # First derivative for NR method
 
 # Shifts for ports 
-xshift_del = 0.0                       # shift for delivery port [rad] or [°]
-xshift_suc = 0.0                       # shift for suction  port [rad] or [°]
+xshift_del = -pi/36.0                  # shift for delivery port [rad] or [°]
+xshift_suc = +pi/36.0                  # shift for suction  port [rad] or [°]
 q          = 0.0                       # coefficient for the straight line for ports (known term, y = mx + q)
 
 # Conversion to [rad] if necessary
@@ -120,28 +122,31 @@ ax.set_ylabel(r'$A_s,A_d \,[m^2]$', fontsize=50, labelpad=20)
 
 # Limits for axes and labels
 #labels = ["$0$", r"$\frac{\pi}{6}$", r"$\frac{5}{6}\pi$", r"$\pi$", r"$\frac{7}{6}\pi$", r"$\frac{11}{6}\pi$","$2 \pi$"]
+
+
 labels = [r"$0^\circ$", r"$30^\circ$", r"$155^\circ$", r"$175^\circ$", r"$180^\circ$", r"$185^\circ$", r"$205^\circ$","$330^\circ$",r"$360^\circ$"]
-labels = [r"$0^\circ$", r"$30^\circ$", r"$150^\circ$", r"$180^\circ$", r"$210^\circ$","$330^\circ$",r"$360^\circ$"]
+#labels = [r"$0^\circ$", r"$30^\circ$", r"$145^\circ$", r"$175^\circ$", r"$180^\circ$", r"$185^\circ$", r"$215^\circ$","$330^\circ$",r"$360^\circ$"]
+#labels = [r"$0^\circ$", r"$30^\circ$", r"$150^\circ$", r"$180^\circ$", r"$210^\circ$","$330^\circ$",r"$360^\circ$"]
 
 # Values for ticks
 v1 = pi*5.0/6.0 + xshift_del
-v2 = pi + xshift_suc
-v3 = pi + xshift_del
+v3 = pi + xshift_suc
+v2 = pi + xshift_del
 v4 = 7.0/6.0*pi + xshift_suc
 
-#values = [0, pi/6.0, v1, v2, pi, v3, v4, 11.0/6.0*pi, 2.0*pi]
-values = [0, pi/6.0, v1, pi, v4, 11.0/6.0*pi, 2.0*pi]
+values = [0, pi/6.0, v1, v2, pi, v3, v4, 11.0/6.0*pi, 2.0*pi]
+#values = [0, pi/6.0, v1, pi, v4, 11.0/6.0*pi, 2.0*pi]
 
 # Color 'k' is black
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=24, rotation=0, ha='center')  
+ax.set_xticklabels(labels, fontsize=11, rotation=0, ha='center')  
 
 # Shifting to the bottom pi label to avoid superposed labels
-#i = - 1
-#for tick in ax.xaxis.get_major_ticks():
-#    i = i + 1
-#    if i == 4:
-#        tick.set_pad(20)
+i = - 1
+for tick in ax.xaxis.get_major_ticks():
+    i = i + 1
+    if i == 4:
+        tick.set_pad(20)
     
 ax.tick_params(axis='y', labelcolor="k", labelsize=24)
 
@@ -152,7 +157,7 @@ ax.tick_params(which='minor', length=4)
 ax.grid(which='both', color='0.65', linestyle='--', linewidth=1)
 fig.legend(loc="center left", fontsize=20, bbox_to_anchor=(1.0, 0.5))
 
-plt.savefig('delivery_suction_areas.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('delivery_suction_areas.pdf', format='pdf')
 
 plt.show()
 
@@ -266,18 +271,22 @@ index = np.where(pp == min_pp)
 min_theta = theta[index]
 
 ## Plot of pressure
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(1, 1, figsize=(14,10), gridspec_kw={'width_ratios': [1], 
+                                                          'height_ratios': [1],
+                                                          'wspace': 0.4,
+                                                          'hspace': 0.4})
 
 ax.scatter(theta, pp, label="pressure", marker="o", s=20, facecolors='C0', edgecolors='C0') 
 #plt.title("Pressure", fontsize=30)
-ax.set_xlabel(r'$\theta \,[deg]$', fontsize=30)
-ax.set_ylabel(r'$P \,[bar]$', fontsize=30)
+
+ax.set_xlabel(r'$\theta \,[deg]$', fontsize=50, labelpad=20)
+ax.set_ylabel(r'$P \,[bar]$', fontsize=50, labelpad=20)
 
 # Color 'k' is black
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=14, rotation=0, ha='center')  
+ax.set_xticklabels(labels, fontsize=11, rotation=0, ha='center') 
 
-# Shifting to the bottom pi label to avoid superposed labels
+# Shifting to the bottom the x-axis pi label to avoid superposed labels
 i = - 1
 for tick in ax.xaxis.get_major_ticks():
     i = i + 1
@@ -285,14 +294,14 @@ for tick in ax.xaxis.get_major_ticks():
         tick.set_pad(20)
 
 # New values for y axis
-#values = [min_pp, 0.0, 50.0, 100.0, max_pp]
-values = [min_pp, 0.0, 50.0, 100.0]
+values = [min_pp, 0.0, 50.0, 100.0, max_pp]
+#values = [min_pp, 0.0, 50.0, 100.0]
 #values = [0.0, 50.0, 100.0]
 
 ax.set_yticks(values, size=20)
 ax.tick_params(axis='y', labelcolor='k', labelsize=14, rotation=30)
 
-# Shifting to the bottom label to avoid superposition
+# Shifting to the bottom y label to avoid superposition
 i = - 1
 for tick in ax.yaxis.get_major_ticks():
     i = i + 1
@@ -303,11 +312,14 @@ ax.tick_params(which='both', width=1)
 ax.tick_params(which='major', length=7)
 ax.tick_params(which='minor', length=4)
 
+# Marker to highlight the presence of possible cavitation
 ax.plot(min_theta,min_pp,marker='o',ms=25,mfc=(1.0,0.0,0.0,0.5),mec='None')
 
-fig.tight_layout()
-plt.legend(loc="upper right", fontsize=16)
-plt.grid(which='both', color='0.65', linestyle='--', linewidth=1)
+ax.grid(which='both', color='0.65', linestyle='--', linewidth=1)
+fig.legend(loc="center left", fontsize=20, bbox_to_anchor=(1.0, 0.5))
+
+plt.savefig('pressure.pdf', format='pdf')
+
 plt.show()
 
 
