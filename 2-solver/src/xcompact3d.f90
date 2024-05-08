@@ -293,12 +293,13 @@ subroutine finalise_xcompact3d()
   use decomp_2d_io, only : decomp_2d_io_finalise
 
   use tools, only : simu_stats
-  use param, only : itype
-  use visu, only : visu_finalise
+  use param, only : itype, dt, ifirst, ilast
+  use visu,  only : visu_finalise
 
   implicit none
 
-  integer :: ierr
+  integer :: ierr, iunit
+  logical :: exists
   
   if (itype==2) then
      if(nrank.eq.0)then
@@ -310,6 +311,20 @@ subroutine finalise_xcompact3d()
         close(38)
      endif
   endif
+  
+  ! Create or open a file to store the dt and ts of stop 
+  if(nrank.eq.0) then
+      inquire(file="dt_history.txt", exist=exists)
+      if (exists) then
+          open(newunit=iunit, file="dt_history.txt", status="old", position="append", action="write")
+          write(iunit, *)  dt,  ',',  ifirst,  ',',  ilast
+      else
+          open(newunit=iunit, file="dt_history.txt", status="new", action="write")
+          write(iunit, *) 'dt', ',', 'ifirst', ',', 'ilast'
+          write(iunit, *)  dt,  ',',  ifirst,  ',',  ilast
+      end if
+      close(iunit)
+  end if
   
   call simu_stats(4)
   call visu_finalise()
