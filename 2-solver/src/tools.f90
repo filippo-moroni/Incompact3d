@@ -237,7 +237,6 @@ contains
     use param
     use MPI
     use navier,      only : gradp
-    use extra_tools, only : calculate_friction_coefficient
 
     implicit none
 
@@ -284,12 +283,7 @@ contains
     end if
 
     if (iresflg==1) then !write
-        
-       ! Calculate skin friction coefficient for a temporal TBL case
-       if (itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
-          call calculate_friction_coefficient(ux1,uz1,sh_vel,fric_coeff)   
-       end if
-    
+            
        call decomp_2d_open_io(io_restart, resfile, decomp_2d_write_mode)
        call decomp_2d_start_io(io_restart, resfile)
 
@@ -375,17 +369,7 @@ contains
          write(111,'(A)')'&NumStability'
          write(111,'(A)')'!==========================='
          write(111,fmt3) 'dt=         ',dt
-         write(111,fmt3) 'CFL,max,sum=',cflmax
-                  
-         ! Print skin friction coefficient and shear velocity at the bottom wall (TTBL and Channel)
-         if (itype .eq. itype_ttbl) then
-         write(111,'(A)')'!==========================='
-         write(111,'(A)')'&FrictParamBottomWall'
-         write(111,'(A)')'!==========================='
-         write(111,fmt4) 'sh_vel=   ',sh_vel
-         write(111,fmt4) 'cf=       ',fric_coeff        
-         end if
-         
+         write(111,fmt3) 'CFL,max,sum=',cflmax        
          write(111,'(A)')'/End'
          write(111,'(A)')'!==========================='
 
@@ -503,7 +487,7 @@ contains
           write(*,*) 'Restart point restart',fmt1,' saved successfully!'!itime/icheckpoint,'saved successfully!'
           ! write(*,*) 'Elapsed time (s)',real(trestart,4)
           ! write(*,*) 'Aproximated writing speed (MB/s)',real(((s3df*16.)*1e-6)/trestart,4)
-          write(*,*) 'If necesseary restart from:',itime+1
+          write(*,*) 'If necessary restart from:',itime+1
        endif
     end if
 
