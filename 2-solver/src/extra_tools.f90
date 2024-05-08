@@ -29,7 +29,7 @@ contains
   ! 
   ! - Used in tools module to calculate cf at the restart.
   !---------------------------------------------------------------------------!
-  subroutine calculate_friction_coefficient(ux,uz)
+  subroutine calculate_friction_coefficient(ux,uz,sh_vel,fric_coeff)
     
     use var     
     use ibm_param,   only : ubcx,ubcy,ubcz
@@ -40,20 +40,22 @@ contains
     use decomp_2d_io
     
     implicit none
-
+    
+    ! Inputs
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
     
+    ! Outputs
+    real(mytype) :: sh_vel,fric_coeff
+    
+    ! Work variables
     real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
-    !real(mytype) :: mean_gw_tot  ! mean gradient at the wall total
-    
-    integer :: ierr  ! for MPI (initialized in init_xcompact3d subroutine)
+    real(mytype) :: mean_gw_tot  ! mean gradient at the wall total
+    integer :: ierr              ! for MPI (initialized in init_xcompact3d subroutine)
     integer :: i,k
-    
-    ! Check if the current subdomain has a portion of the bottom wall 
-    if(ystart(2) .eq. 1) then
-    
+        
     ! Set again variables to zero
     mean_gw     = zero
+    mean_gw_tot = zero
     
     ! Perform communications if needed
     if (sync_vel_needed) then
@@ -73,21 +75,21 @@ contains
     do k=ystart(3),yend(3)
        do i=ystart(1),yend(1)
            
-             ! Index for j is 1, since we are in global coordinates (y-pencils)
-             mean_gw = mean_gw + ( sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / real(nx*nz,mytype) )                  
+           ! Index for j is 1, since we are in global coordinates (y-pencils)
+           mean_gw = mean_gw + ( sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / real(nx*nz,mytype) )                  
        enddo
     enddo
-    
-    end if
       
     ! Summation over all MPI processes and broadcast the result
     call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
     !call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
-    ! Calculate cf and shear velocity from the mean gradient at the wall    
-    fric_coeff = two * xnu * mean_gw_tot / (uwall**2)
-    sh_vel     = sqrt_prec(xnu * mean_gw_tot)
+    ! Calculate shear velocity and cf from the mean gradient at the wall    
+    if(nrank .eq. 0) then
+        sh_vel     = sqrt_prec(xnu * mean_gw_tot)
+        fric_coeff = two * (sh_vel / uwall)**2
+    end if
         
     return 
   
