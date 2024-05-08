@@ -36,20 +36,21 @@ contains
   ! Calculate skin friction coefficient and shear velocity at the bottom wall (TTBL and Channel)
   if (itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
       call calculate_friction_coefficient(ux,uz,sh_vel,fric_coeff)      
-  end if
-   
-  ! Create or open a file to store sh_vel and cf
+     
+  ! Create or open a file to store sh_vel, cf and time unit
   if(nrank .eq. 0) then
       inquire(file="cf_history.txt", exist=exists)
       if (exists) then
           open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
-          write(iunit, '(F8.6,A,F8.6)') sh_vel, ',', fric_coeff
+          write(iunit, '(F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t
       else
           open(newunit=iunit, file="cf_history.txt", status="new", action="write")
-          write(iunit, '(A8,A,A8)')    'sh_vel', ',', 'cf'          
-          write(iunit, '(F8.6,A,F8.6)') sh_vel , ',', fric_coeff
+          write(iunit, '(A8,A,A8,A,A8)')    'sh_vel', ',', 'cf', ',', 'T'          
+          write(iunit, '(F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t
       end if
       close(iunit)
+  end if
+  
   end if
      
   return
