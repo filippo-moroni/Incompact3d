@@ -5,10 +5,9 @@
 
 module extra_tools
 
-  use decomp_2d
-  use decomp_2d_io
   use variables
   use param 
+  use decomp_2d
 
   implicit none
   
@@ -66,9 +65,7 @@ contains
   ! Adapted from visu_ttbl subroutine.
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
-  !   for the spanwise wall oscillations.
-  ! 
-  ! - Used in tools module to calculate cf at the restart.
+  !   for the spanwise wall oscillations. 
   !---------------------------------------------------------------------------!
   subroutine calculate_friction_coefficient(ux,uz,sh_vel2,fric_coeff2)
     
@@ -93,12 +90,12 @@ contains
     ! Work variables
     real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
     real(mytype) :: mean_gw_tot  ! mean gradient at the wall total
-    integer :: ierr              ! for MPI (initialized in init_xcompact3d subroutine)
-    integer :: i,k
+    integer      :: code         
+    integer      :: i,k
         
     ! Set again variables to zero
-    mean_gw     = zero
-    mean_gw_tot = zero
+    !mean_gw     = zero
+    !mean_gw_tot = zero
     
     ! Transpose to y-pencils
     call transpose_x_to_y(ux,ux2)
@@ -121,9 +118,9 @@ contains
     enddo
      
     ! Summation over all MPI processes and broadcast the result
-    !call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+    !call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
     
-    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
     
     ! Calculate shear velocity and cf from the mean gradient at the wall    
     if(nrank .eq. 0) then
