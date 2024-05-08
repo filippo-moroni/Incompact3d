@@ -20,7 +20,11 @@ module extra_tools
             update_time_int_coeff
 
 contains
-
+  
+  !---------------------------------------------------------------------------!
+  ! Write skin friction coefficient, shear velocity and time unit and stores
+  ! them in a .txt file for time-evolution (used for TTBL and Channel).
+  !---------------------------------------------------------------------------!
   subroutine print_cf(ux,uz)
   
   use param
@@ -77,7 +81,6 @@ contains
     
     use MPI
     use decomp_2d
-    use decomp_2d_io
     
     implicit none
     
@@ -118,9 +121,9 @@ contains
     enddo
      
     ! Summation over all MPI processes and broadcast the result
-    call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+    !call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
-    !call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
     ! Calculate shear velocity and cf from the mean gradient at the wall    
     if(nrank .eq. 0) then
