@@ -5,16 +5,12 @@
 
 module extra_tools
 
-  use variables
-  use param 
-  use decomp_2d
-
   implicit none
   
   private 
   
   public :: print_cf,                       &
-            calculate_friction_coefficient, &
+            calculate_mgw,                  &
             spanwise_wall_oscillations,     &
             update_time_int_coeff
 
@@ -27,21 +23,32 @@ contains
   subroutine print_cf(ux,uz)
   
   use param
-  use variables
-  
+  use decomp_2d
+  use dbg_schemes, only : sqrt_prec
+    
   implicit none
   
   integer :: iunit
   logical :: exists
   
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
+  ! Inputs from 'calculate_mgw' subroutine
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
+  
+  ! 
+  mean_gw_tot = zero
    
   ! Calculate skin friction coefficient and shear velocity at the bottom wall (TTBL and Channel)
-  if (itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
-      call calculate_friction_coefficient(ux,uz,sh_vel,fric_coeff)      
+  if(itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
+      call calculate_mgw(ux,uz)  
+  end if   
      
   ! Create or open a file to store sh_vel, cf and time unit
   if(nrank .eq. 0) then
+      
+      ! Calculate shear velocity and friction coefficient
+      sh_vel     = sqrt_prec(xnu * mean_gw_tot)
+      fric_coeff = two * ((sh_vel / uwall)**2)
+      
       inquire(file="cf_history.txt", exist=exists)
       if (exists) then
           open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
@@ -53,21 +60,16 @@ contains
       end if
       close(iunit)
   end if
-  
-  end if
-     
-  return
-  
+           
   end subroutine print_cf
   
   !---------------------------------------------------------------------------!
-  ! Calculate skin friction coefficient at the bottom wall and shear velocity
-  ! Adapted from visu_ttbl subroutine.
+  ! Calculate mean gradient at the wall
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
   !   for the spanwise wall oscillations. 
   !---------------------------------------------------------------------------!
-  subroutine calculate_friction_coefficient(ux,uz,sh_vel2,fric_coeff2)
+  subroutine calculate_mgw(ux,uz)
     
     use var,         only : ux2, uz2     
     use ibm_param,   only : ubcx,ubcy,ubcz
@@ -79,22 +81,26 @@ contains
     use MPI
     use decomp_2d
     
+    use param,       only : zero, mean_gw_tot
+    use variables
+    
     implicit none
     
     ! Inputs
-    real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
-    
+    real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
+
     ! Outputs
-    real(mytype) :: sh_vel2,fric_coeff2
+   
+    !real(mytype), intent(out) :: mean_gw_tot  ! mean gradient at the wall total
     
     ! Work variables
     real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
-    real(mytype) :: mean_gw_tot  ! mean gradient at the wall total
-    integer      :: code         
+    integer      :: ierr         
     integer      :: i,k
         
     ! Set again variables to zero
-    !mean_gw     = zero
+    mean_gw     = zero
+    mean_gw_tot = zero
     !mean_gw_tot = zero
     
     ! Transpose to y-pencils
@@ -118,19 +124,15 @@ contains
     enddo
      
     ! Summation over all MPI processes and broadcast the result
-    !call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+    !call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
-    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+    write(*,*) mean_gw_tot
     
-    ! Calculate shear velocity and cf from the mean gradient at the wall    
-    if(nrank .eq. 0) then
-        sh_vel2     = sqrt_prec(xnu * mean_gw_tot)
-        fric_coeff2 = two * ((sh_vel2 / uwall)**2)
-    end if
+    call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
-    return
-          
-  end subroutine calculate_friction_coefficient
+    write(*,*) mean_gw_tot
+              
+  end subroutine calculate_mgw
   
   !---------------------------------------------------------------------------!
   ! Calculate the spanwise velocity at the wall due to the imposed
@@ -141,14 +143,23 @@ contains
   !---------------------------------------------------------------------------!
   subroutine spanwise_wall_oscillations(ux1,uz1)
   
-  use dbg_schemes, only : sin_prec
+  use dbg_schemes, only : sin_prec, sqrt_prec
+  use param,       only : sh_vel, span_vel, fric_coeff, t
+  use param,       only : a_plus_cap, t_plus_cap
+  use param,       only : two, xnu, pi, uwall, mean_gw_tot
+  use decomp_2d,   only : xsize, xstart, xend 
+  use decomp_2d,   only : mytype
   
   implicit none
   
   real(mytype) :: amplitude, period
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+    
+  call calculate_mgw(ux1,uz1)
   
-  call calculate_friction_coefficient(ux1,uz1,sh_vel,fric_coeff)
+  ! Calculate shear velocity and friction coefficient
+  sh_vel     = sqrt_prec(xnu * mean_gw_tot)
+  fric_coeff = two * ((sh_vel / uwall)**2)
   
   ! Maximum amplitude of spanwise oscillations
   amplitude = sh_vel * a_plus_cap
@@ -158,9 +169,7 @@ contains
   
   ! Calculation of the spanwise wall velocity
   span_vel = amplitude * sin_prec(two*pi*t/period)
-  
-  return
-  
+   
   end subroutine spanwise_wall_oscillations
   
   !---------------------------------------------------------------------------!
@@ -189,9 +198,7 @@ contains
     adt(3)=( three/four)*dt
     bdt(3)=(-five/twelve)*dt
     gdt(3)=adt(3)+bdt(3)
-         
-  return
-  
+           
   end subroutine update_time_int_coeff  
   
 end module extra_tools
