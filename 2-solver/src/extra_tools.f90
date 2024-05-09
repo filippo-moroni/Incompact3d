@@ -31,22 +31,22 @@ contains
   integer :: iunit
   logical :: exists
   
-  ! Inputs from 'calculate_mgw' subroutine
+  ! Inputs 
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
   
-  ! 
-  mean_gw_tot = zero
-   
+  ! Local
+  real(mytype) :: mg  ! mean gradient at the wall
+     
   ! Calculate skin friction coefficient and shear velocity at the bottom wall (TTBL and Channel)
   if(itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
-      call calculate_mgw(ux,uz)  
+      call calculate_mgw(ux,uz,mg)  
   end if   
      
   ! Create or open a file to store sh_vel, cf and time unit
   if(nrank .eq. 0) then
       
       ! Calculate shear velocity and friction coefficient
-      sh_vel     = sqrt_prec(xnu * mean_gw_tot)
+      sh_vel     = sqrt_prec(xnu * mg)
       fric_coeff = two * ((sh_vel / uwall)**2)
       
       inquire(file="cf_history.txt", exist=exists)
@@ -55,7 +55,7 @@ contains
           write(iunit, '(F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t
       else
           open(newunit=iunit, file="cf_history.txt", status="new", action="write")
-          write(iunit, '(A8,A,A8,A,A8)')    'sh_vel', ',', 'cf', ',', 'T'          
+          write(iunit, '(A8,A,A8,A,A8)') 'sh_vel', ',', 'cf', ',', 'T'          
           write(iunit, '(F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t
       end if
       close(iunit)
@@ -68,8 +68,10 @@ contains
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
   !   for the spanwise wall oscillations. 
+  ! - Used to print cf and shear velocity to an overall .txt file
+  !   for time evolution check.
   !---------------------------------------------------------------------------!
-  subroutine calculate_mgw(ux,uz)
+  subroutine calculate_mgw(ux,uz,mean_gw_tot)
     
     use var,         only : ux2, uz2     
     use ibm_param,   only : ubcx,ubcy,ubcz
@@ -79,9 +81,11 @@ contains
     use ibm_param,   only : ubcx,ubcz
     
     use MPI
-    use decomp_2d
+    use decomp_2d,   only : mytype, ystart, yend, ysize, real_type
+    use decomp_2d,   only : xsize, ysize
+    use decomp_2d,   only : transpose_x_to_y
     
-    use param,       only : zero, mean_gw_tot
+    use param,       only : zero
     use variables
     
     implicit none
@@ -90,18 +94,16 @@ contains
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
 
     ! Outputs
-   
-    !real(mytype), intent(out) :: mean_gw_tot  ! mean gradient at the wall total
+    real(mytype), intent(out) :: mean_gw_tot  ! mean gradient at the wall total
     
     ! Work variables
-    real(mytype) :: mean_gw      ! mean gradient at the wall at each processor
+    real(mytype) :: mean_gw   ! Mean gradient at each processor
     integer      :: ierr         
     integer      :: i,k
         
     ! Set again variables to zero
     mean_gw     = zero
     mean_gw_tot = zero
-    !mean_gw_tot = zero
     
     ! Transpose to y-pencils
     call transpose_x_to_y(ux,ux2)
@@ -115,22 +117,22 @@ contains
     ! dw/dy=tc2
         
     ! Mean velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] and summation over all points
-    do k=ystart(3),yend(3)
-       do i=ystart(1),yend(1)
+    do k=1,ysize(3)
+       do i=1,ysize(1)
            
            ! Index for j is 1, since we are in global coordinates (y-pencils)
-           mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / real(nx*nz,mytype)                   
+           mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / real(nx*nz,mytype)
+                         
        enddo
     enddo
+    
+    ! Debug: why I am getting 8 output to screen instead of 4?
+    !write(*,*) mean_gw
      
-    ! Summation over all MPI processes and broadcast the result
-    !call MPI_ALLREDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
-    
-    write(*,*) mean_gw_tot
-    
+    ! Summation over all MPI processes       
     call MPI_REDUCE(mean_gw,mean_gw_tot,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
-    write(*,*) mean_gw_tot
+    write(*,*) mean_gw
               
   end subroutine calculate_mgw
   
@@ -146,7 +148,7 @@ contains
   use dbg_schemes, only : sin_prec, sqrt_prec
   use param,       only : sh_vel, span_vel, fric_coeff, t
   use param,       only : a_plus_cap, t_plus_cap
-  use param,       only : two, xnu, pi, uwall, mean_gw_tot
+  use param,       only : two, xnu, pi, uwall
   use decomp_2d,   only : xsize, xstart, xend 
   use decomp_2d,   only : mytype
   
@@ -154,11 +156,14 @@ contains
   
   real(mytype) :: amplitude, period
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+  
+  ! Local
+  real(mytype) :: mg  ! mean gradient at the wall
     
-  call calculate_mgw(ux1,uz1)
+  call calculate_mgw(ux1,uz1,mg)
   
   ! Calculate shear velocity and friction coefficient
-  sh_vel     = sqrt_prec(xnu * mean_gw_tot)
+  sh_vel     = sqrt_prec(xnu * mg)
   fric_coeff = two * ((sh_vel / uwall)**2)
   
   ! Maximum amplitude of spanwise oscillations

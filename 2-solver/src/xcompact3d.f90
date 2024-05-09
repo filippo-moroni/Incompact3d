@@ -53,7 +53,7 @@ program xcompact3d
   t = t0
 
   do itime=ifirst,ilast
-     
+       
      !t=itime*dt
      !t=t0 + (itime0 + itime + 1 - ifirst)*dt
       
