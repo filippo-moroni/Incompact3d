@@ -86,7 +86,7 @@ contains
     use ibm_param,   only : ubcx,ubcz
     
     use MPI
-    use decomp_2d,   only : mytype, real_type
+    use decomp_2d,   only : mytype, real_type, nrank
     use decomp_2d,   only : xsize, ysize
     use decomp_2d,   only : transpose_x_to_y
     
@@ -121,7 +121,7 @@ contains
     ! du/dy=ta2   
     ! dw/dy=tc2
         
-    ! Mean velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] and summation over all points
+    ! Velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] and summation over all points (each processor)
     do k=1,ysize(3)
        do i=1,ysize(1)
            
