@@ -311,7 +311,7 @@ if istret == 3:
     print('!--- Reference data according to Cimarelli et al. (2024): ---!')
     print()
     print('Boundary layer thickness at Re_tau = 500, bl_thickness = ', bl_thickness)
-    print('Skin friction at peak, cf = ', cf)
+    print('Skin friction coefficient at peak, cf = ', cf)
     print()
     print()
     print('!----- Outputs: -----!')
