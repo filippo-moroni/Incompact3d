@@ -435,9 +435,10 @@ module param
   real(mytype) :: lln         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall     ! scalar value at the wall
    
-  ! Quantities evolving in time for a temporal TBL
+  ! Shear quantities at the wall (used for Channel and TTBL)
   real(mytype), save :: sh_vel       ! shear velocity
   real(mytype), save :: fric_coeff   ! skin friction coefficient
+  real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
 
   ! Spanwise wall oscillation
   real(mytype) :: span_vel           ! spanwise velocity at the wall

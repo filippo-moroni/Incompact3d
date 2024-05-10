@@ -17,8 +17,9 @@ module extra_tools
 contains
   
   !---------------------------------------------------------------------------!
-  ! Write skin friction coefficient, shear velocity and time unit and stores
-  ! them in a .txt file for time-evolution (used for TTBL and Channel).
+  ! Write skin friction coefficient, shear velocity,
+  ! viscous time unit and time unit and stores
+  ! them in a .txt file (used for TTBL and Channel).
   !---------------------------------------------------------------------------!
   subroutine print_cf(ux,uz)
   
@@ -36,9 +37,7 @@ contains
        
   ! Calculate shear velocity at the bottom wall (TTBL and Channel)
   if(itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
-      
       call calculate_shear_velocity(ux,uz,sh_vel)
-  
   end if  
       
   ! Create or open a file to store sh_vel, cf and time unit
@@ -54,14 +53,17 @@ contains
           ! fric_coeff = 
       end if
       
+      ! Calculate viscous time unit
+      t_viscous = xnu / (sh_vel**2)
+      
       inquire(file="cf_history.txt", exist=exists)
       if (exists) then
           open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
-          write(iunit, '(F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t
+          write(iunit, '(F8.6,A,F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
       else
           open(newunit=iunit, file="cf_history.txt", status="new", action="write")
-          write(iunit, '(A8,A,A8,A,A8)') 'sh_vel', ',', 'cf', ',', 'T'          
-          write(iunit, '(F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t
+          write(iunit, '(A8,A,A8,A,A8,A,A8)') 'sh_vel', ',', 'cf', ',', 't_nu', ',', 'T'          
+          write(iunit, '(F8.6,A,F8.6,A,F8.6,A,F8.6)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
       end if
       close(iunit)
   end if
@@ -139,9 +141,7 @@ contains
     
     ! Finalize shear velocity calculation
     if (nrank .eq. 0) then
-    
-        sh_vel = sqrt_prec(sh_vel * xnu)
-        
+        sh_vel = sqrt_prec(sh_vel * xnu)   
     end if
                   
   end subroutine calculate_shear_velocity
