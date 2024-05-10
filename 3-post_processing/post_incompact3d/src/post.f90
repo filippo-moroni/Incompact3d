@@ -194,7 +194,7 @@ PROGRAM post
 #ifdef TTBL_MODE
 
 #else  
-  ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
+  ! Closing of the do-loop for the different time units (or snapshots) (ie index)
   enddo 
 #endif
   
