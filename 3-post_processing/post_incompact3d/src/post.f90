@@ -23,7 +23,7 @@ PROGRAM post
   integer :: file1,filen,icrfile                   ! indexes for opening snapshots (first, last & increment)
   integer :: nt                                    ! total number of time units
   integer :: nr                                    ! total number of flow realizations
-  integer :: ifile
+  integer :: ifile                                 ! index to open different snapshots in time
   
   real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0   ! variables to count time spent to post-process data
    
@@ -127,7 +127,7 @@ PROGRAM post
      ! Show progress on post-processing    
      if (nrank==0) then
         print *,'----------------------------------------------------'
-        write(*,"(' We are averaging the realizations of the snapshot =',I3,'/',I3,')") ifile,filen
+        write(*,"('We are averaging the realizations of the snapshot =',I3,'/',I3)") ifile,filen
      endif
  
 !---------Start of the ensemble average cycle--------------!
@@ -404,13 +404,13 @@ PROGRAM post
      ! Vorticity mean statistics and mean gradient writing
      if (post_vort) then
 
-#ifdef TTBL_MODE     
-        ! Writing the time unit as character
-        write(time_unit, '(F5.1)') t 
-        time_unit = adjustl(time_unit) 
+#ifdef TTBL_MODE  
+        ! Writing the snapshot index as character
+        write(ifile,'(I3.3)') snap_index 
+        snap_index = adjustl(snap_index) 
         
         ! Write the vort_stats filename for TTBL
-        write(filename, '(A,A,A)') 'vort_stats', trim(time_unit), '.txt'
+        write(filename, '(A,A,A)') 'vort_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
 #else
         ! Write the vort_stats filename for channel flow
@@ -444,13 +444,13 @@ PROGRAM post
      ! Mean dissipation writing
      if (post_diss) then
 
-#ifdef TTBL_MODE     
-        ! Writing the time unit as character
-        write(time_unit, '(F5.1)') t 
-        time_unit = adjustl(time_unit) 
+#ifdef TTBL_MODE  
+        ! Writing the snapshot index as character
+        write(ifile,'(I3.3)') snap_index 
+        snap_index = adjustl(snap_index) 
         
         ! Write the diss_stats filename for TTBL
-        write(filename, '(A,A,A)') 'diss_stats', trim(time_unit), '.txt'
+        write(filename, '(A,A,A)') 'diss_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
 #else
         ! Write the diss_stats filename for channel flow

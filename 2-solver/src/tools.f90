@@ -283,7 +283,7 @@ contains
     end if
 
     if (iresflg==1) then !write
-            
+               
        call decomp_2d_open_io(io_restart, resfile, decomp_2d_write_mode)
        call decomp_2d_start_io(io_restart, resfile)
 

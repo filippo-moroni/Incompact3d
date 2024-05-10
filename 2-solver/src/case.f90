@@ -191,13 +191,15 @@ contains
   !##################################################################
   subroutine postprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
-    use decomp_2d, only : mytype, xsize, ph1
-    use visu, only  : write_snapshot, end_snapshot
-    use stats, only : overall_statistic
+    use decomp_2d,   only : mytype, xsize, ph1
+    use visu,        only : write_snapshot, end_snapshot
+    use stats,       only : overall_statistic
 
-    use var, only : nzmsize
-    use var, only : itime
-    use var, only : numscalar, nrhotime, npress
+    use var,         only : nzmsize
+    use var,         only : itime
+    use var,         only : numscalar, nrhotime, npress
+    
+    use extra_tools, only : print_cf
     
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
@@ -229,6 +231,9 @@ contains
        call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
 
        call end_snapshot(itime, num)
+       
+       ! Print of cf for debugging
+       call print_cf(ux1,uz1)
               
     end if
 

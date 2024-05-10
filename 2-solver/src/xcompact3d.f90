@@ -122,9 +122,6 @@ program xcompact3d
 
      call postprocessing(rho1,ux1,uy1,uz1,pp3,phi1,ep1)
      
-     ! Print of cf for debugging
-     call print_cf(ux1,uz1)
-
   enddo ! End time loop
 
   call finalise_xcompact3d()
