@@ -41,7 +41,7 @@ module tools
   
   private
 
-  public :: test_speed_min_max, test_scalar_min_max, &
+  public :: reading_input_file, test_scalar_min_max, test_speed_min_max,&
        simu_stats, &
        apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
        compute_cfldiff, compute_cfl, &
@@ -50,6 +50,42 @@ module tools
 
 contains
   !##################################################################
+  subroutine reading_input_file()
+
+  USE decomp_2d
+  USE decomp_2d_io
+  USE variables
+  USE param
+  USE var
+  USE MPI
+  
+  implicit none
+  
+  ! Variables to read the input.i3d file
+  integer :: nargin, FNLength, status, DecInd
+  logical :: back
+  character(len=80) :: InputFN, FNBase
+  
+  ! Reading of the input file as Xcompact3d does
+  nargin=command_argument_count()
+  if (nargin <1) then
+     InputFN='input.i3d'
+     if (nrank==0) write(*,*) 'PostIncompact3d is run with the default file -->', trim(InputFN)
+  elseif (nargin >= 1) then
+     call get_command_argument(1,InputFN,FNLength,status)
+     back=.true.
+     FNBase=inputFN((index(InputFN,'/',back)+1):len(InputFN))
+     DecInd=index(FNBase,'.',back)
+     if (DecInd >1) then
+        FNBase=FNBase(1:(DecInd-1))
+     end if
+     if (nrank==0) write(*,*) 'PostIncompact3d is run with the provided file -->', trim(InputFN)
+  endif
+  
+  ! Reading the input file for geometry and numerics
+  call parameter(InputFN)
+  
+  end subroutine reading_input_file
   !##################################################################
   subroutine test_scalar_min_max(phi)
 
@@ -100,7 +136,6 @@ contains
 
     return
   end subroutine test_scalar_min_max
-  !##################################################################
   !##################################################################
   subroutine test_speed_min_max(ux,uy,uz)
 
@@ -161,7 +196,6 @@ contains
 
     return
   end subroutine test_speed_min_max
-  !##################################################################
   !##################################################################
   subroutine simu_stats(iwhen)
 
@@ -604,7 +638,6 @@ contains
     end if
   end subroutine compute_cfl
   !##################################################################
-  !##################################################################
   ! Rescale pressure to physical pressure
   ! Written by Kay Schäfer 2019
   !##################################################################
@@ -630,7 +663,6 @@ contains
 
   end subroutine
   !##################################################################
-  !##################################################################
   subroutine mean_plane_x (f1,nx,ny,nz,fm1)
 
     use param, only : mytype, zero
@@ -647,7 +679,6 @@ contains
 
   end subroutine mean_plane_x
   !##################################################################
-  !##################################################################
   subroutine mean_plane_y (f2,nx,ny,nz,fm2)
 
     use param, only : mytype, zero
@@ -663,7 +694,6 @@ contains
     return
 
   end subroutine mean_plane_y
-  !##################################################################
   !##################################################################
   subroutine mean_plane_z (f3,nx,ny,nz,fm3)
 
@@ -750,13 +780,10 @@ contains
 
   end subroutine avg3d
 end module tools
-!##################################################################
-
 !===================================================
 ! Subroutine for computing the local and global CFL
 ! number, according to Lele 1992.
 !===================================================
-!##################################################################
 subroutine cfl_compute(uxmax,uymax,uzmax)
 
   use param
@@ -810,7 +837,6 @@ subroutine cfl_compute(uxmax,uymax,uzmax)
   endif
 
 end subroutine cfl_compute
-!##################################################################
 !##################################################################
 subroutine stretching()
 
@@ -999,7 +1025,6 @@ subroutine stretching()
 
 end subroutine stretching
 !##################################################################
-!##################################################################
 subroutine inversion5_v1(aaa_in,eee,spI)
 
   use decomp_2d
@@ -1142,7 +1167,6 @@ subroutine inversion5_v1(aaa_in,eee,spI)
 
 end subroutine inversion5_v1
 !##################################################################
-!##################################################################
 subroutine inversion5_v2(aaa,eee,spI)
 
   use decomp_2d
@@ -1281,7 +1305,6 @@ subroutine inversion5_v2(aaa,eee,spI)
 
 end subroutine inversion5_v2
 !##################################################################
-!##################################################################
 subroutine tripping(tb,ta)
 
   use param
@@ -1398,7 +1421,6 @@ subroutine tripping(tb,ta)
 
   return
 end subroutine tripping
-!##################################################################
 !##################################################################
 !!TRIPPING SUBROUTINE FOR TURBULENT BOUNDARY LAYERS
 !##################################################################
@@ -1531,7 +1553,6 @@ subroutine tbl_tripping(tb,ta)
   return
 end subroutine tbl_tripping
 !##################################################################
-!##################################################################
 function rl(complexnumber)
 
   use param
@@ -1544,7 +1565,6 @@ function rl(complexnumber)
   rl = real(complexnumber, kind=mytype)
 
 end function rl
-!##################################################################
 !##################################################################
 function iy(complexnumber)
 
@@ -1559,7 +1579,6 @@ function iy(complexnumber)
 
 end function iy
 !##################################################################
-!##################################################################
 function cx(realpart,imaginarypart)
 
   use param
@@ -1572,7 +1591,6 @@ function cx(realpart,imaginarypart)
   cx = cmplx(realpart, imaginarypart, kind=mytype)
 
 end function cx
-!##################################################################
 !##################################################################
 subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
 
@@ -1599,7 +1617,6 @@ subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
   mweight(:,:,:) = one / mweight(:,:,:)
 
 endsubroutine calc_mweight
-!##################################################################
 !##################################################################
 function r8_random ( s1, s2, s3 )
 
@@ -1742,7 +1759,6 @@ function r8_uni ( s1, s2 )
 
   return
 end
-!##################################################################
 !##################################################################
 subroutine test_min_max(name,text,array_tmp,i_size_array_tmp)
 

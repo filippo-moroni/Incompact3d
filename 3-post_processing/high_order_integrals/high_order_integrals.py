@@ -47,6 +47,8 @@ yp = data[:]
 y0 = data[0]   # First element of yp vector (y = 0)
 yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
+# To do: add reading of the time unit from restart files
+
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
 # spline function that passes through all provided points.

@@ -13,7 +13,6 @@ add_executable(post_incompact3d
                     parameters.f90
                     post.f90
                     post_processing_mod.f90
-                    reading_sub.f90
                     schemes.f90               
                     statistics_subs.f90
                     tools.f90               

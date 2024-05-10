@@ -232,7 +232,7 @@ contains
 
        call end_snapshot(itime, num)
        
-       ! Print of cf for debugging
+       ! Print of cf for monitoring
        call print_cf(ux1,uz1)
               
     end if
