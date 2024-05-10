@@ -32,7 +32,7 @@ PROGRAM post
   integer,dimension(3) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
-  character(99):: filename,dirname,time_unit 
+  character(99):: filename,dirname,snap_index 
   character(1) :: a
   
   ! Integer for MPI
@@ -117,20 +117,17 @@ PROGRAM post
 ! Post-processing starts here !
 !-----------------------------!
 
-!------------Start of the time unit do-loop----------------!
+!------------Start of the time average cycle---------------!
 
  do ie=1,nt
       
      ! Number of snapshot  
      ifile = (ie-1)*icrfile+file1
-     
-     ! Time-unit (T)
-     t=dt*real(ioutput*ifile,mytype)
-     
+          
      ! Show progress on post-processing    
      if (nrank==0) then
         print *,'----------------------------------------------------'
-        write(*,"(' We are averaging the realizations of the SnapShot =',I3,'/',I3,', Time unit =',F8.3)") ifile,filen,t
+        write(*,"(' We are averaging the realizations of the snapshot =',I3,'/',I3,')") ifile,filen
      endif
  
 !---------Start of the ensemble average cycle--------------!
@@ -343,12 +340,12 @@ PROGRAM post
      if (post_mean) then
 
 #ifdef TTBL_MODE  
-        ! Writing the time unit as character
-        write(time_unit, '(F5.1)') t 
-        time_unit = adjustl(time_unit) 
+        ! Writing the snapshot index as character
+        write(ifile,'(I3.3)') snap_index 
+        snap_index = adjustl(snap_index) 
         
         ! Write the mean_stats filename for TTBL
-        write(filename, '(A,A,A)') 'mean_stats', trim(time_unit), '.txt'
+        write(filename, '(A,A,A)') 'mean_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
 #else
         ! Write the mean_stats filename for channel flow
