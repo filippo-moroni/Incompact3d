@@ -341,7 +341,7 @@ PROGRAM post
 
 #ifdef TTBL_MODE  
         ! Writing the snapshot index as character
-        write(ifile,'(I3.3)') snap_index 
+        write(snap_index,'(I3.3)') ifile 
         snap_index = adjustl(snap_index) 
         
         ! Write the mean_stats filename for TTBL
@@ -406,7 +406,7 @@ PROGRAM post
 
 #ifdef TTBL_MODE  
         ! Writing the snapshot index as character
-        write(ifile,'(I3.3)') snap_index 
+        write(snap_index,'(I3.3)') ifile 
         snap_index = adjustl(snap_index) 
         
         ! Write the vort_stats filename for TTBL
@@ -446,7 +446,7 @@ PROGRAM post
 
 #ifdef TTBL_MODE  
         ! Writing the snapshot index as character
-        write(ifile,'(I3.3)') snap_index 
+        write(snap_index,'(I3.3)') ifile
         snap_index = adjustl(snap_index) 
         
         ! Write the diss_stats filename for TTBL
