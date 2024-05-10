@@ -352,6 +352,7 @@ if istret == 3:
     print('Number of mesh nodes in the viscous sublayer at cf peak:', npvis)
     print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
+    
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
     
