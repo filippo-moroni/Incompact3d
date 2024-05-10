@@ -1,0 +1,21 @@
+! Extra options for input.i3d file 
+
+
+!===================
+&BasicParam
+!===================
+
+! Filtering of the initial noise
+ifilter=0             ! 0: no filtering, 1: all directions, 2: x and z directions, 3: only y direction
+C_filter=0.49         ! alpha coefficient of the filter alpha £ (-0.5, 0.5) (maximum to no effect of the low pass compact filter)
+
+/End
+
+!================
+&ExtraNumControl
+!================
+
+icfllim = 0           ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+cfl_limit = 0.95      ! CFL limit to adjust the time-step
+
+/End

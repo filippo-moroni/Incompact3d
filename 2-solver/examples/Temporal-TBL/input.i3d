@@ -46,10 +46,6 @@ nclyn = 2
 nclz1 = 0
 nclzn = 0
 
-! Filtering of the initial noise
-ifilter=0             ! 0: no filtering, 1: all directions, 2: x and z directions, 3: only y direction
-C_filter=0.49         ! alpha coefficient of the filter alpha £ (-0.5, 0.5) (maximum to no effect of the low pass compact filter)
-
 /End
 
 !====================
@@ -59,11 +55,11 @@ C_filter=0.49         ! alpha coefficient of the filter alpha £ (-0.5, 0.5) (ma
 ! Spatial derivatives
 ifirstder = 4         ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact)
 isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact, 5-> hyperviscous 6th, 6-> default scheme Incompact3d v2.0)
-ipinter = 2           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2)
+ipinter = 2           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2, spectral-like behaviour)
 
 ! Time scheme
 itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3, 7-->CN2+AB3
-iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0->Same as convective,1->Backward Euler, 2->CN
+iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0->Same as convective, 1->Backward Euler, 2->CN
                       ! Implicit diffusion in y is valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
                       ! and it is experimental with the hyperviscous operator.
 /End
@@ -105,15 +101,6 @@ twd = 1.0             ! tripping wire diameter (D)
 uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (default value: 0.01 (Kozul et al. (2016)))
 lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
 phiwall = 1.0         ! scalar value at the wall  
-
-/End
-
-!================
-&ExtraNumControl
-!================
-
-icfllim = 0           ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-cfl_limit = 0.95      ! CFL limit to adjust the time-step
 
 /End
 
