@@ -23,12 +23,12 @@ file_path = f"post.prm"
 data = np.loadtxt(file_path, delimiter=None, dtype=int, comments='#', skiprows=3)
 
 # Inputs
-t1  = data[0]  # initial time unit
-tn  = data[1]  # final time unit
-icr = data[2]  # increment between different savings in time units
+file1   = data[0]  # First snapshot index
+filen   = data[1]  # Final snapshot index
+icrfile = data[2]  # File increment
 
 # Number of snapshots
-ns = (tn - t1)//icr + 1 
+ns = (filen - file1)//icrfile + 1 
 
 # Work arrays
 delta_99 = np.zeros(ns)
@@ -36,7 +36,8 @@ disp_t   = np.zeros(ns)
 mom_t    = np.zeros(ns)
 sh_vel   = np.zeros(ns)
 cf       = np.zeros(ns)
-t_unit   = np.zeros(ns)
+
+#t_unit   = np.zeros(ns)
 
 # Reading of yp coordinates
 file_path = 'yp.dat'
@@ -52,10 +53,10 @@ yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 #!---------------------------------------------------------!
 
 # Do loop over different time units
-for i in range(t1, tn + icr, icr):
+for i in range(file1, filen + icrfile, icrfile):
          
     # Reading of mean streamwise velocity
-    file_path = f"data_post/mean_stats{i}.0.txt"
+    file_path = f"data_post/mean_stats-{i:03d}.txt"
        
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     umean = data[:, 0]
@@ -81,7 +82,7 @@ for i in range(t1, tn + icr, icr):
     mom_t[ii] = spl.integral(y0, yn)
     
     # Reading of the mean gradient
-    file_path = f"data_post/vort_stats{i}.0.txt"
+    file_path = f"data_post/vort_stats-{i:03d}.0.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     mg = data[:, 3]
