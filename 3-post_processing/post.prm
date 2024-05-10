@@ -10,3 +10,4 @@
 #
 1    # post_mean  ! Compute mean statistics
 0    # post_vort  ! Compute mean vorticity and mean gradient
+0    # post_diss  ! Compute mean total dissipation rate

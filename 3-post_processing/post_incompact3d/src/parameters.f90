@@ -50,8 +50,7 @@ subroutine parameter(input_i3d)
   use ibm_param
   use dbg_schemes, only: sin_prec, cos_prec
 
-  use var, only : dphi1
-
+  use var,  only : dphi1
   use visu, only : output2D
 
   implicit none
@@ -132,7 +131,7 @@ subroutine parameter(input_i3d)
   if (iibm.ne.0) then
      read(10, nml=ibmstuff); rewind(10)
   endif
-   
+    
   !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
@@ -240,7 +239,7 @@ subroutine parameter(input_i3d)
   end if
   
   ! Read extra numerics control (Adjustable time-step)
-  read(10, nml=ExtraNumControl); rewind(10);
+  !read(10, nml=ExtraNumControl); rewind(10);
   
   ! Controls for wall oscillations
   read(10, nml=WallOscillations); rewind(10);  
@@ -340,6 +339,7 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
+  if (nrank==0) call system('mkdir -p data')
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
@@ -693,7 +693,6 @@ subroutine parameter_defaults()
   inflowpath='./'
   ioutflow=0
   output2D = 0
-
 
   ipost = 0
   iibm=0

@@ -29,7 +29,7 @@ PROGRAM post
    
   integer :: iunit		      		   ! unit for the file to open (assigned by the compiler)
     
-  integer,dimension(2) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
+  integer,dimension(3) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
   character(99):: filename,dirname,time_unit 
@@ -65,7 +65,7 @@ PROGRAM post
   
  
   ! Start of the post-processing  
-  post_mean=.false.; post_vort=.false.  
+  post_mean=.false.; post_vort=.false.; post_diss=.false.  
   read_vel=.false.;  read_pre=.false.; read_phi=.false.
                   
   ! Reading of the input file of post-processing (post.prm)
@@ -87,6 +87,7 @@ PROGRAM post
   
   if (sel(1)==1) post_mean=.true.
   if (sel(2)==1) post_vort=.true.
+  if (sel(3)==1) post_diss=.true.
 
   if (nrank==0) then
      if ((.not.post_mean).and.(.not.post_vort)) &
@@ -101,6 +102,7 @@ PROGRAM post
   endif
 
   if (post_vort) read_vel=.true.
+  if (post_diss) read_vel=.true.
   
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
@@ -187,6 +189,8 @@ PROGRAM post
                                    phi2mean,uphimean,vphimean,wphimean)
                                                                           
      if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradient)
+     
+     if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
 
   enddo ! closing of the do-loop on the different flow realizations
 
@@ -243,6 +247,16 @@ PROGRAM post
         enddo
      enddo
   endif
+  
+  if (post_diss) then
+     do k=ystart(3),yend(3)
+        do i=ystart(1),yend(1)
+           do j=ystart(2),yend(2)          
+              epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/real(nx*nz,mytype)                  
+           enddo
+        enddo
+     enddo
+  endif
 
 #ifdef TTBL_MODE
    ! Reset to zero the arrays used to collect the averages locally
@@ -282,8 +296,12 @@ PROGRAM post
      call MPI_REDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)  
      call MPI_REDUCE(mean_gradientH1,mean_gradientHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code) 
   endif
+  
+  if (post_diss) then
+     call MPI_REDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  end if
 
-!--------------MPI process nrank = 0 at work---------------!
+!------------- MPI process nrank = 0 at work --------------!
 
   ! High-order moments (variance, skewness, kurtosis)
   if(nrank.eq.0) then  
@@ -321,6 +339,7 @@ PROGRAM post
      print *,'----------------------------------------------------'
      write(*,"(1x,'Writing output data in formatted .txt files :')")
      
+     ! Mean statistics writing
      if (post_mean) then
 
 #ifdef TTBL_MODE  
@@ -385,7 +404,8 @@ PROGRAM post
         close(iunit)
      endif
      
-  if (post_vort) then
+     ! Vorticity mean statistics and mean gradient writing
+     if (post_vort) then
 
 #ifdef TTBL_MODE     
         ! Writing the time unit as character
@@ -422,6 +442,43 @@ PROGRAM post
         end do
                                
         close(iunit)
+     endif
+     
+     ! Mean dissipation writing
+     if (post_diss) then
+
+#ifdef TTBL_MODE     
+        ! Writing the time unit as character
+        write(time_unit, '(F5.1)') t 
+        time_unit = adjustl(time_unit) 
+        
+        ! Write the diss_stats filename for TTBL
+        write(filename, '(A,A,A)') 'diss_stats', trim(time_unit), '.txt'
+        filename = adjustl(filename)
+#else
+        ! Write the diss_stats filename for channel flow
+        write(filename, '(A)') 'diss_stats.txt'
+        filename = adjustl(filename)
+#endif
+               
+        ! Open the file and write      
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        do j = ystart(2),yend(2) + 1
+        
+        if (j .eq. 1) then
+        
+        write (iunit, *) 'mean[eps]'
+                               
+        else
+        
+        write(iunit, *)  epsmeanHT(j-1)
+        
+        end if
+        
+        end do
+                               
+        close(iunit)
   endif
      
   endif ! closing of the if-statement for processor 0
@@ -451,9 +508,9 @@ PROGRAM post
      print *,'Post-processing finished successfully!'
      print *,''
 #ifdef TTBL_MODE
-     print *,'Temporal TBL mode'
+     print *,'!--- Temporal TBL mode ---!'
 #else
-     print *,'Channel flow mode'
+     print *,'!--- Channel flow mode ---!'
 #endif
      print *,''
      print *,'2DECOMP with p_row*p_col=',p_row,p_col
@@ -501,12 +558,25 @@ PROGRAM post
      print *,''    
      endif
      
+     ! Total dissipation rate 
+     if (post_diss) then
+     print *,'==========================================================='
+     print *,''
+     print *,'The following statistics have been saved in'
+     print *,'"diss_stats" file(s):'
+     print *,''
+     print *,'mean[eps]'
+     print *,''    
+     endif
+     
+     print *,'==========================================================='
+     
   endif
 
   call decomp_2d_finalize
-  CALL MPI_FINALIZE(code)
+  call MPI_FINALIZE(code)
 
-end PROGRAM post
+end program post
 
 
 

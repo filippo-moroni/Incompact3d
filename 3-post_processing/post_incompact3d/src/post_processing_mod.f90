@@ -13,7 +13,7 @@ module post_processing
   character(len=100) :: fileformat
   character(len=1), parameter :: NL=char(10) !new line character
 
-  logical, save :: post_mean,post_vort
+  logical, save :: post_mean,post_vort,post_diss
 
   ! Arrays for statistic collection  
   real(mytype), save, allocatable, dimension(:,:,:) :: u1mean,v1mean,w1mean
@@ -45,12 +45,7 @@ module post_processing
     
   real(mytype), save, allocatable, dimension(:) :: phi1meanHT,phi2meanHT
   real(mytype), save, allocatable, dimension(:) :: uphimeanHT,vphimeanHT,wphimeanHT
-  
-  ! Arrays to save evolution of quantities in time
-  !real(mytype), save, allocatable, dimension(:) :: delta_99,disp_t,mom_t
-  !real(mytype), save, allocatable, dimension(:) :: re_tau,re_ds,re_theta
-  !real(mytype), save, allocatable, dimension(:) :: sh_vel             
-  
+            
   ! Arrays for vorticity
   real(mytype), save, allocatable, dimension(:,:,:) :: vortxmean,vortymean,vortzmean
   real(mytype), save, allocatable, dimension(:)     :: vortxmeanH1,vortymeanH1,vortzmeanH1
@@ -60,6 +55,11 @@ module post_processing
   real(mytype), save, allocatable, dimension(:,:,:) :: mean_gradient
   real(mytype), save, allocatable, dimension(:)     :: mean_gradientH1
   real(mytype), save, allocatable, dimension(:)     :: mean_gradientHT
+  
+  ! Arrays for total dissipation rate eps
+  real(mytype), save, allocatable, dimension(:,:,:) :: epsmean
+  real(mytype), save, allocatable, dimension(:)     :: epsmeanH1
+  real(mytype), save, allocatable, dimension(:)     :: epsmeanHT
      
 contains
 
@@ -361,6 +361,20 @@ contains
        mean_gradientHT=zero
                                                                                                                                                                       
     endif
+    
+    if (post_diss) then
+    
+       ! Total dissipation rate
+       allocate(epsmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
+       epsmean=zero
+       
+       allocate(epsmeanH1(ysize(2)));
+       epsmeanH1=zero
+       
+       allocate(epsmeanHT(ysize(2)));
+       epsmeanHT=zero
+    
+    end if
 
   end subroutine init_statistics
   
@@ -374,25 +388,25 @@ contains
   implicit none
   
   if (post_mean) then
+      u1mean=zero;v1mean=zero;w1mean=zero
+      u2mean=zero;v2mean=zero;w2mean=zero
+      u3mean=zero;v3mean=zero;w3mean=zero
+      u4mean=zero;v4mean=zero;w4mean=zero
+      uvmean=zero;uwmean=zero;vwmean=zero
+      pre1mean=zero;pre2mean=zero
   
-  u1mean=zero;v1mean=zero;w1mean=zero
-  u2mean=zero;v2mean=zero;w2mean=zero
-  u3mean=zero;v3mean=zero;w3mean=zero
-  u4mean=zero;v4mean=zero;w4mean=zero
-  uvmean=zero;uwmean=zero;vwmean=zero
-  pre1mean=zero;pre2mean=zero
-  
-  phi1mean=zero;phi2mean=zero
-  uphimean=zero;vphimean=zero;wphimean=zero
- 
+      phi1mean=zero;phi2mean=zero
+      uphimean=zero;vphimean=zero;wphimean=zero
   end if
   
   if (post_vort) then
+      vortxmean=zero; vortymean=zero; vortzmean=zero
+      
+      mean_gradient=zero
+  end if
   
-  vortxmean=zero; vortymean=zero; vortzmean=zero
-  
-  mean_gradient=zero
-  
+  if (post_diss) then
+      epsmean=zero
   end if
      
   end subroutine reset_averages
@@ -409,37 +423,47 @@ contains
   
   if (post_mean) then
   
-  ! Subdomains   
-  u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
-  u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
-  u3meanH1=zero;v3meanH1=zero;w3meanH1=zero
-  u4meanH1=zero;v4meanH1=zero;w4meanH1=zero
-  uvmeanH1=zero;uwmeanH1=zero;vwmeanH1=zero
-  pre1meanH1=zero;pre2meanH1=zero
-  phi1meanH1=zero;phi2meanH1=zero
-  uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
+      ! Subdomains   
+      u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
+      u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
+      u3meanH1=zero;v3meanH1=zero;w3meanH1=zero
+      u4meanH1=zero;v4meanH1=zero;w4meanH1=zero
+      uvmeanH1=zero;uwmeanH1=zero;vwmeanH1=zero
+      pre1meanH1=zero;pre2meanH1=zero
+      phi1meanH1=zero;phi2meanH1=zero
+      uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
   
-  ! Total domain
-  u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
-  u2meanHT=zero;v2meanHT=zero;w2meanHT=zero
-  u3meanHT=zero;v3meanHT=zero;w3meanHT=zero
-  u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
-  uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
-  pre1meanHT=zero;pre2meanHT=zero
-  phi1meanHT=zero;phi2meanHT=zero
-  uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
- 
+      ! Total domain
+      u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
+      u2meanHT=zero;v2meanHT=zero;w2meanHT=zero
+      u3meanHT=zero;v3meanHT=zero;w3meanHT=zero
+      u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
+      uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
+      pre1meanHT=zero;pre2meanHT=zero
+      phi1meanHT=zero;phi2meanHT=zero
+      uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
+      
   end if
   
   if (post_vort) then
   
-  ! Subdomains
-  vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
-  mean_gradientH1=zero
+      ! Subdomains
+      vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
+      mean_gradientH1=zero
   
-  ! Total domain
-  vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
-  mean_gradientHT=zero
+      ! Total domain
+      vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
+      mean_gradientHT=zero
+  
+  end if
+  
+  if (post_diss) then
+  
+      ! Subdomains
+      epsmeanH1=zero
+  
+      ! Total domain
+      epsmeanHT=zero
   
   end if
   
