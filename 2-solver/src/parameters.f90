@@ -239,7 +239,7 @@ subroutine parameter(input_i3d)
   end if
   
   ! Read extra numerics control (Adjustable time-step)
-  read(10, nml=ExtraNumControl); rewind(10);
+  !read(10, nml=ExtraNumControl); rewind(10);
   
   ! Controls for wall oscillations
   read(10, nml=WallOscillations); rewind(10);  
