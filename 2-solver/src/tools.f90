@@ -338,7 +338,7 @@ contains
 
        ! Write info file for restart - Kay Schäfer
        if (nrank == 0) then
-         write(filename,"('restart',I7.7,'.info')") itime
+         write(filename,"('restart_info/restart',I7.7,'.info')") itime
          write(fmt2,'("(A,I16)")')
          write(fmt3,'("(A,F16.4)")')
          write(fmt4,'("(A,F16.12)")')

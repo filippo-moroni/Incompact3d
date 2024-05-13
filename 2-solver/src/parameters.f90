@@ -339,7 +339,13 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
+  
+  ! Creating /data folder
   if (nrank==0) call system('mkdir -p data')
+  
+  ! Creating /restart_info folder
+  if (nrank==0) call system('mkdir -p restart_info')
+  
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
