@@ -51,7 +51,7 @@ yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 file_path = f"cf_history.txt"
       
 data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
-time_unit = data[:, 6]
+time_unit = data[:, 5]
 
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
