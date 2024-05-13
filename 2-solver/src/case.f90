@@ -69,13 +69,13 @@ contains
 
     INTEGER :: it, is
 
-    !! Zero out the pressure field
+    ! Zero out the pressure field
     pp3(:,:,:,1) = zero
     px1(:,:,:) = zero
     py1(:,:,:) = zero
     pz1(:,:,:) = zero
 
-    !! Default density and pressure0 to one
+    ! Default density and pressure0 to one
     pressure0 = one
     rho1(:,:,:,:) = one
 
@@ -128,7 +128,6 @@ contains
 
   end subroutine init
   !##################################################################
-  !##################################################################
   subroutine boundary_conditions (rho,ux,uy,uz,phi,ep)
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz,ep
@@ -165,7 +164,6 @@ contains
 
   end subroutine boundary_conditions
   !##################################################################
-  !##################################################################
   subroutine preprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
     use decomp_2d, only : mytype, xsize, ph1
@@ -187,7 +185,6 @@ contains
     !call overall_statistic(ux1, uy1, uz1, phi1, pp3, ep1)
 
   end subroutine preprocessing
-  !##################################################################
   !##################################################################
   subroutine postprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
@@ -242,7 +239,6 @@ contains
     call overall_statistic(ux1, uy1, uz1, T, pp3, ep1)
 
   end subroutine postprocessing
-  !##################################################################
   !##################################################################
   subroutine postprocess_case(rho,ux,uy,uz,pp,phi,ep)
 
@@ -357,7 +353,6 @@ contains
 
   end subroutine visu_case
   !##################################################################
-  !##################################################################
   !!
   !!  SUBROUTINE: momentum_forcing
   !!      AUTHOR: Paul Bartholomew
@@ -382,7 +377,6 @@ contains
 
   end subroutine momentum_forcing
   !##################################################################
-  !##################################################################
   !!
   !!  SUBROUTINE: scalar_forcing
   !!      AUTHOR: Kay Schäfer
@@ -400,7 +394,6 @@ contains
 
   end subroutine scalar_forcing
   !##################################################################
-  !##################################################################
   subroutine set_fluid_properties(rho1, mu1)
 
     implicit none
@@ -409,7 +402,6 @@ contains
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: mu1
 
   endsubroutine set_fluid_properties
-  !##################################################################
   !##################################################################
   subroutine test_flow(rho1,ux1,uy1,uz1,phi1,ep1,drho1,divu3)
 
@@ -441,7 +433,6 @@ contains
     endif
 
   end subroutine test_flow
-  !##################################################################
   !##################################################################
 end module case
 

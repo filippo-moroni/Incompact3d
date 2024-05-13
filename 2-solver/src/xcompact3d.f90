@@ -294,7 +294,7 @@ subroutine finalise_xcompact3d()
   use decomp_2d_io, only : decomp_2d_io_finalise
 
   use tools, only : simu_stats
-  use param, only : itype, dt, ifirst, ilast
+  use param, only : itype, dt, ifirst, ilast, t
   use visu,  only : visu_finalise
 
   implicit none
@@ -318,11 +318,11 @@ subroutine finalise_xcompact3d()
       inquire(file="dt_history.txt", exist=exists)
       if (exists) then
           open(newunit=iunit, file="dt_history.txt", status="old", position="append", action="write")
-          write(iunit, '(F8.6,A,I12,A,I12,A,F8.6)')  dt,  ',',  ifirst,  ',',  ilast, ',', t
+          write(iunit, '(F8.6,A,I12,A,I12,A,F10.4)')  dt,  ',',  ifirst,  ',',  ilast, ',', t
       else
           open(newunit=iunit, file="dt_history.txt", status="new", action="write")
-          write(iunit, '(A8,A,A12,A,A12,A,A12)') 'dt', ',', 'ifirst', ',', 'ilast', ',', 'time_unit'
-          write(iunit, '(F8.6,A,I12,A,I12,A,F8.6)')  dt,  ',',  ifirst,  ',',  ilast, ',', t
+          write(iunit, '(A8,A,A12,A,A12,A,A10)') 'dt', ',', 'ifirst', ',', 'ilast', ',', 'time_unit'
+          write(iunit, '(F8.6,A,I12,A,I12,A,F10.4)')  dt,  ',',  ifirst,  ',',  ilast, ',', t
       end if
       close(iunit)
   end if
