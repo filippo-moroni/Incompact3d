@@ -59,11 +59,11 @@ contains
       inquire(file="cf_history.txt", exist=exists)
       if (exists) then
           open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
-          write(iunit, '(F12.10,A,F12.10,A,F12.10,A,F12.10)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
       else
           open(newunit=iunit, file="cf_history.txt", status="new", action="write")
-          write(iunit, '(A10,A,A10,A,A10,A,A10)') 'sh_vel', ',', 'cf', ',', 't_nu', ',', 'T'          
-          write(iunit, '(F12.10,A,F12.10,A,F12.10,A,F12.10)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
+          write(iunit, '(A12,A,A12,A,A12,A,A12)') 'sh_vel', ',', 'cf', ',', 't_nu', ',', 'T'          
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
       end if
       close(iunit)
   end if
