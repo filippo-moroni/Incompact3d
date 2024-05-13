@@ -6,11 +6,25 @@
 #!           friction coefficient for a TTBL.              !
 #!---------------------------------------------------------!
 
+#! Temporary: reading of total dissipation and plot of 
+#!            Kolmogorov time-scale.
+
 # Libraries
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import InterpolatedUnivariateSpline
 import os 
+
+# Settings
+np.seterr(divide='ignore', invalid='ignore')
+
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "sans-serif",
+    "font.sans-serif": "Computer Modern Sans serif",
+})
+
+plt.rcParams.update({'figure.autolayout': True})
 
 # Parameters
 uwall = np.float64(1.0)
@@ -37,8 +51,6 @@ mom_t    = np.zeros(ns)
 sh_vel   = np.zeros(ns)
 cf       = np.zeros(ns)
 
-#t_unit   = np.zeros(ns)
-
 # Reading of yp coordinates
 file_path = 'yp.dat'
 data = np.loadtxt(file_path, delimiter=None, dtype=np.float64)
@@ -52,6 +64,9 @@ file_path = f"cf_history.txt"
       
 data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
 time_unit = data[:, 5]
+
+# Declare Kolmogorov time-scale array
+tau_eta = np.zeros(len(yp))
 
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
@@ -100,7 +115,7 @@ for i in range(file1, filen + icrfile, icrfile):
     cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
     
     # Reading of the mean dissipation
-    file_path = f"data_post/vort_stats-{i:03d}.txt"
+    file_path = f"data_post/diss_stats-{i:03d}.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     eps = data[:]
@@ -154,7 +169,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
 # Kolmogorov time scale
 tau_eta = (nu/eps)**0.5
 
-# Viscous length
+# Viscous length (at the moment, we need to select manually the specific snapshot for y+ calculation)
 delta_nu = nu/sh_vel[1]
 
 # y+
@@ -165,7 +180,7 @@ lw = 3  # linewidth for plots
 fig, ax = plt.subplots(1, 1, figsize=(14,10))
 
 ax.plot(tau_eta, yp, label="Kolmogorov time-scale", linewidth=lw) 
-ax.set_xlabel(r'$\y^+$', fontsize=50, labelpad=20)
+ax.set_xlabel(r'$y^+$', fontsize=50, labelpad=20)
 ax.set_ylabel(r'$\tau_\eta$', fontsize=50, labelpad=20)
 
 # Limits for axes and labels
