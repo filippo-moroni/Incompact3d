@@ -47,7 +47,11 @@ yp = data[:]
 y0 = data[0]   # First element of yp vector (y = 0)
 yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
-# To do: add reading of the time unit from restart files
+# Reading of time units
+file_path = f"cf_history.txt"
+      
+data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
+time_unit = data[:, 6]
 
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
@@ -94,10 +98,7 @@ for i in range(file1, filen + icrfile, icrfile):
     
     # Friction coefficient
     cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
-    
-    # Time-unit
-    t_unit[ii] = t1 + icr*ii
-    
+        
     # Index for BL thickness parameters vectors
     ii = ii + 1
 
@@ -140,7 +141,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{re_theta[j]:{fs}}, " +
             f"{sh_vel[j]:{fs}}, " +
             f"{cf[j]:{fs2}}, " +
-            f"{t_unit[j]:{fs}}\n")
+            f"{time_unit[j]:{fs}}\n")
 
 
 #!---------------------------------------------------------!
