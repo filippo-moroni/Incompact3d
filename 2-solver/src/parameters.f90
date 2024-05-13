@@ -119,10 +119,10 @@ subroutine parameter(input_i3d)
 
   call parameter_defaults()
 
-  !! Read parameters
+  ! Read parameters
   open(10, file=input_i3d)
 
-  !! These are the 'essential' parameters
+  ! These are the 'essential' parameters
   read(10, nml=BasicParam); rewind(10)
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
@@ -132,7 +132,7 @@ subroutine parameter(input_i3d)
      read(10, nml=ibmstuff); rewind(10)
   endif
     
-  !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
+  ! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
   nclzS1 = nclz1; nclzSn = nclzn
@@ -140,7 +140,7 @@ subroutine parameter(input_i3d)
   if (numscalar.ne.0) then
      iscalar = 1
 
-     !! Allocate scalar arrays and set sensible defaults
+     ! Allocate scalar arrays and set sensible defaults
      allocate(massfrac(numscalar))
      allocate(mol_weight(numscalar))
      massfrac(:) = .FALSE.

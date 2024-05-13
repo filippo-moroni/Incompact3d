@@ -98,6 +98,12 @@ for i in range(file1, filen + icrfile, icrfile):
     
     # Friction coefficient
     cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
+    
+    # Reading of the mean dissipation
+    file_path = f"data_post/vort_stats-{i:03d}.txt"
+    
+    data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
+    eps = data[:]
         
     # Index for BL thickness parameters vectors
     ii = ii + 1
@@ -143,6 +149,48 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{cf[j]:{fs2}}, " +
             f"{time_unit[j]:{fs}}\n")
 
+#!--- Dissipation-related section ---!
+            
+# Kolmogorov time scale
+tau_eta = (nu/eps)**0.5
+
+# Viscous length
+delta_nu = nu/sh_vel[1]
+
+# y+
+yplus = yp/delta_nu
+
+#!--- Plotting starts here ---!
+lw = 3  # linewidth for plots
+fig, ax = plt.subplots(1, 1, figsize=(14,10))
+
+ax.plot(tau_eta, yp, label="Kolmogorov time-scale", linewidth=lw) 
+ax.set_xlabel(r'$\y^+$', fontsize=50, labelpad=20)
+ax.set_ylabel(r'$\tau_\eta$', fontsize=50, labelpad=20)
+
+# Limits for axes and labels
+#labels = [r"$0^\circ$", r"$30^\circ$", r"$150^\circ$", r"$180^\circ$", r"$210^\circ$","$330^\circ$",r"$360^\circ$"]
+
+#values = [0, pi/6.0, v1, v2, pi, v3, v4, 11.0/6.0*pi, 2.0*pi]
+#values = [0, pi/6.0, v1, pi, v4, 11.0/6.0*pi, 2.0*pi]
+
+# Color 'k' is black
+#ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
+#ax.set_xticklabels(labels, fontsize=11, rotation=0, ha='center')  
+
+    
+ax.tick_params(axis='y', labelcolor="k", labelsize=24)
+
+ax.tick_params(which='both', width=1)
+ax.tick_params(which='major', length=7)
+ax.tick_params(which='minor', length=4)
+
+ax.grid(which='both', color='0.65', linestyle='--', linewidth=1)
+fig.legend(loc="center left", fontsize=20, bbox_to_anchor=(1.0, 0.5))
+
+plt.savefig('kolmogorov_time_scale.pdf', format='pdf', bbox_inches='tight')
+
+plt.show()
 
 #!---------------------------------------------------------!
 # Check section (everything works)
