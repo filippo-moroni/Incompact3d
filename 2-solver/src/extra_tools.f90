@@ -17,7 +17,7 @@ module extra_tools
 contains
   
   !---------------------------------------------------------------------------!
-  ! Write skin friction coefficient, shear velocity,
+  ! Write skin friction coefficients, shear velocity,
   ! viscous time unit and time unit and stores
   ! them in a .txt file (used for TTBL and Channel).
   !---------------------------------------------------------------------------!
@@ -37,7 +37,7 @@ contains
        
   ! Calculate shear velocity at the bottom wall (TTBL and Channel)
   if(itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
-      call calculate_shear_velocity(ux,uz,sh_vel)
+      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
   end if  
       
   ! Create or open a file to store sh_vel, cf and time unit
@@ -45,7 +45,9 @@ contains
       
       ! Calculate friction coefficient for a TTBL
       if(itype .eq. itype_ttbl) then
-          fric_coeff = two * ((sh_vel / uwall)**2)
+          fric_coeff  = two * ((sh_vel  / uwall)**2)
+          fric_coeffx = two * ((sh_velx / uwall)**2)
+          fric_coeffz = two * ((sh_velz / uwall)**2)
       
       ! Calculate friction coefficient for a Channel
       else if(itype .eq. itype_channel) then
@@ -59,11 +61,11 @@ contains
       inquire(file="cf_history.txt", exist=exists)
       if (exists) then
           open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
-          write(iunit, '(F12.6,A,F12.6,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A,F12.6,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
       else
           open(newunit=iunit, file="cf_history.txt", status="new", action="write")
-          write(iunit, '(A12,A,A12,A,A12,A,A12)') 'sh_vel', ',', 'cf', ',', 't_nu', ',', 'T'          
-          write(iunit, '(F12.6,A,F12.6,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', t_viscous, ',', t
+          write(iunit, '(A12,A,A12,A,A12,A,A12,A,A12,A,A12)') 'sh_vel', ',', 'cf,tot', ',', 'cf,x', ',', 'cf,z', ',', 't_nu', ',', 'T'          
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A,F12.6,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
       end if
       close(iunit)
   end if
@@ -71,14 +73,14 @@ contains
   end subroutine print_cf
   
   !---------------------------------------------------------------------------!
-  ! Calculate shear velocity
+  ! Calculate total shear velocity and its x and z components
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
   !   for the spanwise wall oscillations. 
-  ! - Used to print cf and shear velocity to an overall .txt file
-  !   for time evolution check.
+  ! - Used to print cf coefficients and shear velocity to an overall 
+  !   .txt file for time evolution check.
   !---------------------------------------------------------------------------!
-  subroutine calculate_shear_velocity(ux,uz,sh_vel)
+  subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
     
     use var,         only : ux2, uz2     
     use ibm_param,   only : ubcx,ubcy,ubcz
@@ -101,16 +103,27 @@ contains
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
 
     ! Outputs
-    real(mytype), intent(out) :: sh_vel  ! Shear velocity 
+    real(mytype), intent(out) :: sh_vel  ! Total shear velocity 
+    real(mytype), intent(out) :: sh_velx ! Shear velocity along x 
+    real(mytype), intent(out) :: sh_velz ! Shear velocity along z
     
     ! Work variables
-    real(mytype) :: mean_gw   ! Mean gradient at each processor
+    real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
+    real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
+    real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
+    real(mytype) :: den        ! Denominator of the divisions
+       
     integer      :: ierr         
     integer      :: i,k
         
     ! Set again variables to zero
-    mean_gw = zero
-    sh_vel  = zero
+    mean_gw  = zero
+    mean_gwx = zero
+    mean_gwz = zero
+    sh_vel   = zero
+    
+    ! Denominator of the divisions
+    den = real(nx*nz,mytype)
     
     ! Transpose to y-pencils
     call transpose_x_to_y(ux,ux2)
@@ -122,26 +135,33 @@ contains
     
     ! du/dy=ta2   
     ! dw/dy=tc2
-        
-    ! Velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] and summation over all points (each processor)
+    
+    ! Index for j is 1, since we are dealing with y-pencils and summation over all points (each processor)
     do k=1,ysize(3)
        do i=1,ysize(1)
+              
+           ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
+           mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
            
-           ! Index for j is 1, since we are dealing with y-pencils
-           mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / real(nx*nz,mytype)
+           ! Mean streamwise gradient dU/dy
+           mean_gwx = mean_gwx + ta2(i,1,k) / den
+           
+           ! Mean spanwise gradient dW/dy
+           mean_gwz = mean_gwz + tc2(i,1,k) / den
                          
        enddo
     enddo
+         
+    ! Summation over all MPI processes       
+    call MPI_REDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    call MPI_REDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    call MPI_REDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
     
-    ! Debug: why I am getting 8 output to screen instead of 4?
-    !write(*,*) mean_gw
-     
-    ! Summation over all MPI processes (mean gradient at the wall total)       
-    call MPI_REDUCE(mean_gw,sh_vel,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
-    
-    ! Finalize shear velocity calculation
+    ! Finalize shear velocities calculation
     if (nrank .eq. 0) then
-        sh_vel = sqrt_prec(sh_vel * xnu)   
+        sh_vel  = sqrt_prec(sh_vel  * xnu)
+        sh_velx = sqrt_prec(sh_velx * xnu)
+        sh_velz = sqrt_prec(sh_velz * xnu)  
     end if
                   
   end subroutine calculate_shear_velocity
@@ -156,7 +176,7 @@ contains
   subroutine spanwise_wall_oscillations(ux1,uz1)
   
   use dbg_schemes, only : sin_prec, sqrt_prec
-  use param,       only : sh_vel, span_vel, t
+  use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
   use param,       only : a_plus_cap, t_plus_cap
   use param,       only : two, xnu, pi
   use decomp_2d,   only : xsize
@@ -168,7 +188,7 @@ contains
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
   
   ! Calculate shear velocity    
-  call calculate_shear_velocity(ux1,uz1,sh_vel)
+  call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
     
   ! Maximum amplitude of spanwise oscillations
   amplitude = sh_vel * a_plus_cap

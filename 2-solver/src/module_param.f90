@@ -436,12 +436,16 @@ module param
   real(mytype) :: phiwall     ! scalar value at the wall
    
   ! Shear quantities at the wall (used for Channel and TTBL)
-  real(mytype), save :: sh_vel       ! shear velocity
-  real(mytype), save :: fric_coeff   ! skin friction coefficient
-  real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
+  real(mytype), save :: sh_vel       ! total shear velocity
+  real(mytype), save :: sh_velx      ! shear velocity along x
+  real(mytype), save :: sh_velz      ! shear velocity along z
+  real(mytype), save :: fric_coeff   ! total skin friction coefficient
+  real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
+  real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
+  real(mytype), save :: t_viscous    ! viscous time unit (based on total shear velocity and viscous length)
 
   ! Spanwise wall oscillation
-  real(mytype) :: span_vel           ! spanwise velocity at the wall
+  real(mytype), save :: span_vel     ! spanwise velocity at the wall
       
   ! Extra controls for numerics 
   integer      :: icfllim            ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
