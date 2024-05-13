@@ -445,8 +445,8 @@ contains
        call decomp_2d_end_io(io_restart, resfile)
        call decomp_2d_close_io(io_restart, resfile)
 
-       !! Read time of restart file
-       write(filename,"('restart',I7.7,'.info')") ifirst-1
+       ! Read time of restart file
+       write(filename,"('restart_info/restart',I7.7,'.info')") ifirst-1
        inquire(file=filename, exist=fexists)
        if (nrank==0) write(*,*) filename
        ! file exists???
