@@ -49,36 +49,35 @@ contains
 
     implicit none
 
-    !! Inputs
+    ! Inputs
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), nrhotime), intent(in) :: rho1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), numscalar), intent(in) :: phi1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ep1
     real(mytype), dimension(zsize(1), zsize(2), zsize(3)), intent(in) :: divu3
 
-    !! Outputs
+    ! Outputs
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), ntime) :: dux1, duy1, duz1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), ntime) :: drho1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), ntime, numscalar) :: dphi1
 
-    !! Momentum equations
+    ! Momentum equations
     call momentum_rhs_eq(dux1,duy1,duz1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
 
-    !! Scalar equations
-    !! XXX Not yet LMN!!!
+    ! Scalar equations
+    ! XXX Not yet LMN!!!
     call scalar(dphi1, rho1, ux1, uy1, uz1, phi1)
 
     !! Other (LMN, ...)
-    if (ilmn) THEN
-       if (ilmn_solve_temp) THEN
-          call temperature_rhs_eq(drho1, rho1, ux1, uy1, uz1, phi1)
-       else
-          call continuity_rhs_eq(drho1, rho1, ux1, divu3)
-       endif
-    endif
+    !if (ilmn) THEN
+    !   if (ilmn_solve_temp) THEN
+    !      call temperature_rhs_eq(drho1, rho1, ux1, uy1, uz1, phi1)
+    !   else
+    !      call continuity_rhs_eq(drho1, rho1, ux1, divu3)
+    !   endif
+    !endif
 
   end subroutine calculate_transeq_rhs
-  !############################################################################
   !############################################################################
   !!
   !!  subroutine: momentum_rhs_eq
@@ -87,7 +86,6 @@ contains
   !! DESCRIPTION: Calculation of convective and diffusion terms of momentum
   !!              equation
   !!
-  !############################################################################
   !############################################################################
   subroutine momentum_rhs_eq(dux1,duy1,duz1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
 
@@ -101,22 +99,22 @@ contains
     use var, only : FTx, FTy, FTz, Fdiscx, Fdiscy, Fdiscz
     use ibm_param, only : ubcx,ubcy,ubcz
     use les, only : compute_SGS
+    
 #ifdef DEBG 
     use tools, only : avg3d
 #endif
-
 
     use case, only : momentum_forcing
 
     implicit none
 
-    !! INPUTS
+    ! INPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,ep1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
     real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho1
     real(mytype),intent(in),dimension(zsize(1),zsize(2),zsize(3)) :: divu3
 
-    !! OUTPUTS
+    ! OUTPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1,duy1,duz1
 
 #ifdef DEBG 
@@ -127,15 +125,15 @@ contains
 
     !SKEW SYMMETRIC FORM
     !WORK X-PENCILS
-    if (ilmn) then
-      ta1(:,:,:) = rho1(:,:,:,1) * ux1(:,:,:) * ux1(:,:,:)
-      tb1(:,:,:) = rho1(:,:,:,1) * ux1(:,:,:) * uy1(:,:,:)
-      tc1(:,:,:) = rho1(:,:,:,1) * ux1(:,:,:) * uz1(:,:,:)
-    else
+    !if (ilmn) then
+    !  ta1(:,:,:) = rho1(:,:,:,1) * ux1(:,:,:) * ux1(:,:,:)
+    !  tb1(:,:,:) = rho1(:,:,:,1) * ux1(:,:,:) * uy1(:,:,:)
+    !  tc1(:,:,:) = rho1(:,:,:,1) * ux1(:,:,:) * uz1(:,:,:)
+    !else
       ta1(:,:,:) = ux1(:,:,:) * ux1(:,:,:)
       tb1(:,:,:) = ux1(:,:,:) * uy1(:,:,:)
       tc1(:,:,:) = ux1(:,:,:) * uz1(:,:,:)
-    endif
+    !endif
 
 #ifdef DEBG 
     avg_param = zero
@@ -157,33 +155,35 @@ contains
 #endif
 
     ! Convective terms of x-pencil are stored in tg1,th1,ti1
-    if (ilmn) then
-      tg1(:,:,:) = td1(:,:,:) + rho1(:,:,:,1) * ux1(:,:,:) * ta1(:,:,:)
-      th1(:,:,:) = te1(:,:,:) + rho1(:,:,:,1) * ux1(:,:,:) * tb1(:,:,:)
-      ti1(:,:,:) = tf1(:,:,:) + rho1(:,:,:,1) * ux1(:,:,:) * tc1(:,:,:)
-    else
+    !if (ilmn) then
+    !  tg1(:,:,:) = td1(:,:,:) + rho1(:,:,:,1) * ux1(:,:,:) * ta1(:,:,:)
+    !  th1(:,:,:) = te1(:,:,:) + rho1(:,:,:,1) * ux1(:,:,:) * tb1(:,:,:)
+    !  ti1(:,:,:) = tf1(:,:,:) + rho1(:,:,:,1) * ux1(:,:,:) * tc1(:,:,:)
+    !else
       tg1(:,:,:) = td1(:,:,:) + ux1(:,:,:) * ta1(:,:,:)
       th1(:,:,:) = te1(:,:,:) + ux1(:,:,:) * tb1(:,:,:)
       ti1(:,:,:) = tf1(:,:,:) + ux1(:,:,:) * tc1(:,:,:)
-    endif
+    !endif
     ! TODO: save the x-convective terms already in dux1, duy1, duz1
+    
 #ifdef DEBG 
     avg_param = zero
     call avg3d (tg1, avg_param)
     if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg1 (duu+udu) AVG ', avg_param
 #endif
 
-    if (ilmn) then
-       !! Quasi-skew symmetric terms
-       call derx (td1,rho1(:,:,:,1),di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1, zero)
-       tg1(:,:,:) = tg1(:,:,:) + ux1(:,:,:) * ux1(:,:,:) * td1(:,:,:)
-       th1(:,:,:) = th1(:,:,:) + uy1(:,:,:) * ux1(:,:,:) * td1(:,:,:)
-       ti1(:,:,:) = ti1(:,:,:) + uz1(:,:,:) * ux1(:,:,:) * td1(:,:,:)
-    endif
+    !if (ilmn) then
+    !   ! Quasi-skew symmetric terms
+    !   call derx (td1,rho1(:,:,:,1),di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1, zero)
+    !   tg1(:,:,:) = tg1(:,:,:) + ux1(:,:,:) * ux1(:,:,:) * td1(:,:,:)
+    !   th1(:,:,:) = th1(:,:,:) + uy1(:,:,:) * ux1(:,:,:) * td1(:,:,:)
+    !   ti1(:,:,:) = ti1(:,:,:) + uz1(:,:,:) * ux1(:,:,:) * td1(:,:,:)
+    !endif
 
     call transpose_x_to_y(ux1,ux2)
     call transpose_x_to_y(uy1,uy2)
     call transpose_x_to_y(uz1,uz2)
+    
 #ifdef DEBG 
     avg_param = zero
     call avg3d (ux2, avg_param)
@@ -193,23 +193,24 @@ contains
     if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR uy2 (transpose) AVG ', avg_param
 #endif
 
-    if (ilmn) then
-       call transpose_x_to_y(rho1(:,:,:,1),rho2)
-       call transpose_x_to_y(mu1,mu2)
-    else
+    !if (ilmn) then
+    !   call transpose_x_to_y(rho1(:,:,:,1),rho2)
+    !   call transpose_x_to_y(mu1,mu2)
+    !else
        rho2(:,:,:) = one
-    endif
+    !endif
 
     !WORK Y-PENCILS
-    if (ilmn) then
-      td2(:,:,:) = rho2(:,:,:) * ux2(:,:,:) * uy2(:,:,:)
-      te2(:,:,:) = rho2(:,:,:) * uy2(:,:,:) * uy2(:,:,:)
-      tf2(:,:,:) = rho2(:,:,:) * uz2(:,:,:) * uy2(:,:,:)
-    else
+    !if (ilmn) then
+    !  td2(:,:,:) = rho2(:,:,:) * ux2(:,:,:) * uy2(:,:,:)
+    !  te2(:,:,:) = rho2(:,:,:) * uy2(:,:,:) * uy2(:,:,:)
+    !  tf2(:,:,:) = rho2(:,:,:) * uz2(:,:,:) * uy2(:,:,:)
+    !else
       td2(:,:,:) = ux2(:,:,:) * uy2(:,:,:)
       te2(:,:,:) = uy2(:,:,:) * uy2(:,:,:)
       tf2(:,:,:) = uz2(:,:,:) * uy2(:,:,:)
-    endif
+    !endif
+    
 #ifdef DEBG 
     avg_param = zero
     call avg3d (td2, avg_param)
@@ -230,47 +231,48 @@ contains
 #endif
 
     ! Convective terms of y-pencil in tg2,th2,ti2
-    if (ilmn) then
-      tg2(:,:,:) = tg2(:,:,:) + rho2(:,:,:) * uy2(:,:,:) * td2(:,:,:)
-      th2(:,:,:) = th2(:,:,:) + rho2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
-      ti2(:,:,:) = ti2(:,:,:) + rho2(:,:,:) * uy2(:,:,:) * tf2(:,:,:)
-    else
+    !if (ilmn) then
+    !  tg2(:,:,:) = tg2(:,:,:) + rho2(:,:,:) * uy2(:,:,:) * td2(:,:,:)
+    !  th2(:,:,:) = th2(:,:,:) + rho2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
+    !  ti2(:,:,:) = ti2(:,:,:) + rho2(:,:,:) * uy2(:,:,:) * tf2(:,:,:)
+    !else
       tg2(:,:,:) = tg2(:,:,:) + uy2(:,:,:) * td2(:,:,:)
       th2(:,:,:) = th2(:,:,:) + uy2(:,:,:) * te2(:,:,:)
       ti2(:,:,:) = ti2(:,:,:) + uy2(:,:,:) * tf2(:,:,:)
-    endif
+    !endif
+    
 #ifdef DEBG 
     avg_param = zero
     call avg3d (tg2, avg_param)
     if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg2 (duu+udu) AVG ', avg_param
 #endif
 
-
-    if (ilmn) then
-       !! Quasi-skew symmetric terms
-       call dery (te2,rho2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,zero)
-       tg2(:,:,:) = tg2(:,:,:) + ux2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
-       th2(:,:,:) = th2(:,:,:) + uy2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
-       ti2(:,:,:) = ti2(:,:,:) + uz2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
-    endif
+    !if (ilmn) then
+    !   ! Quasi-skew symmetric terms
+    !   call dery (te2,rho2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,zero)
+    !   tg2(:,:,:) = tg2(:,:,:) + ux2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
+    !   th2(:,:,:) = th2(:,:,:) + uy2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
+    !   ti2(:,:,:) = ti2(:,:,:) + uz2(:,:,:) * uy2(:,:,:) * te2(:,:,:)
+    !endif
 
     call transpose_y_to_z(ux2,ux3)
     call transpose_y_to_z(uy2,uy3)
     call transpose_y_to_z(uz2,uz3)
 
-    !WORK Z-PENCILS
-    if (ilmn) then
-       call transpose_y_to_z(rho2,rho3)
-       call transpose_y_to_z(mu2,mu3)
+    !!WORK Z-PENCILS
+    !if (ilmn) then
+    !   call transpose_y_to_z(rho2,rho3)
+    !   call transpose_y_to_z(mu2,mu3)
 
-       td3(:,:,:) = rho3(:,:,:) * ux3(:,:,:) * uz3(:,:,:)
-       te3(:,:,:) = rho3(:,:,:) * uy3(:,:,:) * uz3(:,:,:)
-       tf3(:,:,:) = rho3(:,:,:) * uz3(:,:,:) * uz3(:,:,:)
-    else
+    !   td3(:,:,:) = rho3(:,:,:) * ux3(:,:,:) * uz3(:,:,:)
+    !   te3(:,:,:) = rho3(:,:,:) * uy3(:,:,:) * uz3(:,:,:)
+    !   tf3(:,:,:) = rho3(:,:,:) * uz3(:,:,:) * uz3(:,:,:)
+    !else
        td3(:,:,:) = ux3(:,:,:) * uz3(:,:,:)
        te3(:,:,:) = uy3(:,:,:) * uz3(:,:,:)
        tf3(:,:,:) = uz3(:,:,:) * uz3(:,:,:)
-    endif
+    !endif
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (td3, avg_param)
@@ -285,28 +287,29 @@ contains
     call derz (tf3,uz3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0,ubcz)
 
     ! Convective terms of z-pencil in ta3,tb3,tc3
-    if (ilmn) then
-      ta3(:,:,:) = tg3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * td3(:,:,:)
-      tb3(:,:,:) = th3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * te3(:,:,:)
-      tc3(:,:,:) = ti3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
-    else
+    !if (ilmn) then
+    !  ta3(:,:,:) = tg3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * td3(:,:,:)
+    !  tb3(:,:,:) = th3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * te3(:,:,:)
+    !  tc3(:,:,:) = ti3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
+    !else
       ta3(:,:,:) = tg3(:,:,:) + uz3(:,:,:) * td3(:,:,:)
       tb3(:,:,:) = th3(:,:,:) + uz3(:,:,:) * te3(:,:,:)
       tc3(:,:,:) = ti3(:,:,:) + uz3(:,:,:) * tf3(:,:,:)
-    endif
+    !endif
 
-    if (ilmn) then
-       !! Quasi-skew symmetric terms
-       call derz (tf3,rho3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,zero)
-       ta3(:,:,:) = ta3(:,:,:) + ux3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
-       tb3(:,:,:) = tb3(:,:,:) + uy3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
-       tc3(:,:,:) = tc3(:,:,:) + uz3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
+    !if (ilmn) then
+    !   ! Quasi-skew symmetric terms
+    !   call derz (tf3,rho3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,zero)
+    !   ta3(:,:,:) = ta3(:,:,:) + ux3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
+    !   tb3(:,:,:) = tb3(:,:,:) + uy3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
+    !   tc3(:,:,:) = tc3(:,:,:) + uz3(:,:,:) * uz3(:,:,:) * tf3(:,:,:)
 
-       !! Add the additional divu terms
-       ta3(:,:,:) = ta3(:,:,:) + rho3(:,:,:) * ux3(:,:,:) * divu3(:,:,:)
-       tb3(:,:,:) = tb3(:,:,:) + rho3(:,:,:) * uy3(:,:,:) * divu3(:,:,:)
-       tc3(:,:,:) = tc3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * divu3(:,:,:)
-    endif
+    !   ! Add the additional divu terms
+    !   ta3(:,:,:) = ta3(:,:,:) + rho3(:,:,:) * ux3(:,:,:) * divu3(:,:,:)
+    !   tb3(:,:,:) = tb3(:,:,:) + rho3(:,:,:) * uy3(:,:,:) * divu3(:,:,:)
+    !   tc3(:,:,:) = tc3(:,:,:) + rho3(:,:,:) * uz3(:,:,:) * divu3(:,:,:)
+    !endif
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (ta3, avg_param)
@@ -323,17 +326,16 @@ contains
     call derzz (tb3,uy3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1,ubcy)
     call derzz (tc3,uz3,di3,sz,sfz ,ssz ,swz ,zsize(1),zsize(2),zsize(3),0,ubcz)
 
-
     ! Add convective and diffusive terms of z-pencil (half for skew-symmetric)
-    if (ilmn) then
-      td3(:,:,:) = mu3(:,:,:) * xnu*ta3(:,:,:) - half * td3(:,:,:)
-      te3(:,:,:) = mu3(:,:,:) * xnu*tb3(:,:,:) - half * te3(:,:,:)
-      tf3(:,:,:) = mu3(:,:,:) * xnu*tc3(:,:,:) - half * tf3(:,:,:)
-    else
+    !if (ilmn) then
+    !  td3(:,:,:) = mu3(:,:,:) * xnu*ta3(:,:,:) - half * td3(:,:,:)
+    !  te3(:,:,:) = mu3(:,:,:) * xnu*tb3(:,:,:) - half * te3(:,:,:)
+    !  tf3(:,:,:) = mu3(:,:,:) * xnu*tc3(:,:,:) - half * tf3(:,:,:)
+    !else
       td3(:,:,:) = xnu*ta3(:,:,:) - half * td3(:,:,:)
       te3(:,:,:) = xnu*tb3(:,:,:) - half * te3(:,:,:)
       tf3(:,:,:) = xnu*tc3(:,:,:) - half * tf3(:,:,:)
-    endif
+    !endif
 
     !WORK Y-PENCILS
     call transpose_z_to_y(td3,td2)
@@ -349,7 +351,6 @@ contains
     call avg3d (tg2, avg_param)
     if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tg2 (Conv+Diff)) AVG ', avg_param
 #endif
-
 
     !DIFFUSIVE TERMS IN Y
     if (iimplicit.le.0) then
@@ -442,17 +443,16 @@ contains
     if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tf2 (Diff Y) AVG ', avg_param
 #endif
 
-
     ! Add diffusive terms of y-pencil to convective and diffusive terms of y- and z-pencil
-    if (ilmn) then
-      ta2(:,:,:) = mu2(:,:,:) * xnu*td2(:,:,:) + tg2(:,:,:)
-      tb2(:,:,:) = mu2(:,:,:) * xnu*te2(:,:,:) + th2(:,:,:)
-      tc2(:,:,:) = mu2(:,:,:) * xnu*tf2(:,:,:) + ti2(:,:,:)
-    else
+    !if (ilmn) then
+    !  ta2(:,:,:) = mu2(:,:,:) * xnu*td2(:,:,:) + tg2(:,:,:)
+    !  tb2(:,:,:) = mu2(:,:,:) * xnu*te2(:,:,:) + th2(:,:,:)
+    !  tc2(:,:,:) = mu2(:,:,:) * xnu*tf2(:,:,:) + ti2(:,:,:)
+    !else
       ta2(:,:,:) = xnu*td2(:,:,:) + tg2(:,:,:)
       tb2(:,:,:) = xnu*te2(:,:,:) + th2(:,:,:)
       tc2(:,:,:) = xnu*tf2(:,:,:) + ti2(:,:,:)
-    endif
+    !endif
 
     !WORK X-PENCILS
     call transpose_y_to_x(ta2,ta1)
@@ -464,15 +464,16 @@ contains
     call derxx (te1,uy1,di1,sx,sfxp,ssxp,swxp,xsize(1),xsize(2),xsize(3),1,ubcy)
     call derxx (tf1,uz1,di1,sx,sfxp,ssxp,swxp,xsize(1),xsize(2),xsize(3),1,ubcz)
 
-    if (ilmn) then
-      td1(:,:,:) = mu1(:,:,:) * xnu * td1(:,:,:)
-      te1(:,:,:) = mu1(:,:,:) * xnu * te1(:,:,:)
-      tf1(:,:,:) = mu1(:,:,:) * xnu * tf1(:,:,:)
-    else
+    !if (ilmn) then
+    !  td1(:,:,:) = mu1(:,:,:) * xnu * td1(:,:,:)
+    !  te1(:,:,:) = mu1(:,:,:) * xnu * te1(:,:,:)
+    !  tf1(:,:,:) = mu1(:,:,:) * xnu * tf1(:,:,:)
+    !else
       td1(:,:,:) = xnu * td1(:,:,:)
       te1(:,:,:) = xnu * te1(:,:,:)
       tf1(:,:,:) = xnu * tf1(:,:,:)
-    endif
+    !endif
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (td1, avg_param)
@@ -500,9 +501,11 @@ contains
     call avg3d (duz1, avg_param)
     if (nrank == 0) write(*,*)'## MomRHS duz1 ', avg_param
 #endif
-    if (ilmn) then
-       call momentum_full_viscstress_tensor(dux1(:,:,:,1), duy1(:,:,:,1), duz1(:,:,:,1), divu3, mu1)
-    endif
+
+    !if (ilmn) then
+    !   call momentum_full_viscstress_tensor(dux1(:,:,:,1), duy1(:,:,:,1), duz1(:,:,:,1), divu3, mu1)
+    !endif
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (dux1, avg_param)
@@ -516,18 +519,19 @@ contains
 #endif
 
     ! If LES modelling is enabled, add the SGS stresses
-    if (ilesmod.ne.0.and.jles.le.3.and.jles.gt.0) then
-       ! Wall model for LES
-       if (iwall.eq.1) then
-          call compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,1)
-       else
-          call compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,0)
-       endif
-       ! Calculate SGS stresses (conservative/non-conservative formulation)
-       dux1(:,:,:,1) = dux1(:,:,:,1) + sgsx1(:,:,:)
-       duy1(:,:,:,1) = duy1(:,:,:,1) + sgsy1(:,:,:)
-       duz1(:,:,:,1) = duz1(:,:,:,1) + sgsz1(:,:,:)
-    endif
+    !if (ilesmod.ne.0.and.jles.le.3.and.jles.gt.0) then
+    !   ! Wall model for LES
+    !   if (iwall.eq.1) then
+    !      call compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,1)
+    !   else
+    !      call compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,0)
+    !   endif
+    !   ! Calculate SGS stresses (conservative/non-conservative formulation)
+    !   dux1(:,:,:,1) = dux1(:,:,:,1) + sgsx1(:,:,:)
+    !   duy1(:,:,:,1) = duy1(:,:,:,1) + sgsy1(:,:,:)
+    !   duz1(:,:,:,1) = duz1(:,:,:,1) + sgsz1(:,:,:)
+    !endif
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (dux1, avg_param)
@@ -540,17 +544,19 @@ contains
     if (nrank == 0) write(*,*)'## MomRHS LES duz1 ', avg_param
 #endif
 
-    if (ilmn) then
-      !! Gravity
-      if ((Fr**2).gt.zero) then
-        call momentum_gravity(dux1, duy1, duz1, rho1(:,:,:,1) - one, one / Fr**2)
-      endif
-    endif
+    !if (ilmn) then
+    !  ! Gravity
+    !  if ((Fr**2).gt.zero) then
+    !    call momentum_gravity(dux1, duy1, duz1, rho1(:,:,:,1) - one, one / Fr**2)
+    !  endif
+    !endif
+    
     if (iscalar.eq.1) then
       do is = 1, numscalar
         call momentum_gravity(dux1, duy1, duz1, phi1(:,:,:,is), ri(is))
       enddo
     endif
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (dux1, avg_param)
@@ -562,7 +568,7 @@ contains
     call avg3d (duz1, avg_param)
     if (nrank == 0) write(*,*)'## MomRHS ILMN duz1 ', avg_param
 #endif
-    !! Additional forcing
+    ! Additional forcing
     call momentum_forcing(dux1, duy1, duz1, rho1, ux1, uy1, uz1, phi1)
 #ifdef DEBG
     avg_param = zero
@@ -576,16 +582,7 @@ contains
     if (nrank == 0) write(*,*)'## MomRHS Forc duz1 ', avg_param
 #endif
 
-    !! Turbine forcing
-    if (iturbine.eq.1) then
-       dux1(:,:,:,1)=dux1(:,:,:,1)+FTx(:,:,:)/rho_air
-       duy1(:,:,:,1)=duy1(:,:,:,1)+FTy(:,:,:)/rho_air
-       duz1(:,:,:,1)=duz1(:,:,:,1)+FTz(:,:,:)/rho_air
-    else if (iturbine.eq.2) then
-       dux1(:,:,:,1)=dux1(:,:,:,1)+Fdiscx(:,:,:)/rho_air
-       duy1(:,:,:,1)=duy1(:,:,:,1)+Fdiscy(:,:,:)/rho_air
-       duz1(:,:,:,1)=duz1(:,:,:,1)+Fdiscz(:,:,:)/rho_air
-    endif
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (dux1, avg_param)
@@ -743,7 +740,9 @@ contains
 
   end subroutine momentum_full_viscstress_tensor
   !############################################################################
-  !############################################################################
+  ! This should be the subroutine for Boussinesq approximation 
+  ! of bouyancy forcing for momentum eq.
+  !---------------------------------------------------------------------------!
   subroutine momentum_gravity(dux1, duy1, duz1, peculiar_density1, richardson)
 
     use decomp_2d

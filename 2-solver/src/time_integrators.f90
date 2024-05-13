@@ -231,19 +231,22 @@ contains
      if (nrank == 0) write(*,*)'## int_time duz1 ', avg_param
 #endif
 
-    IF (ilmn) THEN
-       IF (ilmn_solve_temp) THEN
-          CALL int_time_temperature(rho1, drho1, dphi1, phi1)
-       ELSE
-          CALL int_time_continuity(rho1, drho1)
-       ENDIF
-    ENDIF
+    !--- Commenting Low Mach Number (lmn) part to speed up the code ---!
+    
+    !IF (ilmn) THEN
+    !   IF (ilmn_solve_temp) THEN
+    !      CALL int_time_temperature(rho1, drho1, dphi1, phi1)
+    !   ELSE
+    !      CALL int_time_continuity(rho1, drho1)
+    !   ENDIF
+    !ENDIF
 
     IF (iscalar.NE.0) THEN
-       IF (ilmn.and.ilmn_solve_temp) THEN
-          !! Compute temperature
-          call calc_temp_eos(ta1, rho1(:,:,:,1), phi1, tb1, xsize(1), xsize(2), xsize(3))
-       ENDIF
+       
+       !IF (ilmn.and.ilmn_solve_temp) THEN
+       !   ! Compute temperature
+       !   call calc_temp_eos(ta1, rho1(:,:,:,1), phi1, tb1, xsize(1), xsize(2), xsize(3))
+       !ENDIF
 
        DO is = 1, numscalar
           IF (is.NE.primary_species) THEN
@@ -269,28 +272,29 @@ contains
           ENDIF
        ENDDO
 
-       IF (primary_species.GE.1) THEN
-          phi1(:,:,:,primary_species) = one
-          DO is = 1, numscalar
-             IF ((is.NE.primary_species).AND.massfrac(is)) THEN
-                phi1(:,:,:,primary_species) = phi1(:,:,:,primary_species) - phi1(:,:,:,is)
-             ENDIF
-          ENDDO
+       !IF (primary_species.GE.1) THEN
+       !   phi1(:,:,:,primary_species) = one
+       !   DO is = 1, numscalar
+       !      IF ((is.NE.primary_species).AND.massfrac(is)) THEN
+       !         phi1(:,:,:,primary_species) = phi1(:,:,:,primary_species) - phi1(:,:,:,is)
+       !      ENDIF
+       !   ENDDO
 
-          DO k = 1, xsize(3)
-             DO j = 1, xsize(2)
-                DO i = 1, xsize(1)
-                   phi1(i,j,k,primary_species) = max(phi1(i,j,k,primary_species),zero)
-                   phi1(i,j,k,primary_species) = min(phi1(i,j,k,primary_species),one)
-                ENDDO
-             ENDDO
-          ENDDO
-       ENDIF
+       !   DO k = 1, xsize(3)
+       !      DO j = 1, xsize(2)
+       !         DO i = 1, xsize(1)
+       !            phi1(i,j,k,primary_species) = max(phi1(i,j,k,primary_species),zero)
+       !            phi1(i,j,k,primary_species) = min(phi1(i,j,k,primary_species),one)
+       !         ENDDO
+       !      ENDDO
+       !   ENDDO
+       !ENDIF
 
-       IF (ilmn.and.ilmn_solve_temp) THEN
-          !! Compute rho
-          call calc_rho_eos(rho1(:,:,:,1), ta1, phi1, tb1, xsize(1), xsize(2), xsize(3))
-       ENDIF
+       !IF (ilmn.and.ilmn_solve_temp) THEN
+       !   ! Compute rho
+       !   call calc_rho_eos(rho1(:,:,:,1), ta1, phi1, tb1, xsize(1), xsize(2), xsize(3))
+       !ENDIF
+       
     ENDIF
 
 #ifdef DEBG

@@ -44,8 +44,6 @@ program xcompact3d
   use ibm, only : body
   use genepsi, only : genepsi3d
   
-  use extra_tools, only : print_cf
-
   implicit none
   
   call init_xcompact3d()
@@ -87,6 +85,7 @@ program xcompact3d
         !endif
         
         call calculate_transeq_rhs(drho1,dux1,duy1,duz1,dphi1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
+        
 #ifdef DEBG
         call check_transients()
 #endif
