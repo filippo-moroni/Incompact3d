@@ -255,7 +255,7 @@ contains
     integer, dimension(2) :: dims, dummy_coords
     logical, dimension(2) :: dummy_periods
     logical :: fexists
-    character(len=30) :: filename, filestart
+    character(len=90) :: filename, filestart
     character(len=32) :: fmt2,fmt3,fmt4
     character(len=7)  :: fmt1
     character(len=80) :: varname
