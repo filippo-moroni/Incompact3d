@@ -61,11 +61,11 @@ contains
       inquire(file="cf_history.txt", exist=exists)
       if (exists) then
           open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
-          write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
+          write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
       else
           open(newunit=iunit, file="cf_history.txt", status="new", action="write")
           write(iunit, '(A12,  A,A16,   A,A16,   A,A16,   A,A12,  A,A12)') 'sh_vel', ',', 'cf,tot', ',', 'cf,x', ',', 'cf,z', ',', 't_nu', ',', 'T'          
-          write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.6)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
+          write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
       end if
       close(iunit)
   end if
