@@ -88,7 +88,7 @@ for i in range(file1, filen + icrfile, icrfile):
     mom_t[ii] = spl.integral(y0, yn)
     
     # Reading of the mean gradient
-    file_path = f"data_post/vort_stats-{i:03d}.0.txt"
+    file_path = f"data_post/vort_stats-{i:03d}.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     mg = data[:, 3]
