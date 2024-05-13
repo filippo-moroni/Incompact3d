@@ -84,7 +84,7 @@ contains
     
     use var,         only : ux2, uz2     
     use ibm_param,   only : ubcx,ubcy,ubcz
-    use dbg_schemes, only : sqrt_prec
+    use dbg_schemes, only : sqrt_prec, abs_prec
     
     use var,         only : ta2,tc2,di2
     use ibm_param,   only : ubcx,ubcz
@@ -121,6 +121,8 @@ contains
     mean_gwx = zero
     mean_gwz = zero
     sh_vel   = zero
+    sh_velx  = zero    
+    sh_velz  = zero 
     
     ! Denominator of the divisions
     den = real(nx*nz,mytype)
@@ -160,8 +162,8 @@ contains
     ! Finalize shear velocities calculation
     if (nrank .eq. 0) then
         sh_vel  = sqrt_prec(sh_vel  * xnu)
-        sh_velx = sqrt_prec(sh_velx * xnu)
-        sh_velz = sqrt_prec(sh_velz * xnu)  
+        sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
+        sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)  
     end if
                   
   end subroutine calculate_shear_velocity
