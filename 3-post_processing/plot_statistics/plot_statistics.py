@@ -1,6 +1,9 @@
 #!---------------------------------------------------------!
 #! With this script, we perform plotting of statistics     !
-#! for TTBL simulations.                                   !
+#! for TTBL simulations:                                   !
+#!                                                         !
+#! - mean statistics (mean[u], var[u], etc.)               !
+#! - Kolmogorov time scale tau_eta                         !
 #!---------------------------------------------------------!
 
 import numpy as np
