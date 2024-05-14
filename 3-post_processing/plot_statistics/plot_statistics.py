@@ -134,6 +134,9 @@ plt.show()
 
 #!--- Plot section, dissipation-related statistics ---!
 
+# Index up to which you want to plot
+index = 50
+
 # Labels and values for x-axis
 labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$" ]
 values = [0.1,    1.0, 5.0, 30.0, 60.0, 100.0, 180.0, 500.0]
@@ -142,7 +145,7 @@ lw = 1.5  # linewidth for plots
 fig, ax = plt.subplots(1, 1, figsize=(14,10))
 
 # Kolmogorov time-scale
-ax.scatter(y_plus, tau_eta, color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
+ax.scatter(y_plus[:index], tau_eta[:index], color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
 
 # Axes labels
 ax.set_xlabel(r'$y^+$',       fontsize=50, labelpad=20)
