@@ -323,10 +323,10 @@ contains
 
     implicit none
 
-    !! INPUTS
+    ! INPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uy1, uz1
     
-    !! OUTPUTS
+    ! OUTPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1, duy1, duz1
 
     if (iimplicit.ge.1) then

@@ -126,10 +126,13 @@ subroutine parameter(input_i3d)
   read(10, nml=BasicParam); rewind(10)
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
-  !read(10, nml=Statistics); rewind(10)
+  
+  if(itype .ne. itype_ttbl) then
+     read(10, nml=Statistics); rewind(10)
+  end if
   
   if (iibm.ne.0) then
-     read(10, nml=ibmstuff); rewind(10)
+      read(10, nml=ibmstuff); rewind(10)
   endif
     
   ! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
@@ -282,13 +285,18 @@ subroutine parameter(input_i3d)
   
   ! Constant pressure gradient, re = Re_tau -> use to compute Re_centerline
   if (cpg) then
+  
+    ! Calculate Reynolds centerline
     re_cent = (re/0.116_mytype)**(1.0_mytype/0.88_mytype)
-    xnu = one/re_cent ! viscosity based on Re_cent to keep same scaling as CFR
+    
+    ! Viscosity based on Re_cent to keep same scaling as CFR
+    xnu = one/re_cent 
+    
     !
     fcpg = two/yly * (re/re_cent)**2
     
-    ! Calculate the related bulk Reynolds number
-    re_bulk = (re/0.09_mytype)**(1.0_mytype/0.88_mytype)
+    ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
+    re_bulk = 0.09_mytype*(re**0.88_mytype)
     
     ! Calculate the bulk velocity
     ubulk = (re_bulk * xnu)/yly
@@ -393,7 +401,7 @@ subroutine parameter(input_i3d)
      if (itype.eq.itype_channel) then
        if (.not.cpg) then
          write(*,*) 'Channel forcing with constant flow rate (CFR)'
-         write(*,"(' Re_cl                         : ',F17.3)") re
+         write(*,"(' Re_0                          : ',F17.3)") re
        else 
          write(*,*) 'Channel forcing with constant pressure gradient (CPG)'
          write(*,"(' Re_tau                        : ',F17.3)") re
