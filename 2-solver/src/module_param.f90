@@ -335,10 +335,11 @@ module param
   logical, save :: sync_vel_needed = .true.
   logical, save :: sync_scal_needed = .true.
 
-  !! Channel flow
+  ! Channel flow
   integer :: idir_stream
   logical :: cpg
-  real(mytype) :: re_cent, fcpg
+  real(mytype) :: re_cent, fcpg, re_bulk
+  real(mytype) :: ubulk  ! Bulk velocity
 
   !! Numerics control
   integer :: ifirstder,isecondder,ipinter

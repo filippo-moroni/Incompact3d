@@ -49,10 +49,11 @@ contains
           fric_coeffx = two * ((sh_velx / uwall)**2)
           fric_coeffz = two * ((sh_velz / uwall)**2)
       
-      ! Calculate friction coefficient for a Channel
+      ! Calculate friction coefficient for a Channel (CPG only at the moment)
       else if(itype .eq. itype_channel) then
-          ! to be done
-          ! fric_coeff = 
+          fric_coeff  = two * ((sh_vel  / ubulk)**2)
+          fric_coeffx = two * ((sh_velx / ubulk)**2)
+          fric_coeffz = two * ((sh_velz / ubulk)**2)
       end if
       
       ! Calculate viscous time unit

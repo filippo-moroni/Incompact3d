@@ -56,8 +56,8 @@ subroutine parameter(input_i3d)
   implicit none
 
   character(len=80), intent(in) :: input_i3d
-  real(mytype) :: theta, cfl,cf2
-  integer :: longueur ,impi,j, is, total
+  real(mytype) :: theta,cfl,cf2
+  integer :: longueur,impi,j,is,total
 
   NAMELIST /BasicParam/ p_row, p_col, nx, ny, nz, istret, beta, xlx, yly, zlz, &
        itype, iin, re, u1, u2, init_noise, inflow_noise, &
@@ -286,6 +286,12 @@ subroutine parameter(input_i3d)
     xnu = one/re_cent ! viscosity based on Re_cent to keep same scaling as CFR
     !
     fcpg = two/yly * (re/re_cent)**2
+    
+    ! Calculate the related bulk Reynolds number
+    re_bulk = (re/0.09_mytype)**(1.0_mytype/0.88_mytype)
+    
+    ! Calculate the bulk velocity
+    ubulk = (re_bulk * xnu)/yly
   end if
 
   if (ilmn) then
@@ -387,17 +393,18 @@ subroutine parameter(input_i3d)
      if (itype.eq.itype_channel) then
        if (.not.cpg) then
          write(*,*) 'Channel forcing with constant flow rate (CFR)'
-         write(*,"(' Re_cl                  : ',F17.3)") re
+         write(*,"(' Re_cl                         : ',F17.3)") re
        else 
          write(*,*) 'Channel forcing with constant pressure gradient (CPG)'
-         write(*,"(' Re_tau                 : ',F17.3)") re
-         write(*,"(' Re_cl (estimated)      : ',F17.3)") re_cent
-         write(*,"(' fcpg                   : ',F17.8)") fcpg
+         write(*,"(' Re_tau                        : ',F17.3)") re
+         write(*,"(' Re_0 (centerline, estimated)  : ',F17.3)") re_cent
+         write(*,"(' Re_B (bulk, estimated)        : ',F17.3)") re_bulk
+         write(*,"(' fcpg                          : ',F17.8)") fcpg
        end if
      else
-       write(*,"(' Reynolds number Re     : ',F17.3)") re
+       write(*,"(' Reynolds number Re              : ',F17.3)") re
      endif
-     write(*,"(' xnu                    : ',F17.8)") xnu
+     write(*,"(' xnu                               : ',F17.8)") xnu
      write(*,*) '==========================================================='
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
      
