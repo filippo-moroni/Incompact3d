@@ -29,7 +29,7 @@ nu    = 1.0/re             # kinematic viscosity
 #!--- Reading of files section ---!
 
 # Reading of mean statistics
-M = np.loadtxt('mean_stats600.0.txt', skiprows=1, delimiter=',', dtype=np.float64)
+M = np.loadtxt('data_post/mean_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 mean_u  = M[:,0]   
 mean_v  = M[:,1]
@@ -38,7 +38,7 @@ var_v   = M[:,4]
 mean_uv = M[:,12]
 
 # Reading of vorticity components and mean gradient
-M = np.loadtxt('vort_stats600.0.txt', skiprows=1, delimiter=',', dtype=np.float64)
+M = np.loadtxt('data_post/vort_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 vort_x = M[:,0]
 vort_y = M[:,1]
@@ -49,7 +49,7 @@ mg     = M[:,3]
 y = np.loadtxt('yp.dat')
 
 # Reading of the mean dissipation
-M = np.loadtxt('diss_stats600.0.txt', skiprows=1, delimiter=',', dtype=np.float64)
+M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
 eps = M[:]
 
 #!--------------------------------!
@@ -85,7 +85,7 @@ y_plus_k = np.linspace(5, 180, 175)
 u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
 # Kolmogorov time scale
-tau_eta = (nu/eps)**0.5
+tau_eta = np.sqrt(nu/eps)
 
 #!--- Plot section, mean velocity profile ---!
 
