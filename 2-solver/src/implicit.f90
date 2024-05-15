@@ -697,17 +697,25 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   ! This is the location for exotic / nonhomogeneous boundary conditions
   
   ! In order to mimick a Neumann BC at the top of the domain for the TBL
-  if (itype.eq.itype_tbl .and. isc.eq.0) then
+  if (itype .eq. itype_tbl .and. isc .eq. 0) then
      bcbot(:,:) = zero
      bctop(:,:) = tb2(:,ny-1,:)
   
-  ! Temporal TBL and Channel flow (velocity BCs and scalar BCs)
-  else if ((itype .eq. itype_ttbl .or. itype .eq. itype_channel ).and. isc .eq. 0) then
+  ! Temporal TBL (velocity BCs and scalar BCs)
+  else if (itype .eq. itype_ttbl .and. isc .eq. 0) then
      bcbot(:,:) = wall_vel
      bctop(:,:) = tb2(:,ny-1,:)
-  else if ((itype .eq. itype_ttbl .or. itype .eq. itype_channel ).and. isc .ne. 0) then
+  else if (itype .eq. itype_ttbl .and. isc .ne. 0) then
      bcbot(:,:) = phiwall
      bctop(:,:) = tb2(:,ny-1,:)
+     
+  ! Channel flow (velocity BCs and scalar BCs)
+  else if (itype .eq. itype_channel .and. isc .eq. 0) then
+     bcbot(:,:) = wall_vel
+     bctop(:,:) = wall_vel
+  else if (itype .eq. itype_channel .and. isc .ne. 0) then
+     bcbot(:,:) = phiwall
+     bctop(:,:) = phiwall
      
   ! Generic homogeneous cases after
   else if (isc.ne.0) then

@@ -52,18 +52,18 @@ contains
 
     implicit none
 
-    !! INPUT / OUTPUT
+    ! INPUT / OUTPUT
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: var1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dvar1
 
-    !! INPUTS
+    ! INPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in), optional :: forcing1
     integer, intent(in), optional :: npaire, isc
     
     ! Wall-velocity BC, in order to differentiate between different directions
     real(mytype), intent(in), optional :: wall_vel
 
-    !! LOCAL
+    ! LOCAL
     integer :: is, code, ierror
 
 #ifdef DEBG 
