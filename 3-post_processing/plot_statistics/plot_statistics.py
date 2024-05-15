@@ -1,6 +1,6 @@
 #!---------------------------------------------------------!
 #! With this script, we perform plotting of statistics     !
-#! for TTBL simulations:                                   !
+#! for TTBL and channel simulations:                       !
 #!                                                         !
 #! - mean statistics (mean[u], var[u], etc.)               !
 #! - Kolmogorov time scale tau_eta                         !
@@ -29,10 +29,25 @@ uwall = np.float64(1.0)    # wall velocity
 re    = np.float64(500.0)  # Reynolds number
 nu    = 1.0/re             # kinematic viscosity
 
+# Read if we are plotting a channel or a TTBL
+with open('input.i3d', 'r') as file:
+    
+    # Read all lines into a list
+    lines = file.readlines()
+    
+    # Extract the 8th line, where itype is specified 
+    eighth_line = lines[7]  
+    
+    # Removing characters in front of the itype value
+    itype = eighth_line.split('=')[-1].strip()
+    
+    # Convert to integer
+    itype = int(itype)
+    
 #!--- Reading of files section ---!
 
 # Reading of mean statistics
-M = np.loadtxt('data_post/mean_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
+M = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 mean_u  = M[:,0]   
 mean_v  = M[:,1]
@@ -41,7 +56,7 @@ var_v   = M[:,4]
 mean_uv = M[:,12]
 
 # Reading of vorticity components and mean gradient
-M = np.loadtxt('data_post/vort_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
+M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 vort_x = M[:,0]
 vort_y = M[:,1]
@@ -52,15 +67,18 @@ mg     = M[:,3]
 y = np.loadtxt('yp.dat')
 
 # Reading of the mean dissipation
-M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
-eps = M[:]
+#M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
+#eps = M[:]
 
 #!--------------------------------!
 
 #!--- Calculations ---!
 
-# Shift due to the translating wall
-mean_u = uwall - mean_u
+# Valid only for TTBLs
+if itype == 13:
+
+    # Shift due to the translating wall
+    mean_u = uwall - mean_u
 
 # Shear quantities
 sh_vel = np.sqrt(nu * mg[0])
@@ -78,17 +96,33 @@ vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
 
-# Viscous sub-layer & Von Karman law
+#!--- Reference mean profiles ---!
+
+# Viscous sub-layer
 y_plus_vsl = np.linspace(1, 15, 15)
 u_plus_vsl = y_plus_vsl
 
-k = 0.384
-B = 4.173
+# Log law constants based on specific flow case
+if itype == 13:
+   
+    # Kozul et al. (2016)
+    k = 0.384
+    B = 4.173
+        
+elif itype == 3:
+
+    # Lee & Moser (2015)
+    k = 0.384
+    B = 4.27
+
+# Von Karman law
 y_plus_k = np.linspace(5, 180, 175)
 u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
+#!-------------------------------!
+
 # Kolmogorov time scale
-tau_eta = np.sqrt(nu/eps)
+#tau_eta = np.sqrt(nu/eps)
 
 #!--- Plot section, mean velocity profile ---!
 
@@ -109,7 +143,10 @@ ax.set_xlabel(r'$y^+$', fontsize=50, labelpad=20)
 ax.set_ylabel(r'$U^+$', fontsize=50, labelpad=20)
 
 # Legend
-plt.legend(['Present', 'Viscous sublayer and log law (Kozul et al. (2016))'], loc='upper left', fontsize=18)
+if itype == 13:
+    plt.legend(['Present', 'Viscous sublayer and log law (Kozul et al. (2016))'], loc='upper left', fontsize=18)
+elif itype == 3:
+    plt.legend(['Present', 'Viscous sublayer and log law (Lee & Moser (2015))'], loc='upper left', fontsize=18)
 
 # Grid
 plt.grid(True, linestyle='--')
@@ -126,7 +163,14 @@ ax.set_xticklabels(labels, fontsize=20, rotation=0, ha='center')
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=20)
 
-caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
+# Differencing caption based on flow case
+if itype == 13:
+    # TTBL
+    caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))
+elif itype == 3:
+    # Channel
+    caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee & Moser (2015))
+
 plt.text(0.11, 17.0, caption, horizontalalignment='left', verticalalignment='center', fontsize=16, fontweight='bold')
 
 # Saving the figure
@@ -138,39 +182,39 @@ plt.show()
 #!--- Plot section, dissipation-related statistics ---!
 
 # Index up to which you want to plot
-index = 50
+#index = 50
 
 # Labels and values for x-axis
-labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$" ]
-values = [0.1,    1.0, 5.0, 30.0, 60.0, 100.0, 180.0, 500.0]
+#labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$" ]
+#values = [0.1,    1.0, 5.0, 30.0, 60.0, 100.0, 180.0, 500.0]
 
-lw = 1.5  # linewidth for plots
-fig, ax = plt.subplots(1, 1, figsize=(14,10))
+#lw = 1.5  # linewidth for plots
+#fig, ax = plt.subplots(1, 1, figsize=(14,10))
 
 # Kolmogorov time-scale
-ax.scatter(y_plus[:index], tau_eta[:index], color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
+#ax.scatter(y_plus[:index], tau_eta[:index], color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
 
 # Axes labels
-ax.set_xlabel(r'$y^+$',       fontsize=50, labelpad=20)
-ax.set_ylabel(r'$\tau_\eta$', fontsize=50, labelpad=20)
+#ax.set_xlabel(r'$y^+$',       fontsize=50, labelpad=20)
+#ax.set_ylabel(r'$\tau_\eta$', fontsize=50, labelpad=20)
 
 # Grid
-plt.grid(True, linestyle='--')
+#plt.grid(True, linestyle='--')
 
 # Logarithmic x-axis
-plt.semilogx()
+#plt.semilogx()
 
 # Setting x-ticks
-ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=20, rotation=0, ha='center') 
+#ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
+#ax.set_xticklabels(labels, fontsize=20, rotation=0, ha='center') 
 
 # Setting y-ticks
-ax.tick_params(axis='y', labelcolor="k", labelsize=20)
+#ax.tick_params(axis='y', labelcolor="k", labelsize=20)
 
 # Saving the figure
-plt.savefig('kolmogorov_time_scale.pdf', format='pdf', bbox_inches='tight')
+#plt.savefig('kolmogorov_time_scale.pdf', format='pdf', bbox_inches='tight')
 
-plt.show()
+#plt.show()
 
 
 
