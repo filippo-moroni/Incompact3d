@@ -41,15 +41,15 @@ with open('input.i3d', 'r') as file:
 
 # Parameters
 if itype == 13:
-    uwall = np.float64(1.0)          # wall velocity
-    re    = np.float64(500.0)        # Reynolds number
-    nu    = 1.0/re                   # kinematic viscosity
+    uwall = np.float64(1.0)               # wall velocity
+    re    = np.float64(500.0)             # Reynolds number
+    nu    = 1.0/re                        # kinematic viscosity
 
 elif itype == 3:
-    re_tau  = np.float64(180.0)      # friction   Reynolds number
-    re_cent = (re_tau/0.116)**(1.0)  # centerline Reynolds number
-    nu      = 1.0/re_cent            # kinematic viscosity
-    
+    re_tau  = np.float64(180.0)           # friction   Reynolds number
+    re_cent = (re_tau/0.116)**(1.0/0.88)  # centerline Reynolds number
+    nu      = 1.0/re_cent                 # kinematic viscosity
+        
 #!--- Reading of files section ---!
 
 # Reading of mean statistics
@@ -97,7 +97,7 @@ t_nu = nu / (sh_vel ** 2)
 
 # Rescaling variables through wall units
 y_plus   = y / delta_nu
-mean_u  /= sh_vel
+mean_u   = mean_u / sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
 mean_uv /= sh_vel ** 2
@@ -149,8 +149,8 @@ if itype == 13:
 elif itype == 3:
     ax.scatter(y_plus[:ny], mean_u[:ny], color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
 
-ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
-ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
+#ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
+#ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=50, labelpad=20)
@@ -165,7 +165,7 @@ elif itype == 3:
 # Grid
 plt.grid(True, linestyle='--')
 
-plt.ylim([0, 20])
+#plt.ylim([0, 20])
 
 # Logarithmic x-axis
 plt.semilogx()

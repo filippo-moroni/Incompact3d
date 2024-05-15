@@ -66,7 +66,7 @@ PROGRAM post
  
   ! Start of the post-processing  
   post_mean=.false.; post_vort=.false.; post_diss=.false.  
-  read_vel=.false.;  read_pre=.false.; read_phi=.false.
+  read_vel=.false.;  read_pre=.false.;  read_phi=.false.
                   
   ! Reading of the input file of post-processing (post.prm)
   open(10,file='post.prm',status='unknown',form='formatted')

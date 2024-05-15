@@ -296,7 +296,7 @@ subroutine parameter(input_i3d)
     fcpg = two/yly * (re/re_cent)**2
     
     ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
-    re_bulk = 0.09_mytype*(re**0.88_mytype)
+    re_bulk = (re/0.09_mytype)**(1.0_mytype/0.88_mytype)
     
     ! Calculate the bulk velocity
     ubulk = (re_bulk * xnu)/yly
