@@ -412,7 +412,8 @@ subroutine parameter(input_i3d)
      else
        write(*,"(' Reynolds number Re              : ',F17.3)") re
      endif
-     write(*,"(' xnu                               : ',F17.8)") xnu
+     
+     write(*,"(' xnu                           : ',F17.8)") xnu
      write(*,*) '==========================================================='
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
      
