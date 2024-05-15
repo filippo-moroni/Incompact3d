@@ -24,11 +24,6 @@ plt.rcParams.update({'figure.autolayout': True})
 blue = [57 / 255, 106 / 255, 177 / 255]
 grey = [0.5, 0.5, 0.5]
 
-# Parameters
-uwall = np.float64(1.0)    # wall velocity
-re    = np.float64(500.0)  # Reynolds number
-nu    = 1.0/re             # kinematic viscosity
-
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
     
@@ -43,6 +38,17 @@ with open('input.i3d', 'r') as file:
     
     # Convert to integer
     itype = int(itype)
+
+# Parameters
+if itype == 13:
+    uwall = np.float64(1.0)          # wall velocity
+    re    = np.float64(500.0)        # Reynolds number
+    nu    = 1.0/re                   # kinematic viscosity
+
+elif itype == 3:
+    re_tau  = np.float64(180.0)      # friction   Reynolds number
+    re_cent = (re_tau/0.116)**(1.0)  # centerline Reynolds number
+    nu      = 1.0/re_cent            # kinematic viscosity
     
 #!--- Reading of files section ---!
 
@@ -65,6 +71,10 @@ mg     = M[:,3]
 
 # Reading of grid points
 y = np.loadtxt('yp.dat')
+
+# Number of points in y direction
+ny = len(y)
+ny = (ny - 1) // 2
 
 # Reading of the mean dissipation
 #M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -111,7 +121,7 @@ if itype == 13:
         
 elif itype == 3:
 
-    # Lee & Moser (2015)
+    # Lee and Moser (2015)
     k = 0.384
     B = 4.27
 
@@ -134,7 +144,11 @@ lw = 1.5  # linewidth for plots
 fig, ax = plt.subplots(1, 1, figsize=(14,10))
 
 # Mean velocity profile plot
-ax.scatter(y_plus, mean_u, color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
+if itype == 13:
+    ax.scatter(y_plus, mean_u, color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
+elif itype == 3:
+    ax.scatter(y_plus[:ny], mean_u[:ny], color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
+
 ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
 ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
 
@@ -146,7 +160,7 @@ ax.set_ylabel(r'$U^+$', fontsize=50, labelpad=20)
 if itype == 13:
     plt.legend(['Present', 'Viscous sublayer and log law (Kozul et al. (2016))'], loc='upper left', fontsize=18)
 elif itype == 3:
-    plt.legend(['Present', 'Viscous sublayer and log law (Lee & Moser (2015))'], loc='upper left', fontsize=18)
+    plt.legend(['Present', 'Viscous sublayer and log law (Lee and Moser (2015))'], loc='upper left', fontsize=18)
 
 # Grid
 plt.grid(True, linestyle='--')
@@ -166,10 +180,10 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=20)
 # Differencing caption based on flow case
 if itype == 13:
     # TTBL
-    caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))
+    caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
 elif itype == 3:
     # Channel
-    caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee & Moser (2015))
+    caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee and Moser (2015))'
 
 plt.text(0.11, 17.0, caption, horizontalalignment='left', verticalalignment='center', fontsize=16, fontweight='bold')
 
