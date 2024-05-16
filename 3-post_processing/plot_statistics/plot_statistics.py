@@ -51,6 +51,8 @@ elif itype == 3:
     
     re_cent = np.float64(4225.96)
     nu      = 1.0/re_cent                 # kinematic viscosity
+    
+    yly     = np.float64(2.0)             # channel height
         
 #!--- Reading of files section ---!
 
@@ -92,9 +94,15 @@ if itype == 13:
     # Shift due to the translating wall
     mean_u = uwall - mean_u
 
-# Rescale through centerline velocity
-mean_u = mean_u / mean_u[ny]
-mg     = mg / mean_u[ny]
+# Valid only for Channels
+elif itype == 3:
+
+    # Calculate bulk velocity
+    ubulk = np.sum(mean_u)/yly
+     
+    # Rescale through bulk velocity
+    mean_u = mean_u / ubulk
+    mg     = mg / ubulk
 
 # Shear quantities
 sh_vel = np.sqrt(nu * mg[0])

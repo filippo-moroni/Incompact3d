@@ -714,8 +714,8 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      bcbot(:,:) = wall_vel
      bctop(:,:) = wall_vel
   else if (itype .eq. itype_channel .and. isc .ne. 0) then
-     bcbot(:,:) = phiwall
-     bctop(:,:) = phiwall
+     bcbot(:,:) = zero
+     bctop(:,:) = zero
      
   ! Generic homogeneous cases after
   else if (isc.ne.0) then
@@ -818,7 +818,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      endif
      nullify(gg,hh,ss,rr,vv,ww,zz)
   else if (isecondder.eq.5) then
-     tb2=0.;
+     tb2=zero;
      !TO BE DONE: Different types of BC
      if ((ncly1.eq.0).and.(nclyn.eq.0)) then
         !NOT READY
