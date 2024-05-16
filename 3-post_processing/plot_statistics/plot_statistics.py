@@ -46,8 +46,10 @@ if itype == 13:
     nu    = 1.0/re                        # kinematic viscosity
 
 elif itype == 3:
-    re_tau  = np.float64(180.0)           # friction   Reynolds number
-    re_cent = (re_tau/0.116)**(1.0/0.88)  # centerline Reynolds number
+    #re_tau  = np.float64(180.0)           # friction   Reynolds number
+    #re_cent = (re_tau/0.116)**(1.0/0.88)  # centerline Reynolds number
+    
+    re_cent = np.float64(4225.96)
     nu      = 1.0/re_cent                 # kinematic viscosity
         
 #!--- Reading of files section ---!
@@ -74,7 +76,7 @@ y = np.loadtxt('yp.dat')
 
 # Number of points in y direction
 ny = len(y)
-ny = (ny - 1) // 2
+ny = (ny - 1) // 2 + 1
 
 # Reading of the mean dissipation
 #M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -89,6 +91,10 @@ if itype == 13:
 
     # Shift due to the translating wall
     mean_u = uwall - mean_u
+
+# Rescale through centerline velocity
+mean_u = mean_u / mean_u[ny]
+mg     = mg / mean_u[ny]
 
 # Shear quantities
 sh_vel = np.sqrt(nu * mg[0])
@@ -167,15 +173,15 @@ plt.grid(True, linestyle='--')
 
 #plt.ylim([0, 20])
 
-# Logarithmic x-axis
-plt.semilogx()
-
 # Setting x-ticks
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
 ax.set_xticklabels(labels, fontsize=20, rotation=0, ha='center') 
 
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=20)
+
+# Logarithmic x-axis
+plt.semilogx()
 
 # Differencing caption based on flow case
 if itype == 13:
