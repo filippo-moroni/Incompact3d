@@ -53,6 +53,8 @@ elif itype == 3:
     nu      = 1.0/re_cent                 # kinematic viscosity
     
     yly     = np.float64(2.0)             # channel height
+    
+    #re_bulk = np.float64(5638.59)         # bulk Reynolds number
         
 #!--- Reading of files section ---!
 
@@ -101,16 +103,18 @@ elif itype == 3:
     ubulk = np.sum(mean_u)/yly
      
     # Rescale through bulk velocity
-    mean_u = mean_u / ubulk
-    mg     = mg / ubulk
-
+    #mean_u = mean_u / ubulk
+    #mg     = mg / ubulk * yly
+           
 # Shear quantities
-sh_vel = np.sqrt(nu * mg[0])
+#sh_vel = np.sqrt(nu * mg[0])
+
+sh_vel = 0.042
 delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
 
 # Rescaling variables through wall units
-y_plus   = y / delta_nu
+y_plus   = y / delta_nu 
 mean_u   = mean_u / sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
@@ -138,6 +142,10 @@ elif itype == 3:
     # Lee and Moser (2015)
     k = 0.384
     B = 4.27
+    
+    # Cimarelli ('Turbulence' lecture notes)
+    k = 0.37
+    B = 5.2
 
 # Von Karman law
 y_plus_k = np.linspace(5, 180, 175)
@@ -163,8 +171,8 @@ if itype == 13:
 elif itype == 3:
     ax.scatter(y_plus[:ny], mean_u[:ny], color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
 
-#ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
-#ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
+ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
+ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=50, labelpad=20)
@@ -179,7 +187,10 @@ elif itype == 3:
 # Grid
 plt.grid(True, linestyle='--')
 
-#plt.ylim([0, 20])
+plt.ylim([0, 22])
+
+# Logarithmic x-axis
+ax.semilogx()
 
 # Setting x-ticks
 ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
@@ -187,9 +198,6 @@ ax.set_xticklabels(labels, fontsize=20, rotation=0, ha='center')
 
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=20)
-
-# Logarithmic x-axis
-plt.semilogx()
 
 # Differencing caption based on flow case
 if itype == 13:
@@ -199,7 +207,7 @@ elif itype == 3:
     # Channel
     caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee and Moser (2015))'
 
-plt.text(0.11, 17.0, caption, horizontalalignment='left', verticalalignment='center', fontsize=16, fontweight='bold')
+plt.text(0.1, 18.5, caption, horizontalalignment='left', verticalalignment='center', fontsize=16, fontweight='bold')
 
 # Saving the figure
 plt.savefig('umean.pdf', format='pdf', bbox_inches='tight')
