@@ -8,6 +8,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import LogLocator
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -232,6 +233,8 @@ plt.xlim([xliminf, xlimsup])
 ax.set_xscale('log')
 ax.set_yscale('linear')
 
+ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
+
 # Setting x-ticks with values and labels
 ax.set_xticks(values, labels, color="k", rotation='horizontal')
 ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
@@ -285,6 +288,8 @@ plt.xlim([xliminf, xlimsup])
 # Logarithmic x-axis and linear y-axis
 ax.set_xscale('log')
 ax.set_yscale('linear')
+
+ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
 
 # Setting x-ticks with values and labels
 ax.set_xticks(values, labels, color="k", rotation='horizontal')
