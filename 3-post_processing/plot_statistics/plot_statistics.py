@@ -165,7 +165,7 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10))
 
 # TTBL
 if itype == 13:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$" ]
+    labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
     values = [0.1,    1.0, 5.0, 30.0, 60.0, 100.0, 180.0, 500.0]
     xlimsup = 520.0
         
@@ -225,8 +225,9 @@ ax.semilogx()
 ax.set_xticks(values, labels, color="k", rotation='horizontal')
 ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
 
-# Setting major ticks on both axes
+# Setting major and minor ticks on both axes
 ax.tick_params(axis='both', which='major', length=6) 
+ax.tick_params(axis='both', which='minor', length=4)
 
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
