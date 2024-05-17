@@ -53,9 +53,7 @@ elif itype == 3:
     re_cent = np.float64(4225.96)         # centerline Reynolds number of a laminar Poiseuille flow
     re_tau  = 0.123*(re_cent**0.875)      # corresponding estimated friction Reynolds number 
     nu      = 1.0/re_cent                 # kinematic viscosity
-       
-    #re_bulk = np.float64(5638.59)         # bulk Reynolds number
-        
+               
 #!--- Reading of files section ---!
 
 # Reading of mean statistics
