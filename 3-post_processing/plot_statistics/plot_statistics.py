@@ -21,7 +21,6 @@ plt.rcParams.update({
 plt.rcParams.update({'figure.autolayout': True})
 
 # Set some useful colors
-blue = [57 / 255, 106 / 255, 177 / 255]
 grey = [0.5, 0.5, 0.5]
 
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
@@ -83,6 +82,11 @@ ny = (ny - 1) // 2 + 1
 # Reading of the mean dissipation
 #M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
 #eps = M[:]
+
+# Reading of Lee & Moser (2015) data
+M = np.loadtxt('data_lee_retau180.txt', skiprows=72, dtype=np.float64)
+mean_u_lm = M[:,2]
+y_plus_lm = M[:,1]
 
 #!--------------------------------!
 
@@ -146,64 +150,91 @@ u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 # Kolmogorov time scale
 #tau_eta = np.sqrt(nu/eps)
 
-#!--- Plot section, mean velocity profile ---!
+#!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
-# Labels and values for x-axis
-labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$" ]
-values = [0.1,    1.0, 5.0, 30.0, 60.0, 100.0, 180.0, 500.0]
+# Parameters for plotting
+lw         = 1.5             # linewidth for plots
+markersize = 60              # marker size for scatter plot
+fla        = 80              # fontsize of labels of x and y axes (major labels, variables)
+fla2       = 25              # fontsize of numbers of x and y axes 
+xliminf    = 0.1             # x axis inferior limit
+xalign     = xliminf*1.1     # value to adjust translation in x of captions
 
-lw = 1.5  # linewidth for plots
+
 fig, ax = plt.subplots(1, 1, figsize=(14,10))
 
-# Mean velocity profile plot
+# TTBL
 if itype == 13:
-    ax.scatter(y_plus, mean_u, color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
+    labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$" ]
+    values = [0.1,    1.0, 5.0, 30.0, 60.0, 100.0, 180.0, 500.0]
+    xlimsup = 520.0
+        
+    # Mean velocity profile
+    ax.scatter(y_plus, mean_u, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    # Viscous sublayer and log law
+    ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
+    ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
+    plt.legend(['Present', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
+    
+    # Caption
+    caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
+    
+# Channel    
 elif itype == 3:
-    ax.scatter(y_plus[:ny], mean_u[:ny], color=blue, marker='o', linewidth=1.5, s=40, facecolors='none', edgecolors='C0')
+    labels = [r"$0.1$", r"$1$", r"$5$", r"$30$", r"$60$", r"$100$", r"$180$"]
+    values = [0.1,    1.0, 5.0, 30.0, 60.0, 100.0, 180.0]
+    xlimsup = 300.0
+    ylimsup = 22.0
+    
+    # Mean velocity profile
+    ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus_lm, mean_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    # Viscous sublayer and log law
+    ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
+    ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
+    plt.legend(['Present', 'Lee and Moser (2015)', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
+    
+    # Caption
+    if iswitch == 0:
+        caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee and Moser (2015))'
+    elif iswitch == 1:
+        caption  = 'Log law with constants: k = 0.37, B = 5.2 (Cimarelli, Turb. Lect. Notes)'
+    caption2 = 'First points of LM(2015) data not displayed' 
+    
+    # Plotting caption2
+    plt.text(xalign, ylimsup - 6.5, caption2, fontsize=16, fontweight='bold', ha='left')
 
-ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
-ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
+# Plotting caption
+plt.text(xalign, ylimsup - 5.5, caption, fontsize=16, fontweight='bold', ha='left')
 
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=50, labelpad=20)
-ax.set_ylabel(r'$U^+$', fontsize=50, labelpad=20)
-
-# Legend
-plt.legend(['Present', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
+ax.set_ylabel(r'$U^+$', fontsize=fla, labelpad=20)
 
 # Grid
 plt.grid(True, linestyle='--')
 
-# y-axis limit
-ylim = 22.0
-plt.ylim([0, ylim])
+# Axes limits
+plt.ylim([0, ylimsup])
+plt.xlim([xliminf, xlimsup])
 
 # Logarithmic x-axis
 ax.semilogx()
 
-# Setting x-ticks
-ax.set_xticks(values, labels, color="k", size=20, rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=20, rotation=0, ha='center') 
+# Setting x-ticks with values and labels
+ax.set_xticks(values, labels, color="k", rotation='horizontal')
+ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
+
+# Setting major ticks on both axes
+ax.tick_params(axis='both', which='major', length=6) 
 
 # Setting y-ticks
-ax.tick_params(axis='y', labelcolor="k", labelsize=20)
-
-# Differencing caption based on flow case
-if itype == 13:
-    # TTBL
-    caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
-elif itype == 3:
-    # Channel
-    if iswitch == 0:
-        caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee and Moser (2015))'
-    elif iswitch == 1:
-        caption = 'Log law with constants: k = 0.37, B = 5.2 (Cimarelli, Turb. Lect. Notes)'
-
-plt.text(0.12, ylim - 3.5, caption, horizontalalignment='left', verticalalignment='center', fontsize=16, fontweight='bold')
+ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 plt.savefig('umean.pdf', format='pdf', bbox_inches='tight')
 
+#plt.tight_layout()
 plt.show()
 
 
