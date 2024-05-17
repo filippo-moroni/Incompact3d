@@ -176,12 +176,12 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   real(mytype) :: lind
   
   ! Vorticity 
-  real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1  ! average vorticity components, x-pencils
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2  ! average vorticity components, y-pencils
+  real(mytype),              dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1  ! average vorticity components, x-pencils
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2  ! average vorticity components, y-pencils
   
   ! Mean gradient
-  real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: mean_gradient1                    ! mean gradient, x-pencils
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradient2                    ! mean gradient, y-pencils
+  real(mytype),              dimension(xsize(1),xsize(2),xsize(3)) :: mean_gradient1                    ! mean gradient, x-pencils
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradient2                    ! mean gradient, y-pencils
       
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
@@ -283,7 +283,7 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   real(mytype) :: den  ! denominator of the divisions 
   real(mytype) :: lind
   
-  ! Pseudo-dissipation 
+  ! Total dissipation 
   real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: epsmean1  ! average total dissipation, x-pencils
   real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: epsmean2  ! average total dissipation, y-pencils
   
