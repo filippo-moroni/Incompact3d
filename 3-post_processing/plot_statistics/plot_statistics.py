@@ -24,6 +24,9 @@ plt.rcParams.update({'figure.autolayout': True})
 blue = [57 / 255, 106 / 255, 177 / 255]
 grey = [0.5, 0.5, 0.5]
 
+# Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
+iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
+
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
     
@@ -50,9 +53,7 @@ elif itype == 3:
     re_cent = np.float64(4225.96)         # centerline Reynolds number of a laminar Poiseuille flow
     re_tau  = 0.123*(re_cent**0.875)      # corresponding estimated friction Reynolds number 
     nu      = 1.0/re_cent                 # kinematic viscosity
-    
-    yly     = np.float64(2.0)             # channel height
-    
+       
     #re_bulk = np.float64(5638.59)         # bulk Reynolds number
         
 #!--- Reading of files section ---!
@@ -94,21 +95,9 @@ if itype == 13:
 
     # Shift due to the translating wall
     mean_u = uwall - mean_u
-
-# Valid only for Channels
-elif itype == 3:
-
-    # Calculate bulk velocity
-    ubulk = np.sum(mean_u)/yly
-     
-    # Rescale through bulk velocity
-    #mean_u = mean_u / ubulk
-    #mg     = mg / ubulk * yly
            
 # Shear quantities
 sh_vel = np.sqrt(nu * mg[0])
-
-#sh_vel = 0.042
 delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
 
@@ -138,13 +127,17 @@ if itype == 13:
         
 elif itype == 3:
 
-    # Lee and Moser (2015)
-    k = 0.384
-    B = 4.27
+    if iswitch == 0:
     
-    # Cimarelli ('Turbulence' lecture notes)
-    k = 0.37
-    B = 5.2
+        # Lee and Moser (2015)
+        k = 0.384
+        B = 4.27
+    
+    elif iswitch == 1:
+        
+        # Cimarelli ('Turbulence' lecture notes)
+        k = 0.37
+        B = 5.2
 
 # Von Karman law
 y_plus_k = np.linspace(5, 180, 175)
@@ -178,15 +171,14 @@ ax.set_xlabel(r'$y^+$', fontsize=50, labelpad=20)
 ax.set_ylabel(r'$U^+$', fontsize=50, labelpad=20)
 
 # Legend
-if itype == 13:
-    plt.legend(['Present', 'Viscous sublayer and log law (Kozul et al. (2016))'], loc='upper left', fontsize=18)
-elif itype == 3:
-    plt.legend(['Present', 'Viscous sublayer and log law (Lee and Moser (2015))'], loc='upper left', fontsize=18)
+plt.legend(['Present', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
 
 # Grid
 plt.grid(True, linestyle='--')
 
-plt.ylim([0, 22])
+# y-axis limit
+ylim = 22.0
+plt.ylim([0, ylim])
 
 # Logarithmic x-axis
 ax.semilogx()
@@ -204,9 +196,12 @@ if itype == 13:
     caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
 elif itype == 3:
     # Channel
-    caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee and Moser (2015))'
+    if iswitch == 0:
+        caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee and Moser (2015))'
+    elif iswitch == 1:
+        caption = 'Log law with constants: k = 0.37, B = 5.2 (Cimarelli, Turb. Lect. Notes)'
 
-plt.text(0.1, 18.5, caption, horizontalalignment='left', verticalalignment='center', fontsize=16, fontweight='bold')
+plt.text(0.12, ylim - 3.5, caption, horizontalalignment='left', verticalalignment='center', fontsize=16, fontweight='bold')
 
 # Saving the figure
 plt.savefig('umean.pdf', format='pdf', bbox_inches='tight')
