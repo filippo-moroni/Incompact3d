@@ -46,10 +46,9 @@ if itype == 13:
     nu    = 1.0/re                        # kinematic viscosity
 
 elif itype == 3:
-    #re_tau  = np.float64(180.0)           # friction   Reynolds number
-    #re_cent = (re_tau/0.116)**(1.0/0.88)  # centerline Reynolds number
     
-    re_cent = np.float64(4225.96)
+    re_cent = np.float64(4225.96)         # centerline Reynolds number of a laminar Poiseuille flow
+    re_tau  = 0.123*(re_cent**0.875)      # corresponding estimated friction Reynolds number 
     nu      = 1.0/re_cent                 # kinematic viscosity
     
     yly     = np.float64(2.0)             # channel height
@@ -107,9 +106,9 @@ elif itype == 3:
     #mg     = mg / ubulk * yly
            
 # Shear quantities
-#sh_vel = np.sqrt(nu * mg[0])
+sh_vel = np.sqrt(nu * mg[0])
 
-sh_vel = 0.042
+#sh_vel = 0.042
 delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
 
