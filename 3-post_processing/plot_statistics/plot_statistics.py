@@ -9,6 +9,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
+import matplotlib as mpl
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -21,11 +22,28 @@ plt.rcParams.update({
 
 plt.rcParams.update({'figure.autolayout': True})
 
+# Parameters for plotting
+lw          = 2.0             # linewidth for plots
+markersize  = 80              # marker size for scatter plot
+fla         = 80              # fontsize of labels of x and y axes (major labels, variables)
+fla2        = 36              # fontsize of numbers of x and y axes 
+xliminf     = 0.1             # x axis inferior limit
+xalign      = xliminf*1.1     # value to adjust translation in x of captions
+pad_numbers = 20              # pad of numbers on both axes
+lmajt       = 30              # length of major ticks
+lmint       = 15              # length of minor ticks
+tick_width  = 1.5             # width of ticks and external box
+
+# Axes width
+mpl.rcParams['axes.linewidth'] = tick_width
+
 # Set some useful colors
 grey = [0.5, 0.5, 0.5]
 
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
+
+#!--------------------------------------------------------------------------------------!
 
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
@@ -63,20 +81,19 @@ elif itype == 3:
     mean_u_lm = M[:,2]
     
     M = np.loadtxt('data_lee_fluct_retau180.txt', skiprows=75, dtype=np.float64)
-    var_u_lm   = M[:,2]
-    var_v_lm   = M[:,3]
-    mean_uv_lm = M[:,5]
+    var_u_lm   =   M[:,2]
+    var_v_lm   =   M[:,3]
+    mean_uv_lm = - M[:,5]
                
 #!--- Reading of files section ---!
 
 # Reading of mean statistics
 M = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
-mean_u  = M[:,0]   
-mean_v  = M[:,1]
-var_u   = M[:,3]
-var_v   = M[:,4]
-mean_uv = M[:,12]
+mean_u  =    M[:,0]   
+var_u   =    M[:,3]
+var_v   =    M[:,4]
+mean_uv =  - M[:,12]
 
 # Reading of vorticity components and mean gradient
 M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -161,21 +178,8 @@ u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
-# Parameters for plotting
-lw          = 1.5             # linewidth for plots
-markersize  = 80              # marker size for scatter plot
-fla         = 80              # fontsize of labels of x and y axes (major labels, variables)
-fla2        = 34              # fontsize of numbers of x and y axes 
-xliminf     = 0.1             # x axis inferior limit
-xalign      = xliminf*1.1     # value to adjust translation in x of captions
-pad_numbers = 20              # pad of numbers on both axes
-lmajt       = 30              # length of major ticks
-lmint       = 15              # length of minor ticks
-
-#!--------------------------------------------------------------------------------------!
-
 # Mean velocity profile
-fig, ax = plt.subplots(1, 1, figsize=(14,10))
+fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
 
 # TTBL
 if itype == 13:
@@ -241,8 +245,8 @@ ax.set_xticks(values, labels, color="k", rotation='horizontal')
 ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
 
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=1.0, top=True, right=True, pad=pad_numbers) 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=1.0, top=True, right=True)
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
@@ -298,14 +302,128 @@ ax.set_xticks(values, labels, color="k", rotation='horizontal')
 ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
 
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=1.0, top=True, right=True, pad=pad_numbers) 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=1.0, top=True, right=True)
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
 plt.savefig('uvar.pdf', format='pdf', bbox_inches='tight')
+plt.show()
+
+#!--------------------------------------------------------------------------------------!
+
+# <v'v'>
+fig, ax = plt.subplots(1, 1, figsize=(14,10))
+
+# TTBL
+if itype == 13:
+    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
+    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+        
+# Channel    
+elif itype == 3:
+    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
+    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
+    xlimsup = 300.0
+    ylimsup = 1.0
+    
+    # <u'u'>
+    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus_lm, var_v_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    plt.legend(['Present', 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    
+    caption2 = 'First points of Lee and Moser data not displayed' 
+    
+    # Plotting caption2
+    plt.text(xalign, ylimsup - 0.18, caption2, fontsize=16, fontweight='bold', ha='left')
+
+# Axes labels
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
+ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=fla, labelpad=20)
+
+# Axes limits
+plt.ylim([0, ylimsup])
+plt.xlim([xliminf, xlimsup])
+
+# Logarithmic x-axis and linear y-axis
+ax.set_xscale('log')
+ax.set_yscale('linear')
+
+# Minor x-ticks based on log10
+ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
+
+# Setting x-ticks with values and labels
+ax.set_xticks(values, labels, color="k", rotation='horizontal')
+ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
+
+# Setting major and minor ticks on both axes
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
+
+# Setting y-ticks
+ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
+
+# Saving the figure and show it
+plt.savefig('vvar.pdf', format='pdf', bbox_inches='tight')
+plt.show()
+
+#!--------------------------------------------------------------------------------------!
+
+# <u'v'>
+fig, ax = plt.subplots(1, 1, figsize=(14,10))
+
+# TTBL
+if itype == 13:
+    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
+    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+        
+# Channel    
+elif itype == 3:
+    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
+    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
+    xlimsup = 300.0
+    ylimsup = 1.0
+    
+    # <u'u'>
+    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus_lm, mean_uv_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    plt.legend(['Present', 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    
+    caption2 = 'First points of Lee and Moser data not displayed' 
+    
+    # Plotting caption2
+    plt.text(xalign, ylimsup - 0.18, caption2, fontsize=16, fontweight='bold', ha='left')
+
+# Axes labels
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
+ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
+
+# Axes limits
+plt.ylim([0, ylimsup])
+plt.xlim([xliminf, xlimsup])
+
+# Logarithmic x-axis and linear y-axis
+ax.set_xscale('log')
+ax.set_yscale('linear')
+
+# Minor x-ticks based on log10
+ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
+
+# Setting x-ticks with values and labels
+ax.set_xticks(values, labels, color="k", rotation='horizontal')
+ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
+
+# Setting major and minor ticks on both axes
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
+
+# Setting y-ticks
+ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
+
+# Saving the figure and show it
+plt.savefig('uvmean.pdf', format='pdf', bbox_inches='tight')
 plt.show()
 
 
