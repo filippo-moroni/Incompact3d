@@ -90,8 +90,8 @@ PROGRAM post
   if (sel(3)==1) post_diss=.true.
 
   if (nrank==0) then
-     if ((.not.post_mean).and.(.not.post_vort)) &
-        call decomp_2d_abort(10,'Invalid post-processing switchers specified, NO WORK TO BE DONE HERE')
+     if ((.not.post_mean).and.(.not.post_vort).and.(.not.post_diss)) &
+        call decomp_2d_abort(10,'Invalid post-processing switchers specified, no work to be done here!')
   endif
   
   ! Logicals for reading Snapshots
@@ -108,7 +108,7 @@ PROGRAM post
   nt = (filen-file1)/icrfile+1
   
   ! Initialize statistics
-  call init_statistics(nt)
+  call init_statistics()
 
   ! Time passed since the program has started
   call cpu_time(tstart)
@@ -127,7 +127,13 @@ PROGRAM post
      ! Show progress on post-processing    
      if (nrank==0) then
         print *,'----------------------------------------------------'
+#ifdef TTBL_MODE
+        ! TTBL mode 
         write(*,"('We are averaging the realizations of the snapshot =',I3,'/',I3)") ifile,filen
+#else
+        ! Channel mode
+        write(*,"('We are processing snapshot =',I3,'/',I3)") ifile,filen
+#endif
      endif
  
 !---------Start of the ensemble average cycle--------------!

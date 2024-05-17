@@ -247,14 +247,12 @@ contains
   end subroutine init_post_variables
   !******************************************************************
   ! Subroutine for allocating the memory for statistics arrays
-  subroutine init_statistics(nt)
+  subroutine init_statistics()
   
   USE MPI
   
   implicit none
-  
-  integer :: nt
-    
+      
     if (post_mean) then
        allocate(u1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
        allocate(v1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
