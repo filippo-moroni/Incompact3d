@@ -176,13 +176,11 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   real(mytype) :: lind
   
   ! Vorticity 
-  real(mytype),              dimension(xsize(1),xsize(2),xsize(3)) :: vortxmean1,vortymean1,vortzmean1  ! average vorticity components, x-pencils
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2  ! average vorticity components, y-pencils
   
   ! Mean gradient
-  real(mytype),              dimension(xsize(1),xsize(2),xsize(3)) :: mean_gradient1                    ! mean gradient, x-pencils
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradient2                    ! mean gradient, y-pencils
-      
+        
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
   call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
@@ -234,28 +232,33 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
     enddo
   enddo
   
-  mean_gradient1 = mean_gradient1 + di1/den
+  ! Transpose array along y and sum
+  call transpose_x_to_y(di1,di2)
+  mean_gradient2 = mean_gradient2 + di2/den
   
   !---Vorticity average---!
   
   ! Vorticity along x 
   di1 = tf1 - th1  !dw/dy - dv/dz
-  vortxmean1 = vortxmean1 + di1/den
+  
+  ! Transpose array along y and sum
+  call transpose_x_to_y(di1,di2)
+  vortxmean2 = vortxmean2 + di2/den
     
   ! Vorticity along y
   di1 = tg1 - tc1  !du/dz - dw/dx
-  vortymean1 = vortymean1 + di1/den
+  
+  ! Transpose array along y and sum
+  call transpose_x_to_y(di1,di2)
+  vortymean2 = vortymean2 + di2/den
      
   ! Vorticity along z
   di1 = tb1 - td1  !dv/dx - du/dy
-  vortzmean1 = vortzmean1 + di1/den
+  
+  ! Transpose array along y and sum
+  call transpose_x_to_y(di1,di2)
+  vortzmean2 = vortzmean2 + di2/den
    
-  ! Transpose arrays along y
-  call transpose_x_to_y(vortxmean1,vortxmean2)
-  call transpose_x_to_y(vortymean1,vortymean2)
-  call transpose_x_to_y(vortzmean1,vortzmean2)
-  call transpose_x_to_y(mean_gradient1,mean_gradient2)
-
 end subroutine stat_vorticity
 
 !********************************************************************
@@ -283,9 +286,8 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   real(mytype) :: den  ! denominator of the divisions 
   real(mytype) :: lind
   
-  ! Total dissipation 
-  real(mytype),            dimension(xsize(1),xsize(2),xsize(3)) :: epsmean1  ! average total dissipation, x-pencils
-  real(mytype),intent(out),dimension(ysize(1),ysize(2),ysize(3)) :: epsmean2  ! average total dissipation, y-pencils
+  ! Total average dissipation 
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: epsmean2  ! average total dissipation, y-pencils
   
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
@@ -336,11 +338,10 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
          (tf1+th1)**2 +                   &  !(dw/dy+dv/dz)**2 +
          (tg1+tc1)**2)*xnu                   !(du/dz+dw/dx)**2)*nu
   
-  epsmean1 = epsmean1 + di1/den
+  ! Transpose array along y and sum
+  call transpose_x_to_y(di1,di2)
+  epsmean2 = epsmean2 + di2/den
   
-  ! Transpose array along y
-  call transpose_x_to_y(epsmean1,epsmean2)
-
 end subroutine stat_dissipation
 
 
