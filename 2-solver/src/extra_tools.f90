@@ -226,6 +226,7 @@ contains
 
   integer                   :: code, i, j, k, jloc
   real(mytype)              :: ub, coeff
+  real(mytype)              :: ub_in, ub_out 
   real(mytype), intent(out) :: uball
 
   ub    = zero
@@ -243,7 +244,11 @@ contains
 
   ub = ub * coeff
 
-  call MPI_ALLREDUCE(ub,uball,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+  ub_in = ub
+  
+  call MPI_ALLREDUCE(ub_in,ub_out,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+  
+  uball = ub_out
   
   return
     
