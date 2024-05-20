@@ -35,46 +35,64 @@ contains
   
   ! Inputs 
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
-       
-  ! Calculate shear velocity at the bottom wall (TTBL and Channel)
-  if(itype .eq. itype_ttbl .or. itype .eq. itype_channel) then
+  
+  ! TTBL
+  if(itype .eq. itype_ttbl) then
+      ! Shear velocity bottom wall
       call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
-  end if  
       
-  ! Create or open a file to store sh_vel, cf and time unit
-  if(nrank .eq. 0) then
-      
-      ! Calculate friction coefficient for a TTBL
-      if(itype .eq. itype_ttbl) then
+      ! Create or open a file to store sh_vel, cf coefficients, viscous time and time unit
+      if(nrank .eq. 0) then
+          ! Calculate friction coefficients
           fric_coeff  = two * ((sh_vel  / uwall)**2)
           fric_coeffx = two * ((sh_velx / uwall)**2)
           fric_coeffz = two * ((sh_velz / uwall)**2)
-      
-      ! Calculate friction coefficient for a Channel 
-      else if(itype .eq. itype_channel) then
           
-          ! Calculate bulk velocity
-          call calculate_ubulk(ux,ubulk)
+          ! Calculate viscous time unit
+          t_viscous = xnu / (sh_vel**2)
           
+          inquire(file="cf_history.txt", exist=exists)
+          if (exists) then
+              open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
+              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
+          else
+              open(newunit=iunit, file="cf_history.txt", status="new", action="write")
+              write(iunit, '(A12,  A,A16,   A,A16,   A,A16,   A,A12,  A,A12)') 'sh_vel', ',', 'cf,tot', ',', 'cf,x', ',', 'cf,z', ',', 't_nu', ',', 'T'          
+              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
+          end if
+              close(iunit)
+      end if
+ 
+  ! Channel
+  else if(itype .eq. itype_channel) then
+      ! Shear velocity bottom wall
+      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+      ! Bulk velocity
+      call calculate_ubulk(ux,ubulk)
+    
+      ! Create or open a file to store sh_vel, cf coefficients, viscous time, time unit and bulk velocity
+      if(nrank .eq. 0) then
+          ! Calculate friction coefficients
           fric_coeff  = two * ((sh_vel  / ubulk)**2)
           fric_coeffx = two * ((sh_velx / ubulk)**2)
           fric_coeffz = two * ((sh_velz / ubulk)**2)
-      end if
-      
-      ! Calculate viscous time unit
-      t_viscous = xnu / (sh_vel**2)
-      
-      inquire(file="cf_history.txt", exist=exists)
-      if (exists) then
-          open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
-          write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
-      else
-          open(newunit=iunit, file="cf_history.txt", status="new", action="write")
-          write(iunit, '(A12,  A,A16,   A,A16,   A,A16,   A,A12,  A,A12)') 'sh_vel', ',', 'cf,tot', ',', 'cf,x', ',', 'cf,z', ',', 't_nu', ',', 'T'          
-          write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t
-      end if
-      close(iunit)
-  end if
+          
+          ! Calculate viscous time unit
+          t_viscous = xnu / (sh_vel**2)
+          
+          inquire(file="cf_history.txt", exist=exists)
+          if (exists) then
+              open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
+              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t, ',', ubulk
+          else
+              open(newunit=iunit, file="cf_history.txt", status="new", action="write")
+              write(iunit, '(A12,  A,A16,   A,A16,   A,A16,   A,A12,  A,A12,  A,A12)') 'sh_vel', ',', 'cf,tot', ',', 'cf,x', ',', 'cf,z', ',', 't_nu', ',', 'T', ',', 'Ubulk'          
+              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4,A,F12.4)') sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t, ',', ubulk
+          end if
+              close(iunit)
+      end if  
+  
+  end if ! closing of the if condition for different flow cases
              
   end subroutine print_cf
   
@@ -215,7 +233,8 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_ubulk(ux,uball)
   
-  use decomp_2d
+  use decomp_2d, only : mytype, real_type, nrank
+  use decomp_2d, only : xsize, zsize, xstart
   use param
   use MPI
   use variables, only : ppy
@@ -226,7 +245,6 @@ contains
 
   integer                   :: code, i, j, k, jloc
   real(mytype)              :: ub, coeff
-  real(mytype)              :: ub_in, ub_out 
   real(mytype), intent(out) :: uball
 
   ub    = zero
@@ -243,14 +261,8 @@ contains
   enddo
 
   ub = ub * coeff
-
-  ub_in = ub
   
-  call MPI_ALLREDUCE(ub_in,ub_out,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-  
-  uball = ub_out
-  
-  return
+  call MPI_REDUCE(ub,uball,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
     
   end subroutine calculate_ubulk 
   

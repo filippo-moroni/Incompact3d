@@ -339,7 +339,7 @@ module param
   integer :: idir_stream
   logical :: cpg
   real(mytype) :: re_cent, fcpg, re_bulk
-  real(mytype) :: ubulk  ! Bulk velocity
+  real(mytype), save :: ubulk  ! Bulk velocity
 
   !! Numerics control
   integer :: ifirstder,isecondder,ipinter
