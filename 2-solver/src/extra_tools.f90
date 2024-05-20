@@ -216,13 +216,13 @@ contains
   subroutine calculate_ubulk(ux,uball)
   
   use decomp_2d
-  use variables
   use param
   use MPI
+  use variables, only : ppy
   
   implicit none
 
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
 
   integer                   :: code, i, j, k, jloc
   real(mytype)              :: ub, coeff
