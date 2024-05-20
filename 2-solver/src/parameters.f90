@@ -755,13 +755,9 @@ subroutine parameter_defaults()
   cfl_limit = 0.95    ! CFL limit to adjust the time-step 
   
   ! Controls for wall oscillations
-  if(iswitch_wo .eq. 1) then
-      a_plus_cap = twelve        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-      t_plus_cap = onehundred    ! period of spanwise wall oscillations in friction units (cap: capital letter)
-  else
-      a_plus_cap = zero          ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-      t_plus_cap = zero          ! period of spanwise wall oscillations in friction units (cap: capital letter)
-  end if 
+  a_plus_cap = twelve        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  t_plus_cap = onehundred    ! period of spanwise wall oscillations in friction units (cap: capital letter)
+
 end subroutine parameter_defaults
 
 

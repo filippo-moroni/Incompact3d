@@ -329,10 +329,25 @@ contains
     ! OUTPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1, duy1, duz1
 
+    ! Semi-implicit diffusion
     if (iimplicit.ge.1) then
-       call intt(ux1, dux1, npaire=1, isc=0, forcing1=px1, wall_vel=uwall)
+       
+       ! x-dir. momentum
+       if (itype .eq. itype_ttbl) then
+           call intt(ux1, dux1, npaire=1, isc=0, forcing1=px1, wall_vel=uwall)
+       else
+           call intt(ux1, dux1, npaire=1, isc=0, forcing1=px1, wall_vel=zero)
+       end if
+       
+       ! y-dir. momentum
        call intt(uy1, duy1, npaire=0, isc=0, forcing1=py1, wall_vel=zero)
-       call intt(uz1, duz1, npaire=1, isc=0, forcing1=pz1, wall_vel=span_vel)
+       
+       ! z-dir. momentum
+       if (iswitch_wo .eq. 1) then
+           call intt(uz1, duz1, npaire=1, isc=0, forcing1=pz1, wall_vel=span_vel)
+       else 
+           call intt(uz1, duz1, npaire=1, isc=0, forcing1=pz1, wall_vel=zero)
+       end if
     else
        call intt(ux1, dux1)
        call intt(uy1, duy1)
