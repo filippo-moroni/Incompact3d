@@ -26,6 +26,7 @@ contains
   use param
   use decomp_2d
   use dbg_schemes, only : sqrt_prec
+  use channel,     only : calculate_ubulk
     
   implicit none
   
@@ -49,8 +50,12 @@ contains
           fric_coeffx = two * ((sh_velx / uwall)**2)
           fric_coeffz = two * ((sh_velz / uwall)**2)
       
-      ! Calculate friction coefficient for a Channel (CPG only at the moment)
+      ! Calculate friction coefficient for a Channel 
       else if(itype .eq. itype_channel) then
+          
+          ! Calculate bulk velocity
+          call calculate_ubulk(ux)
+          
           fric_coeff  = two * ((sh_vel  / ubulk)**2)
           fric_coeffx = two * ((sh_velx / ubulk)**2)
           fric_coeffz = two * ((sh_velz / ubulk)**2)

@@ -44,7 +44,7 @@ module channel
   PRIVATE ! All functions/subroutines private by default
   PUBLIC :: init_channel, boundary_conditions_channel, postprocess_channel, &
             visu_channel, visu_channel_init, momentum_forcing_channel, &
-            geomcomplex_channel
+            geomcomplex_channel, calculate_ubulk
 
 contains
   !############################################################################
@@ -292,7 +292,6 @@ contains
     return
   end subroutine init_channel
   !############################################################################
-  !############################################################################
   subroutine boundary_conditions_channel (ux,uy,uz,phi)
 
     use param
@@ -411,7 +410,6 @@ contains
 
   end subroutine channel_cfr
   !############################################################################
-  !############################################################################
   subroutine postprocess_channel(ux1,uy1,uz1,pp3,phi1,ep1)
 
     use var, ONLY : nzmsize
@@ -514,7 +512,6 @@ contains
 
   end subroutine visu_channel
   !############################################################################
-  !############################################################################
   !!
   !!  SUBROUTINE: momentum_forcing
   !!      AUTHOR: Paul Bartholomew
@@ -546,7 +543,6 @@ contains
     endif
 
   end subroutine momentum_forcing_channel
-  !############################################################################
   !############################################################################
   subroutine geomcomplex_channel(epsi,nxi,nxf,ny,nyi,nyf,nzi,nzf,yp,remp)
 
@@ -583,5 +579,40 @@ contains
 
     return
   end subroutine geomcomplex_channel
-  !############################################################################
+  !---------------------------------------------------------------------------!
+  ! Calculate bulk velocity for a channel.
+  ! Adapted from 'channel_cfr' subroutine.
+  !---------------------------------------------------------------------------!
+  subroutine calculate_ubulk(ux)
+  
+  use param, only : ubulk
+  use MPI
+  
+  implicit none
+
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
+
+  integer      :: code, i, j, k, jloc
+  real(mytype) :: ub, coeff
+
+  ub = zero
+  ubulk = zero
+  coeff = dy / (yly * real(xsize(1) * zsize(3), kind=mytype))
+
+  do k = 1, xsize(3)
+     do jloc = 1, xsize(2)
+        j = jloc + xstart(2) - 1
+        do i = 1, xsize(1)
+          ub = ub + ux(i,jloc,k) / ppy(j)
+        enddo
+     enddo
+  enddo
+
+  ub = ub * coeff
+
+  call MPI_ALLREDUCE(ub,ubulk,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+    
+  end subroutine calculate_ubulk 
+  !---------------------------------------------------------------------------! 
+  
 end module channel

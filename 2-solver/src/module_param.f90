@@ -435,6 +435,9 @@ module param
   real(mytype) :: uln         ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
   real(mytype) :: lln         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall     ! scalar value at the wall
+  
+  ! Bulk velocity for a channel (used to calculate cf)
+  real(mytype), save :: ubulk
    
   ! Shear quantities at the wall (used for Channel and TTBL)
   real(mytype), save :: sh_vel       ! total shear velocity
