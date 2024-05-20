@@ -298,8 +298,6 @@ subroutine parameter(input_i3d)
     ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
     re_bulk = (re/0.09_mytype)**(1.0_mytype/0.88_mytype)
     
-    ! Calculate the bulk velocity
-    ubulk = (re_bulk * xnu)/yly
   end if
 
   if (ilmn) then
@@ -734,12 +732,18 @@ subroutine parameter_defaults()
   x0_tr_tbl=3.505082_mytype
   
   ! Temporal TBL
-  uwall = zero        ! velocity of translating bottom wall (U_wall) 
+  if(itype .eq. itype_ttbl) then
+      uwall   = one       ! velocity of translating bottom wall (U_wall)   
+      phiwall = one       ! scalar value at the wall
+  else
+      uwall   = zero      ! velocity of translating bottom wall (U_wall)   
+      phiwall = zero      ! scalar value at the wall
+  end if 
+  
   twd = 1.0           ! trip wire diameter (D)
   uln = 0.01          ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
   lln = 0.5           ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-  phiwall = zero      ! scalar value at the wall 
-  
+    
   ! Extra numerics control
   icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   cfl_limit = 0.95    ! CFL limit to adjust the time-step 
