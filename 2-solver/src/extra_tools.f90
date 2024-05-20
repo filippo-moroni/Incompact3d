@@ -54,7 +54,7 @@ contains
       else if(itype .eq. itype_channel) then
           
           ! Calculate bulk velocity
-          call calculate_ubulk(ux)
+          call calculate_ubulk(ux,ubulk)
           
           fric_coeff  = two * ((sh_vel  / ubulk)**2)
           fric_coeffx = two * ((sh_velx / ubulk)**2)
@@ -213,7 +213,7 @@ contains
   ! Calculate bulk velocity for a channel.
   ! Adapted from 'channel_cfr' subroutine.
   !---------------------------------------------------------------------------!
-  subroutine calculate_ubulk(ux)
+  subroutine calculate_ubulk(ux,uball)
   
   use decomp_2d
   use variables
@@ -222,13 +222,14 @@ contains
   
   implicit none
 
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux
 
-  integer      :: code, i, j, k, jloc
-  real(mytype) :: ub, coeff
+  integer                   :: code, i, j, k, jloc
+  real(mytype)              :: ub, coeff
+  real(mytype), intent(out) :: uball
 
-  ub = zero
-  ubulk = zero
+  ub    = zero
+  uball = zero
   coeff = dy / (yly * real(xsize(1) * zsize(3), kind=mytype))
 
   do k = 1, xsize(3)
@@ -242,7 +243,9 @@ contains
 
   ub = ub * coeff
 
-  call MPI_ALLREDUCE(ub,ubulk,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+  call MPI_ALLREDUCE(ub,uball,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+  
+  return
     
   end subroutine calculate_ubulk 
   
