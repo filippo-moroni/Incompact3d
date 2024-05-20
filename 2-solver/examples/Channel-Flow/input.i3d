@@ -116,7 +116,7 @@ nclzSn = 0
 &WallOscillations
 !====================
 
-a_plus_cap = 0.0      ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+a_plus_cap = 12.0     ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
 t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (cap: capital letter) 
 
 /End
