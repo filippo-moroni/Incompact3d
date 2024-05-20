@@ -215,7 +215,9 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_ubulk(ux)
   
-  use param, only : ubulk
+  use decomp_2d
+  use variables
+  use param
   use MPI
   
   implicit none
