@@ -12,6 +12,7 @@ module extra_tools
   public :: print_cf,                   &
             calculate_shear_velocity,   &
             spanwise_wall_oscillations, &
+            calculate_ubulk,            &
             update_time_int_coeff
 
 contains
@@ -26,8 +27,7 @@ contains
   use param
   use decomp_2d
   use dbg_schemes, only : sqrt_prec
-  use channel,     only : calculate_ubulk
-    
+      
   implicit none
   
   integer :: iunit
@@ -210,6 +210,41 @@ contains
   end subroutine spanwise_wall_oscillations
   
   !---------------------------------------------------------------------------!
+  ! Calculate bulk velocity for a channel.
+  ! Adapted from 'channel_cfr' subroutine.
+  !---------------------------------------------------------------------------!
+  subroutine calculate_ubulk(ux)
+  
+  use param, only : ubulk
+  use MPI
+  
+  implicit none
+
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
+
+  integer      :: code, i, j, k, jloc
+  real(mytype) :: ub, coeff
+
+  ub = zero
+  ubulk = zero
+  coeff = dy / (yly * real(xsize(1) * zsize(3), kind=mytype))
+
+  do k = 1, xsize(3)
+     do jloc = 1, xsize(2)
+        j = jloc + xstart(2) - 1
+        do i = 1, xsize(1)
+          ub = ub + ux(i,jloc,k) / ppy(j)
+        enddo
+     enddo
+  enddo
+
+  ub = ub * coeff
+
+  call MPI_ALLREDUCE(ub,ubulk,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
+    
+  end subroutine calculate_ubulk 
+  
+  !---------------------------------------------------------------------------!
   ! Update coefficients for time integration schemes
   ! if adaptive time-step is used (max CFL condition)
   ! (taken from init_variables in variables module).
@@ -236,7 +271,8 @@ contains
     bdt(3)=(-five/twelve)*dt
     gdt(3)=adt(3)+bdt(3)
            
-  end subroutine update_time_int_coeff  
+  end subroutine update_time_int_coeff
+  !---------------------------------------------------------------------------! 
   
 end module extra_tools
 

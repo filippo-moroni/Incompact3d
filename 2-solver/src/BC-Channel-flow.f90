@@ -44,7 +44,7 @@ module channel
   PRIVATE ! All functions/subroutines private by default
   PUBLIC :: init_channel, boundary_conditions_channel, postprocess_channel, &
             visu_channel, visu_channel_init, momentum_forcing_channel, &
-            geomcomplex_channel, calculate_ubulk
+            geomcomplex_channel
 
 contains
   !############################################################################
@@ -579,40 +579,6 @@ contains
 
     return
   end subroutine geomcomplex_channel
-  !---------------------------------------------------------------------------!
-  ! Calculate bulk velocity for a channel.
-  ! Adapted from 'channel_cfr' subroutine.
-  !---------------------------------------------------------------------------!
-  subroutine calculate_ubulk(ux)
-  
-  use param, only : ubulk
-  use MPI
-  
-  implicit none
-
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
-
-  integer      :: code, i, j, k, jloc
-  real(mytype) :: ub, coeff
-
-  ub = zero
-  ubulk = zero
-  coeff = dy / (yly * real(xsize(1) * zsize(3), kind=mytype))
-
-  do k = 1, xsize(3)
-     do jloc = 1, xsize(2)
-        j = jloc + xstart(2) - 1
-        do i = 1, xsize(1)
-          ub = ub + ux(i,jloc,k) / ppy(j)
-        enddo
-     enddo
-  enddo
-
-  ub = ub * coeff
-
-  call MPI_ALLREDUCE(ub,ubulk,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-    
-  end subroutine calculate_ubulk 
   !---------------------------------------------------------------------------! 
   
 end module channel
