@@ -9,9 +9,12 @@ program xcompact3d_stretching_channel
   real(8) :: dy, dymax, dymin, xcx, xl2, xnum, yly, yold, yp, yinf
   integer :: i, npvis
   
-  re=4200.  !#TO CHANGE#!input Reynolds number in Xcompact3d
-                        !based on centreline velocity Poisseuille profile
-  ret=0.123*re**0.875   !corresponding Reynolds number based on u_tau
+  re=4200.0  !#TO CHANGE#!input Reynolds number in Xcompact3d
+                         !based on centreline velocity Poisseuille profile
+  ret=0.123*re**0.875    !corresponding Reynolds number based on u_tau
+  
+  ! New relation present in Incompact3d v4.0
+  !ret=0.116*re*0.88
     
   yp=1.      !#TO CHANGE#!targeted resolution at the wall in wall units
   y=1000
