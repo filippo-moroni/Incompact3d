@@ -73,6 +73,7 @@ subroutine parameter(input_i3d)
        nu0nu, cnu, ipinter
   NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, nvisu, ilist, iprocessing, &
        ninflows, ntimesteps, inflowpath, ioutflow, output2D
+  NAMELIST /AdditionalControls/ iswitch_wo
   NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
@@ -126,6 +127,14 @@ subroutine parameter(input_i3d)
   read(10, nml=BasicParam); rewind(10)
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
+  
+  ! Additional controls
+  read(10, nml=AdditionalControls); rewind(10)
+  
+  ! Controls for wall oscillations
+  if(iswitch_wo .eq. 1) then
+      read(10, nml=WallOscillations); rewind(10); 
+  end if 
   
   if(itype .ne. itype_ttbl) then
      read(10, nml=Statistics); rewind(10)
@@ -243,10 +252,7 @@ subroutine parameter(input_i3d)
   
   ! Read extra numerics control (Adjustable time-step)
   !read(10, nml=ExtraNumControl); rewind(10);
-  
-  ! Controls for wall oscillations
-  read(10, nml=WallOscillations); rewind(10);  
-     
+       
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -749,7 +755,15 @@ subroutine parameter_defaults()
   cfl_limit = 0.95    ! CFL limit to adjust the time-step 
   
   ! Controls for wall oscillations
-  a_plus_cap = zero   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
-   
+  if(iswitch_wo .eq. 1) then
+      a_plus_cap = twelve        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+      t_plus_cap = onehundred    ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  else
+      a_plus_cap = zero          ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+      t_plus_cap = zero          ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  end if 
 end subroutine parameter_defaults
+
+
+
+

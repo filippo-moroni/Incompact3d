@@ -446,6 +446,7 @@ module param
   real(mytype), save :: t_viscous    ! viscous time unit (based on total shear velocity and viscous length)
 
   ! Spanwise wall oscillation
+  integer            :: iswitch_wo   ! switcher to enable the reading of wall-oscillation parameters
   real(mytype), save :: span_vel     ! spanwise velocity at the wall
       
   ! Extra controls for numerics 

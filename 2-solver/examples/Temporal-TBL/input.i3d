@@ -1,8 +1,8 @@
 ! -*- mode: f90 -*-
 
-!===================
+!====================
 &BasicParam
-!===================
+!====================
 
 ! Flow type (3=Channel, 9=Turbulent-Boundary-Layer, 13=Temporal TBL)
 itype = 13
@@ -64,9 +64,9 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
                       ! and it is experimental with the hyperviscous operator.
 /End
 
-!=================
+!====================
 &InOutParam
-!=================
+!====================
 
 ! Basic I/O
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
@@ -77,9 +77,17 @@ nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes
 
 /End
 
-!================
+!====================
+&AdditionalControls
+!====================
+
+iswitch_wo = 0        ! Switcher for wall oscillations (0: no, 1: yes)
+
+/End
+
+!====================
 &ScalarParam
-!================
+!====================
 
 Sc(1) = 1.0           ! Schmidt number (or Prandtl number, in case of a thermal problem)
 
@@ -92,9 +100,9 @@ nclzSn = 0
 
 /End
 
-!================
+!====================
 &TemporalTBLParam
-!================
+!====================
 
 uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
 twd = 1.0             ! tripping wire diameter (D)
