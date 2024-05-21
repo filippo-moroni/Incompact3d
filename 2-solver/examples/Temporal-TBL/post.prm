@@ -1,0 +1,13 @@
+#
+#  INCOMPACT 3D post processing parameters
+#
+1    # file1    ! First snapshot index
+1    # filen    ! Final snapshot index 
+1    # icrfile  ! File increment 
+1    # nr       ! Number of flow realizations 
+#
+#  STATISTICS (0:no, 1:yes)
+#
+1    # post_mean  ! Compute mean statistics
+0    # post_vort  ! Compute mean vorticity and mean gradient
+0    # post_diss  ! Compute mean total dissipation rate
