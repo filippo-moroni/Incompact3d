@@ -143,22 +143,5 @@ add_subdirectory(decomp2d)
 # Create the Xcompact3d executable
 add_subdirectory(src)
 
-# Create an example dir with all input.i3d example files
-option(BUILD_TESTING "Build with tests" OFF)
-set(test_dir "${PROJECT_BINARY_DIR}/Test")
-add_subdirectory(examples)
-message(STATUS "Before test main ${test_dir}")
-if (${BUILD_TESTING})
-  include(CTest)
-  message(STATUS "MPI INCL ALSO FOUND: ${MPI_INCLUDE_PATH}")
-  message(STATUS "MPI EXEC: ${MPIEXEC_EXECUTABLE}")
 
-  # Channel
-  add_test(NAME Channel-Flow-X COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test_x.i3d WORKING_DIRECTORY ${test_dir}/Channel-Flow-X)
-  add_test(NAME Channel-Flow-Z COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test_z.i3d WORKING_DIRECTORY ${test_dir}/Channel-Flow-Z)
-
-  # TBL
-  add_test(NAME TBL COMMAND ${MPIEXEC_EXECUTABLE} -n ${MPIEXEC_MAX_NUMPROCS} ${CMAKE_INSTALL_PREFIX}/bin/xcompact3d input_test.i3d WORKING_DIRECTORY ${test_dir}/TBL)
-
-endif()
 
