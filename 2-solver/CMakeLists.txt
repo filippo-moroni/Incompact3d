@@ -32,6 +32,7 @@ endif (NOT CMAKE_BUILD_TYPE)
 
 # Added by F. Moroni
 set(CMAKE_Fortran_STANDARD 2008)
+set(CMAKE_Fortran_STANDARD_REQUIRED True)
 
 set(Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER_ID} )
 message(STATUS "COMP ID ${Fortran_COMPILER_NAME}")
