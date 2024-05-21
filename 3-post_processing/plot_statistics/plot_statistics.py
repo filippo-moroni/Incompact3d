@@ -398,7 +398,7 @@ elif itype == 3:
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
-ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
+ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
 
 # Axes limits
 plt.ylim([0, ylimsup])
