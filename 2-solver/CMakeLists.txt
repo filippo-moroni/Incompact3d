@@ -10,6 +10,8 @@ set(DESCRIPTION "Building xcompact3d using cmake")
 message(STATUS "building ${PROJECT_NAME}")
 
 include(GNUInstallDirs)
+include_directories("/unimore/prod/modulefiles/comps")
+
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
