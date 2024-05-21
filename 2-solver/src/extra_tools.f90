@@ -206,7 +206,7 @@ contains
   
   !---------------------------------------------------------------------------!
   ! Calculate the spanwise velocity at the wall due to the imposed
-  ! sinusoidal oscillation.
+  ! sinusoidal oscillations.
   ! 
   ! Parameters of the non-dimensional oscillation (A^+ and T^+) are read from
   ! the input file.
