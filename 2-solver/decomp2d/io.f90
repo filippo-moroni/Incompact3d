@@ -1182,7 +1182,8 @@ contains
        if (nrank==0) then
           inquire(file=dirname, exist=dir_exists)
           if (.not.dir_exists) then
-             call system("mkdir "//dirname//" 2> /dev/null")
+             !call system("mkdir "//dirname//" 2> /dev/null")
+             call execute_command_line("mkdir "//dirname//" 2> /dev/null")
           end if
        end if
        full_io_name = trim(dirname)//"/"//trim(varname)

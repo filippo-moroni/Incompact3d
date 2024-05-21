@@ -55,7 +55,8 @@ contains
     if (nrank==0) then
       inquire(file="geometry", exist=dir_exists)
       if (.not.dir_exists) then
-        call system("mkdir geometry 2> /dev/null")
+        !call system("mkdir geometry 2> /dev/null")
+        call execute_command_line("mkdir geometry 2> /dev/null")
       end if
     end if
     !###################################################################
@@ -127,11 +128,13 @@ contains
     if (nrank==0) then
       inquire(file="data", exist=dir_exists)
       if (.not.dir_exists) then
-        call system("mkdir data 2> /dev/null")
+        !call system("mkdir data 2> /dev/null")
+        call execute_command_line("mkdir data 2> /dev/null")
       end if
       inquire(file="data/geometry", exist=dir_exists)
       if (.not.dir_exists) then
-        call system("mkdir data/geometry 2> /dev/null")
+        !call system("mkdir data/geometry 2> /dev/null")
+        call execute_command_line("mkdir data/geometry 2> /dev/null")
       end if
     end if
     !###################################################################

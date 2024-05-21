@@ -359,10 +359,12 @@ subroutine parameter(input_i3d)
   !###########################################################################
   
   ! Creating /data folder
-  if (nrank==0) call system('mkdir -p data')
+  !if (nrank==0) call system('mkdir -p data')
+  if (nrank==0) call execute_command_line('mkdir -p data')
   
   ! Creating /restart_info folder
-  if (nrank==0) call system('mkdir -p restart_info')
+  !if (nrank==0) call system('mkdir -p restart_info')
+  if (nrank==0) call execute_command_line('mkdir -p restart_info')
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
@@ -583,7 +585,7 @@ subroutine parameter(input_i3d)
         else
            write(*,*)  "LMN boundedness    : Not enforced"
         endif
-        write(*,"(' dens1 and dens2    : ',F6.2' ',F6.2)") dens1, dens2
+        write(*,"(' dens1 and dens2    : ',F6.2,',',F6.2)") dens1, dens2
         write(*,"(' Prandtl number Re  : ',F15.8)") prandtl
      endif
      if (angle.ne.0.) write(*,"(' Solid rotation     : ',F6.2)") angle
