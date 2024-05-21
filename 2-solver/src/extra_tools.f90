@@ -191,16 +191,20 @@ contains
     enddo
          
     ! Summation over all MPI processes       
-    call MPI_REDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
-    call MPI_REDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
-    call MPI_REDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    !call MPI_REDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    !call MPI_REDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    !call MPI_REDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
+    
+    call MPI_ALLREDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+    call MPI_ALLREDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+    call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
     ! Finalize shear velocities calculation
-    if (nrank .eq. 0) then
+    !if (nrank .eq. 0) then
         sh_vel  = sqrt_prec(sh_vel  * xnu)
         sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
         sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)  
-    end if
+    !end if
                   
   end subroutine calculate_shear_velocity
   

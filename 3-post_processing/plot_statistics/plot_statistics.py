@@ -107,10 +107,10 @@ elif itype == 13:
     snap_numb = input("Enter the snapshot number to show (3 digits): ")
          
     # Reading of mean statistics
-    M1 = np.loadtxt(f'data_post/mean_stats{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    M1 = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
     # Reading of vorticity components and mean gradient
-    M2 = np.loadtxt(f'data_post/vort_stats{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 
 # Extracting quantities from the full matrices
