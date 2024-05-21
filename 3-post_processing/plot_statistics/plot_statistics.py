@@ -87,28 +87,52 @@ elif itype == 3:
                
 #!--- Reading of files section ---!
 
-# Reading of mean statistics
-M = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+# Channel
+if itype == 3:
+    
+    print("Plotting of statistics for a channel")
 
-mean_u  =    M[:,0]   
-var_u   =    M[:,3]
-var_v   =    M[:,4]
-mean_uv =  - M[:,12]
+    # Reading of mean statistics
+    M1 = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    
+    # Reading of vorticity components and mean gradient
+    M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
-# Reading of vorticity components and mean gradient
-M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+# TTBL
+elif itype == 13:
 
-vort_x = M[:,0]
-vort_y = M[:,1]
-vort_z = M[:,2]
-mg     = M[:,3]
+    print("Plotting of statistics for a TTBL")
+
+    # Asking to the user the specific snapshot to show
+    snap_numb = input("Enter the snapshot number to show (3 digits): ")
+         
+    # Reading of mean statistics
+    M1 = np.loadtxt(f'data_post/mean_stats{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    
+    # Reading of vorticity components and mean gradient
+    M2 = np.loadtxt(f'data_post/vort_stats{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+
+
+# Extracting quantities from the full matrices
+mean_u  =    M1[:,0]   
+var_u   =    M1[:,3]
+var_v   =    M1[:,4]
+mean_uv =  - M1[:,12]
+
+vort_x = M2[:,0]
+vort_y = M2[:,1]
+vort_z = M2[:,2]
+mg     = M2[:,3]
 
 # Reading of grid points
 y = np.loadtxt('yp.dat')
 
 # Number of points in y direction
 ny = len(y)
-ny = (ny - 1) // 2 + 1
+
+# Halve the points in y direction for a channel
+if itype == 3:
+    ny = (ny - 1) // 2 + 1
 
 # Reading of the mean dissipation
 #M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
