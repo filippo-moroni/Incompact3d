@@ -90,7 +90,7 @@ elif itype == 3:
 # Channel
 if itype == 3:
     
-    print("Plotting of statistics for a channel")
+    print("!--- Plotting of statistics for a channel ---!")
 
     # Reading of mean statistics
     M1 = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -101,7 +101,7 @@ if itype == 3:
 # TTBL
 elif itype == 13:
 
-    print("Plotting of statistics for a TTBL")
+    print("!--- Plotting of statistics for a TTBL ---!")
 
     # Asking to the user the specific snapshot to show
     snap_numb = input("Enter the snapshot number to show (3 digits): ")
@@ -112,6 +112,7 @@ elif itype == 13:
     # Reading of vorticity components and mean gradient
     M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
+print()
 
 # Extracting quantities from the full matrices
 mean_u  =    M1[:,0]   
