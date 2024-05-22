@@ -12,6 +12,10 @@
 # Loading of modules
 module purge
 module load gcc-12.1.1/gcc
+module load gcc-8.5.0/ucc-1.2.0_nccl
+module load gcc-8.5.0/slurm-23.02.3
+module load go-1.20.5/go
+module load go-1.20.5/singularity-3.11.3
 module load gcc-12.1.1/ompi-4.1.5_nccl
 
 # Launching
