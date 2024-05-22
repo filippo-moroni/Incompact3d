@@ -4,7 +4,7 @@
 #SBATCH --time=23:59:59        # format HH : MM : SS
 #SBATCH --nodes=1              # node number
 #SBATCH --ntasks-per-node=52   # tasks out of 52
-#SBATCH --mem=400 g            # memory per node
+#SBATCH --mem=400g             # memory per node
 #SBATCH --exclusive            # do not share nodes
 #SBATCH --job-name=test_TTBL   # job name
 #------------------- End of SLURM directives -----------------#
