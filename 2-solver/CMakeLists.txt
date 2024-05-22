@@ -10,8 +10,6 @@ set(DESCRIPTION "Building xcompact3d using cmake")
 message(STATUS "building ${PROJECT_NAME}")
 
 include(GNUInstallDirs)
-include_directories("/unimore/prod/modulefiles/comps")
-
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -31,10 +29,6 @@ if (NOT CMAKE_BUILD_TYPE)
       "Choose the type of build, options are: None Debug Release."
       FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
-
-# Added by F. Moroni
-set(CMAKE_Fortran_STANDARD 2008)
-set(CMAKE_Fortran_STANDARD_REQUIRED True)
 
 set(Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER_ID} )
 message(STATUS "COMP ID ${Fortran_COMPILER_NAME}")
