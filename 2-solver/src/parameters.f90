@@ -289,21 +289,34 @@ subroutine parameter(input_i3d)
 
   xnu=one/re
   
-  ! Constant pressure gradient, re = Re_tau --> used to compute Re_centerline
-  if (cpg) then
+  ! Calculation of correct viscosity and Re numbers for a channel flow case
+  if (itype .eq. itype_channel) then
   
-    ! Calculate Reynolds centerline of a laminar Poiseuille flow
-    re_cent = (re/0.116_mytype)**(1.0_mytype/0.88_mytype)
+      ! Constant pressure gradient, re = Re_tau --> used to compute Re_centerline
+      if (cpg) then
+  
+          ! Calculate Reynolds centerline of a laminar Poiseuille flow (re = Re_tau in this case)
+          re_cent = (re/0.116_mytype)**(1.0_mytype/0.88_mytype)
     
-    ! Viscosity based on Re_cent to keep same scaling as CFR
-    xnu = one/re_cent 
+          ! Viscosity based on Re_cent to keep same scaling as CFR
+          xnu = one/re_cent 
     
-    !
-    fcpg = two/yly * (re/re_cent)**2
+          !
+          fcpg = two/yly * (re/re_cent)**2
     
-    ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
-    re_bulk = (re/0.09_mytype)**(1.0_mytype/0.88_mytype)
-    
+          ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
+          re_bulk = (re/0.09_mytype)**(1.0_mytype/0.88_mytype)
+      
+      else
+      
+          ! Calculate Re_tau in the case of CFR (re = Re_0 in this case)
+          re_tau = 0.116_mytype*(re**0.88_mytype)
+          
+          ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
+          re_bulk = (re_tau/0.09_mytype)**(1.0_mytype/0.88_mytype)
+          
+      end if
+  
   end if
 
   if (ilmn) then
@@ -407,7 +420,9 @@ subroutine parameter(input_i3d)
      if (itype.eq.itype_channel) then
        if (.not.cpg) then
          write(*,*) 'Channel forcing with constant flow rate (CFR)'
-         write(*,"(' Re_0                          : ',F17.3)") re
+         write(*,"(' Re_0 (centerline)             : ',F17.3)") re
+         write(*,"(' Re_B (bulk, estimated)        : ',F17.3)") re_bulk
+         write(*,"(' Re_tau (estimated)            : ',F17.3)") re_tau
        else 
          write(*,*) 'Channel forcing with constant pressure gradient (CPG)'
          write(*,"(' Re_tau                        : ',F17.3)") re

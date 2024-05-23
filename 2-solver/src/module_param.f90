@@ -338,7 +338,7 @@ module param
   ! Channel flow
   integer :: idir_stream
   logical :: cpg
-  real(mytype) :: re_cent, fcpg, re_bulk
+  real(mytype) :: re_cent, fcpg, re_bulk, re_tau
   real(mytype), save :: ubulk  ! Bulk velocity
 
   !! Numerics control
@@ -446,8 +446,8 @@ module param
   real(mytype), save :: t_viscous    ! viscous time unit (based on total shear velocity and viscous length)
 
   ! Spanwise wall oscillation
-  integer            :: iswitch_wo   ! switcher to enable the reading of wall-oscillation parameters
-  real(mytype), save :: span_vel     ! spanwise velocity at the wall
+  integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters
+  real(mytype) :: span_vel           ! spanwise velocity at the wall
       
   ! Extra controls for numerics 
   integer      :: icfllim            ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
