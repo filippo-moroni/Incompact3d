@@ -18,8 +18,8 @@ module extra_tools
 contains
   
   !---------------------------------------------------------------------------!
-  ! Write skin friction coefficients, shear velocity,
-  ! viscous time unit and time unit and stores
+  ! Write shear velocities, skin friction coefficients,
+  ! viscous time unit, time unit and bulk velocity (channel only) and stores
   ! them in a .txt file (used for TTBL and Channel).
   !---------------------------------------------------------------------------!
   subroutine print_cf(ux,uz)
@@ -61,16 +61,22 @@ contains
           if (exists) then
               open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4,A,I12)') &
-              sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t, ',', itime
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                        & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                        &
+                             t_viscous,  ',', t,           ',', itime
           else
               open(newunit=iunit, file="cf_history.txt", status="new", action="write")
               ! Header
-              write(iunit, '(A12,  A,A16,   A,A16,   A,A16,   A,A12,  A,A12,  A,A12)') &
-              'sh_vel', ',', 'cf,tot', ',', 'cf,x', ',', 'cf,z', ',', 't_nu', ',', 'T', ',', 'ts'          
+              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12)') &
+                            'sh_vel', ',', 'sh_velx', ',', 'sh_velz', ',',            &
+                            'cf,tot', ',', 'cf,x',    ',', 'cf,z',    ',',            &
+                            't_nu',   ',', 'T',       ',', 'ts'          
               
-              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4,A,I12)') &
-              sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t, ',', itime
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                        & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                        &
+                             t_viscous,  ',', t,           ',', itime
           end if
               close(iunit)
       end if
@@ -102,16 +108,25 @@ contains
           if (exists) then
               open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4,A,F12.4,A,I12)') &
-              sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t, ',', ubulk, ',', itime
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.4)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                 & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                 &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                 &
+                             ubulk
           else
               open(newunit=iunit, file="cf_history.txt", status="new", action="write")
               ! Header
-              write(iunit, '(A12,  A,A16,   A,A16,   A,A16,   A,A12,  A,A12,  A,A12,  A,A12)') &
-              'sh_vel', ',', 'cf,tot', ',', 'cf,x', ',', 'cf,z', ',', 't_nu', ',', 'T', ',', 'Ubulk', ',', 'ts'          
+              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12)') &
+                            'sh_vel', ',', 'sh_velx', ',', 'sh_velz', ',',                   &
+                            'cf,tot', ',', 'cf,x',    ',', 'cf,z',    ',',                   &
+                            't_nu',   ',', 'T',       ',', 'ts',      ',',                   &
+                            'Ubulk'          
               
-              write(iunit, '(F12.6,A,F16.10,A,F16.10,A,F16.10,A,F12.6,A,F12.4,A,F12.4,A,I12)') &
-              sh_vel, ',', fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',', t_viscous, ',', t, ',', ubulk, ',', itime
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.4)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                 & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                 &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                 &
+                             ubulk
           end if
               close(iunit)
       end if  
