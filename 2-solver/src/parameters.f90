@@ -435,9 +435,14 @@ subroutine parameter(input_i3d)
      endif
      
      write(*,"(' xnu                           : ',F17.8)") xnu
+     
+     ! Displaying if we are using wall oscillations
+     if (iswitch_wo .eq. 1) then
+     write(*,*) 'Spanwise wall oscillations enabled'
+     end if
+     
      write(*,*) '==========================================================='
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
-     
      write(*,*) '==========================================================='
      if(icfllim .eq. 0) then
      write(*,"(' Time step dt           : ',F17.8)") dt
