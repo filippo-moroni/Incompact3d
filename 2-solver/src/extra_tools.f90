@@ -49,7 +49,13 @@ contains
           fric_coeffz = two * ((sh_velz / uwall)**2)
           
           ! Calculate viscous time unit
-          t_viscous = xnu / (sh_vel**2)
+          if(iswitch_wo .eq. 1) then
+              ! Moving walls
+              t_viscous = xnu / (sh_velx**2)
+          else
+              ! Fixed walls
+              t_viscous = xnu / (sh_vel**2)
+          end if
           
           inquire(file="cf_history.txt", exist=exists)
           if (exists) then
@@ -84,7 +90,13 @@ contains
           fric_coeffz = two * ((sh_velz / ubulk)**2)
           
           ! Calculate viscous time unit
-          t_viscous = xnu / (sh_vel**2)
+          if(iswitch_wo .eq. 1) then
+              ! Moving walls
+              t_viscous = xnu / (sh_velx**2)
+          else
+              ! Fixed walls
+              t_viscous = xnu / (sh_vel**2)
+          end if
           
           inquire(file="cf_history.txt", exist=exists)
           if (exists) then
@@ -231,7 +243,8 @@ contains
   amplitude = sh_velx * a_plus_cap
   
   ! Period of oscillation
-  period = xnu * t_plus_cap / (sh_vel**2)
+  !period = xnu * t_plus_cap / (sh_vel**2)
+  period = xnu * t_plus_cap / (sh_velx**2)
   
   ! Calculation of the spanwise wall velocity
   span_vel = amplitude * sin_prec(two*pi*t/period)

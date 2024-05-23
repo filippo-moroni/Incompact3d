@@ -438,6 +438,7 @@ subroutine parameter(input_i3d)
      
      ! Displaying if we are using wall oscillations
      if (iswitch_wo .eq. 1) then
+     write(*,*) '==========================================================='
      write(*,*) 'Spanwise wall oscillations enabled'
      end if
      
