@@ -190,21 +190,15 @@ contains
        enddo
     enddo
          
-    ! Summation over all MPI processes       
-    !call MPI_REDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
-    !call MPI_REDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
-    !call MPI_REDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,ierr)
-    
+    ! Summation over all MPI processes and broadcast the result          
     call MPI_ALLREDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     call MPI_ALLREDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
     ! Finalize shear velocities calculation
-    !if (nrank .eq. 0) then
-        sh_vel  = sqrt_prec(sh_vel  * xnu)
-        sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
-        sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)  
-    !end if
+    sh_vel  = sqrt_prec(sh_vel  * xnu)
+    sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
+    sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)  
                   
   end subroutine calculate_shear_velocity
   
@@ -233,7 +227,8 @@ contains
   call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
     
   ! Maximum amplitude of spanwise oscillations
-  amplitude = sh_vel * a_plus_cap
+  !amplitude = sh_vel * a_plus_cap
+  amplitude = sh_velx * a_plus_cap
   
   ! Period of oscillation
   period = xnu * t_plus_cap / (sh_vel**2)
