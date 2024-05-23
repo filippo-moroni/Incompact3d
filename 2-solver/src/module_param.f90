@@ -443,11 +443,11 @@ module param
   real(mytype), save :: fric_coeff   ! total skin friction coefficient
   real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
   real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
-  real(mytype), save :: t_viscous    ! viscous time unit (based on total shear velocity and viscous length)
+  real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
 
   ! Spanwise wall oscillation
   integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters
-  real(mytype) :: span_vel           ! spanwise velocity at the wall
+  real(mytype) :: span_vel           ! spanwise velocity at the wall due to imposed wall oscillations
       
   ! Extra controls for numerics 
   integer      :: icfllim            ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)

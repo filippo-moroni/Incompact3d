@@ -95,7 +95,7 @@ iswitch_wo = 0        ! Switcher for wall oscillations (0: no, 1: yes)
 !====================
 
 wrotation = 0.12      ! rotation speed to trigger turbulence
-spinup_time = 5000    ! number of time steps with a rotation to trigger turbulence
+spinup_time = 5000    ! number of time steps with rotation to trigger turbulence
 
 /End
 
