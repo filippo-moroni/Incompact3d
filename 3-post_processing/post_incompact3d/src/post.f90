@@ -26,10 +26,11 @@ PROGRAM post
   integer :: ifile                                 ! index to open different snapshots in time
   
   real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0   ! variables to count time spent to post-process data
+  real(mytype) :: den                              ! denominator of the divisions
    
   integer :: iunit		      		   ! unit for the file to open (assigned by the compiler)
     
-  integer,dimension(3) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
+  integer,dimension(4) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
   character(99):: filename,dirname,snap_index 
@@ -88,9 +89,10 @@ PROGRAM post
   if (sel(1)==1) post_mean=.true.
   if (sel(2)==1) post_vort=.true.
   if (sel(3)==1) post_diss=.true.
+  if (sel(4)==1) post_corz=.true.
 
   if (nrank==0) then
-     if ((.not.post_mean).and.(.not.post_vort).and.(.not.post_diss)) &
+     if ((.not.post_mean).and.(.not.post_vort).and.(.not.post_diss).and.(.not.post_corz)) &
         call decomp_2d_abort(10,'Invalid post-processing switchers specified, no work to be done here!')
   endif
   
@@ -100,9 +102,11 @@ PROGRAM post
      read_pre=.true.
      if (iscalar==1) read_phi=.true. 
   endif
-
+  
+  ! Reading of velocity only if necessary
   if (post_vort) read_vel=.true.
   if (post_diss) read_vel=.true.
+  if (post_corz) read_vel=.true.
   
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
@@ -204,35 +208,38 @@ PROGRAM post
   enddo 
 #endif
   
-!----Mean over homogeneous directions (H = Homogeneous)----!
+!--- Mean over homogeneous directions (H = Homogeneous) ---!
+
+  ! Denominator of the divisions
+  den = real(nx*nz,mytype)
 
   ! Summation over x and z directions
   if (post_mean) then
      do k=ystart(3),yend(3)
         do i=ystart(1),yend(1)
            do j=ystart(2),yend(2)          
-              u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)/real(nx*nz,mytype)
-              v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)/real(nx*nz,mytype)
-              w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)/real(nx*nz,mytype)
-              u2meanH1(j)=u2meanH1(j)+u2mean(i,j,k)/real(nx*nz,mytype)
-              v2meanH1(j)=v2meanH1(j)+v2mean(i,j,k)/real(nx*nz,mytype)
-              w2meanH1(j)=w2meanH1(j)+w2mean(i,j,k)/real(nx*nz,mytype)
-              u3meanH1(j)=u3meanH1(j)+u3mean(i,j,k)/real(nx*nz,mytype)
-              v3meanH1(j)=v3meanH1(j)+v3mean(i,j,k)/real(nx*nz,mytype)
-              w3meanH1(j)=w3meanH1(j)+w3mean(i,j,k)/real(nx*nz,mytype)
-              u4meanH1(j)=u4meanH1(j)+u4mean(i,j,k)/real(nx*nz,mytype)
-              v4meanH1(j)=v4meanH1(j)+v4mean(i,j,k)/real(nx*nz,mytype)
-              w4meanH1(j)=w4meanH1(j)+w4mean(i,j,k)/real(nx*nz,mytype)
-              uvmeanH1(j)=uvmeanH1(j)+uvmean(i,j,k)/real(nx*nz,mytype)
-              uwmeanH1(j)=uwmeanH1(j)+uwmean(i,j,k)/real(nx*nz,mytype)
-              vwmeanH1(j)=vwmeanH1(j)+vwmean(i,j,k)/real(nx*nz,mytype)
-              pre1meanH1(j)=pre1meanH1(j)+pre1mean(i,j,k)/real(nx*nz,mytype)
-              pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/real(nx*nz,mytype)                                                   
-              phi1meanH1(j)=phi1meanH1(j)+phi1mean(i,j,k)/real(nx*nz,mytype)
-              phi2meanH1(j)=phi2meanH1(j)+phi2mean(i,j,k)/real(nx*nz,mytype)
-              uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/real(nx*nz,mytype)
-              vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/real(nx*nz,mytype)
-              wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/real(nx*nz,mytype)                                  
+              u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)/den
+              v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)/den
+              w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)/den
+              u2meanH1(j)=u2meanH1(j)+u2mean(i,j,k)/den
+              v2meanH1(j)=v2meanH1(j)+v2mean(i,j,k)/den
+              w2meanH1(j)=w2meanH1(j)+w2mean(i,j,k)/den
+              u3meanH1(j)=u3meanH1(j)+u3mean(i,j,k)/den
+              v3meanH1(j)=v3meanH1(j)+v3mean(i,j,k)/den
+              w3meanH1(j)=w3meanH1(j)+w3mean(i,j,k)/den
+              u4meanH1(j)=u4meanH1(j)+u4mean(i,j,k)/den
+              v4meanH1(j)=v4meanH1(j)+v4mean(i,j,k)/den
+              w4meanH1(j)=w4meanH1(j)+w4mean(i,j,k)/den
+              uvmeanH1(j)=uvmeanH1(j)+uvmean(i,j,k)/den
+              uwmeanH1(j)=uwmeanH1(j)+uwmean(i,j,k)/den
+              vwmeanH1(j)=vwmeanH1(j)+vwmean(i,j,k)/den
+              pre1meanH1(j)=pre1meanH1(j)+pre1mean(i,j,k)/den
+              pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/den                                                   
+              phi1meanH1(j)=phi1meanH1(j)+phi1mean(i,j,k)/den
+              phi2meanH1(j)=phi2meanH1(j)+phi2mean(i,j,k)/den
+              uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/den
+              vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/den
+              wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/den                                  
            enddo          
         enddo
      enddo
@@ -242,12 +249,12 @@ PROGRAM post
      do k=ystart(3),yend(3)
         do i=ystart(1),yend(1)
            do j=ystart(2),yend(2)          
-              vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/real(nx*nz,mytype)
-              vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/real(nx*nz,mytype)
-              vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/real(nx*nz,mytype) 
-              mean_gradientpH1(j)=mean_gradientpH1(j)+mean_gradientp(i,j,k)/real(nx*nz,mytype)
-              mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/real(nx*nz,mytype) 
-              mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/real(nx*nz,mytype)                   
+              vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/den
+              vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/den
+              vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/den 
+              mean_gradientpH1(j)=mean_gradientpH1(j)+mean_gradientp(i,j,k)/den
+              mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/den 
+              mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den                   
            enddo
         enddo
      enddo
@@ -257,7 +264,7 @@ PROGRAM post
      do k=ystart(3),yend(3)
         do i=ystart(1),yend(1)
            do j=ystart(2),yend(2)          
-              epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/real(nx*nz,mytype)                  
+              epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/den                  
            enddo
         enddo
      enddo
@@ -268,45 +275,70 @@ PROGRAM post
    call reset_averages()  
 #endif
  
-!---------Mean over all MPI processes (T = Total)----------!
+!-------- Mean over all MPI processes (T = Total) ---------!
 
   if (post_mean) then
-     call MPI_REDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v1meanH1,v1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w1meanH1,w1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(u2meanH1,u2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v2meanH1,v2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w2meanH1,w2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(u3meanH1,u3meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v3meanH1,v3meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w3meanH1,w3meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(u4meanH1,u4meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(v4meanH1,v4meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(w4meanH1,w4meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(vwmeanH1,vwmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(pre1meanH1,pre1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(pre2meanH1,pre2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)   
-     call MPI_REDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)    
+     call MPI_ALLREDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(v1meanH1,v1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(w1meanH1,w1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(u2meanH1,u2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(v2meanH1,v2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(w2meanH1,w2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(u3meanH1,u3meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(v3meanH1,v3meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(w3meanH1,w3meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(u4meanH1,u4meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(v4meanH1,v4meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(w4meanH1,w4meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(vwmeanH1,vwmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(pre1meanH1,pre1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(pre2meanH1,pre2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)   
+     call MPI_ALLREDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)    
   endif
   
   if (post_vort) then
-     call MPI_REDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)  
-     call MPI_REDUCE(mean_gradientpH1,mean_gradientpHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code) 
-     call MPI_REDUCE(mean_gradientxH1,mean_gradientxHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-     call MPI_REDUCE(mean_gradientzH1,mean_gradientzHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)  
+     call MPI_ALLREDUCE(mean_gradientpH1,mean_gradientpHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code) 
+     call MPI_ALLREDUCE(mean_gradientxH1,mean_gradientxHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(mean_gradientzH1,mean_gradientzHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   endif
   
   if (post_diss) then
-     call MPI_REDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
+
+!-------- Correlation function section (TTBL only) --------!
+#ifdef TTBL_MODE  
+
+   if(post_corz) then
+   
+   ! Fluctuations calculation
+   do k=ystart(3),yend(3)
+       do i=ystart(1),yend(1)
+           do j=ystart(2),yend(2)
+               ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
+               uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
+               uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
+           enddo
+       enddo
+   enddo
+   
+   ! Correlation function calculation (each subdomain, z-pencils)
+   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
+   
+   ! Gather together the results
+   call MPI_Gather(RuuzH1,zsize(3)*zsize(2),real_type,RuuHT,zsize(3)*ysize(2),real_type,0,MPI_COMM_WORLD)
+   
+   end if
+#endif
 
 !------------- MPI process nrank = 0 at work --------------!
 
@@ -493,11 +525,13 @@ PROGRAM post
   endif ! closing of the if-statement for processor 0
 
 #ifdef TTBL_MODE   
+      
    ! Reset to zero the average vectors on subdomains (H1) and on total domain (HT)
    call reset_subdomains_and_domain() 
    
    ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
-   enddo  
+   enddo 
+    
 #endif
      
   !-----------------------------!

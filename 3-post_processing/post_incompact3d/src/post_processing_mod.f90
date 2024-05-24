@@ -13,7 +13,7 @@ module post_processing
   character(len=100) :: fileformat
   character(len=1), parameter :: NL=char(10) !new line character
 
-  logical, save :: post_mean,post_vort,post_diss
+  logical, save :: post_mean,post_vort,post_diss,post_corz
 
   ! Arrays for statistic collection  
   real(mytype), save, allocatable, dimension(:,:,:) :: u1mean,v1mean,w1mean
@@ -70,6 +70,10 @@ module post_processing
   real(mytype), save, allocatable, dimension(:,:,:) :: epsmean
   real(mytype), save, allocatable, dimension(:)     :: epsmeanH1
   real(mytype), save, allocatable, dimension(:)     :: epsmeanHT
+  
+  ! Arrays for correlation function (at the moment only streamwise velocities)
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT
      
 contains
 
@@ -106,7 +110,7 @@ contains
 
     !xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system. Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, it is easier to know which process owns the plane if global index is used).
     
-    ! Allocate X-pencil arrays using global indices (temporary array is not necessary as x-pencil)
+    ! Allocate x-pencils arrays using global indices (temporary array is not necessary as x-pencil)
     call alloc_x(ux1, opt_global=.true.)  !global indices
     ux1 = zero
     call alloc_x(uy1, opt_global=.true.)  !global indices
@@ -118,7 +122,7 @@ contains
     allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3))) !global indices
     phi1 = zero
     
-    ! Allocate Y-pencil arrays
+    ! Allocate y-pencils arrays
     call alloc_y(ux2)
     ux2=zero
     call alloc_y(uy2)
@@ -131,6 +135,14 @@ contains
     phi2=zero   
     call alloc_y(ta2)
     ta2 = zero
+    
+    ! Allocate z-pencils arrays
+    call alloc_z(ux3)
+    ux3=zero
+    call alloc_z(uy3)
+    uy3=zero
+    call alloc_z(uz3)
+    uz3=zero
 
     ! Allocate memory for vorticity & mean gradient calculations (these are gradients)
     if (post_vort) then
@@ -366,18 +378,18 @@ contains
        allocate(mean_gradientz(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
        mean_gradientz=zero
        
-       allocate(mean_gradientpH1(ysize(2)));
+       allocate(mean_gradientpH1(ysize(2)))
        mean_gradientpH1=zero
-       allocate(mean_gradientxH1(ysize(2)));
+       allocate(mean_gradientxH1(ysize(2)))
        mean_gradientxH1=zero
-       allocate(mean_gradientzH1(ysize(2)));
+       allocate(mean_gradientzH1(ysize(2)))
        mean_gradientzH1=zero
        
-       allocate(mean_gradientpHT(ysize(2)));
+       allocate(mean_gradientpHT(ysize(2)))
        mean_gradientpHT=zero
-       allocate(mean_gradientxHT(ysize(2)));
+       allocate(mean_gradientxHT(ysize(2)))
        mean_gradientxHT=zero
-       allocate(mean_gradientzHT(ysize(2)));
+       allocate(mean_gradientzHT(ysize(2)))
        mean_gradientzHT=zero
                                                                                                                                                                       
     endif
@@ -388,12 +400,22 @@ contains
        allocate(epsmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
        epsmean=zero
        
-       allocate(epsmeanH1(ysize(2)));
+       allocate(epsmeanH1(ysize(2)))
        epsmeanH1=zero
        
-       allocate(epsmeanHT(ysize(2)));
+       allocate(epsmeanHT(ysize(2)))
        epsmeanHT=zero
     
+    end if
+    
+    if (post_corz) then
+    
+        ! Correlation function in z-direction
+        allocate(RuuzH1(zsize(3),zsize(2)))
+        RuuzH1=zero
+        allocate(RuuzHT(zsize(3),ysize(2)))
+        RuuzHT=zero
+        
     end if
 
   end subroutine init_statistics

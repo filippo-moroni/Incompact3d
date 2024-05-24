@@ -361,5 +361,67 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   
 end subroutine stat_dissipation
 
+!********************************************************************
+! Calculate the correlation function R in z-direction
+subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
+
+  USE param
+  USE variables
+  USE decomp_2d
+  USE decomp_2d_io
+
+  implicit none
+ 
+  ! Velocity fluctuations, y-pencils
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2
+  
+  ! Number of points in homogeneous directions and number of snapshots
+  integer,     intent(in) :: nx,nz,nt
+  
+  ! Local work arrays
+  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz,ta3
+  
+  ! Correlation function (first index: r; second index: j)
+  real(mytype),intent(inout),dimension(zsize(3),zsize(2)) :: RuuzH1
+  
+  real(mytype) :: den          ! denominator of the divisions
+  integer      :: i,j,k,rr,kpr 
+
+#ifdef TTBL_MODE 
+  den = real(nx*nz,mytype)
+#else
+  den = real(nx*nz*nt,mytype)
+#endif
+
+  ! Transpose arrays along z
+  call transpose_y_to_z(ux2,ux3)
+  call transpose_y_to_z(uy2,uy3)
+  call transpose_y_to_z(uz2,uz3)
+
+  ! Correlation function calculation
+  do k=1,zsize(3)
+      do j=1,zsize(2)
+          do i=1,zsize(1)
+              do rr=1,zsize(3)
+                  
+                  ! Index for z-direction plus separation variable 'r'
+                  kpr = k + rr - 1
+                  
+                  ! Shift to the beginning of the array if we go beyond its index range (periodic)
+                  if (kpr > nz) kpr = kpr - nz
+
+                  ! Product of fluctuations at distance 'r'
+                  ta3(i,j,k) = ux3(i,j,k)*ux3(i,j,kpr)
+                  
+                  ! Accumulation inside the correlation function variable (at each subdomain)
+                  RuuzH1(rr,j) = RuuzH1(rr,j) + ta3(i,j,k)/den
+
+              enddo
+          enddo
+      enddo
+  enddo
+
+end subroutine stat_correlation_z
+
 
 
