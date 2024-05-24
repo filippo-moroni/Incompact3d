@@ -230,7 +230,7 @@ elif itype == 3:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
     xlimsup = 300.0
-    ylimsup = 20.0
+    ylimsup = 25.0
     
     # Mean velocity profile
     ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
