@@ -769,9 +769,9 @@ subroutine parameter_defaults()
       phiwall = zero      ! scalar value at the wall
   end if 
   
-  twd = 1.0           ! trip wire diameter (D)
-  uln = 0.01          ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
-  lln = 0.5           ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+  twd = one           ! trip wire diameter (D)
+  uln = 0.01_mytype   ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
+  lln = 0.5_mytype    ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
     
   ! Extra numerics control
   icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)

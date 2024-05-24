@@ -104,11 +104,11 @@ nclzSn = 0
 &TemporalTBLParam
 !====================
 
-!uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
+uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
 twd = 1.0             ! tripping wire diameter (D)
 uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (default value: 0.01 (Kozul et al. (2016)))
 lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-!phiwall = 1.0         ! scalar value at the wall  
+phiwall = 1.0         ! scalar value at the wall  
 
 /End
 
