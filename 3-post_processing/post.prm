@@ -11,3 +11,4 @@
 1    # post_mean  ! Compute mean statistics
 0    # post_vort  ! Compute mean vorticity and mean gradient
 0    # post_diss  ! Compute mean total dissipation rate
+0    # post_corz  ! Compute correlation function along z
