@@ -4,7 +4,7 @@
 &BasicParam
 !====================
 
-! Flow type (3=Channel, 9=Turbulent-Boundary-Layer, 13=Temporal TBL)
+! Flow type (3=Channel, 13=Temporal TBL)
 itype = 3
 
 ! Domain decomposition (if 0 is imposed, automatic decomposition)

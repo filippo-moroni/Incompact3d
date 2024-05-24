@@ -683,7 +683,6 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   call transpose_x_to_y(var1,tb2)
   call transpose_x_to_y(ta1,ta2)
 
-  !
   ! Prepare boundary conditions
   ! Used only when ncly*=2
   !    velocity
@@ -695,14 +694,10 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   
   ! Specific cases first
   ! This is the location for exotic / nonhomogeneous boundary conditions
-  
-  ! In order to mimick a Neumann BC at the top of the domain for the TBL
-  if (itype .eq. itype_tbl .and. isc .eq. 0) then
-     bcbot(:,:) = zero
-     bctop(:,:) = tb2(:,ny-1,:)
-  
+    
   ! Temporal TBL (velocity BCs and scalar BCs)
-  else if (itype .eq. itype_ttbl .and. isc .eq. 0) then
+  ! 'bctop' mimicks a Neumann BC at the top of the domain 
+  if (itype .eq. itype_ttbl .and. isc .eq. 0) then
      bcbot(:,:) = wall_vel
      bctop(:,:) = tb2(:,ny-1,:)
   else if (itype .eq. itype_ttbl .and. isc .ne. 0) then
@@ -716,7 +711,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   else if (itype .eq. itype_channel .and. isc .ne. 0) then
      bcbot(:,:) = zero
      bctop(:,:) = zero
-     
+       
   ! Generic homogeneous cases after
   else if (isc.ne.0) then
      bcbot(:,:) = g_sc(isc, 1)

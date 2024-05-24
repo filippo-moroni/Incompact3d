@@ -39,7 +39,6 @@ module case
   use user_sim
   use dbg_schemes
   use channel
-  use tbl
   use temporal_tbl
   use extra_tools
 
@@ -90,10 +89,6 @@ contains
     elseif (itype.eq.itype_dbg) then
 
        call init_dbg (ux1, uy1, uz1, ep1, phi1)
-
-    elseif (itype.eq.itype_tbl) then
-
-       call init_tbl (ux1, uy1, uz1, ep1, phi1)
     
     elseif (itype.eq.itype_ttbl) then
 
@@ -150,10 +145,6 @@ contains
     elseif (itype.eq.itype_dbg) then
 
        call boundary_conditions_dbg (ux, uy, uz, phi)
-
-    elseif (itype.eq.itype_tbl) then
-
-       call boundary_conditions_tbl (ux, uy, uz, phi)
     
     elseif (itype.eq.itype_ttbl) then
        
@@ -266,10 +257,6 @@ contains
     elseif (itype.eq.itype_dbg) then
 
        call postprocess_dbg (ux, uy, uz, phi, ep)
-
-    elseif (itype.eq.itype_tbl) then
-
-       call postprocess_tbl (ux, uy, uz, ep)
         
     elseif (itype.eq.itype_ttbl) then
 
@@ -292,10 +279,6 @@ contains
     if (itype .eq. itype_channel) then
 
        call visu_channel_init(case_visu_init)
-
-    else if (itype .eq. itype_tbl) then
-
-       call visu_tbl_init(case_visu_init)    
     
     else if (itype .eq. itype_ttbl) then
 
@@ -333,11 +316,6 @@ contains
     elseif (itype.eq.itype_channel) then
 
        call visu_channel(ux1, uy1, uz1, pp3, phi1, ep1, num)
-       called_visu = .true.
-
-    elseif (itype.eq.itype_tbl) then
-
-       call visu_tbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
        called_visu = .true.
        
     elseif (itype.eq.itype_ttbl) then

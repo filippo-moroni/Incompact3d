@@ -166,12 +166,12 @@ subroutine init_xcompact3d()
   logical :: back
   character(len=80) :: InputFN, FNBase
     
-  !! Initialise MPI
+  ! Initialise MPI
   call MPI_INIT(ierr)
   call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,ierr)
   call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierr)
 
-  ! Handle input file like a boss -- GD
+  ! Reading input file 
   nargin=command_argument_count()
   if (nargin <1) then
      InputFN='input.i3d'
@@ -272,18 +272,6 @@ subroutine init_xcompact3d()
 
   call calc_divu_constraint(divu3, rho1, phi1)
 
-  if (itype==2) then
-     if(nrank.eq.0)then
-        open(42,file='time_evol.dat',form='formatted')
-     endif
-  endif
-  
-  if (itype==5) then
-     if(nrank.eq.0)then
-        open(38,file='forces.dat',form='formatted')
-     endif
-  endif
-
 endsubroutine init_xcompact3d
 !########################################################################
 !########################################################################
@@ -301,18 +289,7 @@ subroutine finalise_xcompact3d()
 
   integer :: ierr, iunit
   logical :: exists
-  
-  if (itype==2) then
-     if(nrank.eq.0)then
-        close(42)
-     endif
-  endif
-  if (itype==5) then
-     if(nrank.eq.0)then
-        close(38)
-     endif
-  endif
-  
+    
   ! Create or open a file to store the dt and ts of stop 
   if(nrank.eq.0) then
       inquire(file="dt_history.txt", exist=exists)

@@ -7,7 +7,6 @@ message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
 add_executable(xcompact3d 
                     BC-Channel-flow.f90
                     BC-dbg-schemes.f90                 
-                    BC-TBL.f90
                     BC-Temporal-TBL.f90
                     BC-User.f90
                     case.f90
