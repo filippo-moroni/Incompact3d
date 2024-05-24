@@ -52,10 +52,10 @@ with open('input.i3d', 'r') as file:
     lines = file.readlines()
     
     # Extract the 8th line, where itype is specified 
-    eighth_line = lines[7]  
+    line = lines[7]  
     
     # Removing characters in front of the itype value
-    itype = eighth_line.split('=')[-1].strip()
+    itype = line.split('=')[-1].strip()
     
     # Convert to integer
     itype = int(itype)
