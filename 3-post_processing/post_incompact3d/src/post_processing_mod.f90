@@ -509,6 +509,16 @@ contains
   
   end if
   
+  if (post_corz) then
+  
+      ! Subdomains
+      RuuzH1=zero
+  
+      ! Total domain
+      RuuzHT=zero
+  
+  end if
+  
   end subroutine reset_subdomains_and_domain
      
 end module post_processing

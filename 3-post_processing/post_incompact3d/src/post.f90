@@ -335,7 +335,7 @@ PROGRAM post
    call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
    
    ! Gather together the results
-   call MPI_Gather(RuuzH1,zsize(3)*zsize(2),real_type,RuuzHT,zsize(3)*ysize(2),real_type,0,MPI_COMM_WORLD,code)
+   call MPI_Gather(RuuzH1,zsize(2),real_type,RuuzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
    
    end if
 #endif
@@ -550,8 +550,8 @@ PROGRAM post
         write(iunit,pos=1) RuuzHT                     
         
         close(iunit)
-     endif   
-     
+     endif  
+          
   endif ! closing of the if-statement for processor 0
 
 #ifdef TTBL_MODE   
