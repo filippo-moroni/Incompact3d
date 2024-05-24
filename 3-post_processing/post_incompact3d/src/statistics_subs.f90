@@ -152,7 +152,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
 end subroutine stat_mean
 !********************************************************************
 ! Vorticity and mean gradient sqrt[ (du/dy)**2 + (dw/dy)**2 ]
-subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mean_gradient2)   
+subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mean_gradientp2,mean_gradientx2,mean_gradientz2)   
 
   use param
   use variables
@@ -175,11 +175,11 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   real(mytype) :: den  ! denominator of the divisions 
   real(mytype) :: lind
   
-  ! Vorticity 
-  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2  ! average vorticity components, y-pencils
+  ! Vorticity (average vorticity components, y-pencils)
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2   
   
-  ! Mean gradient
-  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradient2                    ! mean gradient, y-pencils
+  ! Mean gradients (mean gradients, y-pencils) (p: parallel, x:streamwise, z: spanwise)
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradientp2, mean_gradientx2, mean_gradientz2
         
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
@@ -223,7 +223,9 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   den = real(nr*nt,mytype)
 #endif
   
-  !---- Mean gradient ----!
+  !---- Mean gradients ----!
+  
+  ! Mean total parallel gradient
   do i=1,xsize(1)
     do j=1,xsize(2)
       do k=1,xsize(3)
@@ -234,8 +236,23 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   
   ! Transpose array along y and sum
   call transpose_x_to_y(di1,di2)
-  mean_gradient2 = mean_gradient2 + di2/den
+  mean_gradientp2 = mean_gradientp2 + di2/den
   
+  ! Mean streamwise gradient
+  di1 = td1 ! du/dy
+  
+  ! Transpose array along y and sum
+  call transpose_x_to_y(di1,di2)
+  mean_gradientx2 = mean_gradientx2 + di2/den
+  
+  ! Mean spanwise gradient
+  di1 = tf1 ! dw/dy
+  
+  ! Transpose array along y and sum
+  call transpose_x_to_y(di1,di2)
+  mean_gradientz2 = mean_gradientz2 + di2/den
+  
+   
   !---Vorticity average---!
   
   ! Vorticity along x 

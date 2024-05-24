@@ -191,7 +191,7 @@ PROGRAM post
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradient)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz)
      
      if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
 
@@ -245,7 +245,9 @@ PROGRAM post
               vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/real(nx*nz,mytype)
               vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/real(nx*nz,mytype)
               vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/real(nx*nz,mytype) 
-              mean_gradientH1(j)=mean_gradientH1(j)+mean_gradient(i,j,k)/real(nx*nz,mytype)                  
+              mean_gradientpH1(j)=mean_gradientpH1(j)+mean_gradientp(i,j,k)/real(nx*nz,mytype)
+              mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/real(nx*nz,mytype) 
+              mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/real(nx*nz,mytype)                   
            enddo
         enddo
      enddo
@@ -297,7 +299,9 @@ PROGRAM post
      call MPI_REDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      call MPI_REDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
      call MPI_REDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)  
-     call MPI_REDUCE(mean_gradientH1,mean_gradientHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code) 
+     call MPI_REDUCE(mean_gradientpH1,mean_gradientpHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code) 
+     call MPI_REDUCE(mean_gradientxH1,mean_gradientxHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+     call MPI_REDUCE(mean_gradientzH1,mean_gradientzHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   endif
   
   if (post_diss) then
@@ -431,15 +435,17 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write (iunit, *) 'mean[omega_x]'  , ',', 'mean[omega_y]'  , ',', 'mean[omega_z]', ',', 'dU/dy'
+        write (iunit, *) 'mean[omega_x]'  , ',', 'mean[omega_y]'  , ',', 'mean[omega_z]', ',', &
+                         'dU_par/dy'      , ',', 'dU/dy'          , ',', 'dW/dy'          
                                
         else
         
-        write(iunit, *)  vortxmeanHT(j-1),    ',', &
-                         vortymeanHT(j-1),    ',', &       
-                         vortzmeanHT(j-1),    ',', &
-                         mean_gradientHT(j-1)
-        
+        write(iunit, *)  vortxmeanHT(j-1),      ',',  &
+                         vortymeanHT(j-1),      ',',  &       
+                         vortzmeanHT(j-1),      ',',  &
+                         mean_gradientpHT(j-1), ',',  &
+                         mean_gradientxHT(j-1), ',',  &
+                         mean_gradientzHT(j-1)        
         end if
         
         end do
@@ -557,7 +563,8 @@ PROGRAM post
      print *,'The following statistics have been saved in'
      print *,'"vort_stats" file(s):'
      print *,''
-     print *,'mean[omega_x], mean[omega_y], mean[omega_z], dU/dy'
+     print *,'mean[omega_x], mean[omega_y], mean[omega_z]'
+     print *,'dU_par/dy,     dU/dy,         dW/dy'
      print *,''    
      endif
      
