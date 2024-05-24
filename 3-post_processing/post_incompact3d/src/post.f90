@@ -335,7 +335,7 @@ PROGRAM post
    call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
    
    ! Gather together the results
-   call MPI_Gather(RuuzH1,zsize(3)*zsize(2),real_type,RuuHT,zsize(3)*ysize(2),real_type,0,MPI_COMM_WORLD)
+   call MPI_Gather(RuuzH1,zsize(3)*zsize(2),real_type,RuuzHT,zsize(3)*ysize(2),real_type,0,MPI_COMM_WORLD,code)
    
    end if
 #endif
@@ -376,7 +376,7 @@ PROGRAM post
 
      ! Formatted data
      print *,'----------------------------------------------------'
-     write(*,"(1x,'Writing output data in formatted .txt files :')")
+     write(*,"(1x,'Writing output data in formatted .txt file(s)')")
      
      ! Mean statistics writing
      if (post_mean) then
@@ -520,7 +520,37 @@ PROGRAM post
         end do
                                
         close(iunit)
-  endif
+     endif
+     
+     ! Correlation functions writing
+     if (post_corz) then
+     
+     ! Unformatted data
+     print *,'----------------------------------------------------'
+     write(*,"(1x,'Writing output data in unformatted .bin file(s)')")
+
+#ifdef TTBL_MODE  
+        ! Writing the snapshot index as character
+        write(snap_index,'(I3.3)') ifile
+        snap_index = adjustl(snap_index) 
+        
+        ! Write the corr_stats filename for TTBL
+        write(filename, '(A,A,A)') 'corr_stats-', trim(snap_index), '.bin'
+        filename = adjustl(filename)
+#else
+        ! Write the corr_stats filename for channel flow
+        write(filename, '(A)') 'corr_stats.bin'
+        filename = adjustl(filename)
+#endif
+               
+        ! Open the file and write      
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='unformatted', &
+             access='stream',status='replace')
+             
+        write(iunit,pos=1) RuuzHT                     
+        
+        close(iunit)
+     endif   
      
   endif ! closing of the if-statement for processor 0
 
@@ -610,6 +640,17 @@ PROGRAM post
      print *,'"diss_stats" file(s):'
      print *,''
      print *,'mean[eps]'
+     print *,''    
+     endif
+     
+     ! Correlation functions 
+     if (post_corz) then
+     print *,'==========================================================='
+     print *,''
+     print *,'The following statistics have been saved in'
+     print *,'"corr_stats" file(s):'
+     print *,''
+     print *,'Ruu(z)'
      print *,''    
      endif
      

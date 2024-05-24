@@ -42,6 +42,7 @@ module tools
   private
 
   public :: reading_input_file,   &
+            rescale_pressure,     &
             test_scalar_min_max,  & 
             test_speed_min_max,   &
             simu_stats,           &
@@ -90,6 +91,31 @@ contains
   call parameter(InputFN)
   
   end subroutine reading_input_file
+  !##################################################################
+  ! Rescale pressure to physical pressure
+  ! Written by Kay Schäfer 2019
+  !##################################################################
+  elemental subroutine rescale_pressure(pre1)
+
+    use decomp_2d, only : mytype
+    use param, only : itimescheme, gdt
+    implicit none
+
+    real(mytype), intent(inout) :: pre1
+
+    ! Adjust pressure to physical pressure
+    ! Multiply pressure by factor of time-scheme
+    ! 1/gdt = 1  / (dt * c_k)
+    
+    ! Explicit Euler, AB2, AB3, AB4, RK3
+    if (itimescheme>=1 .and. itimescheme<=5) then
+       pre1 = pre1 / gdt(3)
+    ! RK4
+    elseif (itimescheme==6) then
+       pre1 = pre1 / gdt(5)
+    endif
+
+  end subroutine
   !##################################################################
   subroutine test_scalar_min_max(phi)
 

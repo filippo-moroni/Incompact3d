@@ -365,10 +365,8 @@ end subroutine stat_dissipation
 ! Calculate the correlation function R in z-direction
 subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
 
-  USE param
-  USE variables
-  USE decomp_2d
-  USE decomp_2d_io
+  use decomp_2d
+  use decomp_2d_io
 
   implicit none
  
@@ -379,7 +377,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
   integer,     intent(in) :: nx,nz,nt
   
   ! Local work arrays
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz,ta3
+  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
   
   ! Correlation function (first index: r; second index: j)
   real(mytype),intent(inout),dimension(zsize(3),zsize(2)) :: RuuzH1
@@ -404,7 +402,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
           do i=1,zsize(1)
               do rr=1,zsize(3)
                   
-                  ! Index for z-direction plus separation variable 'r'
+                  ! Index for z-direction plus index for separation variable 'r'
                   kpr = k + rr - 1
                   
                   ! Shift to the beginning of the array if we go beyond its index range (periodic)
