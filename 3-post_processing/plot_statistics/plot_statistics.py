@@ -123,7 +123,9 @@ mean_uv =  - M1[:,12]
 vort_x = M2[:,0]
 vort_y = M2[:,1]
 vort_z = M2[:,2]
-mg     = M2[:,3]
+mg_tot = M2[:,3]
+mg_x   = M2[:,4]
+mg_z   = M2[:,5]
 
 # Reading of grid points
 y = np.loadtxt('yp.dat')
@@ -150,7 +152,7 @@ if itype == 13:
     mean_u = uwall - mean_u
            
 # Shear quantities
-sh_vel = np.sqrt(nu * mg[0])
+sh_vel = np.sqrt(nu * mg_x[0])
 delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
 
