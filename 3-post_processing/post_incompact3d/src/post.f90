@@ -126,23 +126,31 @@ PROGRAM post
   ! Write directory name
   write(dirname,"('data_post/')")
   
-  ! Display that we are reading the mean velocity field file
-  if (nrank==0) write(*,"(1x,'Reading mean_stats.txt')")
+  ! Write the mean_stats filename for channel flow
+  write(filename, '(A)') 'mean_stats.txt'
+  filename = adjustl(filename)
   
-  ! Open the file and read
-  open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
+  if (nrank.eq.0) then 
   
-  read(iunit, *)
+      ! Display that we are reading the mean velocity field file
+      write(*,"(1x,'Reading mean_stats.txt')")
   
-  do j = ystart(2),yend(2)
+      ! Open the file and read
+      open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
   
-      read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), a, &
-                                        v1meanHT(j), a, &       
-                                        w1meanHT(j)
-  end do
+      read(iunit, *)
+  
+      do j = ystart(2),yend(2)
+  
+          read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), a, &
+                                            v1meanHT(j), a, &       
+                                            w1meanHT(j)
+      end do
                                
-  close(iunit)
+      close(iunit)
 
+  end if
+  
   end if
 
 #endif
