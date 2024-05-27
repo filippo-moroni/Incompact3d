@@ -115,10 +115,13 @@ elif itype == 13:
 print()
 
 # Extracting quantities from the full matrices
-mean_u  =    M1[:,0]   
-var_u   =    M1[:,3]
-var_v   =    M1[:,4]
-mean_uv =  - M1[:,12]
+mean_u  = M1[:,0]   
+var_u   = M1[:,3]
+var_v   = M1[:,4]
+mean_uv = M1[:,12]
+
+if itype == 3:
+    mean_uv =  - mean_uv
 
 vort_x = M2[:,0]
 vort_y = M2[:,1]
