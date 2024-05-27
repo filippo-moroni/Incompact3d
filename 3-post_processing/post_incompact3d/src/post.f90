@@ -38,6 +38,9 @@ PROGRAM post
   
   ! Integer for MPI
   integer :: code
+  
+  ! Save the initial time of post-processing work
+  call cpu_time(tstart)
     
   ! Initialize MPI
   call MPI_INIT(code)
@@ -90,7 +93,7 @@ PROGRAM post
   if (sel(2)==1) post_vort=.true.
   if (sel(3)==1) post_diss=.true.
   if (sel(4)==1) post_corz=.true.
-  if (sel(5)==1) post_corz_channel=.true.
+  if (sel(5)==1) read_mean=.true.
 
   if (nrank==0) then
      if ((.not.post_mean).and.(.not.post_vort).and.(.not.post_diss).and.(.not.post_corz)) &
@@ -105,22 +108,29 @@ PROGRAM post
   endif
   
   ! Reading of velocity only if necessary
-  if (post_vort)         read_vel=.true.
-  if (post_diss)         read_vel=.true.
-  if (post_corz)         read_vel=.true.
-  if (post_corz_channel) read_vel=.true.
+  if (post_vort .or. post_diss .or. post_corz .or. read_mean) read_vel=.true.
   
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
   
-  ! add reading of mean statistics for correlation for a channel
-  
   ! Initialize statistics
   call init_statistics()
+  
+#ifdef TTBL_MODE
 
-  ! Time passed since the program has started
-  call cpu_time(tstart)
-    
+#else
+
+  ! Reading of previously calculated mean velocity field for a channel,
+  ! if correlation needs to be calculated.
+
+  if (post_corz) then
+
+
+
+  end if
+
+#endif
+  
 !-----------------------------!
 ! Post-processing starts here !
 !-----------------------------!
@@ -209,28 +219,30 @@ PROGRAM post
 
 #else  
    
-     !--- Correlation for channel, mean statistics must be calculated in a previous post-processing run ---!
-     if(post_corz_channel) then
+   !--- Correlation for channel, mean statistics must be calculated in a previous post-processing run ---!
+   if(post_corz) then
    
-     ! Fluctuations calculation
-     do k=ystart(3),yend(3)
-         do i=ystart(1),yend(1)
-             do j=ystart(2),yend(2)
-                 ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
-                 uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
-                 uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
-             enddo
-         enddo
-     enddo
+   ! Fluctuations calculation
+   do k=ystart(3),yend(3)
+       do i=ystart(1),yend(1)
+           do j=ystart(2),yend(2)
+               ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
+               uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
+               uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
+           enddo
+       enddo
+   enddo
    
-     ! Correlation function calculation (each subdomain, z-pencils)
-     call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
+   ! Correlation functions calculation (each subdomain, z-pencils)
+   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
    
-     ! Gather together the results
-     call MPI_Gather(RuuzH1,zsize(2),real_type,RuuzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
+   ! Gather together the results
+   call MPI_Gather(RuuzH1,zsize(2),real_type,RuuzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
+   call MPI_Gather(RvvzH1,zsize(2),real_type,RvvzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
+   call MPI_Gather(RwwzH1,zsize(2),real_type,RwwzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
    
-     end if
-     !-----------------------------------------------------------------------------------------------------!
+   end if
+   !-----------------------------------------------------------------------------------------------------!
    
   ! Closing of the do-loop for the different time units (or snapshots) (ie index)
   enddo 
@@ -359,11 +371,13 @@ PROGRAM post
        enddo
    enddo
    
-   ! Correlation function calculation (each subdomain, z-pencils)
-   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
+   ! Correlation functions calculation (each subdomain, z-pencils)
+   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
    
    ! Gather together the results
    call MPI_Gather(RuuzH1,zsize(2),real_type,RuuzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
+   call MPI_Gather(RvvzH1,zsize(2),real_type,RvvzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
+   call MPI_Gather(RwwzH1,zsize(2),real_type,RwwzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
    
    end if
 #endif

@@ -362,8 +362,8 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
 end subroutine stat_dissipation
 
 !********************************************************************
-! Calculate the correlation function R in z-direction
-subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
+! Calculate the correlation functions Rii in z-direction
+subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
 
   use decomp_2d
   use decomp_2d_io
@@ -379,8 +379,8 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
   ! Local work arrays
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
   
-  ! Correlation function (first index: r; second index: j)
-  real(mytype),intent(inout),dimension(zsize(3),zsize(2)) :: RuuzH1
+  ! Correlation functions (first index: r; second index: j)
+  real(mytype),intent(inout),dimension(zsize(3),zsize(2)) :: RuuzH1, RvvzH1, RwwzH1
   
   real(mytype) :: den          ! denominator of the divisions
   integer      :: i,j,k,rr,kpr 
@@ -407,12 +407,31 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
                   
                   ! Shift to the beginning of the array if we go beyond its index range (periodic)
                   if (kpr > nz) kpr = kpr - nz
-
+                  
+                  !--- Streamwise fluctuations correlation ---!
+                  
                   ! Product of fluctuations at distance 'r'
                   ta3(i,j,k) = ux3(i,j,k)*ux3(i,j,kpr)
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
                   RuuzH1(rr,j) = RuuzH1(rr,j) + ta3(i,j,k)/den
+                  
+                  !--- Vertical fluctuations correlation ---!
+                  
+                  ! Product of fluctuations at distance 'r'
+                  ta3(i,j,k) = uy3(i,j,k)*uy3(i,j,kpr)
+                  
+                  ! Accumulation inside the correlation function variable (at each subdomain)
+                  RvvzH1(rr,j) = RvvzH1(rr,j) + ta3(i,j,k)/den
+                  
+                  !--- Spanwise fluctuations correlation ---!
+                  
+                  ! Product of fluctuations at distance 'r'
+                  ta3(i,j,k) = uz3(i,j,k)*uz3(i,j,kpr)
+                  
+                  ! Accumulation inside the correlation function variable (at each subdomain)
+                  RwwzH1(rr,j) = RwwH1(rr,j) + ta3(i,j,k)/den
+                  
 
               enddo
           enddo

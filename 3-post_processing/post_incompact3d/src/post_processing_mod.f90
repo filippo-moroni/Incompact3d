@@ -13,7 +13,7 @@ module post_processing
   character(len=100) :: fileformat
   character(len=1), parameter :: NL=char(10) !new line character
 
-  logical, save :: post_mean,post_vort,post_diss,post_corz
+  logical, save :: post_mean,post_vort,post_diss,post_corz,read_mean
 
   ! Arrays for statistic collection  
   real(mytype), save, allocatable, dimension(:,:,:) :: u1mean,v1mean,w1mean
@@ -71,9 +71,9 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: epsmeanH1
   real(mytype), save, allocatable, dimension(:)     :: epsmeanHT
   
-  ! Arrays for correlation function (at the moment only streamwise velocities)
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT
+  ! Arrays for correlation functions 
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHt
      
 contains
 
@@ -410,11 +410,29 @@ contains
     
     if (post_corz) then
     
-        ! Correlation function in z-direction
+        ! Correlation functions in z-direction
         allocate(RuuzH1(zsize(3),zsize(2)))
-        RuuzH1=zero
+        allocate(RvvzH1(zsize(3),zsize(2)))
+        allocate(RwwzH1(zsize(3),zsize(2)))
+        
+        RuuzH1=zero;RvvzH1=zero;RwwzH1=zero
+        
         allocate(RuuzHT(zsize(3),ysize(2)))
-        RuuzHT=zero
+        allocate(RvvzHT(zsize(3),ysize(2)))
+        allocate(RwwzHT(zsize(3),ysize(2)))
+        
+        RuuzHT=zero;RvvzHT=zero;RwwzHT=zero
+        
+#ifdef TTBL_MODE
+
+#else
+        ! If we are in Channel mode, allocate memory for reading of mean velocity field         
+        allocate(u1meanHT(ysize(2)));   
+        allocate(v1meanHT(ysize(2)));  
+        allocate(w1meanHT(ysize(2)))
+
+        u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
+#endif   
         
     end if
 
@@ -512,10 +530,10 @@ contains
   if (post_corz) then
   
       ! Subdomains
-      RuuzH1=zero
+      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero
   
       ! Total domain
-      RuuzHT=zero
+      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero
   
   end if
   
