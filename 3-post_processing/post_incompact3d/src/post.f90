@@ -33,7 +33,8 @@ PROGRAM post
   integer,dimension(4) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
-  character(99):: filename,dirname,snap_index 
+  character(len=999) :: format_str                 ! format for headers in files 
+  character(99):: filename,dirname,snap_index
   character(1) :: a
   
   ! Integer for MPI
@@ -397,44 +398,44 @@ PROGRAM post
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
-        
+               
         do j = ystart(2),yend(2) + 1
         
         if (j .eq. 1) then
         
-        write (iunit, *) 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
-                         'var[u]'   , ',', 'var[v]'   , ',', 'var[w]' , ',', &
-                         'skew[u]'  , ',', 'skew[v]'  , ',', 'skew[w]', ',', &
-                         'kurt[u]'  , ',', 'kurt[v]'  , ',', 'kurt[w]', ',', &
-                         "<u'v'>"   , ',', "<u'w'>"   , ',', "<v'w'>" , ',', &
-                         'mean[p]'  , ',', 'var[p]'   , ',',                 &
-                         'mean[phi]', ',', 'var[phi]' , ',',                 &
-                         "<u'phi'>" , ',', "<v'phi'>" , ',', "<w'phi'>" 
+        write(iunit, '(22(A12, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
+                                          'var[u]'   , ',', 'var[v]'   , ',', 'var[w]' , ',', &
+                                          'skew[u]'  , ',', 'skew[v]'  , ',', 'skew[w]', ',', &
+                                          'kurt[u]'  , ',', 'kurt[v]'  , ',', 'kurt[w]', ',', &
+                                          "<u'v'>"   , ',', "<u'w'>"   , ',', "<v'w'>" , ',', &
+                                          'mean[p]'  , ',', 'var[p]'   , ',',                 &
+                                          'mean[phi]', ',', 'var[phi]' , ',',                 &
+                                          "<u'phi'>" , ',', "<v'phi'>" , ',', "<w'phi'>" 
                                
         else
-        
-        write(iunit, *)  u1meanHT(j-1),         ',', &
-                         v1meanHT(j-1),         ',', &       
-                         w1meanHT(j-1),         ',', &
-                         u2meanHT(j-1),         ',', &
-                         v2meanHT(j-1),         ',', &
-                         w2meanHT(j-1),         ',', &
-                         u3meanHT(j-1),         ',', &
-                         v3meanHT(j-1),         ',', &
-                         w3meanHT(j-1),         ',', &
-                         u4meanHT(j-1),         ',', &
-                         v4meanHT(j-1),         ',', &
-                         w4meanHT(j-1),         ',', &
-                         uvmeanHT(j-1),         ',', &
-                         uwmeanHT(j-1),         ',', &  
-                         vwmeanHT(j-1),         ',', &                                              
-                         pre1meanHT(j-1),       ',', &
-                         pre2meanHT(j-1),       ',', &                     
-                         phi1meanHT(j-1),       ',', &
-                         phi2meanHT(j-1),       ',', &                        
-                         uphimeanHT(j-1),       ',', &
-                         vphimeanHT(j-1),       ',', &
-                         wphimeanHT(j-1)
+                
+        write(iunit, '(22(F12.8, A1, 1X))') u1meanHT(j-1),   ',', &
+                                            v1meanHT(j-1),   ',', &       
+                                            w1meanHT(j-1),   ',', &
+                                            u2meanHT(j-1),   ',', &
+                                            v2meanHT(j-1),   ',', &
+                                            w2meanHT(j-1),   ',', &
+                                            u3meanHT(j-1),   ',', &
+                                            v3meanHT(j-1),   ',', &
+                                            w3meanHT(j-1),   ',', &
+                                            u4meanHT(j-1),   ',', &
+                                            v4meanHT(j-1),   ',', &
+                                            w4meanHT(j-1),   ',', &
+                                            uvmeanHT(j-1),   ',', &
+                                            uwmeanHT(j-1),   ',', &  
+                                            vwmeanHT(j-1),   ',', &                                              
+                                            pre1meanHT(j-1), ',', &
+                                            pre2meanHT(j-1), ',', &                     
+                                            phi1meanHT(j-1), ',', &
+                                            phi2meanHT(j-1), ',', &                        
+                                            uphimeanHT(j-1), ',', &
+                                            vphimeanHT(j-1), ',', &
+                                            wphimeanHT(j-1)
         
         end if
         
@@ -467,17 +468,17 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write (iunit, *) 'mean[omega_x]'  , ',', 'mean[omega_y]'  , ',', 'mean[omega_z]', ',', &
-                         'dU_par/dy'      , ',', 'dU/dy'          , ',', 'dW/dy'          
+        write(iunit, '(6(A12, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
+                                          'dU_par/dy'    , ',', 'dU/dy'        , ',', 'dW/dy'          
                                
         else
         
-        write(iunit, *)  vortxmeanHT(j-1),      ',',  &
-                         vortymeanHT(j-1),      ',',  &       
-                         vortzmeanHT(j-1),      ',',  &
-                         mean_gradientpHT(j-1), ',',  &
-                         mean_gradientxHT(j-1), ',',  &
-                         mean_gradientzHT(j-1)        
+        write(iunit, '(6(F12.8, A1, 1X))') vortxmeanHT(j-1),      ',',  &
+                                           vortymeanHT(j-1),      ',',  &       
+                                           vortzmeanHT(j-1),      ',',  &
+                                           mean_gradientpHT(j-1), ',',  &
+                                           mean_gradientxHT(j-1), ',',  &
+                                           mean_gradientzHT(j-1)        
         end if
         
         end do
@@ -509,11 +510,11 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write (iunit, *) 'mean[eps]'
+        write(iunit, '(1(A12, A1, 1X))') 'mean[eps]'
                                
         else
         
-        write(iunit, *)  epsmeanHT(j-1)
+        write(iunit, '(1(F12.8, A1, 1X))') epsmeanHT(j-1)
         
         end if
         
