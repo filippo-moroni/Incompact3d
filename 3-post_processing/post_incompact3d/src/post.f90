@@ -259,12 +259,7 @@ PROGRAM post
    
    ! Correlation functions calculation (each subdomain, z-pencils)
    call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
-   
-   ! Gather together the results
-   call MPI_Gather(RuuzH1,zsize(2),real_type,RuuzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
-   call MPI_Gather(RvvzH1,zsize(2),real_type,RvvzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
-   call MPI_Gather(RwwzH1,zsize(2),real_type,RwwzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
-   
+      
    end if
    !-----------------------------------------------------------------------------------------------------!
    
@@ -379,11 +374,10 @@ PROGRAM post
      call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
 
-!-------- Correlation function section (for TTBL) ---------!
-#ifdef TTBL_MODE  
+  if(post_corz) then
 
-   if(post_corz) then
-   
+! Correlations calculation for TTBL
+#ifdef TTBL_MODE  
    ! Fluctuations calculation
    do k=ystart(3),yend(3)
        do i=ystart(1),yend(1)
@@ -397,14 +391,15 @@ PROGRAM post
    
    ! Correlation functions calculation (each subdomain, z-pencils)
    call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
-   
-   ! Gather together the results
-   call MPI_Gather(RuuzH1,zsize(2),real_type,RuuzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
-   call MPI_Gather(RvvzH1,zsize(2),real_type,RvvzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
-   call MPI_Gather(RwwzH1,zsize(2),real_type,RwwzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
-   
-   end if
+
 #endif
+   
+   ! Summation over all MPI processes (valid for both TTBL and Channel)
+   call MPI_ALLREDUCE(RuuzH1,RuuzHT,zsize(3)*ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   call MPI_ALLREDUCE(RvvzH1,RvvzHT,zsize(3)*ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   call MPI_ALLREDUCE(RwwzH1,RwwzHT,zsize(3)*ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   
+  end if
 
 !------------- MPI process nrank = 0 at work --------------!
 
@@ -603,7 +598,6 @@ PROGRAM post
         ! Write the corr_stats filename for TTBL
         write(filename, '(A,A,A)') 'corr_stats-', trim(snap_index), '.bin'
         filename = adjustl(filename)
-
 #else
         ! Write the corr_stats filename for channel flow
         write(filename, '(A)') 'corr_stats.bin'
