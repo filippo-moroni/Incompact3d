@@ -142,7 +142,7 @@ PROGRAM post
   
           read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), a, &
                                             v1meanHT(j), a, &       
-                                            w1meanHT(j)
+                                            w1meanHT(j), a
       end do
                                
       close(iunit)
