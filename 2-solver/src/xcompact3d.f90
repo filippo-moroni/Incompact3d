@@ -291,7 +291,7 @@ subroutine finalise_xcompact3d()
   logical       :: exists
   character(99) :: filename, ts_index
     
-  ! Create or open a file to store the dt and ts of stop 
+  !--- Create or open a file to store the dt and ts of stop ---! 
   if(nrank.eq.0) then
       inquire(file="dt_history.txt", exist=exists)
       if (exists) then
@@ -305,16 +305,20 @@ subroutine finalise_xcompact3d()
       close(iunit)
   end if
   
-  ! Writing the last time step index as character
-  write(ts_index,'(I8.8)') ilast
-  ts_index = adjustl(ts_index) 
+  !--- Store checkpoint in a secondary file for safer backup ---!
+  if(nrank.eq.0) then
+      
+      ! Writing the last time step index as character
+      write(ts_index,'(I8.8)') ilast
+      ts_index = adjustl(ts_index) 
         
-  ! Write the filename for the checkpoint file 
-  write(filename, '(A,A)') 'checkpoint-', trim(ts_index)
-  filename = adjustl(filename)
+      ! Write the filename for the checkpoint file 
+      write(filename, '(A,A)') 'checkpoint-', trim(ts_index)
+      filename = adjustl(filename)
   
-  ! Copy and store the checkpoint file with a different name
-  call execute_command_line('cp ' // 'checkpoint' // ' ' // filename)
+      ! Copy and store the checkpoint file with a different name
+      call execute_command_line('cp ' // 'checkpoint' // ' ' // filename)
+  end if
   
   call simu_stats(4)
   call visu_finalise()
