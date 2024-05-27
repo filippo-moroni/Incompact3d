@@ -30,7 +30,7 @@ PROGRAM post
    
   integer :: iunit		      		   ! unit for the file to open (assigned by the compiler)
     
-  integer,dimension(4) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
+  integer,dimension(5) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
   character(99):: filename,dirname,snap_index
@@ -90,6 +90,7 @@ PROGRAM post
   if (sel(2)==1) post_vort=.true.
   if (sel(3)==1) post_diss=.true.
   if (sel(4)==1) post_corz=.true.
+  if (sel(5)==1) post_corz_channel=.true.
 
   if (nrank==0) then
      if ((.not.post_mean).and.(.not.post_vort).and.(.not.post_diss).and.(.not.post_corz)) &
@@ -104,12 +105,15 @@ PROGRAM post
   endif
   
   ! Reading of velocity only if necessary
-  if (post_vort) read_vel=.true.
-  if (post_diss) read_vel=.true.
-  if (post_corz) read_vel=.true.
+  if (post_vort)         read_vel=.true.
+  if (post_diss)         read_vel=.true.
+  if (post_corz)         read_vel=.true.
+  if (post_corz_channel) read_vel=.true.
   
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
+  
+  ! add reading of mean statistics for correlation for a channel
   
   ! Initialize statistics
   call init_statistics()
@@ -204,6 +208,30 @@ PROGRAM post
 #ifdef TTBL_MODE
 
 #else  
+   
+     !--- Correlation for channel, mean statistics must be calculated in a previous post-processing run ---!
+     if(post_corz_channel) then
+   
+     ! Fluctuations calculation
+     do k=ystart(3),yend(3)
+         do i=ystart(1),yend(1)
+             do j=ystart(2),yend(2)
+                 ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
+                 uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
+                 uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
+             enddo
+         enddo
+     enddo
+   
+     ! Correlation function calculation (each subdomain, z-pencils)
+     call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1)
+   
+     ! Gather together the results
+     call MPI_Gather(RuuzH1,zsize(2),real_type,RuuzHT,ysize(2),real_type,0,MPI_COMM_WORLD,code)
+   
+     end if
+     !-----------------------------------------------------------------------------------------------------!
+   
   ! Closing of the do-loop for the different time units (or snapshots) (ie index)
   enddo 
 #endif
@@ -315,7 +343,7 @@ PROGRAM post
      call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
 
-!-------- Correlation function section (TTBL only) --------!
+!-------- Correlation function section (for TTBL) ---------!
 #ifdef TTBL_MODE  
 
    if(post_corz) then
