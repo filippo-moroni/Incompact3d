@@ -152,7 +152,7 @@ if itype == 13:
     mean_u = uwall - mean_u
            
 # Shear quantities
-sh_vel = np.sqrt(nu * mg_x[0])
+sh_vel = np.sqrt(nu * np.abs(mg_x[0]))
 delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
 
@@ -292,6 +292,12 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10))
 if itype == 13:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+    xlimsup = 520.0
+    ylimsup = 8.0
+    
+    # <u'u'>
+    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    plt.legend(['Present'], loc='upper left', fontsize=18)
         
 # Channel    
 elif itype == 3:
@@ -349,6 +355,12 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10))
 if itype == 13:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+    xlimsup = 520.0
+    ylimsup = 1.0
+    
+    # <v'v'>
+    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    plt.legend(['Present'], loc='upper left', fontsize=18)
         
 # Channel    
 elif itype == 3:
@@ -357,7 +369,7 @@ elif itype == 3:
     xlimsup = 300.0
     ylimsup = 1.0
     
-    # <u'u'>
+    # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, var_v_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
     plt.legend(['Present', 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
@@ -406,6 +418,12 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10))
 if itype == 13:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+    xlimsup = 520.0
+    ylimsup = 1.0
+    
+    # <u'v'>
+    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    plt.legend(['Present'], loc='upper left', fontsize=18)
         
 # Channel    
 elif itype == 3:
@@ -414,7 +432,7 @@ elif itype == 3:
     xlimsup = 300.0
     ylimsup = 1.0
     
-    # <u'u'>
+    # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, mean_uv_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
     plt.legend(['Present', 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
