@@ -587,15 +587,15 @@ PROGRAM post
                                
         close(iunit)
      endif
-     
+          
      ! Correlation functions writing
      if (post_corz) then
      
      ! Unformatted data
      print *,'----------------------------------------------------'
-     write(*,"(1x,'Writing output data in unformatted .bin file(s)')")
+     write(*,"(1x,'Writing correlations data in unformatted .bin file(s)')")
 
-#ifdef TTBL_MODE  
+#ifdef TTBL_MODE
         ! Writing the snapshot index as character
         write(snap_index,'(I3.3)') ifile
         snap_index = adjustl(snap_index) 
@@ -603,21 +603,23 @@ PROGRAM post
         ! Write the corr_stats filename for TTBL
         write(filename, '(A,A,A)') 'corr_stats-', trim(snap_index), '.bin'
         filename = adjustl(filename)
+
 #else
         ! Write the corr_stats filename for channel flow
         write(filename, '(A)') 'corr_stats.bin'
         filename = adjustl(filename)
-#endif
-               
+#endif       
+
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='unformatted', &
              access='stream',status='replace')
              
-        write(iunit,pos=1) RuuzHT                     
+        write(iunit,pos=1) RuuzHT, RvvzHT, RwwzHT                     
         
         close(iunit)
-     endif  
-          
+     endif
+  
+                         
   endif ! closing of the if-statement for processor 0
 
 #ifdef TTBL_MODE   
