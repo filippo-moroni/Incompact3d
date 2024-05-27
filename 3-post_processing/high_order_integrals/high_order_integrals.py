@@ -3,7 +3,7 @@
 #!       calculations of BL thickness parameters           !
 #! (delta_99, displacement thickness, momentum thickness), !
 #!      related Reynolds numbers, shear velocity and       !
-#!           friction coefficient for a TTBL.              !
+#! friction coefficient for a TTBL (streamwise direction). !
 #!---------------------------------------------------------!
 
 # Libraries
@@ -96,7 +96,7 @@ for i in range(file1, filen + icrfile, icrfile):
     spl = InterpolatedUnivariateSpline(yp, int2, k=5)
     mom_t[ii] = spl.integral(y0, yn)
     
-    # Reading of the mean gradient
+    # Reading of the mean streamwise gradient
     file_path = f"data_post/vort_stats-{i:03d}.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
@@ -105,7 +105,7 @@ for i in range(file1, filen + icrfile, icrfile):
     # Shear velocity
     sh_vel[ii] = np.sqrt(nu * (np.absolute(mg[0])))
     
-    # Friction coefficient
+    # Friction coefficient in x-dir.
     cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
             
     # Index for BL thickness parameters vectors
@@ -137,8 +137,8 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{'Re_tau O(6)':<{c_w}}, " +
             f"{'Re_ds O(6)':<{c_w}}, " +
             f"{'Re_theta O(6)':<{c_w}}, " +
-            f"{'sh_vel O(6)':<{c_w}}, " +
-            f"{'cf O(6)':<{c_w}}, " +
+            f"{'sh_velx O(6)':<{c_w}}, " +
+            f"{'cf,x O(6)':<{c_w}}, " +
             f"{'time_unit':<{c_w}}\n")
 
     for j in range(0, ii):
