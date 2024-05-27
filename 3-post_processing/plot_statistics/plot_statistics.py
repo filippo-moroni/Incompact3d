@@ -427,6 +427,9 @@ if itype == 13:
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     plt.legend(['Present'], loc='upper left', fontsize=18)
+    
+    # y-axis label
+    ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
         
 # Channel    
 elif itype == 3:
@@ -444,10 +447,12 @@ elif itype == 3:
     
     # Plotting caption2
     plt.text(xalign, ylimsup - 0.18, caption2, fontsize=16, fontweight='bold', ha='left')
+    
+    # y-axis label
+    ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
-ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
 
 # Axes limits
 plt.ylim([0, ylimsup])
