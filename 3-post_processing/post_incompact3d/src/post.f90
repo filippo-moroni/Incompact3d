@@ -130,10 +130,8 @@ PROGRAM post
   write(filename, '(A)') 'mean_stats.txt'
   filename = adjustl(filename)
   
-  if (nrank.eq.0) then 
-  
-      ! Display that we are reading the mean velocity field file
-      write(*,"(1x,'Reading mean_stats.txt')")
+  ! Display that we are reading the mean velocity field file
+  if (nrank.eq.0) write(*,"(1x,'Reading mean_stats.txt')")
   
       ! Open the file and read
       open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
@@ -148,8 +146,6 @@ PROGRAM post
       end do
                                
       close(iunit)
-
-  end if
   
   end if
 
