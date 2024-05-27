@@ -12,4 +12,3 @@
 0    # post_vort          ! Compute mean vorticity and mean gradient
 0    # post_diss          ! Compute mean total dissipation rate
 0    # post_corz          ! Compute correlation function along z
-0    # read_mean          ! Read mean velocity field for fluctuations calculation (needed for channel correlations)
