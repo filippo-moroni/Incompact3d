@@ -402,7 +402,7 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write(iunit, '(22(A12, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
+        write(iunit, '(22(A13, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
                                           'var[u]'   , ',', 'var[v]'   , ',', 'var[w]' , ',', &
                                           'skew[u]'  , ',', 'skew[v]'  , ',', 'skew[w]', ',', &
                                           'kurt[u]'  , ',', 'kurt[v]'  , ',', 'kurt[w]', ',', &
@@ -413,7 +413,7 @@ PROGRAM post
                                
         else
                 
-        write(iunit, '(22(F12.8, A1, 1X))') u1meanHT(j-1),   ',', &
+        write(iunit, '(22(F13.9, A1, 1X))') u1meanHT(j-1),   ',', &
                                             v1meanHT(j-1),   ',', &       
                                             w1meanHT(j-1),   ',', &
                                             u2meanHT(j-1),   ',', &
@@ -467,12 +467,12 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write(iunit, '(6(A12, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
+        write(iunit, '(6(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
                                           'dU_par/dy'    , ',', 'dU/dy'        , ',', 'dW/dy'          
                                
         else
         
-        write(iunit, '(6(F12.8, A1, 1X))') vortxmeanHT(j-1),      ',',  &
+        write(iunit, '(6(F13.9, A1, 1X))') vortxmeanHT(j-1),      ',',  &
                                            vortymeanHT(j-1),      ',',  &       
                                            vortzmeanHT(j-1),      ',',  &
                                            mean_gradientpHT(j-1), ',',  &
@@ -509,11 +509,11 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write(iunit, '(1(A12, A1, 1X))') 'mean[eps]'
+        write(iunit, '(1(A13, A1, 1X))') 'mean[eps]'
                                
         else
         
-        write(iunit, '(1(F12.8, A1, 1X))') epsmeanHT(j-1)
+        write(iunit, '(1(F13.9, A1, 1X))') epsmeanHT(j-1)
         
         end if
         

@@ -100,7 +100,7 @@ for i in range(file1, filen + icrfile, icrfile):
     file_path = f"data_post/vort_stats-{i:03d}.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
-    mg = data[:, 3]
+    mg = data[:, 4]
     
     # Shear velocity
     sh_vel[ii] = np.sqrt(nu * (np.absolute(mg[0])))
