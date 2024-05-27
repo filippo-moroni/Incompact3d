@@ -142,7 +142,7 @@ PROGRAM post
   
           read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), a, &
                                             v1meanHT(j), a, &       
-                                            w1meanHT(j), a
+                                            w1meanHT(j), a,
       end do
                                
       close(iunit)
@@ -254,7 +254,7 @@ PROGRAM post
    enddo
    
    ! Correlation functions calculation (each subdomain, z-pencils)
-   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
+   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
       
    end if
    !-----------------------------------------------------------------------------------------------------!

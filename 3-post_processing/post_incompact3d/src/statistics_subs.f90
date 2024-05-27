@@ -363,7 +363,7 @@ end subroutine stat_dissipation
 
 !********************************************************************
 ! Calculate the correlation functions Rii in z-direction
-subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
+subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
 
   use decomp_2d
   use decomp_2d_io
@@ -373,8 +373,8 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
   ! Velocity fluctuations, y-pencils
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2
   
-  ! Number of points in homogeneous directions and number of snapshots
-  integer,     intent(in) :: nx,nz,nt
+  ! Number of points in homogeneous directions, number of snapshots and number of realizations
+  integer,     intent(in) :: nx,nz,nt,nr
   
   ! Local work arrays
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
@@ -386,9 +386,9 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
   integer      :: i,j,k,rr,kpr 
 
 #ifdef TTBL_MODE 
-  den = real(nx*nz,mytype)
+  den = real(nx*nz*nr,mytype)
 #else
-  den = real(nx*nz*nt,mytype)
+  den = real(nx*nz*nr*nt,mytype)
 #endif
 
   ! Transpose arrays along z
@@ -432,7 +432,6 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
                   ! Accumulation inside the correlation function variable (at each subdomain)
                   RwwzH1(rr,j) = RwwzH1(rr,j) + ta3(i,j,k)/den
                   
-
               enddo
           enddo
       enddo
