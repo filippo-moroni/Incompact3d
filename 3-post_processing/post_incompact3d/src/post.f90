@@ -30,7 +30,7 @@ PROGRAM post
    
   integer :: iunit		      		   ! unit for the file to open (assigned by the compiler)
     
-  integer,dimension(5) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
+  integer,dimension(4) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
   character(99):: filename,dirname,snap_index
@@ -67,9 +67,8 @@ PROGRAM post
   call schemes()
   call decomp_info_init(nxm,nym,nzm,phG)
   
- 
   ! Start of the post-processing  
-  post_mean=.false.; post_vort=.false.; post_diss=.false.  
+  post_mean=.false.; post_vort=.false.; post_diss=.false.; post_corz=.false.  
   read_vel=.false.;  read_pre=.false.;  read_phi=.false.
                   
   ! Reading of the input file of post-processing (post.prm)
@@ -93,7 +92,6 @@ PROGRAM post
   if (sel(2)==1) post_vort=.true.
   if (sel(3)==1) post_diss=.true.
   if (sel(4)==1) post_corz=.true.
-  if (sel(5)==1) read_mean=.true.
 
   if (nrank==0) then
      if ((.not.post_mean).and.(.not.post_vort).and.(.not.post_diss).and.(.not.post_corz)) &
@@ -108,7 +106,7 @@ PROGRAM post
   endif
   
   ! Reading of velocity only if necessary
-  if (post_vort .or. post_diss .or. post_corz .or. read_mean) read_vel=.true.
+  if (post_vort .or. post_diss .or. post_corz) read_vel=.true.
   
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
@@ -124,8 +122,26 @@ PROGRAM post
   ! if correlation needs to be calculated.
 
   if (post_corz) then
-
-
+ 
+  ! Write directory name
+  write(dirname,"('data_post/')")
+  
+  ! Display that we are reading the mean velocity field file
+  if (nrank==0) write(*,"(1x,'Reading mean_stats.txt')")
+  
+  ! Open the file and read
+  open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
+  
+  read(iunit, *)
+  
+  do j = ystart(2),yend(2)
+  
+      read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), ',', &
+                                        v1meanHT(j), ',', &       
+                                        w1meanHT(j)
+  end do
+                               
+  close(iunit)
 
   end if
 
