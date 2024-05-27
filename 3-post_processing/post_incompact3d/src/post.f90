@@ -33,7 +33,6 @@ PROGRAM post
   integer,dimension(4) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
-  character(len=999) :: format_str                 ! format for headers in files 
   character(99):: filename,dirname,snap_index
   character(1) :: a
   
