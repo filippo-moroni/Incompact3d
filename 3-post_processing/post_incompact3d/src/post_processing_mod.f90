@@ -427,8 +427,8 @@ contains
 
 #else
         ! If we are in Channel mode, allocate memory for reading of mean velocity field         
-        allocate(u1meanHT(ysize(2)));   
-        allocate(v1meanHT(ysize(2)));  
+        allocate(u1meanHT(ysize(2)))   
+        allocate(v1meanHT(ysize(2)))  
         allocate(w1meanHT(ysize(2)))
 
         u1meanHT=zero;v1meanHT=zero;w1meanHT=zero

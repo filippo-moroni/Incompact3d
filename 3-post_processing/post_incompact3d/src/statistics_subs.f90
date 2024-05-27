@@ -430,7 +430,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nt,RuuzH1,RvvzH1,RwwzH1)
                   ta3(i,j,k) = uz3(i,j,k)*uz3(i,j,kpr)
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
-                  RwwzH1(rr,j) = RwwH1(rr,j) + ta3(i,j,k)/den
+                  RwwzH1(rr,j) = RwwzH1(rr,j) + ta3(i,j,k)/den
                   
 
               enddo

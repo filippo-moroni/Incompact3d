@@ -136,8 +136,8 @@ PROGRAM post
   
   do j = ystart(2),yend(2)
   
-      read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), ',', &
-                                        v1meanHT(j), ',', &       
+      read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), a, &
+                                        v1meanHT(j), a, &       
                                         w1meanHT(j)
   end do
                                
