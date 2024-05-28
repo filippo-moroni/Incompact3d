@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
 import matplotlib as mpl
+import os
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -206,6 +207,9 @@ u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 # Kolmogorov time scale
 #tau_eta = np.sqrt(nu/eps)
 
+# Creating the folder for plots
+os.mkdir("plots")
+
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
 # Mean velocity profile
@@ -283,7 +287,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig('umean.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('plots/umean.pdf', format='pdf', bbox_inches='tight')
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
@@ -346,7 +350,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig('uvar.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('plots/uvar.pdf', format='pdf', bbox_inches='tight')
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
@@ -409,7 +413,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig('vvar.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('plots/vvar.pdf', format='pdf', bbox_inches='tight')
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
@@ -477,7 +481,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig('uvmean.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('plots/uvmean.pdf', format='pdf', bbox_inches='tight')
 plt.show()
 
 
