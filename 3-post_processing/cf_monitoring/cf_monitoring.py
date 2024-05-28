@@ -32,7 +32,7 @@ y_location  = 0.75            # percentage of the y-axis limit for (automatic) p
 
 # Default value for axes limits
 xliminf     = 0.0             # x axis inferior limit
-xlimsup     = 1200.0          # x axis superior limit
+xlimsup     = 1500.0          # x axis superior limit
 yliminf     = 0.0             # y axis inferior limit
 ylimsup     = 0.008           # y axis superior limit
 
@@ -58,7 +58,9 @@ cfx       = M1[:,4]
 time_unit = M1[:,7] 
 
 # Axes ranges
+xliminf = time_unit[0]
 xlimsup = time_unit[-1]
+#yliminf = np.min(cfx) * 0.8
 ylimsup = np.max(cfx) * 1.2
 
 #!--------------------------------!
@@ -73,6 +75,7 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
    
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.axvline(x=200.0, lw=lw)
 
 plt.legend(['Fixed walls', 'Moving walls'], loc='upper left', fontsize=18)
 
