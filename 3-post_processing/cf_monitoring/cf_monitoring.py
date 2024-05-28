@@ -24,16 +24,17 @@ lw          = 2.0             # linewidth for plots
 markersize  = 80              # marker size for scatter plot
 fla         = 80              # fontsize of labels of x and y axes (major labels, variables)
 fla2        = 36              # fontsize of numbers of x and y axes 
-xliminf     = 0.0             # x axis inferior limit
-xlimsup     = 1.0             # x axis superior limit
-yliminf     = 0.0             # y axis inferior limit
-ylimsup     = 1200.0          # y axis superior limit
-
 pad_numbers = 20              # pad of numbers on both axes
 lmajt       = 30              # length of major ticks
 lmint       = 15              # length of minor ticks
 tick_width  = 1.5             # width of ticks and external box
 y_location  = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
+
+# Default value for axes limits
+xliminf     = 0.0             # x axis inferior limit
+xlimsup     = 1200.0          # x axis superior limit
+yliminf     = 0.0             # y axis inferior limit
+ylimsup     = 0.008           # y axis superior limit
 
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
@@ -55,6 +56,10 @@ print()
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
 time_unit = M1[:,7] 
+
+# Axes ranges
+xlimsup = time_unit[-1]
+ylimsup = np.max(cfx) * 1.2
 
 #!--------------------------------!
 
