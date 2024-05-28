@@ -34,7 +34,7 @@ pad_numbers = 20              # pad of numbers on both axes
 lmajt       = 30              # length of major ticks
 lmint       = 15              # length of minor ticks
 tick_width  = 1.5             # width of ticks and external box
-y_location  = 0.9             # percentage of the y-axis limit for (automatic) positioning of captions
+y_location  = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
 
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
@@ -260,7 +260,7 @@ elif itype == 3:
     plt.text(xalign, ylimsup*y_location, caption2, fontsize=16, fontweight='bold', ha='left')
 
 # Plotting caption
-plt.text(xalign, ylimsup - 5.5, caption, fontsize=16, fontweight='bold', ha='left')
+plt.text(xalign, ylimsup*(y_location-0.05), caption, fontsize=16, fontweight='bold', ha='left')
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
@@ -323,7 +323,7 @@ elif itype == 3:
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup - 1.5, caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*(y_location+0.05), caption2, fontsize=16, fontweight='bold', ha='left')
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
@@ -386,7 +386,7 @@ elif itype == 3:
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup - 0.18, caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*y_location, caption2, fontsize=16, fontweight='bold', ha='left')
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
@@ -452,7 +452,7 @@ elif itype == 3:
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup - 0.18, caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*y_location, caption2, fontsize=16, fontweight='bold', ha='left')
     
     # y-axis label
     ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
