@@ -24,8 +24,11 @@ lw          = 2.0             # linewidth for plots
 markersize  = 80              # marker size for scatter plot
 fla         = 80              # fontsize of labels of x and y axes (major labels, variables)
 fla2        = 36              # fontsize of numbers of x and y axes 
-xliminf     = 0.1             # x axis inferior limit
-xalign      = xliminf*1.1     # value to adjust translation in x of captions
+xliminf     = 0.0             # x axis inferior limit
+xlimsup     = 1.0             # x axis superior limit
+yliminf     = 0.0             # y axis inferior limit
+ylimsup     = 1200.0          # y axis superior limit
+
 pad_numbers = 20              # pad of numbers on both axes
 lmajt       = 30              # length of major ticks
 lmint       = 15              # length of minor ticks
@@ -72,12 +75,16 @@ plt.legend(['Fixed walls', 'Moving walls'], loc='upper left', fontsize=18)
 ax.set_xlabel(r'$T$', fontsize=fla, labelpad=20)
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=20)
 
+# Axes limits
+plt.ylim([yliminf, ylimsup])
+plt.xlim([xliminf, xlimsup])
+
 # Setting major and minor ticks on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
 ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
-# Setting y-ticks
-ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
+# Setting ticks
+ax.tick_params(axis='both', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
 plt.savefig('plots/cf_vs_time.pdf', format='pdf', bbox_inches='tight')
