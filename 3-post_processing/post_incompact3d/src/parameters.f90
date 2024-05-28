@@ -101,7 +101,7 @@ subroutine parameter(input_i3d)
 
   if (nrank==0) then
      write(*,*) '!---------------------------------------------------------!'
-     write(*,*) '!                   ~  Incompact3D  ~                     !'
+     write(*,*) '!                 ~  PostIncompact3D  ~                   !'
      write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
      write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
      write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
