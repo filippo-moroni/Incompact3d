@@ -34,6 +34,7 @@ pad_numbers = 20              # pad of numbers on both axes
 lmajt       = 30              # length of major ticks
 lmint       = 15              # length of minor ticks
 tick_width  = 1.5             # width of ticks and external box
+y_location  = 0.9             # percentage of the y-axis limit for (automatic) positioning of captions
 
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
@@ -207,8 +208,9 @@ u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 # Kolmogorov time scale
 #tau_eta = np.sqrt(nu/eps)
 
-# Creating the folder for plots
-os.mkdir("plots")
+# Creating the folder for plots if it does not exist
+if not os.path.exists("plots"):
+    os.mkdir("plots")
 
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
@@ -255,7 +257,7 @@ elif itype == 3:
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup - 6.5, caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*y_location, caption2, fontsize=16, fontweight='bold', ha='left')
 
 # Plotting caption
 plt.text(xalign, ylimsup - 5.5, caption, fontsize=16, fontweight='bold', ha='left')
