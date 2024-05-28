@@ -1,6 +1,7 @@
 #!---------------------------------------------------------!
 #! With this script, we perform plotting of statistics     !
-#! for TTBL and channel simulations:                       !
+#! for TTBL (Re_tau = 500) and channel (Re_tau = 180)      !
+#! simulations:                                            !
 #!                                                         !
 #! - mean statistics (mean[u], var[u], etc.)               !
 #! - Kolmogorov time scale tau_eta                         !
