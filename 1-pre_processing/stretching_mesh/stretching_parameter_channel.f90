@@ -14,7 +14,7 @@ program xcompact3d_stretching_channel
   ret=0.123*re**0.875    !corresponding Reynolds number based on u_tau
   
   ! New relation present in Incompact3d v4.0
-  !ret=0.116*re*0.88
+  !ret=0.116*re**0.88
     
   yp=1.      !#TO CHANGE#!targeted resolution at the wall in wall units
   y=1000

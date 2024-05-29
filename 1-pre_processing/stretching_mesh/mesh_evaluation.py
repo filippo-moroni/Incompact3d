@@ -31,17 +31,22 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 2.5               # beta parameter for mesh stretching
-nu = 0.002               # kinematic viscosity (TTBL: if D = 1 and U_wall = 1, Re_D = 500)
+beta = 0.25              # beta parameter for mesh stretching
 delta_t = 0.002          # time-step
-re = 1.0/nu              # Reynolds number as defined in Incompact3d
+
+# Reynolds number
+re = 500.0               # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
+nu = 1.0/re              # kinematic viscosity as defined in Incompact3d
+
+# Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
+ret = 0.116*re**0.88
 
 # TTBL inputs
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 twd = 1.0                # trip wire diameter D
 
 # Reference velocity
-uref = 1.0               # reference velocity (TTBL: wall velocity; Channel: bulk velocity)
+uref = 0.667             # reference velocity (TTBL: wall velocity; Channel: bulk velocity)
 uwall = uref
 
 # Selection of friction coefficient at peak or at steady state conditions
@@ -328,6 +333,9 @@ if istret != 3:
     print('Reference velocity U_ref = ', uref)
     print()
     print('Skin friction coefficient at steady state, cf = ', cf)
+    print()
+    print('Estimated friction Reynolds number, Re_tau ~ ', re_tau)
+    print()
     
 elif istret == 3:
     print('Wall velocity, Uwall = ', uwall)
