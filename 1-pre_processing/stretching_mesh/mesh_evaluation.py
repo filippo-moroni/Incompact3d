@@ -30,20 +30,20 @@ plt.rcParams.update({
 })
 
 # Inputs
-istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+istret = 2               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 0.25              # beta parameter for mesh stretching
 delta_t = 0.002          # time-step
 
 # Reynolds number
-re = 500.0               # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
+re = 4764.0              # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
 nu = 1.0/re              # kinematic viscosity as defined in Incompact3d
 
 # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
-ret = 0.116*re**0.88
+re_tau = 0.116*re**0.88
 
 # TTBL inputs
-bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 twd = 1.0                # trip wire diameter D
+bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 
 # Reference velocity
 uref = 0.667             # reference velocity (TTBL: wall velocity; Channel: bulk velocity)
@@ -323,7 +323,7 @@ print('Domain dimension, Lx = ',xlx)
 print('Domain dimension, Ly = ',yly)
 print('Domain dimension, Lz = ',zlz)
 print()
-print('Stretching index =' istret)
+print('Stretching index =', istret)
 print('Beta parameter = ', beta)
 print('Kinematic viscosity, nu = ', nu)
 print('Time step, delta_t = ', delta_t)
@@ -367,7 +367,7 @@ print()
 print('Estimated CFL,x:', CFL)
 print('Estimated D,y  :', D)
 print('Estimated Pé,x :', Pe)
-print('Estimated stability parameter S:', S)
+print('Estimated stability parameter S,x:', S)
 print()
 print('!--- Mesh sizes at peak cf or at steady state ---!')
 print()
@@ -457,8 +457,8 @@ if istret == 3:
            ]
            
     data2 = [
-             ["CFL,x", "D,y", "Pé,x", "S"],
-             [ CFL,     D,     Pe,     S ],
+             ["CFL,x", "D,y", "Pé,x", "S,x"],
+             [ CFL,     D,     Pe,     S   ],
             ]
             
     data3 = [
@@ -521,7 +521,7 @@ if istret == 3:
          f.write("!-------------------------------------!\n")
          
 # Channel file creation and saving         
-else
+else:
 
     # Create the tables using tabulate
     table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
@@ -545,14 +545,19 @@ else
            ]
            
     data2 = [
-             ["CFL,x", "D,y", "Pé,x", "S"],
-             [ CFL,     D,     Pe,     S ],
+             ["CFL,x", "D,y", "Pé,x", "S,x"],
+             [ CFL,     D,     Pe,     S   ],
             ]
                        
     data3 = [
              ["sh_vel",    "n_tot" ],
              [ sh_vel_peak, n_tot  ],
             ]
+            
+    # Create the tables using tabulate
+    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
+    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
+    table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
     
     # Save the table as a text file and final informations
     with open("sim_settings.txt", "a") as f:
