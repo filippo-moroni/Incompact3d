@@ -59,10 +59,9 @@ time_unit = M1[:,7]
 lower_tu = np.float64(input("Specify a lower range for time units (T): "))
 print()
 
-# and its related index
-lower_index = np.int(input("Specify its related index: ")) 
-
-#print(floatNum, " ", type(floatNum)) 
+# Index for lower time unit value
+lower_index = int(input("Specify its related index: ")) 
+print()
 
 # Average
 mean_cf = np.mean(cfx[lower_index:])
@@ -87,11 +86,10 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
    
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-#ax.axvline(x=200.0, lw=lw)
 
-ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
+ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
 
-plt.legend(['Fixed walls', 'Moving walls'], loc='upper left', fontsize=18)
+plt.legend(loc='upper left', fontsize=18)
 
 # Axes labels
 ax.set_xlabel(r'$T$', fontsize=fla, labelpad=20)
