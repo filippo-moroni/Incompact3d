@@ -1,5 +1,5 @@
 #!---------------------------------------------------------!
-#! mesh_evaluation_ttbl.py:                                !
+#! mesh_evaluation.py:                                     !
 #! improved Python version of 'mesh_evaluation.f90'.       !
 #!                                                         !
 #! Info:                                                   !
@@ -11,7 +11,8 @@
 #!------------------- Description: ------------------------!
 # 
 # In this script we calculate mesh, numerics and 
-# flow parameters for temporal TBL simulations
+# flow parameters for temporal TBL simulations and for
+# channel flow simulations
 # (see the related .pdf file for more details).
 #!---------------------------------------------------------!
 
@@ -31,22 +32,31 @@ plt.rcParams.update({
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 2.5               # beta parameter for mesh stretching
-nu = 0.002               # kinematic viscosity (if D = 1 and U_wall = 1, Re_D = 500)
-uwall = 1.0              # velocity of the wall
+nu = 0.002               # kinematic viscosity (TTBL: if D = 1 and U_wall = 1, Re_D = 500)
 delta_t = 0.002          # time-step
-twd = 1.0                # trip wire diameter D
 re = 1.0/nu              # Reynolds number as defined in Incompact3d
 
+# TTBL inputs
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
+twd = 1.0                # trip wire diameter D
+
+# Reference velocity
+uref = 1.0               # reference velocity (TTBL: wall velocity; Channel: bulk velocity)
+uwall = uref
+
+# Selection of friction coefficient at peak or at steady state conditions
+# for grid spacings evaluation in wall units 
 
 cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
+cf = 0.00793             # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
 nx = 36                  # number of points in x direction
 ny = 649                 # number of points in y direction
 nz = 54                  # number of points in z direction
 
 xlx = 10.0               # domain dimension in x direction
-yly = 3.0*bl_thickness   # domain dimension in y direction
+#yly = 3.0*bl_thickness   # domain dimension in y direction
+yly = 2.0                # domain dimension in y direction
 zlz = 8.0                # domain dimension in z direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
@@ -143,9 +153,56 @@ if alpha == 0.0:
         yp[j] = -beta * np.cos(pi*yeta[j]) / np.sin(yeta[j]*pi)
 
 
+#!--- Calculations valid for both TTBL and Channel ---!
+
 # Calculate the spacings along x and z (uniform)
 delta_x = xlx / nx
 delta_z = zlz / nz
+
+# Shear velocity at peak cf or at steady state 
+sh_vel_peak = np.sqrt((cf/2.0)) * uref
+
+# Viscous length at peak cf or at steady state
+delta_nu_peak = nu / sh_vel_peak
+
+# First element y-dimension
+delta_y1 = yp[1] - yp[0]
+
+# Rescaling the mesh spacings with viscous unit at peak cf or at steady state
+delta_x_nd_peak  = delta_x  / delta_nu_peak
+delta_y1_nd_peak = delta_y1 / delta_nu_peak
+delta_z_nd_peak  = delta_z  / delta_nu_peak
+
+# Non-dimensional domain dimensions at peak cf or at steady state (nd: non-dimensional)
+xlx_nd_peak = xlx / delta_nu_peak
+yly_nd_peak = yly / delta_nu_peak
+zlz_nd_peak = zlz / delta_nu_peak
+
+#!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC or at steady state ---!
+   
+CFL = uref * delta_t / delta_x      
+D =   nu * delta_t / (delta_y1**2)    
+Pe =  uref * delta_x / nu
+        
+# Stability parameter (S < 1) (see Thompson et al. (1985)) 
+S = ((uref**2)*delta_t)/(2.0*nu)
+
+#!--- Calculation of y-dir. geometric quantities ---!
+
+# Delta y of grid elements
+for j in range(1,ny):
+    delta_y[j] = yp[j] - yp[j-1]
+            
+# Calculate the GR (Growth-Rate) of the elements in y-direction
+for j in range(2,ny):
+    gr_y[j] = delta_y[j]/delta_y[j-1]
+        
+# AR of the elements in xy plane (width / heigth)
+for j in range(1,ny):
+    AR_xy[j] = delta_x / delta_y[j]
+
+#!--------------------------------------------------!
+
 
 # This part is valid for meshes with refinement at the bottom boundary and for temporal TBL cases 
 if istret == 3:
@@ -156,56 +213,30 @@ if istret == 3:
     # Mean gradient due to initial condition (analytical derivative)  
     mg = - uwall / (4.0 * theta_sl) * (1.0 / np.cosh(twd / 2.0 / theta_sl))**2
     
-    
-    #!--- Shear velocities (IC, peak cf and Re_tau = 500): ---!
+    #!--- Extra shear velocities for TTBL (IC and Re_tau = 500): ---!
     
     # Shear velocity due to initial condition
     sh_vel_ic = np.sqrt(nu * np.abs(mg))
        
-    # Shear velocity peak (reference value of cf = 0.007, Cimarelli et al. (2024))
-    sh_vel_peak = np.sqrt((cf/2.0)) * uwall
-    
     # Shear velocity at Re_tau = 500:
     sh_vel_500 = 500.0 * nu / bl_thickness
     
     #!--------------------------------------------------------!
 
-    # Calculate viscous unit at IC, at peak cf and at Re_tau = 500
+    # Calculate viscous length at IC and at Re_tau = 500
     delta_nu_ic   = nu / sh_vel_ic
-    delta_nu_peak = nu / sh_vel_peak
     delta_nu_500  = nu / sh_vel_500
 
-    # First element y-dimension
-    delta_y1 = yp[1] - yp[0]
-    
     # Rescaling the mesh spacings with viscous unit at IC
     delta_x_nd_ic  = delta_x  / delta_nu_ic
     delta_y1_nd_ic = delta_y1 / delta_nu_ic
     delta_z_nd_ic  = delta_z  / delta_nu_ic
-    
-    # Rescaling the mesh spacings with viscous unit at peak cf
-    delta_x_nd_peak  = delta_x  / delta_nu_peak
-    delta_y1_nd_peak = delta_y1 / delta_nu_peak
-    delta_z_nd_peak  = delta_z  / delta_nu_peak
-        
-    # Non-dimensional domain dimensions (nd: non-dimensional) (at IC and at peak cf)  
+            
+    # Non-dimensional domain dimensions at IC (nd: non-dimensional)  
     xlx_nd_ic = xlx / delta_nu_ic
     yly_nd_ic = yly / delta_nu_ic
     zlz_nd_ic = zlz / delta_nu_ic
-    
-    xlx_nd_peak = xlx / delta_nu_peak
-    yly_nd_peak = yly / delta_nu_peak
-    zlz_nd_peak = zlz / delta_nu_peak
-    
-    #!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC ---!
-   
-    CFL = uwall * delta_t / delta_x      
-    D =   nu * delta_t / (delta_y1**2)    
-    Pe =  uwall * delta_x / nu
-        
-    # Stability parameter (S < 1) (see Thompson et al. (1985)) 
-    S = ((uwall**2)*delta_t)/(2.0*nu)
-    
+       
     #!-----------------------------------------------------------------------!
     
     #!--- Check on the initial velocity profile ---!
@@ -275,70 +306,70 @@ if istret == 3:
     delta_yd_nd_500 = delta_yd / delta_nu_500
     
     #!---------------------------------------------!
-        
-    # Delta y of grid elements
-    for j in range(1,ny):
-        delta_y[j] = yp[j] - yp[j-1]
-            
-    # Calculate the GR (Growth-Rate) of the elements in y-direction
-    for j in range(2,ny):
-        gr_y[j] = delta_y[j]/delta_y[j-1]
-        
-    # AR of the elements in xy plane (width / heigth)
-    for j in range(1,ny):
-        AR_xy[j] = delta_x / delta_y[j]
-     
-     
-    # Printing useful information to the screen
+             
+#!--- Printing useful information to the screen ---!
+print()
+print('!----- Inputs: -----!')
+print()
+print('Number of mesh nodes in streamwise direction,  nx = ', nx)
+print('Number of mesh nodes in wall normal direction, ny = ', ny)
+print('Number of mesh nodes in spanwise direction,    nz = ', nz)
+print()
+print('Domain dimension, Lx = ',xlx)     
+print('Domain dimension, Ly = ',yly)
+print('Domain dimension, Lz = ',zlz)
+print()
+print('Stretching index =' istret)
+print('Beta parameter = ', beta)
+print('Kinematic viscosity, nu = ', nu)
+print('Time step, delta_t = ', delta_t)
+print('Reynolds number (Re = 1/nu) = ', re)
+
+if istret != 3:
+    print('Reference velocity U_ref = ', uref)
     print()
-    print('!----- Inputs: -----!')
-    print()
-    print('Number of mesh nodes in streamwise direction,  nx = ', nx)
-    print('Number of mesh nodes in wall normal direction, ny = ', ny)
-    print('Number of mesh nodes in spanwise direction,    nz = ', nz)
-    print()
-    print('Domain dimension, Lx = ',xlx)     
-    print('Domain dimension, Ly = ',yly)
-    print('Domain dimension, Lz = ',zlz)
-    print()
-    print('Beta parameter = ', beta)
-    print('Kinematic viscosity, nu = ', nu)
+    print('Skin friction coefficient at steady state, cf = ', cf)
+    
+elif istret == 3:
     print('Wall velocity, Uwall = ', uwall)
-    print('Time step, delta_t = ', delta_t)
     print('Tripping wire diameter, twd = ', twd)
-    print('Reynolds number (Re = 1/nu) = ', re)
-    print()
     print('!--- Reference data according to Cimarelli et al. (2024): ---!')
     print()
     print('Boundary layer thickness at Re_tau = 500, bl_thickness = ', bl_thickness)
     print('Skin friction coefficient at peak, cf = ', cf)
-    print()
-    print()
-    print('!----- Outputs: -----!')
-    print()
-    print('!--- Non-dimensional domain dimensions: ---!')
-    print()
+    
+print()
+print()
+print('!----- Outputs: -----!')
+print()
+print('!--- Non-dimensional domain dimensions: ---!')
+print()
+
+if istret == 3:
     print('Length of the domain (Lx+) at IC:', xlx_nd_ic)
     print('Height of the domain (Ly+) at IC:', yly_nd_ic)
     print('Width  of the domain (Lz+) at IC:', zlz_nd_ic)
     print()
-    print('Length of the domain (Lx+) at peak cf:', xlx_nd_peak)
-    print('Height of the domain (Ly+) at peak cf:', yly_nd_peak)
-    print('Width  of the domain (Lz+) at peak cf:', zlz_nd_peak)
-    print()
-    print('!--- Numerics-related parameters: ---!')
-    print()
-    print('Estimated CFL,x at IC:', CFL)
-    print('Estimated D,y   at IC:', D)
-    print('Estimated Pé,x  at IC:', Pe)
-    print('Estimated stability parameter S at IC:', S)
-    print()
-    print('!--- Mesh sizes at peak cf (cf_max ~ 0.007, Cimarelli et al. (2024)) ---!')
-    print()
-    print('Mesh size x-direction: delta_x+ =', delta_x_nd_peak)
-    print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_peak)
-    print('Mesh size z-direction: delta_z+ =', delta_z_nd_peak)
-    print()
+
+print('Length of the domain (Lx+) at peak cf or at steady state:', xlx_nd_peak)
+print('Height of the domain (Ly+) at peak cf or at steady state:', yly_nd_peak)
+print('Width  of the domain (Lz+) at peak cf or at steady state:', zlz_nd_peak)
+print()
+print('!--- Numerics-related parameters based on reference velocity U_ref: ---!')
+print()
+print('Estimated CFL,x:', CFL)
+print('Estimated D,y  :', D)
+print('Estimated Pé,x :', Pe)
+print('Estimated stability parameter S:', S)
+print()
+print('!--- Mesh sizes at peak cf or at steady state ---!')
+print()
+print('Mesh size x-direction: delta_x+ =', delta_x_nd_peak)
+print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_peak)
+print('Mesh size z-direction: delta_z+ =', delta_z_nd_peak)
+print()
+
+if istret == 3:
     print('!--- Mesh sizes at Re_tau = 500 (Cimarelli et al. (2024)) ---!')
     print()
     print('Mesh size x-direction: delta_x+ =', delta_x_nd_500)
@@ -356,15 +387,18 @@ if istret == 3:
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
     
+#!-------------------------------------------------!
 
-    # Column width for writing to .txt file
-    c_w = 24  
+# Writing the results also into files
+  
+# Column width for writing to .txt file
+c_w = 24  
 
-    # Write yp, delta_y and GR_y in a .txt file
-    with open('mesh_y.txt', 'w') as f:
-        f.write(f"{'yp':<{c_w}}, {'delta_y':<{c_w}}, {'gr_y':<{c_w}}, {'AR_xy':<{c_w}}\n")
-        for j in range(0,ny):
-            f.write(f"{yp[j]:<{c_w}}, {delta_y[j]:<{c_w}}, {gr_y[j]:<{c_w}}, {AR_xy[j]:<{c_w}}\n")
+# Write yp, delta_y and GR_y in a .txt file
+with open('mesh_y.txt', 'w') as f:
+    f.write(f"{'yp':<{c_w}}, {'delta_y':<{c_w}}, {'gr_y':<{c_w}}, {'AR_xy':<{c_w}}\n")
+    for j in range(0,ny):
+        f.write(f"{yp[j]:<{c_w}}, {delta_y[j]:<{c_w}}, {gr_y[j]:<{c_w}}, {AR_xy[j]:<{c_w}}\n")
      
     # Create data arrays with inputs
     data = [
