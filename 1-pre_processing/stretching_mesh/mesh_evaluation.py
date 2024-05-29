@@ -406,17 +406,23 @@ data = [
         [ny,          yly       ],
         [nz,          zlz       ]
        ] 
-    
+
+data2 = [
+         ["beta", "nu", "U_ref", "delta_t", "Re", "cf"],
+         [ beta,   nu,   uref,    delta_t,   re,   cf ],
+        ]
+
+# TTBL file creation and saving
+if istret == 3:    
     data2 = [
              ["beta", "nu", "uwall", "delta_t", "twd", "Re"],
              [ beta,   nu,   uwall,   delta_t,   twd,   re ],
             ]
-            
     data3 = [
              ["bl_thickness", "cf_max"],
              [ bl_thickness,   cf     ],
             ]
-
+                   
     # Create the tables using tabulate
     table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
@@ -505,6 +511,57 @@ data = [
          f.write("sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).\n")
          f.write("\n")
          f.write("!-------------------------------------!\n")
+         
+# Channel file creation and saving         
+else
+
+    # Create the tables using tabulate
+    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
+    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
+    
+    # Save the tables as a text file 
+    with open("sim_settings.txt", "w") as f:
+         f.write("!----- Channel setting parameters -----!\n")
+         f.write("\n")
+         f.write("!----- Inputs: -----!\n")
+         f.write(table)
+         f.write("\n")
+         f.write(table2)
+    
+    # Create data arrays with outputs
+    data = [
+            ["Lx+/Ly+/Lz+", "dx+/dy+/dz+"     ],
+            [ xlx_nd_peak,   delta_x_nd_peak  ],
+            [ yly_nd_peak,   delta_y1_nd_peak ],
+            [ zlz_nd_peak,   delta_z_nd_peak  ],
+           ]
+           
+    data2 = [
+             ["CFL,x", "D,y", "Pé,x", "S"],
+             [ CFL,     D,     Pe,     S ],
+            ]
+                       
+    data3 = [
+             ["sh_vel",    "n_tot" ],
+             [ sh_vel_peak, n_tot  ],
+            ]
+    
+    # Save the table as a text file and final informations
+    with open("sim_settings.txt", "a") as f:
+         f.write("\n")
+         f.write("!----- Outputs: -----!\n")
+         f.write("\n")
+         f.write("!--- Non-dimensional domain dimensions and grid spacings: ---!\n")
+         f.write(table) 
+         f.write("\n")
+         f.write("!--- Numerics-related parameters: ---!\n")
+         f.write(table2) 
+         f.write("\n")
+         f.write("!--- Shear velocity and total number of points: ---!\n")
+         f.write(table3) 
+         f.write("\n")
+         f.write("!-------------------------------------!\n") 
+
          
          
     
