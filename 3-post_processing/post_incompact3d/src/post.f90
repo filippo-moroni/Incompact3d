@@ -61,7 +61,9 @@ PROGRAM post
   
   ! Initialize post-processing variables
   call init_post_variables()
-  
+  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)      !start from 1 == true
+  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)      !start from 1 == true
+  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)   !start from 1 == true
   call schemes()
   call decomp_info_init(nxm,nym,nzm,phG)
   
