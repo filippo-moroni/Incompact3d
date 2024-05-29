@@ -94,12 +94,11 @@ ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='n
 # Horizontal line to show mean cf value
 ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
 
-# Create a rectangle patch
+# Create a rectangle patch to show points we are excluding from average
 rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none', facecolor='r', alpha=0.1)
 
-# Add the patch to the Axes
+# Add the patch to the plot
 ax.add_patch(rect)
-
 
 # Legend
 plt.legend(loc='upper left', fontsize=18)
