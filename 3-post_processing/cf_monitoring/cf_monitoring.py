@@ -48,36 +48,48 @@ grey = [0.5, 0.5, 0.5]
               
 #!--- Reading of files section ---!
 
-print("!--- Plotting of friction coefficient ---!")
-
 # Reading of friction coefficient history
 M1 = np.loadtxt('cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
-    
-print()
 
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
 time_unit = M1[:,7] 
+    
+# Asking the user for lower limit for the range of time units for cf
+lower_tu = np.float64(input("Specify a lower range for time units (T): "))
+print()
+
+# and its related index
+lower_index = np.int(input("Specify its related index: ")) 
+
+#print(floatNum, " ", type(floatNum)) 
+
+# Average
+mean_cf = np.mean(cfx[lower_index:])
 
 # Axes ranges
 xliminf = time_unit[0]
 xlimsup = time_unit[-1]
-#yliminf = np.min(cfx) * 0.8
+yliminf = np.min(cfx) * 0.0
 ylimsup = np.max(cfx) * 1.2
 
-#!--------------------------------!
+#!--- Plot section, friction coefficient ---!
+
+print("!--- Plotting of friction coefficient ---!")
+print()
 
 # Creating the folder for cf plot if it does not exist
 if not os.path.exists("plots"):
     os.mkdir("plots")
 
-#!--- Plot section, friction coefficient ---!
-
+# Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
    
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 #ax.axvline(x=200.0, lw=lw)
+
+ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
 
 plt.legend(['Fixed walls', 'Moving walls'], loc='upper left', fontsize=18)
 
