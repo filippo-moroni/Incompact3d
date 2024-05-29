@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import os
 from matplotlib.ticker import (AutoMinorLocator)
-
+import matplotlib.patches as patches
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -54,14 +54,18 @@ M1 = np.loadtxt('cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
 time_unit = M1[:,7] 
+
+# Calculating the delta (in time units) between savings 
+a = time_unit[0]
+b = time_unit[1]
+delta = b - a
     
 # Asking the user for lower limit for the range of time units for cf
 lower_tu = np.float64(input("Specify a lower range for time units (T): "))
 print()
 
-# Index for lower time unit value
-lower_index = int(input("Specify its related index: ")) 
-print()
+# Calculating its related index
+lower_index = int(lower_tu / delta)
 
 # Average
 mean_cf = np.mean(cfx[lower_index:])
@@ -87,8 +91,17 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 
+# Horizontal line to show mean cf value
 ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
 
+# Create a rectangle patch
+rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none', facecolor='r', alpha=0.1)
+
+# Add the patch to the Axes
+ax.add_patch(rect)
+
+
+# Legend
 plt.legend(loc='upper left', fontsize=18)
 
 # Axes labels
