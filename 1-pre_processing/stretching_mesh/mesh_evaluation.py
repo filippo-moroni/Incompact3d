@@ -203,7 +203,6 @@ for j in range(1,ny):
 
 #!--------------------------------------------------!
 
-
 # This part is valid for meshes with refinement at the bottom boundary and for temporal TBL cases 
 if istret == 3:
    
@@ -400,13 +399,13 @@ with open('mesh_y.txt', 'w') as f:
     for j in range(0,ny):
         f.write(f"{yp[j]:<{c_w}}, {delta_y[j]:<{c_w}}, {gr_y[j]:<{c_w}}, {AR_xy[j]:<{c_w}}\n")
      
-    # Create data arrays with inputs
-    data = [
-            ["nx/ny/nz", "Lx/Ly/Lz" ],
-            [nx,          xlx       ],
-            [ny,          yly       ],
-            [nz,          zlz       ]
-           ] 
+# Create data arrays with inputs
+data = [
+        ["nx/ny/nz", "Lx/Ly/Lz" ],
+        [nx,          xlx       ],
+        [ny,          yly       ],
+        [nz,          zlz       ]
+       ] 
     
     data2 = [
              ["beta", "nu", "uwall", "delta_t", "twd", "Re"],
