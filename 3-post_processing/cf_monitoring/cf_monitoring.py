@@ -7,6 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import os
+from matplotlib.ticker import (AutoMinorLocator)
+
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -75,7 +77,7 @@ fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
    
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-ax.axvline(x=200.0, lw=lw)
+#ax.axvline(x=200.0, lw=lw)
 
 plt.legend(['Fixed walls', 'Moving walls'], loc='upper left', fontsize=18)
 
@@ -84,10 +86,13 @@ ax.set_xlabel(r'$T$', fontsize=fla, labelpad=20)
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=20)
 
 # Axes limits
-plt.ylim([yliminf, ylimsup])
 plt.xlim([xliminf, xlimsup])
+plt.ylim([yliminf, ylimsup])
 
-# Setting major and minor ticks on both axes
+# Display minor ticks 
+#ax.xaxis.set_minor_locator(AutoMinorLocator())
+
+# Setting major and minor ticks parameters on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
 ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
