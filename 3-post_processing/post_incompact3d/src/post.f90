@@ -59,11 +59,9 @@ PROGRAM post
   call decomp_2d_init(nx,ny,nz,p_row,p_col)
   call decomp_2d_io_init()
   
-  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)      !start from 1 == true
-  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)      !start from 1 == true
-  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)   !start from 1 == true
-  
+  ! Initialize post-processing variables
   call init_post_variables()
+  
   call schemes()
   call decomp_info_init(nxm,nym,nzm,phG)
   
