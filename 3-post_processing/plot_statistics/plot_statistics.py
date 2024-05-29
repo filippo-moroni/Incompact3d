@@ -48,6 +48,10 @@ iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
 #!--------------------------------------------------------------------------------------!
 
+# Asking the user for the name for his own data
+name = input("Specify the name to be showed for your data in the legend: ")
+print()
+
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
     
@@ -230,7 +234,7 @@ if itype == 13:
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
     ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
-    plt.legend(['Present', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
     
     # Caption
     caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
@@ -248,7 +252,7 @@ elif itype == 3:
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
     ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
-    plt.legend(['Present', 'Lee and Moser (2015)', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
     
     # Caption
     if iswitch == 0:
@@ -307,7 +311,7 @@ if itype == 13:
     
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    plt.legend(['Present'], loc='upper left', fontsize=18)
+    plt.legend([name], loc='upper left', fontsize=18)
         
 # Channel    
 elif itype == 3:
@@ -319,7 +323,7 @@ elif itype == 3:
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, var_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-    plt.legend(['Present', 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
     
     caption2 = 'First points of Lee and Moser data not displayed' 
     
@@ -370,7 +374,7 @@ if itype == 13:
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    plt.legend(['Present'], loc='upper left', fontsize=18)
+    plt.legend([name], loc='upper left', fontsize=18)
         
 # Channel    
 elif itype == 3:
@@ -382,7 +386,7 @@ elif itype == 3:
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, var_v_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-    plt.legend(['Present', 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
     
     caption2 = 'First points of Lee and Moser data not displayed' 
     
@@ -433,7 +437,7 @@ if itype == 13:
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    plt.legend(['Present'], loc='upper left', fontsize=18)
+    plt.legend([name], loc='upper left', fontsize=18)
     
     # y-axis label
     ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
@@ -448,7 +452,7 @@ elif itype == 3:
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, mean_uv_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-    plt.legend(['Present', 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
     
     caption2 = 'First points of Lee and Moser data not displayed' 
     
