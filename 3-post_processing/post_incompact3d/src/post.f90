@@ -61,9 +61,12 @@ PROGRAM post
   
   ! Initialize post-processing variables
   call init_post_variables()
+  
+  ! Call subroutines from the decomp2d library 
   call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)      !start from 1 == true
   call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)      !start from 1 == true
   call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)   !start from 1 == true
+  
   call schemes()
   call decomp_info_init(nxm,nym,nzm,phG)
   
@@ -167,10 +170,10 @@ PROGRAM post
         print *,'----------------------------------------------------'
 #ifdef TTBL_MODE
         ! TTBL mode 
-        write(*,"('We are averaging the realizations of the snapshot =',I3,'/',I3)") ifile,filen
+        write(*,"('We are averaging the realizations of the snapshot = ',I3,'/',I3)") ifile,filen
 #else
         ! Channel mode
-        write(*,"('We are processing snapshot =',I3,'/',I3)") ifile,filen
+        write(*,"('We are processing snapshot = ',I3,'/',I3)") ifile,filen
 #endif
      endif
  
