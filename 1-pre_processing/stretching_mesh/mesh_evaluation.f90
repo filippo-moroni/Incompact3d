@@ -1,6 +1,6 @@
 !----------------------------------------------------------!
 !     This program is used to estimate the dimension       !
-!    of the grid elements for a temporal BL simulation.    !
+!   of the grid elements for a temporal TBL simulation.    !
 !      Adapted from original Incompact3d file (master)     !
 !            stretching_parameter_channel.f90              !
 !----------------------------------------------------------!
