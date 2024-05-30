@@ -41,8 +41,9 @@ program xcompact3d
        calc_divu_constraint, solve_poisson, cor_vel
   use tools, only : restart, simu_stats, apply_spatial_filter, read_inflow
   use ibm_param
-  use ibm, only : body
-  use genepsi, only : genepsi3d
+  use ibm,         only : body
+  use genepsi,     only : genepsi3d
+  use extra_tools, only : print_cf
   
   implicit none
   
