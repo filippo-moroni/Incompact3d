@@ -66,6 +66,9 @@ zlz = 4.2                # domain dimension in z direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
 
+# Number of points in the channel half (h: half)
+nyh = ((ny - 1) / 2) + 1
+
 # Declare local constant Pi
 pi = np.pi
 
@@ -310,6 +313,14 @@ if istret == 3:
     delta_yd_nd_500 = delta_yd / delta_nu_500
     
     #!---------------------------------------------!
+
+# This part is valid for meshes with refinement at both walls and for channels 
+elif istret == 2:
+
+    # Delta y+ at the channel center
+    delta_yc = yp[nyh] - yp[nyh-1]
+    delta_yc_nd = delta_yc / delta_nu_peak
+
              
 #!--- Printing useful information to the screen ---!
 print()
@@ -364,7 +375,7 @@ if istret == 3:
 
 if istret == 2:
     print('Length of the domain (Lx+) at steady state:', xlx_nd_peak)
-    print('Height of the domain (Ly+) at steady state:', yly_nd_peak/2.0)
+    print('Height of the domain (Ly+) at steady state:', yly_nd_peak)
     print('Width  of the domain (Lz+) at steady state:', zlz_nd_peak)
     print()
 
@@ -396,9 +407,15 @@ if istret == 3:
     print('Number of mesh nodes in the viscous sublayer at cf peak:', npvis)
     print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
+
+elif istret == 2:
+    print('Mesh size y-direction at the channel center: delta_yc+ =', delta_yc_nd)
     
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
+
+print('Total number of points: ntot =', ntot)
+print()
     
 #!-------------------------------------------------!
 
@@ -422,8 +439,8 @@ data = [
        ] 
 
 data2 = [
-         ["beta", "nu", "U_ref", "delta_t", "Re", "cf"],
-         [ beta,   nu,   uref,    delta_t,   re,   cf ],
+         ["beta", "nu", "U_ref", "delta_t", "Re", "Re_tau", "cf"],
+         [ beta,   nu,   uref,    delta_t,   re,   re_tau,   cf ],
         ]
 
 # File creation and saving for TTBL
@@ -544,10 +561,11 @@ else:
     
     # Create data arrays with outputs
     data = [
-            ["Lx+/Ly+/Lz+", "dx+/dy+/dz+"     ],
-            [ xlx_nd_peak,   delta_x_nd_peak  ],
-            [ yly_nd_peak,   delta_y1_nd_peak ],
-            [ zlz_nd_peak,   delta_z_nd_peak  ],
+            ["Lx+/Ly+/Lz+", "dx+/dy+/dz+/dyc+" ],
+            [ xlx_nd_peak,   delta_x_nd_peak   ],
+            [ yly_nd_peak,   delta_y1_nd_peak  ],
+            [ zlz_nd_peak,   delta_z_nd_peak   ],
+            ["/",            delta_yc_nd       ],
            ]
            
     data2 = [
