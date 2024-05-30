@@ -32,7 +32,7 @@ plt.rcParams.update({
 # Inputs
 istret = 2               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 0.25              # beta parameter for mesh stretching
-delta_t = 0.001          # time-step
+delta_t = 0.01           # time-step
 
 # Reynolds number
 re = 4764.0              # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
