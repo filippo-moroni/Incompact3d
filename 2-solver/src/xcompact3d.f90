@@ -121,6 +121,11 @@ program xcompact3d
 
      call postprocessing(rho1,ux1,uy1,uz1,pp3,phi1,ep1)
      
+     ! Print of cf for monitoring
+     if ((mod(itime, ioutput_cf) .eq. 0) .or. (itime.eq.ifirst)) then
+         call print_cf(ux1,uz1)
+     end if
+     
   enddo ! End time loop
 
   call finalise_xcompact3d()

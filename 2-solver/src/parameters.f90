@@ -71,7 +71,7 @@ subroutine parameter(input_i3d)
        ifilter, C_filter, iturbine
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
-  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, nvisu, ilist, iprocessing, &
+  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, nvisu, ilist, iprocessing, &
        ninflows, ntimesteps, inflowpath, ioutflow, output2D
   NAMELIST /AdditionalControls/ iswitch_wo
   NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat

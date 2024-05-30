@@ -223,10 +223,7 @@ contains
        call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
 
        call end_snapshot(itime, num)
-       
-       ! Print of cf for monitoring
-       call print_cf(ux1,uz1)
-              
+                     
     end if
 
     call postprocess_case(rho1, ux1, uy1, uz1, pp3, T, ep1)
