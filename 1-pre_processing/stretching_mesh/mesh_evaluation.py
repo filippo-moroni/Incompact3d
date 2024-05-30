@@ -420,7 +420,7 @@ data2 = [
          [ beta,   nu,   uref,    delta_t,   re,   cf ],
         ]
 
-# TTBL file creation and saving
+# File creation and saving for TTBL
 if istret == 3:    
     data2 = [
              ["beta", "nu", "uwall", "delta_t", "twd", "Re"],
@@ -520,7 +520,7 @@ if istret == 3:
          f.write("\n")
          f.write("!-------------------------------------!\n")
          
-# Channel file creation and saving         
+# File creation and saving for Channel         
 else:
 
     # Create the tables using tabulate
