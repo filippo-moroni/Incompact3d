@@ -67,7 +67,7 @@ zlz = 4.2                # domain dimension in z direction
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
 
 # Number of points in the channel half (h: half)
-nyh = ((ny - 1) / 2) + 1
+nyh = ((ny - 1) // 2) + 1
 
 # Declare local constant Pi
 pi = np.pi
@@ -414,7 +414,7 @@ elif istret == 2:
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
 
-print('Total number of points: ntot =', ntot)
+print('Total number of points: ntot =', n_tot)
 print()
     
 #!-------------------------------------------------!
