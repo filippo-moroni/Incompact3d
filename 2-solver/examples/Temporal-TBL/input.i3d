@@ -55,7 +55,7 @@ nclzn = 0
 ! Spatial derivatives
 ifirstder = 4         ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact)
 isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th compact, 5-> hyperviscous 6th, 6-> default scheme Incompact3d v2.0)
-ipinter = 2           ! interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2, spectral-like behaviour)
+ipinter = 2           ! Interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2, spectral-like behaviour)
 
 ! Time scheme
 itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3, 7-->CN2+AB3
@@ -105,11 +105,11 @@ nclzSn = 0
 &TemporalTBLParam
 !====================
 
-uwall = 1.0           ! velocity of translating bottom wall (U_wall) 
-twd = 1.0             ! tripping wire diameter (D)
-uln = 0.01            ! upper limit of the noise; (uwall - um) < uln*uwall; (default value: 0.01 (Kozul et al. (2016)))
-lln = 0.0             ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-phiwall = 1.0         ! scalar value at the wall  
+uwall = 1.0           ! Velocity of translating bottom wall (U_wall) 
+twd = 1.0             ! Tripping wire diameter (D)
+uln = 0.01            ! Upper limit of the noise; (uwall - um) < uln*uwall; (default value: 0.01 (Kozul et al. (2016)))
+lln = 0.0             ! Lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+phiwall = 1.0         ! Scalar value at the wall  
 
 /End
 
@@ -117,8 +117,8 @@ phiwall = 1.0         ! scalar value at the wall
 &WallOscillations
 !================
 
-a_plus_cap = 0.0      ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-t_plus_cap = 100.0    ! period of spanwise wall oscillations in friction units (cap: capital letter) 
+a_plus_cap = 0.0      ! Amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+t_plus_cap = 100.0    ! Period of spanwise wall oscillations in friction units (cap: capital letter) 
 
 /End
 
