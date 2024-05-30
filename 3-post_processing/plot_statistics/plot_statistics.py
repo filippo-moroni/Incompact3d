@@ -293,8 +293,13 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
-# Saving the figure and show it
-plt.savefig('plots/umean.pdf', format='pdf', bbox_inches='tight')
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/umean-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+elif itype == 3:
+    plt.savefig(f'plots/umean.pdf', format='pdf', bbox_inches='tight')
+
+# Show the figure
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
@@ -356,8 +361,13 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
-# Saving the figure and show it
-plt.savefig('plots/uvar.pdf', format='pdf', bbox_inches='tight')
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/uvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+elif itype == 3:
+    plt.savefig(f'plots/uvar.pdf', format='pdf', bbox_inches='tight')
+
+# Show the figure
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
@@ -419,8 +429,13 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
-# Saving the figure and show it
-plt.savefig('plots/vvar.pdf', format='pdf', bbox_inches='tight')
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/vvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+elif itype == 3:
+    plt.savefig(f'plots/vvar.pdf', format='pdf', bbox_inches='tight')
+
+# Show the figure
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
@@ -487,8 +502,13 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 # Setting y-ticks
 ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
-# Saving the figure and show it
-plt.savefig('plots/uvmean.pdf', format='pdf', bbox_inches='tight')
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/uvmean-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+elif itype == 3:
+    plt.savefig(f'plots/uvmean.pdf', format='pdf', bbox_inches='tight')
+
+# Show the figure
 plt.show()
 
 
