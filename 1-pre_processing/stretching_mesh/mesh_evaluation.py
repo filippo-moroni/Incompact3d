@@ -32,7 +32,7 @@ plt.rcParams.update({
 # Inputs
 istret = 2               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 0.25              # beta parameter for mesh stretching
-delta_t = 0.002          # time-step
+delta_t = 0.001          # time-step
 
 # Reynolds number
 re = 4764.0              # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
@@ -55,14 +55,14 @@ uwall = uref
 cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
 cf = 0.00793             # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
-nx = 36                  # number of points in x direction
-ny = 649                 # number of points in y direction
-nz = 54                  # number of points in z direction
+nx = 400                 # number of points in x direction
+ny = 201                 # number of points in y direction
+nz = 150                 # number of points in z direction
 
-xlx = 10.0               # domain dimension in x direction
+xlx = 21.0               # domain dimension in x direction
 #yly = 3.0*bl_thickness   # domain dimension in y direction
 yly = 2.0                # domain dimension in y direction
-zlz = 8.0                # domain dimension in z direction
+zlz = 4.2                # domain dimension in z direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
 
@@ -357,11 +357,17 @@ if istret == 3:
     print('Height of the domain (Ly+) at IC:', yly_nd_ic)
     print('Width  of the domain (Lz+) at IC:', zlz_nd_ic)
     print()
+    print('Length of the domain (Lx+) at peak cf:', xlx_nd_peak)
+    print('Height of the domain (Ly+) at peak cf:', yly_nd_peak)
+    print('Width  of the domain (Lz+) at peak cf:', zlz_nd_peak)
+    print()
 
-print('Length of the domain (Lx+) at peak cf or at steady state:', xlx_nd_peak)
-print('Height of the domain (Ly+) at peak cf or at steady state:', yly_nd_peak)
-print('Width  of the domain (Lz+) at peak cf or at steady state:', zlz_nd_peak)
-print()
+if istret == 2:
+    print('Length of the domain (Lx+) at steady state:', xlx_nd_peak)
+    print('Height of the domain (Ly+) at steady state:', yly_nd_peak/2.0)
+    print('Width  of the domain (Lz+) at steady state:', zlz_nd_peak)
+    print()
+
 print('!--- Numerics-related parameters based on reference velocity U_ref: ---!')
 print()
 print('Estimated CFL,x:', CFL)
