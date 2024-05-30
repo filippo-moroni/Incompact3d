@@ -136,7 +136,7 @@ contains
   end subroutine print_cf
   
   !---------------------------------------------------------------------------!
-  ! Calculate total shear velocity and its x and z components
+  ! Calculate total shear velocity and its x and z components at bottom wall
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
   !   for the spanwise wall oscillations. 
@@ -253,12 +253,10 @@ contains
   ! Calculate shear velocity    
   call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
     
-  ! Maximum amplitude of spanwise oscillations
-  !amplitude = sh_vel * a_plus_cap
+  ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
   amplitude = sh_velx * a_plus_cap
   
-  ! Period of oscillation
-  !period = xnu * t_plus_cap / (sh_vel**2)
+  ! Period of oscillation, based on longitudinal shear velocity
   period = xnu * t_plus_cap / (sh_velx**2)
   
   ! Calculation of the spanwise wall velocity
