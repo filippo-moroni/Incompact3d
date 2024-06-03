@@ -44,8 +44,40 @@ mpl.rcParams['axes.linewidth'] = tick_width
 # Set some useful colors
 grey = [0.5, 0.5, 0.5]
 
+# CPG option when CFR is imposed
+cpg_check = 'F'
+
 #!--------------------------------------------------------------------------------------!
-              
+
+# Read if we are plotting a channel or a TTBL
+with open('input.i3d', 'r') as file:
+    
+    # Read all lines into a list
+    lines = file.readlines()
+    
+    # Extract the 8th line, where itype is specified 
+    line = lines[7]  
+    
+    # Removing characters in front of the itype value
+    itype = line.split('=')[-1].strip()
+    
+    # Convert to integer
+    itype = int(itype)
+
+# If channel flow, see if CPG option is enabled or not
+if itype == 3:
+    with open('input.i3d', 'r') as file:
+    
+        # Read all lines into a list
+        lines = file.readlines()
+    
+        # Extract the 28th line, where cpg option is specified 
+        line = lines[27]  
+    
+        # Removing characters in front of the cpg option and the comment
+        line = line.split('!')[0]
+        cpg = line.split('=')[-1].strip()
+                         
 #!--- Reading of files section ---!
 
 # Reading of friction coefficient history
@@ -104,8 +136,13 @@ ax.add_patch(rect)
 plt.legend(loc='upper left', fontsize=18)
 
 # Axes labels
-ax.set_xlabel(r'$t$', fontsize=fla, labelpad=20)
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=20)
+
+# x-axis label for Channel with CPG off
+if itype == 3 and cpg == cpg_check:
+    ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=fla, labelpad=20)
+else:
+    ax.set_xlabel(r'$t$', fontsize=fla, labelpad=20)
 
 # Axes limits
 plt.xlim([xliminf, xlimsup])
