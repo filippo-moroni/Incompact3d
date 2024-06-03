@@ -104,7 +104,7 @@ ax.add_patch(rect)
 plt.legend(loc='upper left', fontsize=18)
 
 # Axes labels
-ax.set_xlabel(r'$T$', fontsize=fla, labelpad=20)
+ax.set_xlabel(r'$t$', fontsize=fla, labelpad=20)
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=20)
 
 # Axes limits
