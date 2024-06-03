@@ -398,7 +398,7 @@ contains
     can = - (constant - uball)
 
     if (nrank==0.and.(mod(itime, ilist) == 0 .or. itime == ifirst .or. itime == ilast)) &
-       write(*,*) 'UT', uball, can
+       write(*,*) 'Ub', uball, can
 
     do k=1,xsize(3)
       do j=1,xsize(2)
