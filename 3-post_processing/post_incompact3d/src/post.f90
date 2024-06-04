@@ -51,12 +51,12 @@ PROGRAM post
   call reading_input_file()
   
   ! Imposing decomposition in slabs
-  !p_row=1; p_col=nproc
+  p_row=1; p_col=nproc
   
   ! Setting up the 2d decomposition
-  !call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
+  call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
   
-  call decomp_2d_init(nx,ny,nz,p_row,p_col)
+  !call decomp_2d_init(nx,ny,nz,p_row,p_col)
   call decomp_2d_io_init()
   
   ! Initialize post-processing variables
