@@ -37,6 +37,9 @@ lmint       = 15              # length of minor ticks
 tick_width  = 1.5             # width of ticks and external box
 y_location  = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
 
+xinches     = 4.0             # inches in x direction for images' size
+yinches     = 3.0             # inches in y direction for images' size
+
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
 
@@ -220,7 +223,7 @@ if not os.path.exists("plots"):
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
 # Mean velocity profile
-fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
 
 # TTBL
 if itype == 13:
@@ -305,7 +308,7 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <u'u'>
-fig, ax = plt.subplots(1, 1, figsize=(14,10))
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
 
 # TTBL
 if itype == 13:
@@ -373,7 +376,7 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <v'v'>
-fig, ax = plt.subplots(1, 1, figsize=(14,10))
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
 
 # TTBL
 if itype == 13:
@@ -441,7 +444,7 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <u'v'>
-fig, ax = plt.subplots(1, 1, figsize=(14,10))
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
 
 # TTBL
 if itype == 13:

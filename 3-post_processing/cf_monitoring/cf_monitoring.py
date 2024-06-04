@@ -87,7 +87,7 @@ M1 = np.loadtxt('cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 cfx       = M1[:,4] 
 time_unit = M1[:,7] 
 
-# Calculating the delta (in time units) between savings 
+# Calculating the delta (in time units) between savings (skipping first saving)
 a = time_unit[1]
 b = time_unit[2]
 delta = b - a
