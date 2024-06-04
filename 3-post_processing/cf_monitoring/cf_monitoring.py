@@ -88,8 +88,8 @@ cfx       = M1[:,4]
 time_unit = M1[:,7] 
 
 # Calculating the delta (in time units) between savings 
-a = time_unit[0]
-b = time_unit[1]
+a = time_unit[1]
+b = time_unit[2]
 delta = b - a
     
 # Asking the user for lower limit for the range of time units for cf
