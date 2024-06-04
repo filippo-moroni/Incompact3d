@@ -25,13 +25,13 @@ plt.rcParams.update({
 plt.rcParams.update({'figure.autolayout': True})
 
 # Parameters for plotting
-lw           = 0.2             # linewidth for plots
-markersize   = 0.2             # marker size for scatter plot
-fla          = 8               # fontsize of labels of x and y axes (major labels, variables)
-fla2         = 5               # fontsize of numbers of x and y axes 
+lw           = 0.5             # linewidth for plots
+markersize   = 1.5             # marker size for scatter plot
+fla          = 6               # fontsize of labels of x and y axes (major labels, variables)
+fla2         = 3               # fontsize of numbers of x and y axes 
 xliminf      = 0.1             # x axis inferior limit
 xalign       = xliminf*1.1     # value to adjust translation in x of captions
-pad_numbers  = 2               # pad of numbers on both axes
+pad_numbers  = 4               # pad of numbers on both axes
 lmajt        = 4               # length of major ticks
 lmint        = 2               # length of minor ticks
 
@@ -39,8 +39,8 @@ y_location   = 0.75            # percentage of the y-axis limit for (automatic) 
 
 xinches      = 2.0             # inches in x direction for images' size
 yinches      = 2.0             # inches in y direction for images' size
-cap_font_sz  = 4               # captions font size
-leg_font_sz  = 4               # legends font size
+cap_font_sz  = 3               # captions font size
+leg_font_sz  = 3               # legends font size
 tick_width   = 0.5             # width of ticks and external box
 pad_axes_lab = 2               # padding of axes labels
 
