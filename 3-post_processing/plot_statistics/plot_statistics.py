@@ -25,20 +25,24 @@ plt.rcParams.update({
 plt.rcParams.update({'figure.autolayout': True})
 
 # Parameters for plotting
-lw          = 1.5             # linewidth for plots
-markersize  = 2               # marker size for scatter plot
-fla         = 10              # fontsize of labels of x and y axes (major labels, variables)
-fla2        = 6               # fontsize of numbers of x and y axes 
-xliminf     = 0.1             # x axis inferior limit
-xalign      = xliminf*1.1     # value to adjust translation in x of captions
-pad_numbers = 2               # pad of numbers on both axes
-lmajt       = 4               # length of major ticks
-lmint       = 1               # length of minor ticks
-tick_width  = 1.5             # width of ticks and external box
-y_location  = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
+lw           = 0.2             # linewidth for plots
+markersize   = 0.2             # marker size for scatter plot
+fla          = 8               # fontsize of labels of x and y axes (major labels, variables)
+fla2         = 5               # fontsize of numbers of x and y axes 
+xliminf      = 0.1             # x axis inferior limit
+xalign       = xliminf*1.1     # value to adjust translation in x of captions
+pad_numbers  = 2               # pad of numbers on both axes
+lmajt        = 4               # length of major ticks
+lmint        = 2               # length of minor ticks
 
-xinches     = 4.0             # inches in x direction for images' size
-yinches     = 3.0             # inches in y direction for images' size
+y_location   = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
+
+xinches      = 2.0             # inches in x direction for images' size
+yinches      = 2.0             # inches in y direction for images' size
+cap_font_sz  = 4               # captions font size
+leg_font_sz  = 4               # legends font size
+tick_width   = 0.5             # width of ticks and external box
+pad_axes_lab = 2               # padding of axes labels
 
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
@@ -237,7 +241,7 @@ if itype == 13:
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
     ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
-    plt.legend([name, 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Viscous sublayer and log law'], loc='upper left', fontsize=leg_font_sz)
     
     # Caption
     caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
@@ -255,7 +259,7 @@ elif itype == 3:
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
     ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
-    plt.legend([name, 'Lee and Moser (2015)', 'Viscous sublayer and log law'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)', 'Viscous sublayer and log law'], loc='upper left', fontsize=leg_font_sz)
     
     # Caption
     if iswitch == 0:
@@ -265,14 +269,14 @@ elif itype == 3:
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup*y_location, caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*y_location, caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
 
 # Plotting caption
-plt.text(xalign, ylimsup*(y_location-0.05), caption, fontsize=16, fontweight='bold', ha='left')
+plt.text(xalign, ylimsup*(y_location-0.05), caption, fontsize=cap_font_sz, fontweight='bold', ha='left')
 
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
-ax.set_ylabel(r'$U^+$', fontsize=fla, labelpad=20)
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$U^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
 plt.ylim([0, ylimsup])
@@ -319,7 +323,7 @@ if itype == 13:
     
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    plt.legend([name], loc='upper left', fontsize=18)
+    plt.legend([name], loc='upper left', fontsize=leg_font_sz)
         
 # Channel    
 elif itype == 3:
@@ -331,16 +335,16 @@ elif itype == 3:
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, var_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
     
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup*(y_location+0.05), caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*(y_location+0.05), caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
 
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
-ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=fla, labelpad=20)
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
 plt.ylim([0, ylimsup])
@@ -387,7 +391,7 @@ if itype == 13:
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    plt.legend([name], loc='upper left', fontsize=18)
+    plt.legend([name], loc='upper left', fontsize=leg_font_sz)
         
 # Channel    
 elif itype == 3:
@@ -399,16 +403,16 @@ elif itype == 3:
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, var_v_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
     
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup*y_location, caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*y_location, caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
 
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
-ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=fla, labelpad=20)
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
 plt.ylim([0, ylimsup])
@@ -455,10 +459,10 @@ if itype == 13:
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    plt.legend([name], loc='upper left', fontsize=18)
+    plt.legend([name], loc='upper left', fontsize=leg_font_sz)
     
     # y-axis label
-    ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
+    ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
         
 # Channel    
 elif itype == 3:
@@ -470,18 +474,18 @@ elif itype == 3:
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus_lm, mean_uv_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=18)
+    plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
     
     caption2 = 'First points of Lee and Moser data not displayed' 
     
     # Plotting caption2
-    plt.text(xalign, ylimsup*y_location, caption2, fontsize=16, fontweight='bold', ha='left')
+    plt.text(xalign, ylimsup*y_location, caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
     
     # y-axis label
-    ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=20)
+    ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=20)
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
 plt.ylim([0, ylimsup])
