@@ -15,7 +15,7 @@ with open('data_post/corr_stats.bin', 'rb') as f:
 
 corr_z = np.reshape(corr_z, (64, 65, 3), order='F') # Fortran-like index ordering
 
-Ruuz   = corr_z[:,3,0] 
+Ruuz   = corr_z[:,0,0] 
 
 rz = np.linspace(0, 4.0, 64)
 
