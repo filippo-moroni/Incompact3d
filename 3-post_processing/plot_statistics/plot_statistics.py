@@ -41,7 +41,7 @@ y_location   = 0.75            # percentage of the y-axis limit for (automatic) 
 cap_font_sz  = 3               # captions font size
 leg_font_sz  = 3               # legends font size
 
-# Page settings
+# Page settings (A4 paper format: 8.3 x 11.7 inches)
 xinches      = 2.6             # size in inches in x direction of the image
 yinches      = 2.2             # size in inches in y direction of the image
 
