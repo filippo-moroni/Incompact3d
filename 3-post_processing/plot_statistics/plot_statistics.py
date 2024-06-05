@@ -54,7 +54,7 @@ grey = [0.5, 0.5, 0.5]
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
-# Additional string for name in channel flow simulations
+# Additional string at the end of the filename for channel flow simulations
 add_string = '_retau180_fw'
 
 #!--------------------------------------------------------------------------------------!

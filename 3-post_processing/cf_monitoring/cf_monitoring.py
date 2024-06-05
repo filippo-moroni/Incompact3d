@@ -31,11 +31,6 @@ lmajt        = 4               # length of major ticks
 lmint        = 2               # length of minor ticks
 tick_width   = 0.5             # width of ticks and external box
 
-# Captions and legend settings
-y_location   = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
-cap_font_sz  = 3               # captions font size
-leg_font_sz  = 3               # legends font size
-
 # Page settings (A4 paper format: 8.3 x 11.7 inches)
 xinches      = 2.6             # size in inches in x direction of the image
 yinches      = 2.2             # size in inches in y direction of the image
@@ -54,6 +49,9 @@ grey = [0.5, 0.5, 0.5]
 
 # CPG option when CFR is imposed
 cpg_check = 'F'
+
+# Additional string at the end of the filename 
+add_string = '_retau180_fw'
 
 #!--------------------------------------------------------------------------------------!
 
@@ -140,9 +138,6 @@ rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none
 # Add the patch to the plot
 ax.add_patch(rect)
 
-# Legend
-#plt.legend(loc='upper left', fontsize=18)
-
 # Axes labels
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=pad_axes_lab)
 
@@ -156,9 +151,6 @@ else:
 plt.xlim([xliminf, xlimsup])
 plt.ylim([yliminf, ylimsup])
 
-# Display minor ticks 
-#ax.xaxis.set_minor_locator(AutoMinorLocator())
-
 # Setting major and minor ticks parameters on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
 ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
@@ -167,7 +159,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='both', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig('plots/cf_vs_time.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig('plots/cf_vs_time{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
