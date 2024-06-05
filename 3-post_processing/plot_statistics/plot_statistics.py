@@ -393,7 +393,7 @@ if itype == 13:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
     xlimsup = 520.0
-    ylimsup = 1.0
+    ylimsup = 0.8
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
@@ -405,7 +405,7 @@ elif itype == 3:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
     xlimsup = 300.0
-    ylimsup = 1.0
+    ylimsup = 0.8
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
@@ -463,7 +463,7 @@ if itype == 13:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
     xlimsup = 520.0
-    ylimsup = 1.0
+    ylimsup = 0.8
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
@@ -478,7 +478,7 @@ elif itype == 3:
     labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
     xlimsup = 300.0
-    ylimsup = 1.0
+    ylimsup = 0.8
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
