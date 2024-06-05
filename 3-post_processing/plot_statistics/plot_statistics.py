@@ -42,8 +42,8 @@ cap_font_sz  = 3               # captions font size
 leg_font_sz  = 3               # legends font size
 
 # Page settings
-xinches      = 3.0             # size in inches in x direction of the image
-yinches      = 2.5             # size in inches in y direction of the image
+xinches      = 2.6             # size in inches in x direction of the image
+yinches      = 2.2             # size in inches in y direction of the image
 
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
@@ -53,6 +53,9 @@ grey = [0.5, 0.5, 0.5]
 
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
+
+# Additional string for name in channel flow simulations
+add_string = '_retau180_fw'
 
 #!--------------------------------------------------------------------------------------!
 
@@ -309,7 +312,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 if itype == 13:
     plt.savefig(f'plots/umean-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/umean.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/umean{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
 plt.show()
@@ -378,7 +381,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 if itype == 13:
     plt.savefig(f'plots/uvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/uvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvar{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -448,7 +451,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 if itype == 13:
     plt.savefig(f'plots/vvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/vvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/vvar{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -523,7 +526,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 if itype == 13:
     plt.savefig(f'plots/uvmean-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/uvmean.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvmean{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
