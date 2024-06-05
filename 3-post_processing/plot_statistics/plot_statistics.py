@@ -16,33 +16,34 @@ import os
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "sans-serif",
-    "font.sans-serif": "Computer Modern Sans serif",
+plt.rcParams.update({ 
+    "text.usetex": True,  
+    "font.family": "serif",
+    "font.sans-serif": "Computer Modern",
+    "figure.autolayout": True,
 })
 
-plt.rcParams.update({'figure.autolayout': True})
-
 # Parameters for plotting
-lw           = 0.25            # linewidth for plots
-markersize   = 1.5             # marker size for scatter plot
-fla          = 8               # fontsize of labels of x and y axes (major labels, variables)
-fla2         = 3               # fontsize of numbers of x and y axes 
-xliminf      = 0.1             # x axis inferior limit
-xalign       = xliminf*1.1     # value to adjust translation in x of captions
-pad_numbers  = 4               # pad of numbers on both axes
+lw           = 0.6             # linewidth for plots
+markersize   = 8.0             # marker size for scatter plot
+fla          = 10              # fontsize of labels of x and y axes (major labels, variables)
+fla2         = 5               # fontsize of numbers of x and y axes 
+pad_axes_lab = 2               # padding of axes labels
+pad_numbers  = 4               # padding of numbers on both axes
 lmajt        = 4               # length of major ticks
 lmint        = 2               # length of minor ticks
+tick_width   = 0.5             # width of ticks and external box
+xliminf      = 0.1             # x axis inferior limit (y+)
 
+# Captions and legend settings
+xalign       = xliminf*1.1     # value to adjust translation in x of captions
 y_location   = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
-
-xinches      = 2.0             # inches in x direction for images' size
-yinches      = 1.5             # inches in y direction for images' size
 cap_font_sz  = 3               # captions font size
 leg_font_sz  = 3               # legends font size
-tick_width   = 0.25            # width of ticks and external box
-pad_axes_lab = 2               # padding of axes labels
+
+# Page settings
+xinches      = 3.0             # size in inches in x direction of the image
+yinches      = 2.5             # size in inches in y direction of the image
 
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
@@ -257,7 +258,8 @@ elif itype == 3:
     
     # Mean velocity profile
     ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    ax.scatter(y_plus_lm, mean_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    #ax.scatter(y_plus_lm, mean_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=lw)
     
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
@@ -309,7 +311,6 @@ if itype == 13:
     plt.savefig(f'plots/umean-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
 elif itype == 3:
     plt.savefig(f'plots/umean.pdf', format='pdf', bbox_inches='tight')
-    #plt.savefig(f'plots/umean.pdf', format='pdf')
     
 # Show the figure
 plt.show()
@@ -339,7 +340,8 @@ elif itype == 3:
     
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    ax.scatter(y_plus_lm, var_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    #ax.scatter(y_plus_lm, var_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=lw)
     
     #plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
     
@@ -409,7 +411,8 @@ elif itype == 3:
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    ax.scatter(y_plus_lm, var_v_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    #ax.scatter(y_plus_lm, var_v_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=lw)
     
     #plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
     
@@ -482,7 +485,8 @@ elif itype == 3:
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    ax.scatter(y_plus_lm, mean_uv_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    #ax.scatter(y_plus_lm, mean_uv_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+    ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=lw)
     
     #plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
     
