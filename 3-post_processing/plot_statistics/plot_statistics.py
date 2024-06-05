@@ -27,9 +27,9 @@ plt.rcParams.update({
 lw           = 0.6             # linewidth for plots
 markersize   = 8.0             # marker size for scatter plot
 fla          = 10              # fontsize of labels of x and y axes (major labels, variables)
-fla2         = 5               # fontsize of numbers of x and y axes 
+fla2         = 4.5             # fontsize of numbers of x and y axes 
 pad_axes_lab = 2               # padding of axes labels
-pad_numbers  = 4               # padding of numbers on both axes
+pad_numbers  = 3               # padding of numbers on both axes
 lmajt        = 4               # length of major ticks
 lmint        = 2               # length of minor ticks
 tick_width   = 0.5             # width of ticks and external box
@@ -228,7 +228,7 @@ if not os.path.exists("plots"):
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
 # Mean velocity profile
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # TTBL
 if itype == 13:
@@ -251,7 +251,7 @@ if itype == 13:
     
 # Channel    
 elif itype == 3:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
+    labels = [0.1, r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
     values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
     xlimsup = 300.0
     ylimsup = 25.0
@@ -296,11 +296,10 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
 
 # Setting x-ticks with values and labels
-ax.set_xticks(values, labels, color="k", rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
-
+ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
+    
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
 ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
 # Setting y-ticks
@@ -308,9 +307,9 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/umean-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/umean-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/umean.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/umean.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
 plt.show()
@@ -318,7 +317,7 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <u'u'>
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # TTBL
 if itype == 13:
@@ -366,11 +365,10 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
 
 # Setting x-ticks with values and labels
-ax.set_xticks(values, labels, color="k", rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
-
+ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
+    
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
 ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
 # Setting y-ticks
@@ -378,9 +376,9 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/uvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/uvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/uvar.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/uvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -388,7 +386,7 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <v'v'>
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # TTBL
 if itype == 13:
@@ -437,11 +435,10 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
 
 # Setting x-ticks with values and labels
-ax.set_xticks(values, labels, color="k", rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
-
+ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
+    
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
 ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
 # Setting y-ticks
@@ -449,9 +446,9 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/vvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/vvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/vvar.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/vvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -459,7 +456,7 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <u'v'>
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=600)
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # TTBL
 if itype == 13:
@@ -513,11 +510,10 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
 
 # Setting x-ticks with values and labels
-ax.set_xticks(values, labels, color="k", rotation='horizontal')
-ax.set_xticklabels(labels, fontsize=fla2, rotation=0, ha='center')
-
+ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
+    
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
 ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
 
 # Setting y-ticks
@@ -525,9 +521,9 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/uvmean-{snap_numb}.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/uvmean-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/uvmean.pdf', format='pdf', bbox_inches='tight')
+    plt.savefig(f'plots/uvmean.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
