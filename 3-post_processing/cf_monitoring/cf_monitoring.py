@@ -13,24 +13,32 @@ import matplotlib.patches as patches
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "sans-serif",
-    "font.sans-serif": "Computer Modern Sans serif",
+plt.rcParams.update({ 
+    "text.usetex": True,  
+    "font.family": "serif",
+    "font.sans-serif": "Computer Modern",
+    "figure.autolayout": True,
 })
 
-plt.rcParams.update({'figure.autolayout': True})
-
 # Parameters for plotting
-lw          = 2.0             # linewidth for plots
-markersize  = 80              # marker size for scatter plot
-fla         = 80              # fontsize of labels of x and y axes (major labels, variables)
-fla2        = 36              # fontsize of numbers of x and y axes 
-pad_numbers = 20              # pad of numbers on both axes
-lmajt       = 30              # length of major ticks
-lmint       = 15              # length of minor ticks
-tick_width  = 1.5             # width of ticks and external box
-y_location  = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
+lw           = 0.6             # linewidth for plots
+markersize   = 8.0             # marker size for scatter plot
+fla          = 10              # fontsize of labels of x and y axes (major labels, variables)
+fla2         = 4.5             # fontsize of numbers of x and y axes 
+pad_axes_lab = 2               # padding of axes labels
+pad_numbers  = 3               # padding of numbers on both axes
+lmajt        = 4               # length of major ticks
+lmint        = 2               # length of minor ticks
+tick_width   = 0.5             # width of ticks and external box
+
+# Captions and legend settings
+y_location   = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
+cap_font_sz  = 3               # captions font size
+leg_font_sz  = 3               # legends font size
+
+# Page settings (A4 paper format: 8.3 x 11.7 inches)
+xinches      = 2.6             # size in inches in x direction of the image
+yinches      = 2.2             # size in inches in y direction of the image
 
 # Default value for axes limits
 xliminf     = 0.0             # x axis inferior limit
@@ -118,7 +126,7 @@ if not os.path.exists("plots"):
     os.mkdir("plots")
 
 # Subplots environment
-fig, ax = plt.subplots(1, 1, figsize=(14,10),linewidth=tick_width)
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
    
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
@@ -133,16 +141,16 @@ rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none
 ax.add_patch(rect)
 
 # Legend
-plt.legend(loc='upper left', fontsize=18)
+#plt.legend(loc='upper left', fontsize=18)
 
 # Axes labels
-ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=20)
+ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=pad_axes_lab)
 
 # x-axis label for Channel with CPG off
 if itype == 3 and cpg == cpg_check:
-    ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=fla, labelpad=20)
+    ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=fla, labelpad=pad_axes_lab)
 else:
-    ax.set_xlabel(r'$t$', fontsize=fla, labelpad=20)
+    ax.set_xlabel(r'$t$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
 plt.xlim([xliminf, xlimsup])
@@ -159,7 +167,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='both', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig('plots/cf_vs_time.pdf', format='pdf', bbox_inches='tight')
+plt.savefig('plots/cf_vs_time.pdf', format='pdf', bbox_inches='tight', dpi=600)
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
