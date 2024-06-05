@@ -159,7 +159,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='both', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig('plots/cf_vs_time{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/cf_vs_time{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
