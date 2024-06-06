@@ -50,6 +50,15 @@ grey = [0.5, 0.5, 0.5]
 # CPG option when CFR is imposed
 cpg_check = 'F'
 
+# Column width for writing to .txt file
+c_w = 20  
+
+# Format for numbers
+fs = f"<{c_w}.3f"
+
+# Format for cf only
+fs2 = f"<{c_w}.6f"
+
 #!--------------------------------------------------------------------------------------!
 
 # Additional string at the end of the filename 
@@ -129,8 +138,7 @@ print("!--- Plotting of friction coefficient ---!")
 print()
 
 # Creating the folder for cf plot if it does not exist
-if not os.path.exists("plots"):
-    os.mkdir("plots")
+os.makedirs('plots', mode=0o777, exist_ok=True)
 
 # Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
@@ -151,13 +159,18 @@ if itype == 3:
     ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
     
     # Creating the folder for cf average
-    if not os.path.exists("data_post"):
-        os.mkdir("data_post")
+    os.makedirs('data_post', mode=0o777, exist_ok=True)
+           
+    # Create the file and write  
+    with open('data_post/cf_mean.txt', 'w') as f:
+        f.write(f"{'cf_mean':<{c_w}}, " +
+                f"{'t_tot':<{c_w}}, " +
+                f"{'n_snap':<{c_w}}\n")
+
+        f.write(f"{mean_cf:{fs2}}, " +
+                f"{disp_t[j]:{fs}}, " +
+                f"{time_unit[j]:{fs}}\n")
         
-    
-
-
-
 
 # Axes labels
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=pad_axes_lab)
