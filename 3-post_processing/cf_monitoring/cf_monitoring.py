@@ -187,7 +187,7 @@ if itype == 3:
         
         
 # Axes labels
-ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$c_{f,x}$', fontsize=fla, labelpad=pad_axes_lab)
 
 # x-axis label for Channel with CPG off
 if itype == 3 and cpg == cpg_check:
