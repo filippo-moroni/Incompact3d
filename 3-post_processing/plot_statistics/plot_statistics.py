@@ -54,6 +54,15 @@ grey = [0.5, 0.5, 0.5]
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
+# Column width for writing to .txt file
+c_w = 20  
+
+# Format for numbers
+fs = f"<{c_w}.3f"
+
+# Format for cf only
+fs2 = f"<{c_w}.8f"
+
 #!--------------------------------------------------------------------------------------!
 
 # Asking the user for the name for his own data
@@ -70,15 +79,27 @@ with open('input.i3d', 'r') as file:
     # Read all lines into a list
     lines = file.readlines()
     
-    # Extract the 8th line, where itype is specified 
-    line = lines[7]  
+    # Extract itype, nx, nz, Lx, Lz 
+    itype = lines[7]  
+    nx    = lines[14]
+    nz    = lines[16]
+    Lx    = lines[21]
+    Lz    = lines[23]
     
-    # Removing characters in front of the itype value
-    itype = line.split('=')[-1].strip()
+    # Removing characters in front of the extracted strings
+    itype = itype.split('=')[-1].strip()
+    nx    =    nx.split('=')[-1].strip()
+    nz    =    nz.split('=')[-1].strip()
+    Lx    =    Lx.split('=')[-1].strip()
+    Lz    =    Lz.split('=')[-1].strip()
     
     # Convert to integer
     itype = int(itype)
-
+    nx    = int(nx)
+    nz    = int(nz)
+    Lx    = int(Lx)
+    Lz    = int(Lz)
+    
 #!--- Parameters & reference data ---!
 if itype == 13:
 
@@ -167,6 +188,10 @@ if itype == 3:
 
 #!--- Calculations ---!
 
+# Mesh spacings
+delta_x = Lx / nx
+delta_z = Lz / nz
+
 # Valid only for TTBLs
 if itype == 13:
 
@@ -179,7 +204,13 @@ delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
 
 # Rescaling variables through wall units
-y_plus   = y / delta_nu 
+delta_x_plus = delta_x / delta_nu
+delta_z_plus = delta_z / delta_nu
+y_plus       = y       / delta_nu 
+
+Lx_plus = Lx / delta_nu
+Lz_plus = Lz / delta_nu
+
 mean_u  /= sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
@@ -188,6 +219,24 @@ mean_uv /= sh_vel ** 2
 vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
+
+#!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
+if itype == 3:
+
+    # Creating the folder for grid spacings
+    os.makedirs('data_post', mode=0o777, exist_ok=True)
+           
+    # Create the file and write  
+    with open('data_post/grid_spacings.txt', 'w') as f:
+        f.write(f"{'delta_x_plus':<{c_w}}, " +
+                f"{'delta_z_plus':<{c_w}}, " +
+                f"{'Lx_plus':<{c_w}}, " +
+                f"{'Lz_plus':<{c_w}}\n")
+
+        f.write(f"{delta_x_plus:{fs}}, " +
+                f"{delta_z_plus:{fs}}, " +
+                f"{Lx_plus:{fs}}, " +
+                f"{Lz_plus:{fs}}\n") 
 
 #!--- Reference mean profiles ---!
 
