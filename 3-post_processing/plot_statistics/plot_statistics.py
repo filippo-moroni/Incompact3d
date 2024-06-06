@@ -68,6 +68,7 @@ with open('post.prm', 'r') as file:
     # Extract flowcase name
     add_string = lines[3] 
     add_string = add_string.split('!')[0]
+    add_string = add_string.rstrip()
 
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
