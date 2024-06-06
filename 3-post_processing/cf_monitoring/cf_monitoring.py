@@ -135,7 +135,7 @@ if itype == 3:
     # Number of snapshots used and total average time (lower TU is included)
     last_index = len(time_unit) 
     n_snap = last_index - lower_index
-    t_tot = n_snap*delta
+    t_tot = (n_snap - 1)*delta
 
 #!--- Plot section, friction coefficient ---!
 
