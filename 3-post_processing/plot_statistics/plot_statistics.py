@@ -141,6 +141,7 @@ elif itype == 3:
     mean_uv_lm = - M[:,5]
                
 #!--- Reading of files section ---!
+print()
 
 # Channel
 if itype == 3:
@@ -227,7 +228,7 @@ delta_z_plus = delta_z / delta_nu
 y_plus       = y       / delta_nu 
 
 Lx_plus = Lx / delta_nu
-Ly_plus = Ly / delta_nu / 2.0
+Ly_plus = Ly / delta_nu 
 Lz_plus = Lz / delta_nu
 
 mean_u  /= sh_vel
