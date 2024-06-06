@@ -1,10 +1,10 @@
 #!---------------------------------------------------------!
 #! With this script, we perform plotting of statistics     !
-#! for TTBL (Re_tau = 500) and channel (Re_tau = 180)      !
-#! simulations:                                            !
+#! for TTBLs and channel flow simulations:                 !
 #!                                                         !
 #! - mean statistics (mean[u], var[u], etc.)               !
-#! - Kolmogorov time scale tau_eta                         !
+#! - Kolmogorov time scale tau_eta (to be done)            !
+#! - non-dimensional grid spacings and domain dimensions   !
 #!---------------------------------------------------------!
 
 import numpy as np
@@ -35,12 +35,6 @@ lmint        = 2               # length of minor ticks
 tick_width   = 0.5             # width of ticks and external box
 xliminf      = 0.1             # x axis inferior limit (y+)
 
-# Captions and legend settings
-xalign       = xliminf*1.1     # value to adjust translation in x of captions
-y_location   = 0.75            # percentage of the y-axis limit for (automatic) positioning of captions
-cap_font_sz  = 3               # captions font size
-leg_font_sz  = 3               # legends font size
-
 # Page settings (A4 paper format: 8.3 x 11.7 inches)
 xinches      = 2.6             # size in inches in x direction of the image
 yinches      = 2.2             # size in inches in y direction of the image
@@ -64,10 +58,6 @@ fs = f"<{c_w}.3f"
 fs2 = f"<{c_w}.8f"
 
 #!--------------------------------------------------------------------------------------!
-
-# Asking the user for the name for his own data
-#name = input("Specify the name to be showed for your data in the legend: ")
-#print()
 
 # Additional string at the end of the filename 
 add_string = input("Specify the suffix for the filename: ")
@@ -304,12 +294,7 @@ if itype == 13:
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
     ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
-    
-    #plt.legend([name, 'Viscous sublayer and log law'], loc='upper left', fontsize=leg_font_sz)
-    
-    # Caption
-    #caption = 'Log law with constants: k = 0.384, B = 4.173 (Kozul et al. (2016))'
-    
+        
 # Channel    
 elif itype == 3:
     labels = [0.1, r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
@@ -319,28 +304,12 @@ elif itype == 3:
     
     # Mean velocity profile
     ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    #ax.scatter(y_plus_lm, mean_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
     ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=lw)
     
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
     ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
     
-    #plt.legend([name, 'Lee and Moser (2015)', 'Viscous sublayer and log law'], loc='upper left', fontsize=leg_font_sz)
-    
-    # Caption
-    if iswitch == 0:
-        caption = 'Log law with constants: k = 0.384, B = 4.27 (Lee and Moser (2015))'
-    elif iswitch == 1:
-        caption  = 'Log law with constants: k = 0.37, B = 5.2 (Cimarelli, Turb. Lect. Notes)'
-    caption2 = 'First points of Lee and Moser data not displayed' 
-    
-    # Plotting caption2
-    #plt.text(xalign, ylimsup*y_location, caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
-
-# Plotting caption
-#plt.text(xalign, ylimsup*(y_location-0.05), caption, fontsize=cap_font_sz, fontweight='bold', ha='left')
-
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
 ax.set_ylabel(r'$U^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -368,7 +337,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/umean-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/umean-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
     plt.savefig(f'plots/umean{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
@@ -389,7 +358,6 @@ if itype == 13:
     
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    #plt.legend([name], loc='upper left', fontsize=leg_font_sz)
         
 # Channel    
 elif itype == 3:
@@ -400,16 +368,8 @@ elif itype == 3:
     
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    #ax.scatter(y_plus_lm, var_u_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
     ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=lw)
     
-    #plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
-    
-    #caption2 = 'First points of Lee and Moser data not displayed' 
-    
-    # Plotting caption2
-    #plt.text(xalign, ylimsup*(y_location+0.05), caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
-
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
 ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -437,7 +397,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/uvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvar-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
     plt.savefig(f'plots/uvar{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
@@ -458,8 +418,6 @@ if itype == 13:
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    
-    #plt.legend([name], loc='upper left', fontsize=leg_font_sz)
         
 # Channel    
 elif itype == 3:
@@ -470,16 +428,8 @@ elif itype == 3:
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    #ax.scatter(y_plus_lm, var_v_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
     ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=lw)
     
-    #plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
-    
-    #caption2 = 'First points of Lee and Moser data not displayed' 
-    
-    # Plotting caption2
-    #plt.text(xalign, ylimsup*y_location, caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
-
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
 ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -507,7 +457,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/vvar-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/vvar-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
     plt.savefig(f'plots/vvar{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
@@ -528,9 +478,7 @@ if itype == 13:
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    
-    #plt.legend([name], loc='upper left', fontsize=leg_font_sz)
-    
+        
     # y-axis label
     ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
         
@@ -543,16 +491,8 @@ elif itype == 3:
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    #ax.scatter(y_plus_lm, mean_uv_lm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
     ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=lw)
-    
-    #plt.legend([name, 'Lee and Moser (2015)'], loc='upper left', fontsize=leg_font_sz)
-    
-    #caption2 = 'First points of Lee and Moser data not displayed' 
-    
-    # Plotting caption2
-    #plt.text(xalign, ylimsup*y_location, caption2, fontsize=cap_font_sz, fontweight='bold', ha='left')
-    
+       
     # y-axis label
     ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
 
@@ -582,7 +522,7 @@ ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/uvmean-{snap_numb}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvmean-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
     plt.savefig(f'plots/uvmean{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 

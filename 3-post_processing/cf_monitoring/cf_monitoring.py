@@ -36,10 +36,10 @@ xinches      = 2.6             # size in inches in x direction of the image
 yinches      = 2.2             # size in inches in y direction of the image
 
 # Default value for axes limits
-xliminf     = 0.0             # x axis inferior limit
-xlimsup     = 1500.0          # x axis superior limit
-yliminf     = 0.0             # y axis inferior limit
-ylimsup     = 0.008           # y axis superior limit
+xliminf     = 0.0              # x axis inferior limit
+xlimsup     = 1500.0           # x axis superior limit
+yliminf     = 0.0              # y axis inferior limit
+ylimsup     = 0.008            # y axis superior limit
 
 # Axes width
 mpl.rcParams['axes.linewidth'] = tick_width
