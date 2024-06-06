@@ -59,8 +59,8 @@ fs2 = f"<{c_w}.8f"
 
 #!--------------------------------------------------------------------------------------!
 
-# Additional string at the end of the filename 
-add_string = input("Specify the suffix for the filename: ")
+# Suffix string for filenames 
+add_string = input("Specify the suffix for plots' filenames: ")
 print()
 
 # Read if we are plotting a channel or a TTBL
@@ -240,16 +240,18 @@ if itype == 3:
            
     # Create the file and write  
     with open('data_post/grid_spacings.txt', 'w') as f:
-        f.write(f"{'delta_x_plus':<{c_w}}, " +
-                f"{'delta_z_plus':<{c_w}}, " +
-                f"{'Lx_plus':<{c_w}}, "      +
-                f"{'Ly_plus':<{c_w}}, "      +
+        f.write(f"{'delta_x_plus':<{c_w}}, "  +
+                f"{'delta_y1_plus':<{c_w}}, " +
+                f"{'delta_z_plus':<{c_w}}, "  +
+                f"{'Lx_plus':<{c_w}}, "       +
+                f"{'Ly_plus/2':<{c_w}}, "     +
                 f"{'Lz_plus':<{c_w}}\n")
 
-        f.write(f"{delta_x_plus:{fs}}, "     +
-                f"{delta_z_plus:{fs}}, "     +
-                f"{Lx_plus:{fs}}, "          +
-                f"{Ly_plus:{fs}}, "          +
+        f.write(f"{delta_x_plus:{fs}}, "      +
+                f"{y_plus[1]:{fs}}, "         +
+                f"{delta_z_plus:{fs}}, "      +
+                f"{Lx_plus:{fs}}, "           +
+                f"{Ly_plus/2:{fs}}, "         +
                 f"{Lz_plus:{fs}}\n") 
 
 #!--- Reference mean profiles ---!
@@ -289,9 +291,8 @@ u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 #tau_eta = np.sqrt(nu/eps)
 
 # Creating the folder for plots if it does not exist
-if not os.path.exists("plots"):
-    os.mkdir("plots")
-
+os.makedirs('plots', mode=0o777, exist_ok=True)
+    
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
 # Mean velocity profile
