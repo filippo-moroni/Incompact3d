@@ -61,9 +61,16 @@ fs2 = f"<{c_w}.8f"
 
 #!--------------------------------------------------------------------------------------!
 
-# Additional string at the end of the filename 
-add_string = input("Specify the suffix for the filename: ")
-print()
+# Read the name of the flowcase
+with open('post.prm', 'r') as file:
+    
+    # Read all lines into a list
+    lines = file.readlines()
+    
+    # Extract flowcase name
+    add_string = lines[3] 
+    add_string = add_string.split('!')[0]
+    add_string = add_string.rstrip()
 
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
@@ -200,7 +207,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 ax.tick_params(axis='both', labelcolor="k", labelsize=fla2)
 
 # Saving the figure and show it
-plt.savefig(f'plots/cf_vs_time{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/cf_vs_time_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 plt.show()
 
 #!--------------------------------------------------------------------------------------!
