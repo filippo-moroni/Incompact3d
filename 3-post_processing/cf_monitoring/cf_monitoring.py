@@ -103,8 +103,10 @@ delta = b - a
 lower_tu = np.float64(input("Specify a lower range for time units (T): "))
 print()
 
-# Calculating its related index
+# Calculating its related index and show it
 lower_index = int(lower_tu / delta)
+print("Correspondent snapshot index:", lower_tu)
+print()
 
 # Average
 mean_cf = np.mean(cfx[lower_index:])
