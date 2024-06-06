@@ -131,6 +131,11 @@ if itype == 3:
     # Average
     mean_cf = np.mean(cfx[lower_index:])
     print("Mean cf value:", mean_cf)
+    
+    # Number of snapshots used and total average time
+    last_index = len(time_unit) - 1
+    n_snap = last_index - lower_index
+    t_tot = n_snap*delta
 
 #!--- Plot section, friction coefficient ---!
 
@@ -168,10 +173,10 @@ if itype == 3:
                 f"{'n_snap':<{c_w}}\n")
 
         f.write(f"{mean_cf:{fs2}}, " +
-                f"{disp_t[j]:{fs}}, " +
-                f"{time_unit[j]:{fs}}\n")
+                f"{t_tot:{fs}}, " +
+                f"{n_snap:{fs}}\n")
         
-
+        
 # Axes labels
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=pad_axes_lab)
 
