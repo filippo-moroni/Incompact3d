@@ -59,9 +59,15 @@ fs2 = f"<{c_w}.8f"
 
 #!--------------------------------------------------------------------------------------!
 
-# Suffix string for filenames 
-add_string = input("Specify the suffix for plots' filenames: ")
-print()
+# Read the name of the flowcase
+with open('post.prm', 'r') as file:
+    
+    # Read all lines into a list
+    lines = file.readlines()
+    
+    # Extract flowcase name
+    add_string = lines[3] 
+    add_string = add_string.split('!')[0]
 
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
@@ -349,9 +355,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/umean-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/umean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/umean{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/umean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
 plt.show()
@@ -404,9 +410,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/uvar-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvar-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/uvar{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -459,9 +465,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/vvar-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/vvar-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/vvar{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/vvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -519,9 +525,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/uvmean-{snap_numb}{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvmean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/uvmean{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/uvmean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()

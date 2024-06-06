@@ -75,7 +75,9 @@ PROGRAM post
   read_vel=.false.;  read_pre=.false.;  read_phi=.false.
                   
   ! Reading of the input file of post-processing (post.prm)
-  open(10,file='post.prm',status='unknown',form='formatted')
+  open(10,file='post.prm',status='old',form='formatted')
+  read (10,'(A1)') a
+  read (10,'(A1)') a
   read (10,'(A1)') a
   read (10,'(A1)') a
   read (10,'(A1)') a
