@@ -138,6 +138,7 @@ if itype == 3:
     # Average (lower TU is included)
     mean_cf = np.mean(cfx[lower_index:])
     print("Mean cf value:", mean_cf)
+    print()
     
     # Number of snapshots used and total average time (lower TU is included)
     last_index = len(time_unit) 
@@ -145,7 +146,6 @@ if itype == 3:
     t_tot = (n_snap - 1)*delta
 
 #!--- Plot section, friction coefficient ---!
-
 print("!--- Plotting of friction coefficient ---!")
 print()
 
