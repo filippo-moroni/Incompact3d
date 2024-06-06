@@ -114,7 +114,7 @@ ylimsup = np.max(cfx) * 1.2
 # Only for a channel
 if itype == 3:
 
-    # Calculating the delta (in time units) between savings (skipping first saving)
+    # Calculating the delta (in time units) between savings (skipping first saving that is IC usually)
     a = time_unit[1]
     b = time_unit[2]
     delta = b - a
@@ -128,12 +128,12 @@ if itype == 3:
     print("Correspondent snapshot index:", lower_index)
     print()
 
-    # Average
+    # Average (lower TU is included)
     mean_cf = np.mean(cfx[lower_index:])
     print("Mean cf value:", mean_cf)
     
-    # Number of snapshots used and total average time
-    last_index = len(time_unit) - 1
+    # Number of snapshots used and total average time (lower TU is included)
+    last_index = len(time_unit) 
     n_snap = last_index - lower_index
     t_tot = n_snap*delta
 
@@ -170,10 +170,12 @@ if itype == 3:
     with open('data_post/cf_mean.txt', 'w') as f:
         f.write(f"{'cf_mean':<{c_w}}, " +
                 f"{'t_tot':<{c_w}}, " +
+                f"{'delta_TU':<{c_w}}, " +
                 f"{'n_snap':<{c_w}}\n")
 
         f.write(f"{mean_cf:{fs2}}, " +
                 f"{t_tot:{fs}}, " +
+                f"{delta:<{c_w}}, " +
                 f"{n_snap:{fs}}\n")
         
         
