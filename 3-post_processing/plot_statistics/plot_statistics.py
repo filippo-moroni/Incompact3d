@@ -54,14 +54,15 @@ grey = [0.5, 0.5, 0.5]
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
-# Additional string at the end of the filename for channel flow simulations
-add_string = '_retau180_ow'
-
 #!--------------------------------------------------------------------------------------!
 
 # Asking the user for the name for his own data
 #name = input("Specify the name to be showed for your data in the legend: ")
 #print()
+
+# Additional string at the end of the filename 
+add_string = input("Specify the suffix for the filename: ")
+print()
 
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:

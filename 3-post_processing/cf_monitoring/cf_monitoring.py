@@ -50,10 +50,11 @@ grey = [0.5, 0.5, 0.5]
 # CPG option when CFR is imposed
 cpg_check = 'F'
 
-# Additional string at the end of the filename 
-add_string = '_retau180_ow'
-
 #!--------------------------------------------------------------------------------------!
+
+# Additional string at the end of the filename 
+add_string = input("Specify the suffix for the filename: ")
+print()
 
 # Read if we are plotting a channel or a TTBL
 with open('input.i3d', 'r') as file:
