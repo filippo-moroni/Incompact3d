@@ -56,8 +56,8 @@ subroutine parameter(input_i3d)
   implicit none
 
   character(len=80), intent(in) :: input_i3d
-  real(mytype) :: theta, cfl,cf2
-  integer :: longueur ,impi,j, is, total
+  real(mytype) :: theta,cfl,cf2
+  integer :: longueur,impi,j,is,total
 
   NAMELIST /BasicParam/ p_row, p_col, nx, ny, nz, istret, beta, xlx, yly, zlz, &
        itype, iin, re, u1, u2, init_noise, inflow_noise, &
@@ -71,8 +71,9 @@ subroutine parameter(input_i3d)
        ifilter, C_filter, iturbine
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
-  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, nvisu, ilist, iprocessing, &
+  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, nvisu, ilist, iprocessing, &
        ninflows, ntimesteps, inflowpath, ioutflow, output2D
+  NAMELIST /AdditionalControls/ iswitch_wo
   NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
@@ -107,7 +108,7 @@ subroutine parameter(input_i3d)
      write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
      write(*,*) '!  Sylvain Laizet, 2018                                   !'
      write(*,*) '!                                                         !'
-     write(*,*) '!  Modified by Filippo Moroni, 2024                       !'
+     write(*,*) '!  Modified by Filippo Moroni & Roberto Corsini, 2024    !'
      write(*,*) '!---------------------------------------------------------!'
      
 #if defined(VERSION)
@@ -119,20 +120,31 @@ subroutine parameter(input_i3d)
 
   call parameter_defaults()
 
-  !! Read parameters
+  ! Read parameters
   open(10, file=input_i3d)
 
-  !! These are the 'essential' parameters
+  ! These are the 'essential' parameters
   read(10, nml=BasicParam); rewind(10)
   read(10, nml=NumOptions); rewind(10)
   read(10, nml=InOutParam); rewind(10)
-  !read(10, nml=Statistics); rewind(10)
+  
+  ! Additional controls
+  read(10, nml=AdditionalControls); rewind(10)
+  
+  ! Controls for wall oscillations
+  if(iswitch_wo .eq. 1) then
+      read(10, nml=WallOscillations); rewind(10); 
+  end if 
+  
+  if(itype .ne. itype_ttbl) then
+     read(10, nml=Statistics); rewind(10)
+  end if
   
   if (iibm.ne.0) then
-     read(10, nml=ibmstuff); rewind(10)
+      read(10, nml=ibmstuff); rewind(10)
   endif
     
-  !! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
+  ! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
   nclxS1 = nclx1; nclxSn = nclxn
   nclyS1 = ncly1; nclySn = nclyn
   nclzS1 = nclz1; nclzSn = nclzn
@@ -140,7 +152,7 @@ subroutine parameter(input_i3d)
   if (numscalar.ne.0) then
      iscalar = 1
 
-     !! Allocate scalar arrays and set sensible defaults
+     ! Allocate scalar arrays and set sensible defaults
      allocate(massfrac(numscalar))
      allocate(mol_weight(numscalar))
      massfrac(:) = .FALSE.
@@ -240,10 +252,7 @@ subroutine parameter(input_i3d)
   
   ! Read extra numerics control (Adjustable time-step)
   !read(10, nml=ExtraNumControl); rewind(10);
-  
-  ! Controls for wall oscillations
-  read(10, nml=WallOscillations); rewind(10);  
-     
+       
   close(10)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
@@ -280,12 +289,34 @@ subroutine parameter(input_i3d)
 
   xnu=one/re
   
-  ! Constant pressure gradient, re = Re_tau -> use to compute Re_centerline
-  if (cpg) then
-    re_cent = (re/0.116_mytype)**(1.0_mytype/0.88_mytype)
-    xnu = one/re_cent ! viscosity based on Re_cent to keep same scaling as CFR
-    !
-    fcpg = two/yly * (re/re_cent)**2
+  ! Calculation of correct viscosity and Re numbers for a channel flow case
+  if (itype .eq. itype_channel) then
+  
+      ! Constant pressure gradient, re = Re_tau --> used to compute Re_centerline
+      if (cpg) then
+  
+          ! Calculate Reynolds centerline of a laminar Poiseuille flow (re = Re_tau in this case)
+          re_cent = (re/0.116_mytype)**(1.0_mytype/0.88_mytype)
+    
+          ! Viscosity based on Re_cent to keep same scaling as CFR
+          xnu = one/re_cent 
+    
+          !
+          fcpg = two/yly * (re/re_cent)**2
+    
+          ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
+          re_bulk = (re/0.09_mytype)**(1.0_mytype/0.88_mytype)
+      
+      else
+      
+          ! Calculate Re_tau in the case of CFR (re = Re_0 in this case)
+          re_tau = 0.116_mytype*(re**0.88_mytype)
+          
+          ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
+          re_bulk = (re_tau/0.09_mytype)**(1.0_mytype/0.88_mytype)
+          
+      end if
+  
   end if
 
   if (ilmn) then
@@ -339,7 +370,15 @@ subroutine parameter(input_i3d)
   !###########################################################################
   ! Log-output
   !###########################################################################
-  if (nrank==0) call system('mkdir -p data')
+  
+  ! Creating /data folder
+  !if (nrank==0) call system('mkdir -p data')
+  if (nrank==0) call execute_command_line('mkdir -p data')
+  
+  ! Creating /restart_info folder
+  !if (nrank==0) call system('mkdir -p restart_info')
+  if (nrank==0) call execute_command_line('mkdir -p restart_info')
+  
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
@@ -381,20 +420,30 @@ subroutine parameter(input_i3d)
      if (itype.eq.itype_channel) then
        if (.not.cpg) then
          write(*,*) 'Channel forcing with constant flow rate (CFR)'
-         write(*,"(' Re_cl                  : ',F17.3)") re
+         write(*,"(' Re_0 (centerline)             : ',F17.3)") re
+         write(*,"(' Re_B (bulk, estimated)        : ',F17.3)") re_bulk
+         write(*,"(' Re_tau (estimated)            : ',F17.3)") re_tau
        else 
          write(*,*) 'Channel forcing with constant pressure gradient (CPG)'
-         write(*,"(' Re_tau                 : ',F17.3)") re
-         write(*,"(' Re_cl (estimated)      : ',F17.3)") re_cent
-         write(*,"(' fcpg                   : ',F17.8)") fcpg
+         write(*,"(' Re_tau                        : ',F17.3)") re
+         write(*,"(' Re_0 (centerline, estimated)  : ',F17.3)") re_cent
+         write(*,"(' Re_B (bulk, estimated)        : ',F17.3)") re_bulk
+         write(*,"(' fcpg                          : ',F17.8)") fcpg
        end if
      else
-       write(*,"(' Reynolds number Re     : ',F17.3)") re
+       write(*,"(' Reynolds number Re              : ',F17.3)") re
      endif
-     write(*,"(' xnu                    : ',F17.8)") xnu
+     
+     write(*,"(' xnu                           : ',F17.8)") xnu
+     
+     ! Displaying if we are using wall oscillations
+     if (iswitch_wo .eq. 1) then
+     write(*,*) '==========================================================='
+     write(*,*) 'Spanwise wall oscillations enabled'
+     end if
+     
      write(*,*) '==========================================================='
      write(*,"(' p_row, p_col           : ',I9, I8)") p_row, p_col
-     
      write(*,*) '==========================================================='
      if(icfllim .eq. 0) then
      write(*,"(' Time step dt           : ',F17.8)") dt
@@ -557,7 +606,7 @@ subroutine parameter(input_i3d)
         else
            write(*,*)  "LMN boundedness    : Not enforced"
         endif
-        write(*,"(' dens1 and dens2    : ',F6.2' ',F6.2)") dens1, dens2
+        write(*,"(' dens1 and dens2    : ',F6.2,',',F6.2)") dens1, dens2
         write(*,"(' Prandtl number Re  : ',F15.8)") prandtl
      endif
      if (angle.ne.0.) write(*,"(' Solid rotation     : ',F6.2)") angle
@@ -712,18 +761,28 @@ subroutine parameter_defaults()
   x0_tr_tbl=3.505082_mytype
   
   ! Temporal TBL
-  uwall = zero        ! velocity of translating bottom wall (U_wall) 
-  twd = 1.0           ! trip wire diameter (D)
-  uln = 0.01          ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
-  lln = 0.5           ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-  phiwall = zero      ! scalar value at the wall 
+  if(itype .eq. itype_ttbl) then
+      uwall   = one       ! velocity of translating bottom wall (U_wall)   
+      phiwall = one       ! scalar value at the wall
+  else
+      uwall   = zero      ! velocity of translating bottom wall (U_wall)   
+      phiwall = zero      ! scalar value at the wall
+  end if 
   
+  twd = one           ! trip wire diameter (D)
+  uln = 0.01_mytype   ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
+  lln = 0.5_mytype    ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+    
   ! Extra numerics control
   icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   cfl_limit = 0.95    ! CFL limit to adjust the time-step 
   
   ! Controls for wall oscillations
-  a_plus_cap = zero   ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  t_plus_cap = 100.0  ! period of spanwise wall oscillations in friction units (cap: capital letter)
-   
+  a_plus_cap = twelve        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  t_plus_cap = onehundred    ! period of spanwise wall oscillations in friction units (cap: capital letter)
+
 end subroutine parameter_defaults
+
+
+
+

@@ -317,7 +317,7 @@ module param
   integer :: ifft,istret,iforc_entree,iturb
   integer :: iin,itimescheme,iimplicit,ifirst,ilast,iles
   integer :: ntime ! How many (sub)timestpeps do we need to store?
-  integer :: icheckpoint,irestart,idebmod,ioutput,imodulo2,idemarre,icommence,irecord
+  integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,imodulo2,idemarre,icommence,irecord
   integer :: ioutflow, ninflows, ntimesteps
   integer :: itime0
   integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
@@ -335,10 +335,11 @@ module param
   logical, save :: sync_vel_needed = .true.
   logical, save :: sync_scal_needed = .true.
 
-  !! Channel flow
+  ! Channel flow
   integer :: idir_stream
   logical :: cpg
-  real(mytype) :: re_cent, fcpg
+  real(mytype) :: re_cent, fcpg, re_bulk, re_tau
+  real(mytype), save :: ubulk  ! Bulk velocity
 
   !! Numerics control
   integer :: ifirstder,isecondder,ipinter
@@ -434,23 +435,31 @@ module param
   real(mytype) :: uln         ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
   real(mytype) :: lln         ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall     ! scalar value at the wall
-    
+     
+  ! Shear quantities at the wall (used for Channel and TTBL)
+  real(mytype), save :: sh_vel       ! total shear velocity
+  real(mytype), save :: sh_velx      ! shear velocity along x
+  real(mytype), save :: sh_velz      ! shear velocity along z
+  real(mytype), save :: fric_coeff   ! total skin friction coefficient
+  real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
+  real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
+  real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
+
   ! Spanwise wall oscillation
-  real(mytype),save :: span_vel     ! spanwise velocity at the wall
- 
-  ! Quantities evolving in time for a temporal TBL
-  real(mytype),save :: fric_coeff   ! skin friction coefficient
-  real(mytype),save :: sh_vel       ! shear velocity
-  
+  integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters
+  real(mytype) :: span_vel           ! spanwise velocity at the wall due to imposed wall oscillations
+      
   ! Extra controls for numerics 
-  integer           :: icfllim      ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-  real(mytype),save :: cfl_limit    ! CFL limit to adjust the time-step
+  integer      :: icfllim            ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  real(mytype) :: cfl_limit          ! CFL limit to adjust the time-step
   
   ! Parameters for wall oscillations (used for channel flows and TTBLs)
-  real(mytype) :: a_plus_cap        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  real(mytype) :: t_plus_cap        ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  real(mytype) :: a_plus_cap         ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
+  real(mytype) :: t_plus_cap         ! period of spanwise wall oscillations in friction units (cap: capital letter)
   
-      
+  ! Variable to save and show the maximum CFL in the restart file
+  real(mytype) :: cflmax
+    
   !numbers
   real(mytype),parameter :: zpone=0.1_mytype
   real(mytype),parameter :: zptwo=0.2_mytype
