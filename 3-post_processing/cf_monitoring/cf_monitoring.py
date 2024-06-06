@@ -51,7 +51,7 @@ grey = [0.5, 0.5, 0.5]
 cpg_check = 'F'
 
 # Additional string at the end of the filename 
-add_string = '_retau180_fw'
+add_string = '_retau180_ow'
 
 #!--------------------------------------------------------------------------------------!
 

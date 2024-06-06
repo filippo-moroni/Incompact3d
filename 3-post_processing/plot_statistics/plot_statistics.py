@@ -55,7 +55,7 @@ grey = [0.5, 0.5, 0.5]
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
 # Additional string at the end of the filename for channel flow simulations
-add_string = '_retau180_fw'
+add_string = '_retau180_ow'
 
 #!--------------------------------------------------------------------------------------!
 
