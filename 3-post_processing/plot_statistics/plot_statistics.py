@@ -69,12 +69,13 @@ with open('input.i3d', 'r') as file:
     # Read all lines into a list
     lines = file.readlines()
     
-    # Extract itype, nx, nz, Lx, Lz 
+    # Extract itype, nx, nz, Lx, Lz, Re 
     itype = lines[7]  
     nx    = lines[14]
     nz    = lines[16]
     Lx    = lines[21]
     Lz    = lines[23]
+    re    = lines[26]
     
     # Removing characters in front of the extracted strings and the comments
     itype = itype.split('=')[-1].strip()
@@ -91,27 +92,31 @@ with open('input.i3d', 'r') as file:
     Lz    = Lz.split('!')[0]
     Lz    = Lz.split('=')[-1].strip()
     
+    re    = re.split('!')[0]
+    re    = re.split('=')[-1].strip()
+    
     # Convert to integer
     itype = int(itype)
     nx    = int(nx)
     nz    = int(nz)
     Lx    = np.float64(Lx)
     Lz    = np.float64(Lz)
+    re    = np.float64(re)
     
 #!--- Parameters & reference data ---!
 if itype == 13:
 
     # TTBL
-    uwall = np.float64(1.0)               # wall velocity
-    re    = np.float64(500.0)             # Reynolds number
-    nu    = 1.0/re                        # kinematic viscosity
+    uwall = np.float64(1.0)              # wall velocity
+    re    = np.float64(re)               # Reynolds number
+    nu    = 1.0/re                       # kinematic viscosity
 
 elif itype == 3:
     
-    # Channel
-    re_cent = np.float64(4225.96)         # centerline Reynolds number of a laminar Poiseuille flow
-    re_tau  = 0.123*(re_cent**0.875)      # corresponding estimated friction Reynolds number (Re_tau ~ 180)
-    nu      = 1.0/re_cent                 # kinematic viscosity
+    # Channel (valid only for CFR at the moment)
+    re_cent = np.float64(re)             # centerline Reynolds number of a laminar Poiseuille flow
+    re_tau  = 0.123*(re_cent**0.875)     # corresponding estimated friction Reynolds number 
+    nu      = 1.0/re_cent                # kinematic viscosity
                
     # Reading of Lee & Moser (2015) data
     M = np.loadtxt('reference_data/data_lee_retau180.txt', skiprows=72, dtype=np.float64)
@@ -158,8 +163,14 @@ var_u   = M1[:,3]
 var_v   = M1[:,4]
 mean_uv = M1[:,12]
 
+# Valid only for TTBLs
 if itype == 3:
+    
+    # Change sign for Reynolds stresses
     mean_uv =  - mean_uv
+    
+    # Shift due to the translating wall
+    mean_u = uwall - mean_u
 
 vort_x = M2[:,0]
 vort_y = M2[:,1]
@@ -189,12 +200,6 @@ if itype == 3:
 # Mesh spacings
 delta_x = Lx / nx
 delta_z = Lz / nz
-
-# Valid only for TTBLs
-if itype == 13:
-
-    # Shift due to the translating wall
-    mean_u = uwall - mean_u
            
 # Shear quantities
 sh_vel = np.sqrt(nu * np.abs(mg_x[0]))
