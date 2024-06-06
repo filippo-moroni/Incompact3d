@@ -163,12 +163,15 @@ var_u   = M1[:,3]
 var_v   = M1[:,4]
 mean_uv = M1[:,12]
 
-# Valid only for TTBLs
+# Valid only for Channel
 if itype == 3:
     
     # Change sign for Reynolds stresses
     mean_uv =  - mean_uv
-    
+
+# Valid only for TTBLs
+elif itype == 13:
+
     # Shift due to the translating wall
     mean_u = uwall - mean_u
 
