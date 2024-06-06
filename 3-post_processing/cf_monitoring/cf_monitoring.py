@@ -118,6 +118,7 @@ ylimsup = np.max(cfx) * 1.2
 
 print("!--- Plotting of friction coefficient ---!")
 print()
+print("Mean cf value:", mean_cf)
 
 # Creating the folder for cf plot if it does not exist
 if not os.path.exists("plots"):
