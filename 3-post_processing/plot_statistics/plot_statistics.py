@@ -105,8 +105,8 @@ with open('input.i3d', 'r') as file:
     itype = int(itype)
     nx    = int(nx)
     nz    = int(nz)
-    Lx    = int(Lx)
-    Lz    = int(Lz)
+    Lx    = np.float64(Lx)
+    Lz    = np.float64(Lz)
     
 #!--- Parameters & reference data ---!
 if itype == 13:
