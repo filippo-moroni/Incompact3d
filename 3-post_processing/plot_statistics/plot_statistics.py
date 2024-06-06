@@ -299,8 +299,7 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 
 # TTBL
 if itype == 13:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+
     xlimsup = 520.0
     ylimsup = 20.0
         
@@ -313,8 +312,7 @@ if itype == 13:
         
 # Channel    
 elif itype == 3:
-    labels = [0.1, r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
+
     xlimsup = 300.0
     ylimsup = 25.0
     
@@ -340,16 +338,13 @@ ax.set_yscale('linear')
 
 # Minor x-ticks based on log10
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
-
-# Setting x-ticks with values and labels
-ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
 
-# Setting y-ticks
-ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
+# Setting x-ticks labels
+plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
@@ -367,8 +362,7 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 
 # TTBL
 if itype == 13:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+
     xlimsup = 520.0
     ylimsup = 8.0
     
@@ -377,8 +371,7 @@ if itype == 13:
         
 # Channel    
 elif itype == 3:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
+
     xlimsup = 300.0
     ylimsup = 8.0
     
@@ -400,16 +393,13 @@ ax.set_yscale('linear')
 
 # Minor x-ticks based on log10
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
-
-# Setting x-ticks with values and labels
-ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
 
-# Setting y-ticks
-ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
+# Setting x-ticks labels
+plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
@@ -427,8 +417,7 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 
 # TTBL
 if itype == 13:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+
     xlimsup = 520.0
     ylimsup = 0.8
     
@@ -437,8 +426,7 @@ if itype == 13:
         
 # Channel    
 elif itype == 3:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
+
     xlimsup = 300.0
     ylimsup = 0.8
     
@@ -460,16 +448,13 @@ ax.set_yscale('linear')
 
 # Minor x-ticks based on log10
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
-
-# Setting x-ticks with values and labels
-ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
 
-# Setting y-ticks
-ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
+# Setting x-ticks labels
+plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
@@ -487,8 +472,7 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 
 # TTBL
 if itype == 13:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$", r"$500$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0,    500.0]
+
     xlimsup = 520.0
     ylimsup = 0.8
     
@@ -500,8 +484,7 @@ if itype == 13:
         
 # Channel    
 elif itype == 3:
-    labels = [r"$0.1$", r"$1$", r"$5$", r"$10$", r"$30$", r"$60$", r"$100$", r"$180$"]
-    values = [   0.1,      1.0,    5.0,    10.0,    30.0,    60.0,    100.0,    180.0]
+
     xlimsup = 300.0
     ylimsup = 0.8
     
@@ -525,16 +508,13 @@ ax.set_yscale('linear')
 
 # Minor x-ticks based on log10
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
-
-# Setting x-ticks with values and labels
-ax.set_xticks(values, labels=labels, color="k", rotation='horizontal', ha='left')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers, labelsize=fla2) 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
 
-# Setting y-ticks
-ax.tick_params(axis='y', labelcolor="k", labelsize=fla2)
+# Setting x-ticks labels
+plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
