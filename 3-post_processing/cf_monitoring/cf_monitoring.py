@@ -94,34 +94,39 @@ M1 = np.loadtxt('cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 cfx       = M1[:,4] 
 time_unit = M1[:,7] 
 
-# Calculating the delta (in time units) between savings (skipping first saving)
-a = time_unit[1]
-b = time_unit[2]
-delta = b - a
-    
-# Asking the user for lower limit for the range of time units for cf
-lower_tu = np.float64(input("Specify a lower range for time units (T): "))
-print()
-
-# Calculating its related index and show it
-lower_index = int(lower_tu / delta)
-print("Correspondent snapshot index:", lower_index)
-print()
-
-# Average
-mean_cf = np.mean(cfx[lower_index:])
-
 # Axes ranges
 xliminf = time_unit[0]
 xlimsup = time_unit[-1]
 yliminf = np.min(cfx) * 0.0
 ylimsup = np.max(cfx) * 1.2
 
+#!--------------------------------------------------------------------------------------!
+
+# Only for a channel
+if itype == 3:
+
+    # Calculating the delta (in time units) between savings (skipping first saving)
+    a = time_unit[1]
+    b = time_unit[2]
+    delta = b - a
+    
+    # Asking the user for lower limit for the range of time units for cf
+    lower_tu = np.float64(input("Specify a lower range for time units (T): "))
+    print()
+
+    # Calculating its related index and show it
+    lower_index = int(lower_tu / delta)
+    print("Correspondent snapshot index:", lower_index)
+    print()
+
+    # Average
+    mean_cf = np.mean(cfx[lower_index:])
+    print("Mean cf value:", mean_cf)
+
 #!--- Plot section, friction coefficient ---!
 
 print("!--- Plotting of friction coefficient ---!")
 print()
-print("Mean cf value:", mean_cf)
 
 # Creating the folder for cf plot if it does not exist
 if not os.path.exists("plots"):
@@ -133,14 +138,26 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 
-# Horizontal line to show mean cf value
-ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
-
 # Create a rectangle patch to show points we are excluding from average
 rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none', facecolor='r', alpha=0.1)
 
-# Add the patch to the plot
-ax.add_patch(rect)
+# Channel flow only
+if itype == 3:
+    
+    # Add the patch to the plot
+    ax.add_patch(rect)
+    
+    # Horizontal line to show mean cf value
+    ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
+    
+    # Creating the folder for cf average
+    if not os.path.exists("data_post"):
+        os.mkdir("data_post")
+        
+    
+
+
+
 
 # Axes labels
 ax.set_ylabel(r'$c_f$', fontsize=fla, labelpad=pad_axes_lab)
