@@ -86,12 +86,20 @@ with open('input.i3d', 'r') as file:
     Lx    = lines[21]
     Lz    = lines[23]
     
-    # Removing characters in front of the extracted strings
+    # Removing characters in front of the extracted strings and the comments
     itype = itype.split('=')[-1].strip()
-    nx    =    nx.split('=')[-1].strip()
-    nz    =    nz.split('=')[-1].strip()
-    Lx    =    Lx.split('=')[-1].strip()
-    Lz    =    Lz.split('=')[-1].strip()
+    
+    nx    = nx.split('!')[0]
+    nx    = nx.split('=')[-1].strip()
+    
+    nz    = nz.split('!')[0]
+    nz    = nz.split('=')[-1].strip()
+    
+    Lx    = Lx.split('!')[0]
+    Lx    = Lx.split('=')[-1].strip()
+    
+    Lz    = Lz.split('!')[0]
+    Lz    = Lz.split('=')[-1].strip()
     
     # Convert to integer
     itype = int(itype)
