@@ -69,11 +69,12 @@ with open('input.i3d', 'r') as file:
     # Read all lines into a list
     lines = file.readlines()
     
-    # Extract itype, nx, nz, Lx, Lz, Re 
+    # Extract itype, nx, nz, Lx, Ly, Lz, Re 
     itype = lines[7]  
     nx    = lines[14]
     nz    = lines[16]
     Lx    = lines[21]
+    Ly    = lines[22]
     Lz    = lines[23]
     re    = lines[26]
     
@@ -89,6 +90,9 @@ with open('input.i3d', 'r') as file:
     Lx    = Lx.split('!')[0]
     Lx    = Lx.split('=')[-1].strip()
     
+    Ly    = Ly.split('!')[0]
+    Ly    = Ly.split('=')[-1].strip()
+    
     Lz    = Lz.split('!')[0]
     Lz    = Lz.split('=')[-1].strip()
     
@@ -100,6 +104,7 @@ with open('input.i3d', 'r') as file:
     nx    = int(nx)
     nz    = int(nz)
     Lx    = np.float64(Lx)
+    Ly    = np.float64(Ly)
     Lz    = np.float64(Lz)
     re    = np.float64(re)
     
@@ -215,6 +220,7 @@ delta_z_plus = delta_z / delta_nu
 y_plus       = y       / delta_nu 
 
 Lx_plus = Lx / delta_nu
+Ly_plus = Ly / delta_nu / 2.0
 Lz_plus = Lz / delta_nu
 
 mean_u  /= sh_vel
@@ -236,12 +242,14 @@ if itype == 3:
     with open('data_post/grid_spacings.txt', 'w') as f:
         f.write(f"{'delta_x_plus':<{c_w}}, " +
                 f"{'delta_z_plus':<{c_w}}, " +
-                f"{'Lx_plus':<{c_w}}, " +
+                f"{'Lx_plus':<{c_w}}, "      +
+                f"{'Ly_plus':<{c_w}}, "      +
                 f"{'Lz_plus':<{c_w}}\n")
 
-        f.write(f"{delta_x_plus:{fs}}, " +
-                f"{delta_z_plus:{fs}}, " +
-                f"{Lx_plus:{fs}}, " +
+        f.write(f"{delta_x_plus:{fs}}, "     +
+                f"{delta_z_plus:{fs}}, "     +
+                f"{Lx_plus:{fs}}, "          +
+                f"{Ly_plus:{fs}}, "          +
                 f"{Lz_plus:{fs}}\n") 
 
 #!--- Reference mean profiles ---!
