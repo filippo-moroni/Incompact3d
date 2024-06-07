@@ -59,13 +59,13 @@ if istret == 3:
 elif istret == 2:
     cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
-nx = 200                 # number of points in x direction
+nx = 250                 # number of points in x direction
 ny = 649                 # number of points in y direction
-nz = 200                 # number of points in z direction
+nz = 250                 # number of points in z direction
 
 
-xlx = 6.0*bl_thickness       # domain dimension in x direction
-zlz = 3.0*bl_thickness       # domain dimension in z direction
+xlx = 4.0*bl_thickness       # domain dimension in x direction
+zlz = 2.0*bl_thickness       # domain dimension in z direction
 
 if istret == 3:
     yly = 3.0*bl_thickness   # domain dimension in y direction
@@ -408,20 +408,20 @@ if istret == 3:
     print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_500)
     print('Mesh size z-direction: delta_z+ =', delta_z_nd_500)
     print()
-    print('Mesh size (y) at the estimated BL edge: delta_yd+ =', delta_yd_nd_500)
+    print('Mesh size (y) at the estimated BL edge @ Re_tau = 500: delta_yd+ =', delta_yd_nd_500)
     print()
     print('!--- Number of discretization points ---!')
     print()
     print('Number of mesh nodes in the viscous sublayer at cf peak:', npvis)
     print('Number of mesh nodes in the initial shear layer:', npsl)
     print()
-
-elif istret == 2:
-    print('Mesh size y-direction at the channel center: delta_yc+ =', delta_yc_nd)
     
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
 
+elif istret == 2:
+    print('Mesh size y-direction at the channel center: delta_yc+ =', delta_yc_nd)
+    
 print('Total number of points: ntot =', n_tot)
 print()
     
