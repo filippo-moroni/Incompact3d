@@ -13,7 +13,8 @@ module extra_tools
             calculate_shear_velocity,   &
             spanwise_wall_oscillations, &
             calculate_ubulk,            &
-            update_time_int_coeff
+            update_time_int_coeff,      &
+            write_plane
 
 contains
   
@@ -302,7 +303,7 @@ contains
   call MPI_REDUCE(ub,uball,1,real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
     
   end subroutine calculate_ubulk 
-  
+    
   !---------------------------------------------------------------------------!
   ! Update coefficients for time integration schemes
   ! if adaptive time-step is used (max CFL condition)
@@ -332,6 +333,20 @@ contains
            
   end subroutine update_time_int_coeff
   !---------------------------------------------------------------------------! 
+  ! Write a plane of the scalar field with z-dir. normal for visualization.
+  !---------------------------------------------------------------------------!
+   
+  subroutine write_plane()
+
+  ! Switch to ouput 2d with z-dir. normal plane
+  output2D = 3
+ 
+  call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
+ 
+  ! Switch again to output3d for default snapshots
+  output2D = 0
+  
+  end subroutine write_plane
   
 end module extra_tools
 

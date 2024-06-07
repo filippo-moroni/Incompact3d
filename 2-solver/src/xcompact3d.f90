@@ -127,6 +127,11 @@ program xcompact3d
          call print_cf(ux1,uz1)
      end if
      
+     ! Save a scalar plane with z-normal for low memory visualization
+     if ((mod(itime, ioutput_plane) .eq. 0 .and. iscalar .eq. 1)
+         call write_plane()    
+     end if
+     
   enddo ! End time loop
 
   call finalise_xcompact3d()

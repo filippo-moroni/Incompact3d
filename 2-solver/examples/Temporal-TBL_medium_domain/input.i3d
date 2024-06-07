@@ -73,6 +73,7 @@ irestart = 0          ! Read initial flow field? (0: No, 1: Yes)
 icheckpoint = 10000   ! Frequency for writing backup file
 ioutput = 10000       ! Frequency for saving and visualization
 ioutput_cf = 100      ! Frequency for saving cf and related quantities
+ioutput_plane = 100   ! Frequency for saving a scalar plane for visualization
 ilist = 100           ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
