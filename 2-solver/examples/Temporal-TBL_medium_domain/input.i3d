@@ -12,17 +12,17 @@ p_row=0               ! Row partition
 p_col=0               ! Column partition
 
 ! Mesh
-nx=36                 ! X-direction nodes
+nx=250                ! X-direction nodes
 ny=649                ! Y-direction nodes
-nz=54                 ! Z-direction nodes
+nz=250                ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 
 beta = 2.5            ! Refinement parameter (beta)
 
 ! Domain dimensions
-xlx = 10.0            ! Lx (Size of the box in x-direction)
+xlx = 86.8            ! Lx (Size of the box in x-direction)
 yly = 65.1            ! Ly (Size of the box in y-direction)
-zlz = 8.0             ! Lz (Size of the box in z-direction)
+zlz = 43.4            ! Lz (Size of the box in z-direction)
 
 ! Flow parameters
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
@@ -72,7 +72,7 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
 icheckpoint = 10000   ! Frequency for writing backup file
 ioutput = 10000       ! Frequency for saving and visualization
-ioutput_cf = 5000     ! Frequency for saving cf and related quantities
+ioutput_cf = 100      ! Frequency for saving cf and related quantities
 ilist = 100           ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 
