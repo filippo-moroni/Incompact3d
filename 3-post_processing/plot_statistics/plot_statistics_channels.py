@@ -48,68 +48,11 @@ grey = [0.5, 0.5, 0.5]
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
 #!--------------------------------------------------------------------------------------!
-
-# Read the name of the flowcase
-with open('post.prm', 'r') as file:
-    
-    # Read all lines into a list
-    lines = file.readlines()
-    
-    # Extract flowcase name
-    add_string = lines[3] 
-    add_string = add_string.split('!')[0]
-    add_string = add_string.rstrip()
-
-# Read input file
-with open('input.i3d', 'r') as file:
-    
-    # Read all lines into a list
-    lines = file.readlines()
-    
-    # Extract itype, nx, nz, Lx, Ly, Lz, Re 
-    itype = lines[7]  
-    nx    = lines[14]
-    nz    = lines[16]
-    Lx    = lines[21]
-    Ly    = lines[22]
-    Lz    = lines[23]
-    re    = lines[26]
-    
-    # Removing characters in front of the extracted strings and the comments
-    itype = itype.split('=')[-1].strip()
-    
-    nx    = nx.split('!')[0]
-    nx    = nx.split('=')[-1].strip()
-    
-    nz    = nz.split('!')[0]
-    nz    = nz.split('=')[-1].strip()
-    
-    Lx    = Lx.split('!')[0]
-    Lx    = Lx.split('=')[-1].strip()
-    
-    Ly    = Ly.split('!')[0]
-    Ly    = Ly.split('=')[-1].strip()
-    
-    Lz    = Lz.split('!')[0]
-    Lz    = Lz.split('=')[-1].strip()
-    
-    re    = re.split('!')[0]
-    re    = re.split('=')[-1].strip()
-    
-    # Convert to integer
-    itype = int(itype)
-    nx    = int(nx)
-    nz    = int(nz)
-    Lx    = np.float64(Lx)
-    Ly    = np.float64(Ly)
-    Lz    = np.float64(Lz)
-    re    = np.float64(re)
     
 #!--- Parameters & reference data ---!
 
 # Channel (valid only for CFR at the moment)
-re_cent = np.float64(re)             # centerline Reynolds number of a laminar Poiseuille flow
-re_tau  = 0.123*(re_cent**0.875)     # corresponding estimated friction Reynolds number 
+re_cent = 4764.0                     # centerline Re number laminar Poiseuille flow 
 nu      = 1.0/re_cent                # kinematic viscosity
                
 # Reading of Lee & Moser (2015) data
@@ -123,17 +66,25 @@ var_v_lm   =   M[:,3]
 mean_uv_lm = - M[:,5]
                
 #!--- Reading of files section ---!
-print()
 
-print("!--- Plotting of statistics for a channel ---!")
+# Reading of grid points
+y = np.loadtxt('yp.dat')
 
-# Reading of mean statistics
-M1 = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+# Number of points in y direction
+ny = len(y)
+
+# Halve the points in y direction
+ny = (ny - 1) // 2 + 1
+
+#!--------------------------------!
+
+#!--- Fixed walls ---!
+
+# Reading of mean statistics, fixed walls
+M1 = np.loadtxt('mean_stats_retau200_fw.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
-# Reading of vorticity components and mean gradient
-M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
-
-print()
+# Reading of vorticity components and mean gradient, fixed walls
+M2 = np.loadtxt('vort_stats_retau200_fw.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 # Extracting quantities from the full matrices
 mean_u  = M1[:,0]   
@@ -144,53 +95,50 @@ mean_uv = M1[:,12]
 # Change sign for Reynolds stresses
 mean_uv =  - mean_uv
 
-vort_x = M2[:,0]
-vort_y = M2[:,1]
-vort_z = M2[:,2]
-mg_tot = M2[:,3]
+# Mean streamwise gradient
 mg_x   = M2[:,4]
-mg_z   = M2[:,5]
-
-# Reading of grid points
-y = np.loadtxt('yp.dat')
-
-# Number of points in y direction
-ny = len(y)
-
-# Halve the points in y direction for a channel
-if itype == 3:
-    ny = (ny - 1) // 2 + 1
-
-#!--------------------------------!
-
-#!--- Calculations ---!
-
-# Mesh spacings
-delta_x = Lx / nx
-delta_z = Lz / nz
            
 # Shear quantities
 sh_vel = np.sqrt(nu * np.abs(mg_x[0]))
 delta_nu = nu / sh_vel
-t_nu = nu / (sh_vel ** 2)
 
 # Rescaling variables through wall units
-delta_x_plus = delta_x / delta_nu
-delta_z_plus = delta_z / delta_nu
-y_plus       = y       / delta_nu 
-
-Lx_plus = Lx / delta_nu
-Ly_plus = Ly / delta_nu 
-Lz_plus = Lz / delta_nu
-
+y_plus = y / delta_nu 
 mean_u  /= sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
 mean_uv /= sh_vel ** 2
 
-vort_x *= t_nu
-vort_y *= t_nu
-vort_z *= t_nu
+#!--- Oscillating walls ---!
+
+# Reading of mean statistics, oscillating walls
+M1 = np.loadtxt('mean_stats_retau200_ow.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    
+# Reading of vorticity components and mean gradient, oscillating walls
+M2 = np.loadtxt('vort_stats_retau200_ow.txt', skiprows=1, delimiter=',', dtype=np.float64)
+
+# Extracting quantities from the full matrices
+mean_u_ow  = M1[:,0]   
+var_u_ow   = M1[:,3]
+var_v_ow   = M1[:,4]
+mean_uv_ow = M1[:,12]
+
+# Change sign for Reynolds stresses
+mean_uv_ow = - mean_uv_ow
+
+# Mean streamwise gradient
+mg_x_ow    = M2[:,4]
+           
+# Shear quantities
+sh_vel_ow = np.sqrt(nu * np.abs(mg_x_ow[0]))
+delta_nu_ow = nu / sh_vel_ow
+
+# Rescaling variables through wall units
+y_plus_ow = y / delta_nu_ow 
+mean_u_ow  /= sh_vel_ow
+var_u_ow   /= sh_vel_ow ** 2
+var_v_ow   /= sh_vel_ow ** 2
+mean_uv_ow /= sh_vel_ow ** 2
 
 #!--- Reference mean profiles ---!
 
@@ -231,6 +179,7 @@ ylimsup = 25.0
 # Mean velocity profile
 ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=lw)
+ax.scatter(y_plus_ow[:ny], mean_u_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
     
 # Viscous sublayer and log law
 ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
@@ -259,7 +208,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/umean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/umean.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
 plt.show()
@@ -275,6 +224,7 @@ ylimsup = 8.0
 # Plotting
 ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=lw)
+ax.scatter(y_plus_ow[:ny], var_u_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -299,7 +249,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/uvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/uvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -315,6 +265,7 @@ ylimsup = 0.8
 # Plotting
 ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=lw)
+ax.scatter(y_plus_ow[:ny], var_v_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -339,7 +290,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/vvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/vvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -355,6 +306,7 @@ ylimsup = 0.8
 # Plotting    
 ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=lw)
+ax.scatter(y_plus_ow[:ny], mean_uv_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
        
 # y-axis label
 ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -381,7 +333,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/uvmean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/uvmean.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
