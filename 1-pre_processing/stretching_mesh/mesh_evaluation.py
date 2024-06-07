@@ -30,12 +30,12 @@ plt.rcParams.update({
 })
 
 # Inputs
-istret = 2               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 0.25              # beta parameter for mesh stretching
+istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+beta = 2.5               # beta parameter for mesh stretching
 delta_t = 0.01           # time-step
 
 # Reynolds number
-re = 4764.0              # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
+re = 500.0               # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
 nu = 1.0/re              # kinematic viscosity as defined in Incompact3d
 
 # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
@@ -45,24 +45,32 @@ re_tau = 0.116*re**0.88
 twd = 1.0                # trip wire diameter D
 bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 
-# Reference velocity
-uref = 0.667             # reference velocity (TTBL: wall velocity; Channel: bulk velocity)
-uwall = uref
+# Reference velocity (TTBL: wall velocity; Channel: bulk velocity)
+if istret == 3:
+    uref = 1.0
+    uwall = uref
+elif istret == 2:
+    uref = 0.667              
 
 # Selection of friction coefficient at peak or at steady state conditions
 # for grid spacings evaluation in wall units 
+if istret == 3:
+    cf = 0.007           # maximum cf estimated at peak for TTBL (Cimarelli et al. (2024))
+elif istret == 2:
+    cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
-cf = 0.007               # maximum cf estimated at peak (Cimarelli et al. (2024))
-cf = 0.00793             # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
+nx = 200                 # number of points in x direction
+ny = 649                 # number of points in y direction
+nz = 200                 # number of points in z direction
 
-nx = 400                 # number of points in x direction
-ny = 201                 # number of points in y direction
-nz = 150                 # number of points in z direction
 
-xlx = 21.0               # domain dimension in x direction
-#yly = 3.0*bl_thickness   # domain dimension in y direction
-yly = 2.0                # domain dimension in y direction
-zlz = 4.2                # domain dimension in z direction
+xlx = 6.0*bl_thickness       # domain dimension in x direction
+zlz = 3.0*bl_thickness       # domain dimension in z direction
+
+if istret == 3:
+    yly = 3.0*bl_thickness   # domain dimension in y direction
+elif istret == 2:
+    yly = 2.0                # domain dimension in y direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
 
