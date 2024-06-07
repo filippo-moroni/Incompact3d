@@ -548,6 +548,7 @@ if istret == 3:
          f.write("sh_vel_IC:     Shear velocity of the initial condition.\n")
          f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")
          f.write("sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).\n")
+         f.write("n_tot:         Total number of grid points.\n")
          f.write("\n")
          f.write("!-------------------------------------!\n")
          
