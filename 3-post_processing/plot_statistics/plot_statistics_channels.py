@@ -48,6 +48,9 @@ grey = [0.5, 0.5, 0.5]
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
 #!--------------------------------------------------------------------------------------!
+
+#! Additional suffix string
+add_string = "retau200_fw_ow"
     
 #!--- Parameters & reference data ---!
 
@@ -179,7 +182,7 @@ ylimsup = 25.0
 # Mean velocity profile
 ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=lw)
-ax.scatter(y_plus_ow[:ny], mean_u_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
+ax.scatter(y_plus_ow[:ny], mean_u_ow[:ny], marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='C4')
     
 # Viscous sublayer and log law
 ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
@@ -208,7 +211,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/umean.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/umean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
 plt.show()
@@ -224,7 +227,7 @@ ylimsup = 8.0
 # Plotting
 ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=lw)
-ax.scatter(y_plus_ow[:ny], var_u_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
+ax.scatter(y_plus_ow[:ny], var_u_ow[:ny], marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='C4')
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -249,7 +252,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/uvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/uvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -265,7 +268,7 @@ ylimsup = 0.8
 # Plotting
 ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=lw)
-ax.scatter(y_plus_ow[:ny], var_v_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
+ax.scatter(y_plus_ow[:ny], var_v_ow[:ny], marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='C4')
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -290,7 +293,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/vvar.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/vvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
@@ -306,7 +309,7 @@ ylimsup = 0.8
 # Plotting    
 ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=lw)
-ax.scatter(y_plus_ow[:ny], mean_uv_ow[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
+ax.scatter(y_plus_ow[:ny], mean_uv_ow[:ny], marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='C4')
        
 # y-axis label
 ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -333,7 +336,7 @@ ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=t
 plt.xticks(ha='left')
 
 # Saving the figure
-plt.savefig(f'plots/uvmean.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'plots/uvmean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
