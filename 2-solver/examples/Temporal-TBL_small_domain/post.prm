@@ -1,6 +1,8 @@
 #
 #  POST-INCOMPACT3D post processing parameters
 #
+ttbl_small      ! Name of the flow case for suffix in filenames of plots
+#
 1    # file1    ! First snapshot index
 1    # filen    ! Final snapshot index 
 1    # icrfile  ! File increment 
