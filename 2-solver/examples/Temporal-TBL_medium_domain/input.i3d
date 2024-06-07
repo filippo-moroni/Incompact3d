@@ -33,7 +33,7 @@ ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at t
 ilast = 100000        ! Last iteration
 
 ! Enable modelling tools
-numscalar = 0         ! Number of scalars 
+numscalar = 1         ! Number of scalars 
 
 ! Boundary and initial conditions
 iin = 1               ! Noise conditions: 0: same noise for all simulations, 1: pseudo-random noise based on system clock (default: 0)
