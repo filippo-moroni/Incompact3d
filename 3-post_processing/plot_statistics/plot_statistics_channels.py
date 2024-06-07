@@ -141,7 +141,6 @@ var_u   = M1[:,3]
 var_v   = M1[:,4]
 mean_uv = M1[:,12]
 
- 
 # Change sign for Reynolds stresses
 mean_uv =  - mean_uv
 
@@ -221,7 +220,7 @@ u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 # Creating the folder for plots if it does not exist
 os.makedirs('plots', mode=0o777, exist_ok=True)
     
-#!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
+#!--- Plot section, mean velocity profile ---!
 
 # Mean velocity profile
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)

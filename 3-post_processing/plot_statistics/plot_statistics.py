@@ -70,7 +70,7 @@ with open('post.prm', 'r') as file:
     add_string = add_string.split('!')[0]
     add_string = add_string.rstrip()
 
-# Read if we are plotting a channel or a TTBL
+# Read input file
 with open('input.i3d', 'r') as file:
     
     # Read all lines into a list
