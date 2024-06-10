@@ -150,7 +150,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{re_theta[j]:{fs}}, " +
             f"{sh_vel[j]:{fs}}, " +
             f"{cf[j]:{fs2}}, " +
-            f"{time_unit[j]:{fs}}\n")
+            f"{time_unit[j+1]:{fs}}\n")
            
 #!---------------------------------------------------------!
 # Check section (everything works)
