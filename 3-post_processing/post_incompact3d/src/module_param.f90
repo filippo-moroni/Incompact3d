@@ -317,7 +317,7 @@ module param
   integer :: ifft,istret,iforc_entree,iturb
   integer :: iin,itimescheme,iimplicit,ifirst,ilast,iles
   integer :: ntime ! How many (sub)timestpeps do we need to store?
-  integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,imodulo2,idemarre,icommence,irecord
+  integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,imodulo2,idemarre,icommence,irecord
   integer :: ioutflow, ninflows, ntimesteps
   integer :: itime0
   integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
@@ -444,6 +444,10 @@ module param
   real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
   real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
   real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
+  
+  ! Boundary layer thickness parameters (TTBLs only)
+  real(mytype), save :: delta_99     ! BL thickness (1% of velocity of the wall)   
+  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient 
 
   ! Spanwise wall oscillation
   integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters
@@ -461,6 +465,7 @@ module param
   real(mytype) :: cflmax
     
   !numbers
+  real(mytype),parameter :: zpzeroone=0.01_mytype
   real(mytype),parameter :: zpone=0.1_mytype
   real(mytype),parameter :: zptwo=0.2_mytype
   real(mytype),parameter :: zptwoone=0.21_mytype

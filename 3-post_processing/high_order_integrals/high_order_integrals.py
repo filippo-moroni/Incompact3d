@@ -31,7 +31,7 @@ ii = 0
 
 # Reading of the post-processing input file for indexes calculation of snapshots
 file_path = f"post.prm"
-data = np.loadtxt(file_path, delimiter=None, dtype=int, comments='#', skiprows=3)
+data = np.loadtxt(file_path, delimiter=None, dtype=int, comments='#', skiprows=5)
 
 # Inputs
 file1   = data[0]  # First snapshot index

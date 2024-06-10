@@ -71,7 +71,7 @@ subroutine parameter(input_i3d)
        ifilter, C_filter, iturbine
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
-  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, nvisu, ilist, iprocessing, &
+  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, nvisu, ilist, iprocessing, &
        ninflows, ntimesteps, inflowpath, ioutflow, output2D
   NAMELIST /AdditionalControls/ iswitch_wo
   NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
@@ -108,7 +108,7 @@ subroutine parameter(input_i3d)
      write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
      write(*,*) '!  Sylvain Laizet, 2018                                   !'
      write(*,*) '!                                                         !'
-     write(*,*) '!  Modified by Filippo Moroni & Roberto Corsini, 2024    !'
+     write(*,*) '!  Modified by Filippo Moroni & Roberto Corsini, 2024     !'
      write(*,*) '!---------------------------------------------------------!'
      
 #if defined(VERSION)
@@ -372,12 +372,13 @@ subroutine parameter(input_i3d)
   !###########################################################################
   
   ! Creating /data folder
-  !if (nrank==0) call system('mkdir -p data')
   if (nrank==0) call execute_command_line('mkdir -p data')
   
   ! Creating /restart_info folder
-  !if (nrank==0) call system('mkdir -p restart_info')
   if (nrank==0) call execute_command_line('mkdir -p restart_info')
+  
+  ! Creating /monitoring folder
+  if (nrank==0) call execute_command_line('mkdir -p monitoring')
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
