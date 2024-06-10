@@ -128,9 +128,9 @@ program xcompact3d
      end if
      
      ! Save a scalar plane with z-normal for low memory visualization
-     if ((mod(itime, ioutput_plane) .eq. 0 .and. iscalar .eq. 1)
-         call write_plane()    
-     end if
+     !if ((mod(itime, ioutput_plane) .eq. 0 .and. iscalar .eq. 1) then
+     !    call write_plane()    
+     !end if
      
   enddo ! End time loop
 
@@ -304,12 +304,16 @@ subroutine finalise_xcompact3d()
     
   !--- Create or open a file to store the dt and ts of stop ---! 
   if(nrank.eq.0) then
-      inquire(file="dt_history.txt", exist=exists)
+ 
+      ! Write filename
+      write(filename,"('monitoring/dt_history.txt')") 
+      
+      inquire(file=filename, exist=exists)
       if (exists) then
-          open(newunit=iunit, file="dt_history.txt", status="old", position="append", action="write")
+          open(newunit=iunit, file=filename, status="old", position="append", action="write")
           write(iunit, '(F8.6,A,I12,A,I12,A,F10.4)')  dt,  ',',  ifirst,  ',',  ilast, ',', t
       else
-          open(newunit=iunit, file="dt_history.txt", status="new", action="write")
+          open(newunit=iunit, file=filename, status="new", action="write")
           write(iunit, '(A8,A,A12,A,A12,A,A10)') 'dt', ',', 'ifirst', ',', 'ilast', ',', 'time_unit'
           write(iunit, '(F8.6,A,I12,A,I12,A,F10.4)')  dt,  ',',  ifirst,  ',',  ilast, ',', t
       end if

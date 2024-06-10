@@ -32,12 +32,19 @@ contains
   use dbg_schemes, only : sqrt_prec
       
   implicit none
-  
-  integer :: iunit
-  logical :: exists
-  
+ 
   ! Inputs 
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
+  
+  ! Locals
+  integer :: iunit
+  logical :: exists
+  character(len=90) :: filename
+  
+  ! Write filename
+  if (rank .eq. 0) then
+      write(filename,"('monitoring/cf_history.txt')") 
+  end if
   
   ! TTBL
   if(itype .eq. itype_ttbl) then
@@ -54,8 +61,8 @@ contains
           fric_coeffx = two * ((sh_velx / uwall)**2)
           fric_coeffz = two * ((sh_velz / uwall)**2)
           
-          ! Calculate friction Re number
-          re_tau = delta_99 * sh_velx / xnu
+          ! Calculate friction Re number for a TBL
+          re_tau_tbl = delta_99 * sh_velx / xnu
           
           ! Calculate viscous time unit
           if(iswitch_wo .eq. 1) then
@@ -66,17 +73,17 @@ contains
               t_viscous = xnu / (sh_vel**2)
           end if
           
-          inquire(file="cf_history.txt", exist=exists)
+          inquire(file=filename, exist=exists)
           if (exists) then
-              open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
+              open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12, F12.6,A,F12.6)') &
                              sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
                              fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                       &
                              t_viscous,  ',', t,           ',', itime,       ',',                                       &
-                             delta_99,   ',', re_tau
+                             delta_99,   ',', re_tau_tbl
           else
-              open(newunit=iunit, file="cf_history.txt", status="new", action="write")
+              open(newunit=iunit, file=filename, status="new", action="write")
               ! Header
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12, A12,A,A12)') &
                             'sh_vel',    ',', 'sh_velx', ',', 'sh_velz', ',',                       &
@@ -88,7 +95,7 @@ contains
                              sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
                              fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                       &
                              t_viscous,  ',', t,           ',', itime,       ',',                                       &
-                             delta_99,   ',', re_tau
+                             delta_99,   ',', re_tau_tbl
           end if
               close(iunit)
       end if
@@ -116,9 +123,9 @@ contains
               t_viscous = xnu / (sh_vel**2)
           end if
           
-          inquire(file="cf_history.txt", exist=exists)
+          inquire(file=filename, exist=exists)
           if (exists) then
-              open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
+              open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.4)') &
                              sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                 & 
@@ -126,7 +133,7 @@ contains
                              t_viscous,  ',', t,           ',', itime,       ',',                                 &
                              ubulk
           else
-              open(newunit=iunit, file="cf_history.txt", status="new", action="write")
+              open(newunit=iunit, file=filename, status="new", action="write")
               ! Header
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12)') &
                             'sh_vel', ',', 'sh_velx', ',', 'sh_velz', ',',                   &
@@ -353,7 +360,7 @@ contains
   use var,         only : ux2    
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
-  use decomp_2d,   only : xsize, ysize
+  use decomp_2d,   only : xsize, ysize, ystart, yend
   use decomp_2d,   only : transpose_x_to_y
     
   use param,       only : zpzeroone 
@@ -369,7 +376,7 @@ contains
    
   ! Local variables 
   real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
-  real(mytype),                     :: temp
+  real(mytype)                      :: temp
   integer                           :: code,i,j,k
     
   ! Transpose data to y-pencils 

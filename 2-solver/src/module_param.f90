@@ -447,7 +447,7 @@ module param
   
   ! Boundary layer thickness parameters (TTBLs only)
   real(mytype), save :: delta_99     ! BL thickness (1% of velocity of the wall)   
-  real(mytype), save :: re_tau       ! Friction Reynolds number based on mean streamwise gradient 
+  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient 
 
   ! Spanwise wall oscillation
   integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters

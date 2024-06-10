@@ -372,12 +372,13 @@ subroutine parameter(input_i3d)
   !###########################################################################
   
   ! Creating /data folder
-  !if (nrank==0) call system('mkdir -p data')
   if (nrank==0) call execute_command_line('mkdir -p data')
   
   ! Creating /restart_info folder
-  !if (nrank==0) call system('mkdir -p restart_info')
   if (nrank==0) call execute_command_line('mkdir -p restart_info')
+  
+  ! Creating /monitoring folder
+  if (nrank==0) call execute_command_line('mkdir -p monitoring')
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
