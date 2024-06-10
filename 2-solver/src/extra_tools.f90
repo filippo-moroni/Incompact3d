@@ -21,7 +21,8 @@ contains
   
   !---------------------------------------------------------------------------!
   ! Write shear velocities, skin friction coefficients,
-  ! viscous time unit, time unit and bulk velocity (channel only) and stores
+  ! viscous time unit, time unit, bulk velocity (channel only) 
+  ! boundary layer thickness and Re_tau (TTBLs only) and stores
   ! them in a .txt file (used for TTBL and Channel).
   !---------------------------------------------------------------------------!
   subroutine print_cf(ux,uz)
@@ -42,6 +43,9 @@ contains
   if(itype .eq. itype_ttbl) then
       ! Shear velocity bottom wall
       call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+      
+      ! Boundary layer thickness
+      call calculate_bl_thick(ux,delta_99)
       
       ! Create or open a file to store sh_vel, cf coefficients, viscous time and time unit
       if(nrank .eq. 0) then
@@ -335,23 +339,35 @@ contains
   end subroutine update_time_int_coeff
   
   !---------------------------------------------------------------------------! 
-  ! Calculate the boundary layer thickness and the friction Re number.
+  ! Calculate the boundary layer thickness for a TTBL.
   !---------------------------------------------------------------------------!
  
-  subroutine calculate_bl_thick()
+  subroutine calculate_bl_thick(ux,delta_99)
   
-  use decomp_2d
-  use param
-  use var, only : ux1, ux2
-  
+  use var,         only : ux2    
+  use MPI
+  use decomp_2d,   only : mytype, real_type, nrank
+  use decomp_2d,   only : xsize, ysize
+  use decomp_2d,   only : transpose_x_to_y
+    
+  use param,       only : zpzeroone 
+  use variables
+    
   implicit none
   
-  ! Local variables
-  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
-  integer                           :: code,i,j,k
+  ! Inputs
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
   
+  ! Outputs
+  real(mytype), intent(out) :: delta_99  ! BL thickness 
+   
+  ! Local variables 
+  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
+  real(mytype),                     :: temp
+  integer                           :: code,i,j,k
+    
   ! Transpose data to y-pencils 
-  call transpose_x_to_y(ux1,ux2)
+  call transpose_x_to_y(ux,ux2)
   
   ! Summation over x and z directions
   do k=ystart(3),yend(3)
@@ -364,6 +380,23 @@ contains
 
   ! Summation over all MPI processes
   call MPI_REDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  
+  ! Calculate temporal BL thickness (delta_99)
+  if(nrank .eq. 0) then
+      
+      do j = ystart(2),yend(2)
+     
+          ! BL thickness equivalent to the y-coordinate
+          delta_99 = yp(j)  
+        
+          ! %1 of the velocity at the wall (valid only for TTBLs with translating wall)
+          temp = zpzeroone*u1meanHT(ystart(2))
+                 
+          if(u1meanHT(j) < temp) exit  
+               
+      end do
+    
+  end if
   
   end subroutine calculate_bl_thick
   
