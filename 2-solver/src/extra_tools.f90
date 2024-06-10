@@ -54,6 +54,9 @@ contains
           fric_coeffx = two * ((sh_velx / uwall)**2)
           fric_coeffz = two * ((sh_velz / uwall)**2)
           
+          ! Calculate friction Re number
+          re_tau = delta_99 * sh_velx / xnu
+          
           ! Calculate viscous time unit
           if(iswitch_wo .eq. 1) then
               ! Moving walls
@@ -67,22 +70,25 @@ contains
           if (exists) then
               open(newunit=iunit, file="cf_history.txt", status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                        & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                        &
-                             t_viscous,  ',', t,           ',', itime
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12, F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                       &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                       &
+                             delta_99,   ',', re_tau
           else
               open(newunit=iunit, file="cf_history.txt", status="new", action="write")
               ! Header
-              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12)') &
-                            'sh_vel', ',', 'sh_velx', ',', 'sh_velz', ',',            &
-                            'cf,tot', ',', 'cf,x',    ',', 'cf,z',    ',',            &
-                            't_nu',   ',', 'T',       ',', 'ts'          
+              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12, A12,A,A12)') &
+                            'sh_vel',    ',', 'sh_velx', ',', 'sh_velz', ',',                       &
+                            'cf,tot',    ',', 'cf,x',    ',', 'cf,z',    ',',                       &
+                            't_nu',      ',', 'T',       ',', 'ts',      ',',                       &
+                            'delta_99,', ',', 'Re_tau'          
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                        & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                        &
-                             t_viscous,  ',', t,           ',', itime
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12, F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                       &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                       &
+                             delta_99,   ',', re_tau
           end if
               close(iunit)
       end if
