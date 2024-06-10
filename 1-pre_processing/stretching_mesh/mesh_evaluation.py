@@ -242,15 +242,25 @@ if istret == 3:
     delta_nu_ic   = nu / sh_vel_ic
     delta_nu_500  = nu / sh_vel_500
 
-    # Rescaling the mesh spacings with viscous unit at IC
+    # Mesh sizes at IC
     delta_x_nd_ic  = delta_x  / delta_nu_ic
     delta_y1_nd_ic = delta_y1 / delta_nu_ic
     delta_z_nd_ic  = delta_z  / delta_nu_ic
+    
+    # Mesh sizes at Re_tau = 500
+    delta_x_nd_500  = delta_x  / delta_nu_500
+    delta_y1_nd_500 = delta_y1 / delta_nu_500
+    delta_z_nd_500  = delta_z  / delta_nu_500
             
     # Non-dimensional domain dimensions at IC (nd: non-dimensional)  
     xlx_nd_ic = xlx / delta_nu_ic
     yly_nd_ic = yly / delta_nu_ic
     zlz_nd_ic = zlz / delta_nu_ic
+    
+    # Non-dimensional domain dimensions at Re_tau = 500 (nd: non-dimensional)  
+    xlx_nd_500 = xlx / delta_nu_500
+    yly_nd_500 = yly / delta_nu_500
+    zlz_nd_500 = zlz / delta_nu_500
        
     #!-----------------------------------------------------------------------!
     
@@ -311,12 +321,7 @@ if istret == 3:
     
     # We consider the element just below the estimated BL edge
     delta_yd = yp[c] - yp[c-1]
-    
-    # Mesh sizes at Re_tau = 500
-    delta_x_nd_500  = delta_x  / delta_nu_500
-    delta_y1_nd_500 = delta_y1 / delta_nu_500
-    delta_z_nd_500  = delta_z  / delta_nu_500
-    
+       
     # BL edge
     delta_yd_nd_500 = delta_yd / delta_nu_500
     
@@ -380,6 +385,10 @@ if istret == 3:
     print('Height of the domain (Ly+) at peak cf:', yly_nd_peak)
     print('Width  of the domain (Lz+) at peak cf:', zlz_nd_peak)
     print()
+    print('Length of the domain (Lx+) at Re_tau = 500:', xlx_nd_500)
+    print('Height of the domain (Ly+) at Re_tau = 500:', yly_nd_500)
+    print('Width  of the domain (Lz+) at Re_tau = 500:', zlz_nd_500)
+    print()
 
 if istret == 2:
     print('Length of the domain (Lx+) at steady state:', xlx_nd_peak)
@@ -440,10 +449,10 @@ with open('mesh_y.txt', 'w') as f:
      
 # Create data arrays with inputs
 data = [
-        ["nx/ny/nz", "Lx/Ly/Lz" ],
-        [nx,          xlx       ],
-        [ny,          yly       ],
-        [nz,          zlz       ]
+        ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
+        [ nx,         xlx,        xlx/bl_thickness               ],
+        [ ny,         yly,        yly/bl_thickness               ],
+        [ nz,         zlz,        zlz/bl_thickness               ],
        ] 
 
 data2 = [
@@ -481,10 +490,10 @@ if istret == 3:
                  
     # Create data arrays with outputs
     data = [
-            ["Lx+/Ly+/Lz+ at IC", "Lx+/Ly+/Lz+ at peak cf" ],
-            [ xlx_nd_ic,           xlx_nd_peak             ],
-            [ yly_nd_ic,           yly_nd_peak             ],
-            [ zlz_nd_ic,           zlz_nd_peak             ],
+            ["Lx+/Ly+/Lz+ at IC", "Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at Re_tau = 500" ],
+            [ xlx_nd_ic,           xlx_nd_peak,              xlx_nd_500                   ],
+            [ yly_nd_ic,           yly_nd_peak,              yly_nd_500                   ],
+            [ zlz_nd_ic,           zlz_nd_peak,              zlz_nd_500                   ],
            ]
            
     data2 = [
