@@ -57,7 +57,7 @@ y0 = data[0]   # First element of yp vector (y = 0)
 yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
 # Reading of time units
-file_path = f"cf_history.txt"
+file_path = f"monitoring/cf_history.txt"
       
 data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
 time_unit = data[:, 7]
