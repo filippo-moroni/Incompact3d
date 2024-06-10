@@ -415,31 +415,71 @@ contains
   
   !---------------------------------------------------------------------------! 
   ! Write a plane of the scalar field with z-dir. normal for visualization.
+  ! 
+  ! At the moment, valid only with .xdmf header generation.
   !---------------------------------------------------------------------------!
    
   subroutine write_scalar_plane_z()
  
   use visu
   
+  use decomp_2d,    only : mytype, xsize, nrank
+  use decomp_2d_io, only : decomp_2d_start_io
+  use variables,    only : numscalar
+  use param,        only : ioutput
+  
   implicit none
   
+  ! Locals
+  character(len=32) :: num
+  
+  ! Inputs
+  real(mytype), dimension(xsize(1), xsize(2), xsize(3), numscalar), intent(in) :: phi1
+  
+  ! Switch to output2D with z-normal plane
   output2D = 3
-  
-  ! Writing the snapshot if requested from the user and if we are at the right time step
-  if ((ivisu .ne. 0) .and. ((mod(itime, ioutput_plane) .eq. 0))) then
-      call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
 
-      ! XXX: Ultimate goal for ADIOS2 is to pass do all postproc online - do we need this?
-      !      Currently, needs some way to "register" variables for IO
-      call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
-
-      call end_snapshot(itime, num)
-                     
-  end if
+!--- Write snapshot part ---!
   
+#ifdef ADIOS2
+  call decomp_2d_start_io(io_name, "data")
+#endif
+    
+  ! Snapshot number
+#ifndef ADIOS2
+  if (filenamedigits) then
+     ! New enumeration system, it works integrated with xcompact3d_toolbox
+     write(num, ifilenameformat) itime
+  else
+     ! Classic enumeration system
+     write(num, ifilenameformat) itime/ioutput
+  endif
+#else
+  ! ADIOS2 is zero-indexed
+  write(num, '(I0)') itime/ioutput - 1
+#endif
+    
+  ! Write XDMF header
+  call write_xdmf_header("planes", "plane", trim(num))
+
+  ! Write first scalar field
+  call write_field(phi1(:,:,:,1), "planes", "phi01", trim(num), .true.)
+  
+!--- End snapshot part ---!
+  
+  ! Write XDMF footer
+  call write_xdmf_footer()
+  
+#ifdef ADIOS2
+  call decomp_2d_end_io(io_name, "data")
+#endif
+
+!-------------------------!
+  
+  ! Switch back to 3D output for default snapshots
   output2D = 0
-   
-  end subroutine write_plane
+     
+  end subroutine write_scalar_plane_z
   
 end module extra_tools
 

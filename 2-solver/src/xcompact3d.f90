@@ -128,9 +128,9 @@ program xcompact3d
      end if
      
      ! Save a scalar plane with z-normal for low memory visualization
-     !if ((mod(itime, ioutput_plane) .eq. 0 .and. iscalar .eq. 1) then
-     !    call write_plane()    
-     !end if
+     if ((mod(itime, ioutput_plane) .eq. 0 .and. iscalar .eq. 1) then
+         call write_scalar_plane_z(phi1)    
+     end if
      
   enddo ! End time loop
 
@@ -217,9 +217,11 @@ subroutine init_xcompact3d()
   call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)    !start from 1 == true
   call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)    !start from 1 == true
   call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.) !start from 1 == true
+  
   !div: nx ny nz --> nxm ny nz --> nxm nym nz --> nxm nym nzm
   call decomp_info_init(nxm, nym, nzm, ph1)
   call decomp_info_init(nxm, ny, nz, ph4)
+  
   !gradp: nxm nym nzm -> nxm nym nz --> nxm ny nz --> nx ny nz
   call decomp_info_init(nxm, ny, nz, ph2)
   call decomp_info_init(nxm, nym, nz, ph3)
@@ -250,10 +252,7 @@ subroutine init_xcompact3d()
                            !! Ensures additional case-specific variables declared for IO
      call visu_ready()
   end if
-  
-  ! Compute diffusion number D of simulation (Numerical Fourier)
-  ! call compute_cfldiff()
-  
+    
   !####################################################################
   if (irestart==0) then
      call init(rho1,ux1,uy1,uz1,ep1,phi1,drho1,dux1,duy1,duz1,dphi1,pp3,px1,py1,pz1)

@@ -191,8 +191,6 @@ contains
     use var,         only : itime
     use var,         only : numscalar, nrhotime, npress
     
-    use extra_tools, only : print_cf
-    
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime), intent(in) :: rho1
