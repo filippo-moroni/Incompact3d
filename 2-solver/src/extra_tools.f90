@@ -417,17 +417,29 @@ contains
   ! Write a plane of the scalar field with z-dir. normal for visualization.
   !---------------------------------------------------------------------------!
    
-  !subroutine write_plane()
-
-  ! Switch to ouput 2d with z-dir. normal plane
-  !output2D = 3
+  subroutine write_scalar_plane_z()
  
-  !call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
- 
-  ! Switch again to output3d for default snapshots
-  !output2D = 0
+  use visu
   
-  !end subroutine write_plane
+  implicit none
+  
+  output2D = 3
+  
+  ! Writing the snapshot if requested from the user and if we are at the right time step
+  if ((ivisu .ne. 0) .and. ((mod(itime, ioutput_plane) .eq. 0))) then
+      call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
+
+      ! XXX: Ultimate goal for ADIOS2 is to pass do all postproc online - do we need this?
+      !      Currently, needs some way to "register" variables for IO
+      call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
+
+      call end_snapshot(itime, num)
+                     
+  end if
+  
+  output2D = 0
+   
+  end subroutine write_plane
   
 end module extra_tools
 

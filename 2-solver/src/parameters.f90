@@ -380,6 +380,9 @@ subroutine parameter(input_i3d)
   ! Creating /monitoring folder
   if (nrank==0) call execute_command_line('mkdir -p monitoring')
   
+  ! Creating /planes folder
+  if (nrank==0) call execute_command_line('mkdir -p planes')
+  
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
