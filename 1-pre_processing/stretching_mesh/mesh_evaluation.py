@@ -364,6 +364,7 @@ if istret != 3:
 elif istret == 3:
     print('Wall velocity, Uwall = ', uwall)
     print('Tripping wire diameter, twd = ', twd)
+    print()
     print('!--- Reference data according to Cimarelli et al. (2024): ---!')
     print()
     print('Boundary layer thickness at Re_tau = 500, bl_thickness = ', bl_thickness)
