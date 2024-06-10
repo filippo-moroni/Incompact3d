@@ -89,7 +89,7 @@ contains
                             'sh_vel',    ',', 'sh_velx', ',', 'sh_velz', ',',                      &
                             'cf,tot',    ',', 'cf,x',    ',', 'cf,z',    ',',                      &
                             't_nu',      ',', 'T',       ',', 'ts',      ',',                      &
-                            'delta_99,', ',', 'Re_tau'          
+                            'delta_99',  ',', 'Re_tau'          
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6)') &
                              sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                         & 
