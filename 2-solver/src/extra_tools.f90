@@ -14,7 +14,8 @@ module extra_tools
             spanwise_wall_oscillations, &
             calculate_ubulk,            &
             update_time_int_coeff,      &
-            write_plane
+            calculate_bl_thick
+ 
 
 contains
   
@@ -332,21 +333,55 @@ contains
     gdt(3)=adt(3)+bdt(3)
            
   end subroutine update_time_int_coeff
+  
+  !---------------------------------------------------------------------------! 
+  ! Calculate the boundary layer thickness and the friction Re number.
+  !---------------------------------------------------------------------------!
+ 
+  subroutine calculate_bl_thick()
+  
+  use decomp_2d
+  use param
+  use var, only : ux1, ux2
+  
+  implicit none
+  
+  ! Local variables
+  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
+  integer                           :: code,i,j,k
+  
+  ! Transpose data to y-pencils 
+  call transpose_x_to_y(ux1,ux2)
+  
+  ! Summation over x and z directions
+  do k=ystart(3),yend(3)
+      do i=ystart(1),yend(1)
+          do j=ystart(2),yend(2)          
+              u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/real(nx*nz,mytype)                                
+          enddo          
+      enddo
+  enddo
+
+  ! Summation over all MPI processes
+  call MPI_REDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  
+  end subroutine calculate_bl_thick
+  
   !---------------------------------------------------------------------------! 
   ! Write a plane of the scalar field with z-dir. normal for visualization.
   !---------------------------------------------------------------------------!
    
-  subroutine write_plane()
+  !subroutine write_plane()
 
   ! Switch to ouput 2d with z-dir. normal plane
-  output2D = 3
+  !output2D = 3
  
-  call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
+  !call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
  
   ! Switch again to output3d for default snapshots
-  output2D = 0
+  !output2D = 0
   
-  end subroutine write_plane
+  !end subroutine write_plane
   
 end module extra_tools
 
