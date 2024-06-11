@@ -398,6 +398,7 @@ contains
   use decomp_2d_io, only : decomp_2d_start_io
   use variables,    only : numscalar
   use param,        only : ioutput_plane
+  use var,          only : phi4
   
   implicit none
   
