@@ -1,6 +1,7 @@
 !----------------------------------------------------------!
 !         This module is used to store useful              !
-!           subroutines for general purpose.               !
+! subroutines for general purpose, not present in standard !
+!                  Incompact3d releases.                   !
 !----------------------------------------------------------!
 
 module extra_tools
@@ -389,7 +390,7 @@ contains
   ! At the moment, valid only with .xdmf header generation.
   !---------------------------------------------------------------------------!
    
-  subroutine write_scalar_plane_z(phi1)
+  subroutine write_scalar_plane_z(phi1,itime)
  
   use visu
   
@@ -400,12 +401,17 @@ contains
   
   implicit none
   
-  ! Locals
-  character(len=32) :: num
-  
   ! Inputs
   real(mytype), dimension(xsize(1), xsize(2), xsize(3), numscalar), intent(in) :: phi1
+  integer,                                                          intent(in) :: itime
   
+  ! Locals
+  character(len=32) :: num  ! taken from write_snapshot in visu module
+  
+  ! Taken from visu module 
+  !logical, save :: filenamedigits = .false.  ! True to use the new enumeration
+  !character(len=9) :: ifilenameformat = '(I3.3)'
+    
   ! Switch to output2D with z-normal plane
   output2D = 3
 
