@@ -613,15 +613,22 @@ contains
     character(len=*), optional, intent(in) :: subdirectory
     
 #ifndef ADIOS2
+
+    character(len=99) :: path_to_h5file = "./"
+    !character(len=(len(path_to_h5file) + len(filename))) :: gen_h5path
+    
+    character(len=99) :: gen_h5path
+    
     ! Append the subdirectory if provided, only without ADIOS2 at the moment
     if (present(subdirectory)) then
-        character(len=*), parameter :: path_to_h5file = "./subdirectory"
-    else
-        character(len=*), parameter :: path_to_h5file = "./"
+        write(path_to_h5file, "(A)") path_to_h5file//"/"//subdirectory    
     endif
     
-    character(len=(len(path_to_h5file) + len(filename))) :: gen_h5path
     write(gen_h5path, "(A)") path_to_h5file//filename
+    
+    gen_h5path = adjustl(gen_h5path)
+    gen_h5path = trim(gen_h5path)
+    
 #else
     character(len=*), parameter :: path_to_h5file = "../data.hdf5:/Step"
     character(len=(len(path_to_h5file) + len(num) + 1+ len(filename))) :: gen_h5path
