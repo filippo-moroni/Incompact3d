@@ -406,7 +406,10 @@ contains
   integer,                                                          intent(in) :: itime
   
   ! Locals
-  character(len=32) :: num  ! taken from write_snapshot in visu module
+  
+  character(len=32), intent(out) :: num
+  
+  !character(len=32) :: num  ! taken from write_snapshot in visu module
   
   ! Taken from visu module 
   !logical, save :: filenamedigits = .false.  ! True to use the new enumeration
