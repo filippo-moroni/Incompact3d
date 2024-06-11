@@ -407,13 +407,13 @@ contains
   
   ! Locals
   
-  character(len=32), intent(out) :: num
+  !character(len=32), intent(out) :: num
   
-  !character(len=32) :: num  ! taken from write_snapshot in visu module
+  character(len=32) :: num  ! taken from write_snapshot in visu module
   
   ! Taken from visu module 
-  !logical, save :: filenamedigits = .false.  ! True to use the new enumeration
-  !character(len=9) :: ifilenameformat = '(I3.3)'
+  logical, save :: filenamedigits = .false.  ! True to use the new enumeration
+  character(len=9) :: ifilenameformat = '(I3.3)'
     
   ! Switch to output2D with z-normal plane
   output2D = 3
