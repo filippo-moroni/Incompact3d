@@ -443,7 +443,7 @@ contains
   phi4 = phi1 
    
   ! Write first scalar field
-  call write_field(phi4(:,:,:,1), "planes", "phi01-p", trim(num))
+  call write_field(phi4(:,:,:,1), "planes", "phi01-p", trim(num), "planes")
   
 !--- End snapshot part ---!
   
