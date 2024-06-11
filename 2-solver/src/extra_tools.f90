@@ -439,7 +439,7 @@ contains
   call write_xdmf_header("planes", "plane", trim(num))
 
   ! Write first scalar field
-  call write_field(phi1(:,:,:,1), "planes", "phi01", trim(num), .true.)
+  call write_field(phi1(:,:,:,1), "planes", "phi01-p", trim(num), .true.)
   
 !--- End snapshot part ---!
   

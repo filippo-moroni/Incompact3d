@@ -123,6 +123,11 @@ contains
        enddo
     endif
     
+    ! Add extra IO name for saving scalar planes
+    if (iscalar .ne. 0) then
+        call decomp_2d_register_variable(io_name, "phi01-p", 1, 0, 3, mytype)
+    end if
+    
   end subroutine visu_init
 
   !
