@@ -43,7 +43,7 @@ program xcompact3d
   use ibm_param
   use ibm,         only : body
   use genepsi,     only : genepsi3d
-  use extra_tools, only : print_cf
+  use extra_tools, only : print_cf, write_scalar_plane_z
   
   implicit none
   

@@ -419,7 +419,7 @@ contains
   ! At the moment, valid only with .xdmf header generation.
   !---------------------------------------------------------------------------!
    
-  subroutine write_scalar_plane_z()
+  subroutine write_scalar_plane_z(phi1)
  
   use visu
   

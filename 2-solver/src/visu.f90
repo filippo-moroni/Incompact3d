@@ -51,7 +51,7 @@ module visu
 
   private
   public :: output2D, visu_init, visu_ready, visu_finalise, write_snapshot, end_snapshot, &
-       write_field, io_name
+            write_field, io_name
 
 contains
 
@@ -68,7 +68,6 @@ contains
     use decomp_2d_io, only : decomp_2d_init_io, decomp_2d_open_io, decomp_2d_append_mode
     use decomp_2d_io, only : decomp_2d_register_variable
 
-    
     implicit none
 
     ! Local variables
@@ -271,8 +270,7 @@ contains
     call transpose_y_to_x(ppi2,pp1,ph2) !nxm ny nz
     call interxpv(ta1,pp1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
             nxmsize,xsize(1),xsize(2),xsize(3),1)
-
-
+            
     ! Rescale pressure
     call rescale_pressure(ta1)
 
