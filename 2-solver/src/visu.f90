@@ -624,6 +624,9 @@ contains
         write(path_to_h5file, "(A)") path_to_h5file//"/"//subdirectory    
     endif
     
+    path_to_h5file = adjustl(path_to_h5file)
+    path_to_h5file = trim(path_to_h5file)
+    
     write(gen_h5path, "(A)") path_to_h5file//filename
     
     gen_h5path = adjustl(gen_h5path)
