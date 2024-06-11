@@ -45,7 +45,7 @@ module tools
        restart, &
        simu_stats, &
        apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
-       compute_cfldiff, compute_cfl, compute_reynolds_cell, compute_stab_param, &
+       compute_cfldiff, compute_cfl, compute_reynolds_cell, compute_stab_param, update_time_int_coeff, &
        rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z, &
        avg3d
 
@@ -776,7 +776,6 @@ contains
     call decomp_2d_close_io(io_ioflow, outflow_file)
     
   end subroutine write_outflow
-  !############################################################################
   !##################################################################
   !!  SUBROUTINE: compute_cfldiff
   !! DESCRIPTION: Computes Diffusion/Fourier number
@@ -823,7 +822,6 @@ contains
     use decomp_2d,   only : nrank, mytype, xsize, xstart, xend, real_type
     use mpi
     use variables,   only : dyp
-    use extra_tools, only : update_time_int_coeff
 
     implicit none
 
@@ -895,7 +893,6 @@ contains
     end if
   end subroutine compute_cfl
   !##################################################################
-  !##################################################################
     !!  SUBROUTINE: compute_reynolds_cell
     !! DESCRIPTION: Computes Péclet number or Reynolds cell number 
     !!              for a stretched mesh
@@ -966,7 +963,6 @@ contains
     end if
   end subroutine compute_reynolds_cell
   !##################################################################
-  !##################################################################
     !!  SUBROUTINE: compute_stab_param
     !! DESCRIPTION: Computes stability parameter S < 1
     !!              (Thompson et al. (1985) 
@@ -1019,8 +1015,37 @@ contains
       write(*,*) '-----------------------------------------------------------'
     end if
   end subroutine compute_stab_param
+  
+  !---------------------------------------------------------------------------!
+  ! Update coefficients for time integration schemes
+  ! if adaptive time-step is used (max CFL condition)
+  ! (taken from init_variables in variables module).
+  !
+  ! - Used in subroutine for CFL calculation in tools module.
+  ! - At the moment, valid only for RK3 scheme.
+  ! - To do: AB schemes.
+  !---------------------------------------------------------------------------!
+  
+  subroutine update_time_int_coeff()
+  
+  use param
+  
+  implicit none
+  
+    ! Runge-Kutta 3 (RK3)
+    adt(1)=(eight/fifteen)*dt
+    bdt(1)= zero
+    gdt(1)=adt(1)
+    adt(2)=(      five/twelve)*dt
+    bdt(2)=(-seventeen/ sixty)*dt
+    gdt(2)=adt(2)+bdt(2)
+    adt(3)=( three/four)*dt
+    bdt(3)=(-five/twelve)*dt
+    gdt(3)=adt(3)+bdt(3)
+           
+  end subroutine update_time_int_coeff
+  
   !##################################################################  
-  !##################################################################
   ! Rescale pressure to physical pressure
   ! Written by Kay Schäfer 2019
   !##################################################################
@@ -1166,13 +1191,10 @@ contains
 
   end subroutine avg3d
 end module tools
-!##################################################################
-
 !===================================================
 ! Subroutine for computing the local and global CFL
 ! number, according to Lele 1992.
 !===================================================
-!##################################################################
 subroutine cfl_compute(uxmax,uymax,uzmax)
 
   use param
@@ -1226,7 +1248,6 @@ subroutine cfl_compute(uxmax,uymax,uzmax)
   endif
 
 end subroutine cfl_compute
-!##################################################################
 !##################################################################
 subroutine stretching()
 

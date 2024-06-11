@@ -40,8 +40,7 @@ module case
   use dbg_schemes
   use channel
   use temporal_tbl
-  use extra_tools
-
+  
   use var, only : nzmsize
 
   implicit none
@@ -173,7 +172,7 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime), intent(in) :: rho1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ep1
-    real(mytype), dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp3
+    real(mytype),dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp3
 
     !call write_snapshot(rho1, ux1, uy1, uz1, pp3, phi1, ep1, itime)
     !call postprocess_case(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
