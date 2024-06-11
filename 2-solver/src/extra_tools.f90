@@ -397,7 +397,7 @@ contains
   use decomp_2d,    only : mytype, xsize, nrank
   use decomp_2d_io, only : decomp_2d_start_io
   use variables,    only : numscalar
-  use param,        only : ioutput
+  use param,        only : ioutput_plane
   
   implicit none
   
@@ -431,11 +431,11 @@ contains
      write(num, ifilenameformat) itime
   else
      ! Classic enumeration system
-     write(num, ifilenameformat) itime/ioutput
+     write(num, ifilenameformat) itime/ioutput_plane
   endif
 #else
   ! ADIOS2 is zero-indexed
-  write(num, '(I0)') itime/ioutput - 1
+  write(num, '(I0)') itime/ioutput_plane - 1
 #endif
     
   ! Write XDMF header
