@@ -609,8 +609,8 @@ contains
   function gen_h5path(filename, num, subdirectory)
 
     ! Inputs
-    character(len=*), intent(in) :: filename, num
-    character(len=*), optional, intent(in) :: subdirectory
+    character(len=99), intent(in) :: filename, num
+    character(len=99), optional, intent(in) :: subdirectory
     
 #ifndef ADIOS2
 
