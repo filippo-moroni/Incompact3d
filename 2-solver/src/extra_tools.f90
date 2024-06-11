@@ -406,9 +406,6 @@ contains
   integer,                                                          intent(in) :: itime
   
   ! Locals
-  
-  !character(len=32), intent(out) :: num
-  
   character(len=32) :: num  ! taken from write_snapshot in visu module
   
   ! Taken from visu module 
@@ -441,8 +438,11 @@ contains
   ! Write XDMF header
   call write_xdmf_header("planes", "plane", trim(num))
 
+  ! Copy scalar field phi1 into phi4 variable for different name I/O
+  phi4 = phi1 
+   
   ! Write first scalar field
-  call write_field(phi1(:,:,:,1), "planes", "phi01-p", trim(num))
+  call write_field(phi4(:,:,:,1), "planes", "phi01-p", trim(num))
   
 !--- End snapshot part ---!
   
