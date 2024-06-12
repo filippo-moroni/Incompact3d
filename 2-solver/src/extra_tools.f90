@@ -223,16 +223,33 @@ contains
     ! Index for j is 1, since we are dealing with y-pencils and summation over all points (each processor)
     do k=1,ysize(3)
        do i=1,ysize(1)
+           
+           ! TTBL
+           if (itype .eq. itype_ttbl) then
               
-           ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-           mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
+               ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
+               mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
            
-           ! Mean streamwise gradient dU/dy
-           mean_gwx = mean_gwx + ta2(i,1,k) / den
+               ! Mean streamwise gradient dU/dy
+               mean_gwx = mean_gwx + ta2(i,1,k) / den
            
-           ! Mean spanwise gradient dW/dy
-           mean_gwz = mean_gwz + tc2(i,1,k) / den
-                         
+               ! Mean spanwise gradient dW/dy
+               mean_gwz = mean_gwz + tc2(i,1,k) / den
+           
+           ! Channel
+           else if (itype .eq. itype_channel) then
+           
+               ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
+               mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt_prec(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den
+           
+               ! Mean streamwise gradient dU/dy
+               mean_gwx = mean_gwx + ta2(i,1,k) / den
+           
+               ! Mean spanwise gradient dW/dy
+               mean_gwz = mean_gwz + tc2(i,1,k) / den
+           
+           
+           end if              
        enddo
     enddo
          

@@ -129,7 +129,7 @@ program xcompact3d
      
      ! Save a scalar plane with z-normal for low memory visualization
      if ((mod(itime, ioutput_plane) .eq. 0 .or. (itime.eq.ifirst)) .and. (iscalar .eq. 1)) then
-         call write_scalar_plane_z(phi1,itime)    
+         call write_scalar_plane_z(phi1,itime)       
      end if
      
   enddo ! End time loop
