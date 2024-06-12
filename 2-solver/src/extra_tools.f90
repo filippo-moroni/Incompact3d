@@ -412,7 +412,6 @@ contains
   
   use decomp_2d,    only : mytype, xsize, nrank
   use decomp_2d_io, only : decomp_2d_start_io
-  use variables,    only : numscalar
   use param,        only : ioutput_plane
   
   implicit none
@@ -448,10 +447,10 @@ contains
 #endif
     
   ! Write XDMF header
-  call write_xdmf_header(".", "planes/phi-plane", trim(num))
+  call write_xdmf_header("planes", "phi-plane", trim(num))
    
   ! Write first scalar field
-  call write_field(phi1(:,:,:,1), ".", "planes/phi01-p", trim(num))
+  call write_field(phi1(:,:,:,1), "planes", "phi01-p", trim(num))
   
 !--- End snapshot part ---!
   
