@@ -244,8 +244,9 @@ contains
 
     logical, intent(out) :: visu_initialised
 
+    ! Q-criterion
     call decomp_2d_register_variable(io_name, "critq", 1, 0, output2D, mytype)
-
+    
     visu_initialised = .true.
     
   end subroutine visu_ttbl_init

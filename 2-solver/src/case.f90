@@ -291,7 +291,7 @@ contains
   !##################################################################
   subroutine visu_case(rho1,ux1,uy1,uz1,pp3,phi1,ep1,num)
 
-    use var, only : nzmsize
+    use var,   only : nzmsize
     use param, only : npress
 
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho1
