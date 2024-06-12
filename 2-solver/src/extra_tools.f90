@@ -440,7 +440,7 @@ contains
 #endif
     
   ! Write XDMF header
-  call write_xdmf_header("planes", "phi01-p", trim(num))
+  call write_xdmf_header("planes", "phi-plane", trim(num))
    
   ! Write first scalar field
   call write_field(phi1(:,:,:,1), "planes", "phi01-p", trim(num))
