@@ -411,9 +411,13 @@ contains
   ! Taken from visu module 
   logical, save :: filenamedigits = .false.  ! True to use the new enumeration
   character(len=9) :: ifilenameformat = '(I3.3)'
+  
+  print *, '1 - output2D:', output2D
     
   ! Switch to output2D with z-normal plane
   output2D = 3
+  
+  print *, '2 - output2D:', output2D
 
 !--- Write snapshot part ---!
   
@@ -451,9 +455,12 @@ contains
 #endif
 
 !-------------------------!
+  print *, '3 - output2D:', output2D
   
   ! Switch back to 3D output for default snapshots
   output2D = 0
+     
+  print *, '4 - output2D:', output2D   
      
   end subroutine write_scalar_plane_z
   
