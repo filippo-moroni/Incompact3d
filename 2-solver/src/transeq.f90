@@ -595,11 +595,11 @@ contains
     if (nrank == 0) write(*,*)'## MomRHS Turb duz1 ', avg_param
 #endif
 
-    if (itrip == 1) then
+    !if (itrip == 1) then
        !call tripping(tb1,td1)
-       call tbl_tripping(duy1(:,:,:,1),td1)
-       if ((nrank==0).and.(mod(itime,ilist)==0)) write(*,*) 'TRIPPING!!'
-    endif
+       !call tbl_tripping(duy1(:,:,:,1),td1)
+       !if ((nrank==0).and.(mod(itime,ilist)==0)) write(*,*) 'TRIPPING!!'
+    !endif
 #ifdef DEBG
     avg_param = zero
     call avg3d (dux1, avg_param)
