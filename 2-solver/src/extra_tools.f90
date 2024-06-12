@@ -413,6 +413,7 @@ contains
   use decomp_2d,    only : mytype, xsize, nrank
   use decomp_2d_io, only : decomp_2d_start_io
   use param,        only : ioutput_plane
+  use variables,    only : numscalar
   
   implicit none
   
