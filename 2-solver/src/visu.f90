@@ -485,26 +485,23 @@ contains
   ! Write the given field for visualization
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
   !
-  subroutine write_field(f1, pathname, filename, num, skip_ibm, flush, subdirectory)
+  subroutine write_field(f1, pathname, filename, num, skip_ibm, flush)
 
     use mpi
     
-    use var,   only : ep1
-    use var,   only : zero, one
-    use var,   only : uvisu
+    use var, only : ep1
+    use var, only : zero, one
+    use var, only : uvisu
     use param, only : iibm
-    use decomp_2d,    only : mytype, xsize, xszV, yszV, zszV
-    use decomp_2d,    only : nrank, fine_to_coarseV
+    use decomp_2d, only : mytype, xsize, xszV, yszV, zszV
+    use decomp_2d, only : nrank, fine_to_coarseV
     use decomp_2d_io, only : decomp_2d_write_one, decomp_2d_write_plane
 
     implicit none
 
-    real(mytype),      intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: f1
-    character(len=*),  intent(in) :: pathname, filename, num 
+    real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: f1
+    character(len=*), intent(in) :: pathname, filename, num 
     logical, optional, intent(in) :: skip_ibm, flush
-    
-    ! Additional subdirectory for saving scalar planes
-    character(len=99), optional, intent(in) :: subdirectory
 
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: local_array
     logical :: mpiio, force_flush
@@ -553,7 +550,7 @@ contains
           else if (output2D.eq.3) then
              write(ioxdmf,*)'            Dimensions="',1,yszV(2),xszV(1),'">'
           endif
-          write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin'), num, subdirectory)
+          write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin'), num)
           write(ioxdmf,*)'           </DataItem>'
           write(ioxdmf,*)'        </Attribute>'
        endif
@@ -605,37 +602,13 @@ contains
     
   end function gen_filename
 
-  ! Function to generate the path for the H5 file format
-  function gen_h5path(filename, num, subdirectory)
+  function gen_h5path(filename, num)
 
-    ! Inputs
-    character(len=99), intent(in) :: filename, num
-    character(len=99), optional, intent(in) :: subdirectory
-    
+    character(len=*), intent(in) :: filename, num
 #ifndef ADIOS2
-
-    character(len=99) :: path_to_h5file = "./"
-    !character(len=(len(path_to_h5file) + len(filename))) :: gen_h5path
-    
-    character(len=99) :: gen_h5path
-    character(len=99) :: filename1
-    
-    ! Append the subdirectory if provided, only without ADIOS2 at the moment
-    if (present(subdirectory)) then
-        write(path_to_h5file, "(A99)") path_to_h5file//"/"//subdirectory    
-    endif
-    
-    path_to_h5file = adjustl(path_to_h5file)
-    path_to_h5file = trim(path_to_h5file)
-    
-    filename1 = adjustl(filename)
-    filename1 = trim(filename)
-    
-    write(gen_h5path, "(A99)") path_to_h5file//filename1
-    
-    gen_h5path = adjustl(gen_h5path)
-    gen_h5path = trim(gen_h5path)
-    
+    character(len=*), parameter :: path_to_h5file = "./"
+    character(len=(len(path_to_h5file) + len(filename))) :: gen_h5path
+    write(gen_h5path, "(A)") path_to_h5file//filename
 #else
     character(len=*), parameter :: path_to_h5file = "../data.hdf5:/Step"
     character(len=(len(path_to_h5file) + len(num) + 1+ len(filename))) :: gen_h5path
