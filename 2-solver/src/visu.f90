@@ -573,7 +573,8 @@ contains
           call decomp_2d_write_one(1,f1,"data",gen_filename(pathname, filename, num, 'bin'),0,io_name)
        end if
     else
-       call decomp_2d_write_plane(1,local_array,output2D,-1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
+       ! Change 4th entry to select the specific plane; -1 is for average plane
+       call decomp_2d_write_plane(1,local_array,output2D,1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
     endif
 
   end subroutine write_field

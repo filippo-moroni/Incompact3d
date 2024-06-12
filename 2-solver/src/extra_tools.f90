@@ -438,12 +438,9 @@ contains
     
   ! Write XDMF header
   call write_xdmf_header("planes", "plane", trim(num))
-
-  ! Copy scalar field phi1 into phi4 variable for different name I/O
-  phi4 = phi1 
    
   ! Write first scalar field
-  call write_field(phi4(:,:,:,1), "./planes", "phi01-p", trim(num))
+  call write_field(phi1(:,:,:,1), "planes", "phi01-p", trim(num))
   
 !--- End snapshot part ---!
   

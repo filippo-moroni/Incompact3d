@@ -53,9 +53,6 @@ module var
   real(mytype), save, allocatable, dimension(:,:,:)     :: mu1,mu2,mu3
   real(mytype), save, allocatable, dimension(:,:,:)     :: uxf1, uxf2, uxf3, uyf1, uyf2, uyf3, uzf1, uzf2, uzf3, phif1, phif2, phif3
 
-  ! Copy of phi1 for plane visualizations
-  real(mytype), save, allocatable, dimension(:,:,:,:)   :: phi4
-
   !arrays for post processing
   real(mytype), save, allocatable, dimension(:,:,:) :: f1,fm1
 
@@ -162,10 +159,6 @@ contains
     allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
     phi1 = zero
     
-    ! Copy of phi1 for plane visualizations
-    allocate(phi4(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
-    phi4 = zero
-
     call alloc_x(ta1)
     ta1 = zero
     call alloc_x(tb1)
