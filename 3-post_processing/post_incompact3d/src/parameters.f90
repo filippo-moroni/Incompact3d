@@ -94,7 +94,7 @@ subroutine parameter(input_i3d)
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
   NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
   NAMELIST /ExtraNumControl/ icfllim,cfl_limit
-  NAMELIST /WallOscillations/ a_plus_cap,t_plus_cap
+  NAMELIST /WallOscillations/ a_plus_cap,t_plus_cap,ifeedback_control
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -379,6 +379,9 @@ subroutine parameter(input_i3d)
   
   ! Creating /monitoring folder
   if (nrank==0) call execute_command_line('mkdir -p monitoring')
+  
+  ! Creating /planes folder inside /data
+  if (nrank==0) call execute_command_line('mkdir -p data/planes')
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
@@ -750,6 +753,9 @@ subroutine parameter_defaults()
   izap = 1
 
   imodulo2 = 1
+  
+  ! Additional controls
+  iswitch_wo = 0 ! (wall oscillations 0: no, 1: yes)
 
   ! CASE specific variables
   tgv_twod = .FALSE.
@@ -779,8 +785,9 @@ subroutine parameter_defaults()
   cfl_limit = 0.95    ! CFL limit to adjust the time-step 
   
   ! Controls for wall oscillations
-  a_plus_cap = twelve        ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  t_plus_cap = onehundred    ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  a_wo = twelve          ! amplitude of spanwise wall oscillations (in friction units if feedback control enabled) 
+  t_wo = onehundred      ! period of spanwise wall oscillations (in friction units if feedback control enabled) 
+  ifeedback_control = 1  ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
 
 end subroutine parameter_defaults
 

@@ -119,8 +119,9 @@ phiwall = 1.0         ! Scalar value at the wall
 &WallOscillations
 !================
 
-a_plus_cap = 0.0      ! Amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-t_plus_cap = 100.0    ! Period of spanwise wall oscillations in friction units (cap: capital letter) 
+a_wo = 0.0            ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
+t_wo = 100.0          ! Period of spanwise wall oscillations (in friction units if feedback control enabled)
+ifeedback_control = 0 ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
 
 /End
 
