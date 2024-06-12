@@ -52,7 +52,7 @@ module visu
 
   private
   public :: output2D, visu_init, visu_ready, visu_finalise, write_snapshot, end_snapshot, &
-            write_field, io_name, write_xdmf_header, write_xdmf_footer
+            write_field, io_name, write_xdmf_header, write_xdmf_footer, ioxdmf
 
 contains
 
@@ -574,8 +574,8 @@ contains
           call decomp_2d_write_one(1,f1,"data",gen_filename(pathname, filename, num, 'bin'),0,io_name)
        end if
     else
-       ! Change 4th entry to select the specific plane; -1 is for average plane
-       call decomp_2d_write_plane(1,local_array,output2D,1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
+       ! Change 4th entry to select the specific plane; -1 is for average plane, positive integers specify the specific plane
+       call decomp_2d_write_plane(1,local_array,output2D,-1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
     endif
 
   end subroutine write_field

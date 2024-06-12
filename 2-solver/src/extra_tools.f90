@@ -402,9 +402,9 @@ contains
   end subroutine calculate_bl_thick
   
   !---------------------------------------------------------------------------! 
-  ! Write a plane of the scalar field with z-dir. normal for visualization.
+  ! Write a plane with z-dir. normal of the scalar field for visualization.
   ! 
-  ! At the moment, valid only with .xdmf header generation.
+  ! .xdmf header generation is present.
   !---------------------------------------------------------------------------!
    
   subroutine write_scalar_plane_z(phi1,itime)
@@ -428,6 +428,7 @@ contains
   ! Taken from visu module 
   logical, save :: filenamedigits = .false.  ! True to use the new enumeration
   character(len=9) :: ifilenameformat = '(I3.3)'
+  
   
   print *, '1 - output2D:', output2D
     
@@ -477,9 +478,114 @@ contains
   ! Switch back to 3D output for default snapshots
   output2D = 0
      
-  print *, '4 - output2D:', output2D   
-     
+  print *, '4 - output2D:', output2D 
+  
+  ! call the creation of the .xdmf file
+  
+  ! Write the plane
+  !call decomp_2d_write_plane(1,phi1(:,:,:,1),3,1,"data",gen_filename("planes", "phi01-p", num, 'bin'),io_name)
+  
   end subroutine write_scalar_plane_z
+  
+  
+  !------------------------------------------------------------!
+  ! Write the header of the XDMF file for scalar-plane saving. !
+  !                                                            !
+  ! Adapted from 'write_xdmf_header' subroutine visu module.   !
+  !------------------------------------------------------------!
+
+  subroutine write_xdmf_header_plane(pathname, filename, num)
+
+    use variables, only : nvisu, yp
+    use param,     only : dx,dy,dz,istret
+    use decomp_2d, only : mytype, nrank, xszV, yszV, zszV, ystV
+
+    implicit none
+
+    ! Arguments
+    character(len=*), intent(in) :: pathname, filename, num
+
+    ! Local variables
+    integer :: i,k
+    real(mytype) :: xp(xszV(1)), zp(zszV(3))
+
+    if (nrank.eq.0) then
+      open(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf"))
+
+      write(ioxdmf,'(A22)')'<?xml version="1.0" ?>'
+      write(ioxdmf,*)'<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>'
+      write(ioxdmf,*)'<Xdmf xmlns:xi="http://www.w3.org/2001/XInclude" Version="2.0">'
+      write(ioxdmf,*)'<Domain>'
+      
+      if (istret.ne.0) then
+        do i=1,xszV(1)
+          xp(i) = real(i-1,mytype)*dx*nvisu
+        enddo
+        do k=1,zszV(3)
+          zp(k) = real(k-1,mytype)*dz*nvisu
+        enddo
+        
+        write(ioxdmf,*)'    <Topology name="topo" TopologyType="3DRectMesh"'
+        write(ioxdmf,*)'        Dimensions="',1,yszV(2),xszV(1),'">'
+        write(ioxdmf,*)'    </Topology>'
+        
+        write(ioxdmf,*)'    <Geometry name="geo" Type="VXVYVZ">'
+        write(ioxdmf,*)'        <DataItem Dimensions="',xszV(1),'" NumberType="Float" Precision="4" Format="XML">'
+        write(ioxdmf,*)'        ',xp(:)
+        write(ioxdmf,*)'        </DataItem>'
+        write(ioxdmf,*)'        <DataItem Dimensions="',yszV(2),'" NumberType="Float" Precision="4" Format="XML">'
+        write(ioxdmf,*)'        ',yp(ystV(1)::nvisu)
+        write(ioxdmf,*)'        </DataItem>'
+        write(ioxdmf,*)'        <DataItem Dimensions="1" NumberType="Float" Precision="4" Format="XML">'
+        write(ioxdmf,*)'        ',zp(1)
+        write(ioxdmf,*)'        </DataItem>'
+        write(ioxdmf,*)'    </Geometry>'
+      else
+      
+        write(ioxdmf,*)'    <Topology name="topo" TopologyType="3DCoRectMesh"'
+        write(ioxdmf,*)'        Dimensions="',1,yszV(2),xszV(1),'">'      
+        write(ioxdmf,*)'    </Topology>'
+        
+        write(ioxdmf,*)'    <Geometry name="geo" Type="ORIGIN_DXDYDZ">'
+        write(ioxdmf,*)'        <!-- Origin -->'
+        write(ioxdmf,*)'        <DataItem Format="XML" Dimensions="3">'
+        write(ioxdmf,*)'        0.0 0.0 0.0'
+        write(ioxdmf,*)'        </DataItem>'
+        write(ioxdmf,*)'        <!-- DxDyDz -->'
+        write(ioxdmf,*)'        <DataItem Format="XML" Dimensions="3">'
+        write(ioxdmf,*)'        ',1.,dy,dx
+        write(ioxdmf,*)'        </DataItem>'
+        write(ioxdmf,*)'    </Geometry>'
+      
+      endif
+      
+        write(ioxdmf,*)'    <Grid Name="'//num//'" GridType="Uniform">'
+        write(ioxdmf,*)'        <Topology Reference="/Xdmf/Domain/Topology[1]"/>'
+        write(ioxdmf,*)'        <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>'
+    
+        write(ioxdmf,*)'        <Attribute Name="'//filename//'" Center="Node">'
+#ifndef ADIOS2
+        write(ioxdmf,*)'           <DataItem Format="Binary"'
+#else
+        write(ioxdmf,*)'           <DataItem Format="HDF"'
+#endif
+#ifdef DOUBLE_PREC
+#ifdef SAVE_SINGLE
+        write(ioxdmf,*)'            DataType="Float" Precision="8" Endian="little" Seek="0"'
+#else
+        write(ioxdmf,*)'            DataType="Float" Precision="8" Endian="little" Seek="0"'
+#endif
+#else
+        write(ioxdmf,*)'            DataType="Float" Precision="4" Endian="little" Seek="0"'
+#endif
+        write(ioxdmf,*)'            Dimensions="',1,yszV(2),xszV(1),'">'
+        write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin'), num)
+        write(ioxdmf,*)'           </DataItem>'
+        write(ioxdmf,*)'        </Attribute>'
+
+      endif
+
+  end subroutine write_xdmf_header_plane
   
 end module extra_tools
 
