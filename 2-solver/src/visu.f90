@@ -618,19 +618,20 @@ contains
     !character(len=(len(path_to_h5file) + len(filename))) :: gen_h5path
     
     character(len=99) :: gen_h5path
+    character(len=99) :: filename1
     
     ! Append the subdirectory if provided, only without ADIOS2 at the moment
     if (present(subdirectory)) then
-        write(path_to_h5file, "(A)") path_to_h5file//"/"//subdirectory    
+        write(path_to_h5file, "(A99)") path_to_h5file//"/"//subdirectory    
     endif
     
     path_to_h5file = adjustl(path_to_h5file)
     path_to_h5file = trim(path_to_h5file)
     
-    filename = adjustl(filename)
-    filename = trim(filename)
+    filename1 = adjustl(filename)
+    filename1 = trim(filename)
     
-    write(gen_h5path, "(A)") path_to_h5file//filename
+    write(gen_h5path, "(A99)") path_to_h5file//filename1
     
     gen_h5path = adjustl(gen_h5path)
     gen_h5path = trim(gen_h5path)
