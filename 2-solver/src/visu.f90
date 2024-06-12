@@ -504,7 +504,7 @@ contains
     logical, optional, intent(in) :: skip_ibm, flush
     
     ! Additional subdirectory for saving scalar planes
-    character(len=*), optional, intent(in) :: subdirectory
+    character(len=99), optional, intent(in) :: subdirectory
 
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: local_array
     logical :: mpiio, force_flush
