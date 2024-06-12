@@ -627,6 +627,9 @@ contains
     path_to_h5file = adjustl(path_to_h5file)
     path_to_h5file = trim(path_to_h5file)
     
+    filename = adjustl(filename)
+    filename = trim(filename)
+    
     write(gen_h5path, "(A)") path_to_h5file//filename
     
     gen_h5path = adjustl(gen_h5path)
