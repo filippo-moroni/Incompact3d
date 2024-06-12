@@ -52,7 +52,8 @@ module visu
 
   private
   public :: output2D, visu_init, visu_ready, visu_finalise, write_snapshot, end_snapshot, &
-            write_field, io_name, write_xdmf_header, write_xdmf_footer, ioxdmf
+            write_field, io_name, write_xdmf_header, write_xdmf_footer, ioxdmf, filenamedigits, &
+            ifilenameformat
 
 contains
 
@@ -375,7 +376,7 @@ contains
     real(mytype) :: xp(xszV(1)), zp(zszV(3))
 
     if (nrank.eq.0) then
-      OPEN(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf"))
+      open(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf"))
 
       write(ioxdmf,'(A22)')'<?xml version="1.0" ?>'
       write(ioxdmf,*)'<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>'
@@ -488,7 +489,7 @@ contains
   !
   subroutine write_field(f1, pathname, filename, num, skip_ibm, flush)
 
-    use mpi
+    use MPI
     
     use var, only : ep1
     use var, only : zero, one
