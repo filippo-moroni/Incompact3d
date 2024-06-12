@@ -176,7 +176,7 @@ contains
     use decomp_2d,   only : xsize, ysize
     use decomp_2d,   only : transpose_x_to_y
     
-    use param,       only : zero, xnu, itype_channel, itype_ttbl
+    use param,       only : zero, xnu, itype, itype_channel, itype_ttbl
     use variables
     
     implicit none
