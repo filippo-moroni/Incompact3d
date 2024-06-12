@@ -275,7 +275,7 @@ contains
   
   use dbg_schemes, only : sin_prec, sqrt_prec
   use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
-  use param,       only : a_plus_cap, t_plus_cap
+  use param,       only : a_wo, t_wo
   use param,       only : two, xnu, pi
   use decomp_2d,   only : xsize
   use decomp_2d,   only : mytype
@@ -285,14 +285,19 @@ contains
   real(mytype) :: amplitude, period
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
   
-  ! Calculate shear velocity    
-  call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
-    
-  ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
-  amplitude = sh_velx * a_plus_cap
+  ! Rescale amplitude and period in friction units if feedback control is enabled (closed loop)
+  if (ifeedback_control .eq. 1) then 
   
-  ! Period of oscillation, based on longitudinal shear velocity
-  period = xnu * t_plus_cap / (sh_velx**2)
+      ! Calculate shear velocity    
+      call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
+    
+      ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
+      amplitude = sh_velx * a_wo
+  
+      ! Period of oscillation, based on longitudinal shear velocity
+      period = xnu * t_wo / (sh_velx**2)
+  
+  end if
   
   ! Calculation of the spanwise wall velocity
   span_vel = amplitude * sin_prec(two*pi*t/period)

@@ -450,16 +450,17 @@ module param
   real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient 
 
   ! Spanwise wall oscillation
-  integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters
-  real(mytype) :: span_vel           ! spanwise velocity at the wall due to imposed wall oscillations
+  integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters and the application of wall oscillations
+  real(mytype) :: span_vel           ! spanwise velocity at the wall due to imposed wall oscillations, variable calculated
+  integer      :: ifeedback_control  ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop)
       
   ! Extra controls for numerics 
   integer      :: icfllim            ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   real(mytype) :: cfl_limit          ! CFL limit to adjust the time-step
   
   ! Parameters for wall oscillations (used for channel flows and TTBLs)
-  real(mytype) :: a_plus_cap         ! amplitude of spanwise wall oscillations in friction units (cap: capital letter)  
-  real(mytype) :: t_plus_cap         ! period of spanwise wall oscillations in friction units (cap: capital letter)
+  real(mytype) :: a_wo               ! amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
+  real(mytype) :: t_wo               ! period of spanwise wall oscillations (in friction units if feedback control enabled) 
   
   ! Variable to save and show the maximum CFL in the restart file
   real(mytype) :: cflmax
