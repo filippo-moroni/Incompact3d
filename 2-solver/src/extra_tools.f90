@@ -15,7 +15,8 @@ module extra_tools
             spanwise_wall_oscillations, &
             calculate_ubulk,            &
             calculate_bl_thick,         &
-            write_scalar_plane_z 
+            write_scalar_plane_z,       &
+            write_hd_vortx
 
 contains
   
@@ -482,9 +483,11 @@ contains
  
   use visu
   
-  use decomp_2d,    only : mytype, xsize, nrank
+  use decomp_2d,    only : mytype, xsize, ysize, zsize, nrank
+  use decomp_2d,    only : transpose_x_to_y, transpose_y_to_z, transpose_z_to_y, transpose_y_to_x
   use decomp_2d_io, only : decomp_2d_start_io
   use param,        only : ioutput_plane
+  use variables
   
   implicit none
   
@@ -494,10 +497,11 @@ contains
   
   ! Locals
   character(len=32) :: num  ! taken from write_snapshot in visu module
-  
+    
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
+  real(mytype) :: lind
   
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
