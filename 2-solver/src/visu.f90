@@ -552,7 +552,7 @@ contains
           else if (output2D.eq.3) then
              write(ioxdmf,*)'            Dimensions="',1,yszV(2),xszV(1),'">'
           endif
-          write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin'), num)
+          write(ioxdmf,*)'              '//gen_h5path(gen_filename2(varname, num, 'bin'), num)
           write(ioxdmf,*)'           </DataItem>'
           write(ioxdmf,*)'        </Attribute>'
        endif
@@ -576,7 +576,7 @@ contains
        end if
     else
        ! Change 4th entry to select the specific plane; -1 is for average plane, positive integers specify the specific plane
-       call decomp_2d_write_plane(1,local_array,output2D,-1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
+       call decomp_2d_write_plane(1,local_array,output2D,1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
     endif
 
   end subroutine write_field
@@ -620,4 +620,20 @@ contains
     
   end function gen_h5path
   
+  !----------------------------------------------!
+  ! Generation of the filename without pathname, !
+  ! used in gen_h5path for .xdmf file creation.  !
+  !                                              !
+  ! Adapted from gen_filename.                   !
+  ! ADIOS2 cannot be used.                       !
+  !----------------------------------------------!
+  
+  function gen_filename2(varname, num, ext)
+
+    character(len=*), intent(in) :: varname, num, ext
+    character(len=(4 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename2
+    write(gen_filename2, "(A)") '././'//varname//'-'//num//'.'//ext
+    
+  end function gen_filename2
+    
 end module visu
