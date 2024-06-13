@@ -111,7 +111,7 @@ contains
 
     call decomp_2d_init_io(io_name)
 
-    !! Register variables
+    ! Register variables
     call decomp_2d_register_variable(io_name, "ux", 1, 0, output2D, mytype)
     call decomp_2d_register_variable(io_name, "uy", 1, 0, output2D, mytype)
     call decomp_2d_register_variable(io_name, "uz", 1, 0, output2D, mytype)
@@ -127,7 +127,7 @@ contains
     
     ! Add extra IO name for saving scalar planes with z-normal 
     if (iscalar .ne. 0) then
-        call decomp_2d_register_variable(io_name, "phiplane", 1, 0, 3, mytype)
+        call decomp_2d_register_variable(io_name, "phiplanez", 1, 0, 3, mytype)
     end if
     
   end subroutine visu_init
