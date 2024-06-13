@@ -502,7 +502,7 @@ contains
     implicit none
 
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: f1
-    character(len=*), intent(in) :: pathname, filename, num 
+    character(len=*),  intent(in) :: pathname, filename, num 
     logical, optional, intent(in) :: skip_ibm, flush
 
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: local_array
@@ -552,7 +552,7 @@ contains
           else if (output2D.eq.3) then
              write(ioxdmf,*)'            Dimensions="',1,yszV(2),xszV(1),'">'
           endif
-          write(ioxdmf,*)'              '//gen_h5path(gen_filename2(varname, num, 'bin'), num)
+          write(ioxdmf,*)'              '//gen_h5path(gen_filename2(filename, num, 'bin'), num)
           write(ioxdmf,*)'           </DataItem>'
           write(ioxdmf,*)'        </Attribute>'
        endif
@@ -632,7 +632,7 @@ contains
 
     character(len=*), intent(in) :: varname, num, ext
     character(len=(4 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename2
-    write(gen_filename2, "(A)") '././'//varname//'-'//num//'.'//ext
+    write(gen_filename2, "(A)") varname//'-'//num//'.'//ext
     
   end function gen_filename2
     
