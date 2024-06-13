@@ -567,7 +567,7 @@ contains
   call write_xdmf_header("planes", "hel-vortx-planex", trim(num))
    
   ! Write first scalar field
-  call write_field(di1(:,:,:), "planes", "vortx", trim(num))
+  call write_field(di1(:,:,:), "planes", "vortx", trim(num), flush = .true.)
   
 !--- End snapshot part ---!
   
