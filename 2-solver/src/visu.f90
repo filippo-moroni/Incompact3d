@@ -125,6 +125,9 @@ contains
        enddo
     endif
     
+    ! Add extra IO name for saving streamwise vorticity with x-normal
+    call decomp_2d_register_variable(io_name, "vortx", 1, 0, 1, mytype)
+    
     ! Add extra IO name for saving scalar planes with z-normal 
     if (iscalar .ne. 0) then
         call decomp_2d_register_variable(io_name, "phiplanez", 1, 0, 3, mytype)
@@ -625,14 +628,18 @@ contains
   ! used in gen_h5path for .xdmf file creation.  !
   !                                              !
   ! Adapted from gen_filename.                   !
-  ! ADIOS2 cannot be used.                       !
   !----------------------------------------------!
   
   function gen_filename2(varname, num, ext)
 
     character(len=*), intent(in) :: varname, num, ext
+#ifndef ADIOS2
     character(len=(4 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename2
     write(gen_filename2, "(A)") varname//'-'//num//'.'//ext
+#else
+    character(len=len(varname)) :: gen_filename2
+    write(gen_filename2, "(A)") varname
+#endif
     
   end function gen_filename2
     
