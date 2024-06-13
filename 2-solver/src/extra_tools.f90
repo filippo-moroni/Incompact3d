@@ -275,7 +275,7 @@ contains
   
   use dbg_schemes, only : sin_prec, sqrt_prec
   use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
-  use param,       only : a_wo, t_wo
+  use param,       only : a_wo, t_wo, ifeedback_control
   use param,       only : two, xnu, pi
   use decomp_2d,   only : xsize
   use decomp_2d,   only : mytype
