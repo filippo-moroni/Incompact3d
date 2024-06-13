@@ -41,16 +41,47 @@ module tools
   
   private
 
-  public :: test_speed_min_max, test_scalar_min_max, &
-       restart, &
-       simu_stats, &
-       apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
-       compute_cfldiff, compute_cfl, compute_reynolds_cell, compute_stab_param, update_time_int_coeff, &
-       rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z, &
-       avg3d
+  public :: program_header, &
+            test_speed_min_max, test_scalar_min_max, &
+            restart, &
+            simu_stats, &
+            apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
+            compute_cfldiff, compute_cfl, compute_reynolds_cell, compute_stab_param, update_time_int_coeff, &
+            rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z, &
+            avg3d
 
 contains
-  !##################################################################
+
+  !----------------------------------------------!
+  ! Header of the program printed to the screen. !
+  !----------------------------------------------!
+
+  subroutine program_header()
+  
+  use decomp_2d, only : nrank
+  
+  implicit none
+  
+  if (nrank==0) then
+     write(*,*) '!---------------------------------------------------------!'
+     write(*,*) '!                   ~  Incompact3D  ~                     !'
+     write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
+     write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
+     write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
+     write(*,*) '!  Sylvain Laizet, 2018                                   !'
+     write(*,*) '!                                                         !'
+     write(*,*) '!  Modified by Filippo Moroni, 2024                       !'
+     write(*,*) '!---------------------------------------------------------!'
+     
+#if defined(VERSION)
+     write(*,*)'Git version        : ', VERSION
+#else
+     write(*,*)'Git version        : unknown'
+#endif
+  endif
+  
+  end subroutine program_header
+  
   !##################################################################
   subroutine test_scalar_min_max(phi)
 
