@@ -131,7 +131,7 @@ program xcompact3d
      if (mod(itime, ioutput_plane) .eq. 0 .or. (itime.eq.ifirst)) then
      
      ! Helicity density and streamwise vorticity with x-normal plane
-     call write_hd_vortx(ux1,itime)
+     call write_hd_vortx(ux1,uy1,uz1,itime)
          
          ! Save a scalar plane with z-normal 
          if (iscalar .eq. 1) then

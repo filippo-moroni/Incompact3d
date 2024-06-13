@@ -478,7 +478,7 @@ contains
   ! and streamwise vorticity.
   ! hd: helicity density (to be implemented) 
   !---------------------------------------------------------------------------!
-  subroutine write_hd_vortx(ux1,itime)
+  subroutine write_hd_vortx(ux1,uy1,uz1,itime)
  
   use visu
   
@@ -489,7 +489,7 @@ contains
   implicit none
   
   ! Inputs
-  real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ux1
+  real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ux1,uy1,uz1
   integer,                                               intent(in) :: itime
   
   ! Locals
