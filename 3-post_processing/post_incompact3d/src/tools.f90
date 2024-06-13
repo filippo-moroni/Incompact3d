@@ -41,7 +41,8 @@ module tools
   
   private
 
-  public :: reading_input_file,   &
+  public :: program_header,       &
+            reading_input_file,   &
             rescale_pressure,     &
             test_scalar_min_max,  & 
             test_speed_min_max,   &
@@ -54,6 +55,34 @@ module tools
 
 contains
 
+  !----------------------------------------------!
+  ! Header of the program printed to the screen. !
+  !----------------------------------------------!
+  subroutine program_header()
+  
+  use decomp_2d, only : nrank
+  
+  implicit none
+  
+  if (nrank==0) then
+     write(*,*) '!---------------------------------------------------------!'
+     write(*,*) '!                 ~  PostIncompact3D  ~                   !'
+     write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
+     write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
+     write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
+     write(*,*) '!  Sylvain Laizet, 2018                                   !'
+     write(*,*) '!                                                         !'
+     write(*,*) '!  Modified by Filippo Moroni & Roberto Corsini, 2024     !'
+     write(*,*) '!---------------------------------------------------------!'
+     
+#if defined(VERSION)
+     write(*,*)'Git version        : ', VERSION
+#else
+     write(*,*)'Git version        : unknown'
+#endif
+  endif
+  
+  end subroutine program_header
   !##################################################################
   subroutine reading_input_file()
 

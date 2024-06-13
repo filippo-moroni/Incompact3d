@@ -39,7 +39,7 @@
 !###########################################################################
 subroutine parameter(input_i3d)
 
-  use mpi
+  use MPI
   
   use iso_fortran_env
 
@@ -50,8 +50,9 @@ subroutine parameter(input_i3d)
   use ibm_param
   use dbg_schemes, only: sin_prec, cos_prec
 
-  use var,  only : dphi1
-  use visu, only : output2D
+  use var,   only : dphi1
+  use visu,  only : output2D
+  use tools, only : program_header
 
   implicit none
 
@@ -94,29 +95,14 @@ subroutine parameter(input_i3d)
   NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
   NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
   NAMELIST /ExtraNumControl/ icfllim,cfl_limit
-  NAMELIST /WallOscillations/ a_plus_cap,t_plus_cap,ifeedback_control
+  NAMELIST /WallOscillations/ a_wo,t_wo,ifeedback_control
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
 #endif
 
-  if (nrank==0) then
-     write(*,*) '!---------------------------------------------------------!'
-     write(*,*) '!                 ~  PostIncompact3D  ~                   !'
-     write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
-     write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
-     write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
-     write(*,*) '!  Sylvain Laizet, 2018                                   !'
-     write(*,*) '!                                                         !'
-     write(*,*) '!  Modified by Filippo Moroni & Roberto Corsini, 2024     !'
-     write(*,*) '!---------------------------------------------------------!'
-     
-#if defined(VERSION)
-     write(*,*)'Git version        : ', VERSION
-#else
-     write(*,*)'Git version        : unknown'
-#endif
-  endif
+  ! Program header with credits
+  call program_header()
 
   call parameter_defaults()
 

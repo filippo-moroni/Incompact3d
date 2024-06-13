@@ -55,7 +55,6 @@ contains
   !----------------------------------------------!
   ! Header of the program printed to the screen. !
   !----------------------------------------------!
-
   subroutine program_header()
   
   use decomp_2d, only : nrank
@@ -81,7 +80,6 @@ contains
   endif
   
   end subroutine program_header
-  
   !##################################################################
   subroutine test_scalar_min_max(phi)
 
