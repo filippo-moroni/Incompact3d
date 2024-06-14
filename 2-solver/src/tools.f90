@@ -374,7 +374,7 @@ contains
        if(nrank.eq.0) then
       
            ! Writing the last time step index as character
-           write(ts_index,'(I8.8)') ilast
+           write(ts_index,'(I8.8)') itime
            ts_index = adjustl(ts_index) 
         
            ! Write the filename for the checkpoint file 
