@@ -325,26 +325,7 @@ subroutine finalise_xcompact3d()
       end if
       close(iunit)
   end if
-  
-  !--- Store checkpoint in a secondary file for safer backup ---!
-  if(nrank.eq.0) then
-      
-      ! Writing the last time step index as character
-      write(ts_index,'(I8.8)') ilast
-      ts_index = adjustl(ts_index) 
-        
-      ! Write the filename for the checkpoint file 
-      write(filename, '(A,A)') 'checkpoint-', trim(ts_index)
-      filename = adjustl(filename)
-  
-      ! Copy and store the checkpoint file with a different name
-      call execute_command_line('cp ' // 'checkpoint' // ' ' // filename)
-      
-      ! Move the created file inside /checkpoints folder
-      call execute_command_line('mv ' // filename // ' ' // 'checkpoints')
-      
-  end if
-  
+    
   call simu_stats(4)
   call visu_finalise()
   call decomp_2d_io_finalise()

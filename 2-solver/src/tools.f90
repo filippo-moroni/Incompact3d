@@ -284,13 +284,17 @@ contains
     integer, dimension(2) :: dims, dummy_coords
     logical, dimension(2) :: dummy_periods
     logical :: fexists
-    character(len=90) :: filename, filestart
+    character(len=90) :: filestart
     character(len=32) :: fmt2,fmt3,fmt4
     character(len=7)  :: fmt1
     character(len=80) :: varname
+    
+    character(99) :: filename, ts_index
+    integer       :: iunit
+    logical       :: exists
+  
     NAMELIST /Time/ tfield, itime
     NAMELIST /NumParam/ nx, ny, nz, istret, beta, dt, itimescheme
-
 
     write(filename,"('restart',I7.7)") itime
     write(filestart,"('restart',I7.7)") ifirst-1
@@ -364,7 +368,27 @@ contains
 
        call decomp_2d_end_io(io_restart, resfile)
        call decomp_2d_close_io(io_restart, resfile)
-
+       
+       
+       !--- Store checkpoint in a file copy for safer backup ---!
+       if(nrank.eq.0) then
+      
+           ! Writing the last time step index as character
+           write(ts_index,'(I8.8)') ilast
+           ts_index = adjustl(ts_index) 
+        
+           ! Write the filename for the checkpoint file 
+           write(filename, '(A,A)') 'checkpoint-', trim(ts_index)
+           filename = adjustl(filename)
+  
+           ! Copy and store the checkpoint file with a different name
+           call execute_command_line('cp ' // 'checkpoint' // ' ' // filename)
+      
+           ! Move the created file inside /checkpoints folder
+           call execute_command_line('mv ' // filename // ' ' // 'checkpoints')
+      
+       end if
+       
        ! Write info file for restart - Kay Schäfer
        if (nrank == 0) then
          write(filename,"('restart_info/restart',I7.7,'.info')") itime
