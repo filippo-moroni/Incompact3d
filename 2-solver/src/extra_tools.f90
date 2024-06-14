@@ -494,7 +494,7 @@ contains
   use decomp_2d,    only : mytype, xsize, ysize, zsize, nrank
   use decomp_2d,    only : transpose_x_to_y, transpose_y_to_z, transpose_z_to_y, transpose_y_to_x
   use decomp_2d_io, only : decomp_2d_start_io
-  use param,        only : ioutput_plane
+  use param,        only : ioutput_plane, zero
   use variables
   
   implicit none
@@ -505,6 +505,8 @@ contains
   
   ! Locals
   character(len=32) :: num  ! taken from write_snapshot in visu module
+  
+  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: hd1  ! helicity density
     
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
@@ -545,9 +547,31 @@ contains
   !dv/dx=tb1 dv/dy=te1 and dv/dz=th1
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
   
-  ! Vorticity along x 
+  !--- Helicity density ---!
+  hd1 = zero
+    
+  ! Vorticity along x and u velocity component
   di1 = tf1 - th1  !dw/dy - dv/dz
+  
+  hd1(:,:,:) = ux1(:,:,:) * di1(:,:,:) 
       
+  ! Vorticity along y and v velocity component
+  di1 = tg1 - tc1  !du/dz - dw/dx
+  
+  hd1(:,:,:) = hd1(:,:,:) + uy1(:,:,:) * di1(:,:,:)
+     
+  ! Vorticity along z and w velocity component
+  di1 = tb1 - td1  !dv/dx - du/dy
+  
+  hd1(:,:,:) = hd1(:,:,:) + uz1(:,:,:) * di1(:,:,:)
+  
+  !------------------------!
+      
+  ! Vorticity along x
+  di1 = zero
+     
+  di1 = tf1 - th1  !dw/dy - dv/dz
+        
   ! Switch to output2D with x-normal plane
   output2D = 1
 
@@ -573,8 +597,11 @@ contains
     
   ! Write XDMF header
   call write_xdmf_header("planes", "hel-vortx-planex", trim(num))
-   
-  ! Write first scalar field
+     
+  ! Write helicity density
+  call write_field(hd1(:,:,:), "planes", "hel", trim(num), flush = .true.)
+  
+  ! Write streamwise vorticity
   call write_field(di1(:,:,:), "planes", "vortx", trim(num), flush = .true.)
   
 !--- End snapshot part ---!
