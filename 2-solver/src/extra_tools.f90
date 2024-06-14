@@ -445,7 +445,7 @@ contains
   ! Calculate temporal BL thickness (delta_99)
   if(nrank .eq. 0) then
       
-      do j = ystart(2),yend(2)
+      do j = 1, ysize(2)
      
           ! BL thickness equivalent to the y-coordinate
           delta_99 = yp(j)  
