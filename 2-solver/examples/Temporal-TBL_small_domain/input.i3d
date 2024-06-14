@@ -17,7 +17,7 @@ ny=649                ! Y-direction nodes
 nz=54                 ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 
-beta = 2.5            ! Refinement parameter (beta)
+beta = 2.0            ! Refinement parameter (beta)
 
 ! Domain dimensions
 xlx = 10.0            ! Lx (Size of the box in x-direction)
