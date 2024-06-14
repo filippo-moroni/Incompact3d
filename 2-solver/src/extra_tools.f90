@@ -23,7 +23,7 @@ contains
   !---------------------------------------------------------------------------!
   ! Write shear velocities, skin friction coefficients,
   ! viscous time unit, time unit, bulk velocity (channel only) 
-  ! boundary layer thickness and Re_tau (TTBLs only) and stores
+  ! boundary layer thickness and Re_tau (TTBL only) and stores
   ! them in a .txt file (used for TTBL and Channel).
   !---------------------------------------------------------------------------!
   subroutine print_cf(ux,uz)
@@ -103,7 +103,7 @@ contains
  
   ! Channel
   else if(itype .eq. itype_channel) then
-      ! Shear velocity bottom wall
+      ! Shear velocity both walls
       call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
       ! Bulk velocity
       call calculate_ubulk(ux,ubulk)
@@ -156,11 +156,11 @@ contains
   end subroutine print_cf
   
   !---------------------------------------------------------------------------!
-  ! Calculate total shear velocity and its x and z components at bottom wall
+  ! Calculate total shear velocity and its x and z components 
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
-  !   for the spanwise wall oscillations. 
-  ! - Used to print cf coefficients and shear velocity to an overall 
+  !   for the spanwise wall oscillations with feedback control enabled. 
+  ! - Used to print cf coefficients and shear velocities to an overall 
   !   .txt file for time evolution check.
   !---------------------------------------------------------------------------!
   subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
@@ -225,7 +225,7 @@ contains
     do k=1,ysize(3)
        do i=1,ysize(1)
            
-           ! TTBL, only bottom wall
+           ! TTBL, only bottom wall (j = 1)
            if (itype .eq. itype_ttbl) then
               
                ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
@@ -237,7 +237,7 @@ contains
                ! Mean spanwise gradient dW/dy
                mean_gwz = mean_gwz + tc2(i,1,k) / den
            
-           ! Channel, upper wall summation too, with opposite sign
+           ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
            else if (itype .eq. itype_channel) then
            
                ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
@@ -269,8 +269,10 @@ contains
   ! Calculate the spanwise velocity at the wall due to the imposed
   ! sinusoidal oscillations.
   ! 
-  ! Parameters of the non-dimensional oscillation (A^+ and T^+) are read from
-  ! the input file.
+  ! Oscillation parameters (A and T) are read from the input file. 
+  !
+  ! With no feedback control, A and T are in outer units.
+  ! With feedback control,    A and T are in viscous units, A^+, T^+.
   !---------------------------------------------------------------------------!
   subroutine spanwise_wall_oscillations(ux1,uz1)
   
@@ -286,8 +288,15 @@ contains
   real(mytype) :: amplitude, period
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
   
+  ! Amplitude and period in outer units if feedback control is disabled (open loop)
+  if (ifeedback_control .eq. 0) then
+  
+      amplitude = a_wo
+      
+      period = t_wo
+  
   ! Rescale amplitude and period in friction units if feedback control is enabled (closed loop)
-  if (ifeedback_control .eq. 1) then 
+  else if (ifeedback_control .eq. 1) then 
   
       ! Calculate shear velocity    
       call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
@@ -347,7 +356,6 @@ contains
   !---------------------------------------------------------------------------! 
   ! Calculate the boundary layer thickness for a TTBL.
   !---------------------------------------------------------------------------!
- 
   subroutine calculate_bl_thick(ux,delta_99)
   
   use var,         only : ux2    
