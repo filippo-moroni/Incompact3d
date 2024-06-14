@@ -369,6 +369,9 @@ subroutine parameter(input_i3d)
   ! Creating /planes folder inside /data
   if (nrank==0) call execute_command_line('mkdir -p data/planes')
   
+  ! Creating /checkpoints folder
+  if (nrank==0) call execute_command_line('mkdir -p checkpoints')
+  
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif

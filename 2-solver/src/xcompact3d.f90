@@ -339,6 +339,10 @@ subroutine finalise_xcompact3d()
   
       ! Copy and store the checkpoint file with a different name
       call execute_command_line('cp ' // 'checkpoint' // ' ' // filename)
+      
+      ! Move the created file inside /checkpoints folder
+      call execute_command_line('mv ' // filename // ' ' // 'checkpoints')
+      
   end if
   
   call simu_stats(4)
