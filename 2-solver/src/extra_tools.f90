@@ -485,7 +485,6 @@ contains
   !---------------------------------------------------------------------------! 
   ! Write an instantaneous plane with x-dir. normal of helicity density 
   ! and streamwise vorticity.
-  ! hd: helicity density (to be implemented) 
   !---------------------------------------------------------------------------!
   subroutine write_hd_vortx(ux1,uy1,uz1,itime)
  
@@ -506,8 +505,7 @@ contains
   ! Locals
   character(len=32) :: num  ! taken from write_snapshot in visu module
   
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: hd1  ! helicity density
-    
+  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: hd1  ! helicity density 
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
