@@ -12,17 +12,17 @@ p_row=0               ! Row partition
 p_col=0               ! Column partition
 
 ! Mesh
-nx=36                 ! X-direction nodes
+nx=80                 ! X-direction nodes
 ny=649                ! Y-direction nodes
-nz=54                 ! Z-direction nodes
+nz=64                 ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 
 beta = 2.0            ! Refinement parameter (beta)
 
 ! Domain dimensions
-xlx = 10.0            ! Lx (Size of the box in x-direction)
+xlx = 21.7            ! Lx (Size of the box in x-direction)
 yly = 65.1            ! Ly (Size of the box in y-direction)
-zlz = 8.0             ! Lz (Size of the box in z-direction)
+zlz = 8.68            ! Lz (Size of the box in z-direction)
 
 ! Flow parameters
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
@@ -33,7 +33,7 @@ ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at t
 ilast = 100000        ! Last iteration
 
 ! Enable modelling tools
-numscalar = 0         ! Number of scalars 
+numscalar = 1         ! Number of scalars 
 
 ! Boundary and initial conditions
 iin = 1               ! Noise conditions: 0: same noise for all simulations, 1: pseudo-random noise based on system clock (default: 0)

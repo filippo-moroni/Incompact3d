@@ -63,13 +63,12 @@ if istret == 3:
 elif istret == 2:
     cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
-nx = 320                 # number of points in x direction
+nx = 80                  # number of points in x direction
 ny = 649                 # number of points in y direction
-nz = 320                 # number of points in z direction
+nz = 64                  # number of points in z direction
 
-
-xlx = 4.0*bl_thickness       # domain dimension in x direction
-zlz = 2.0*bl_thickness       # domain dimension in z direction
+xlx = 1.0*bl_thickness       # domain dimension in x direction
+zlz = 0.4*bl_thickness       # domain dimension in z direction
 
 if istret == 3:
     yly = 3.0*bl_thickness   # domain dimension in y direction
