@@ -31,6 +31,7 @@ contains
   use param
   use decomp_2d
   use dbg_schemes, only : sqrt_prec
+  use variables,   only : nx,nz,yp
       
   implicit none
  
@@ -41,7 +42,7 @@ contains
   integer :: iunit
   logical :: exists
   character(len=90) :: filename
-  
+    
   ! Write filename
   if (nrank .eq. 0) then
       write(filename,"('monitoring/cf_history.txt')") 
@@ -152,6 +153,52 @@ contains
       end if  
   
   end if ! closing of the if condition for different flow cases
+  
+  ! Create or open a file to store non-dimensional mesh spacings and domain dimensions
+  if(nrank .eq. 0) then
+  
+      ! Write filename
+      write(filename,"('monitoring/grid_spacings.txt')") 
+   
+      ! Calculate viscous unit
+      delta_nu = xnu / sh_vel 
+   
+      ! Calculate non-dimensional grid spacings
+      deltaxplus  = xlx / nx / delta_nu
+      deltayplusw = yp(1) / delta_nu
+      deltazplus  = zlz / nz / delta_nu
+      
+      ! Calculate non-dimensional domain dimensions
+      xlxplus = xlx / delta_nu
+      ylyplus = yly / delta_nu
+      zlzplus = zlz / delta_nu
+      
+      ! Half the height for a channel
+      if(itype .eq. itype_channel) ylyplus = ylyplus / two    
+          
+      inquire(file=filename, exist=exists)
+      if (exists) then
+          open(newunit=iunit, file=filename, status="old", position="append", action="write")
+              
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.6,A,F12.6,A, F12.4,A,I12)') &
+                         deltaxplus, ',', deltayplusw, ',', deltazplus, ',',              & 
+                         xlxplus,    ',', ylyplus,     ',', zlzplus,    ',',              &
+                         t,          ',', itime
+      else
+          open(newunit=iunit, file=filename, status="new", action="write")
+          ! Header
+          write(iunit, '(A12,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12)')     &
+                        'delta_x^+', ',', 'delta_yw^+', ',', 'delta_z^+', ',',  &
+                        'Lx^+',      ',', 'Ly^+',       ',', 'Lz^+',      ',',  &
+                        'T',         ',', 'ts'          
+              
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.6,A,F12.6,A, F12.4,A,I12)') &
+                         deltaxplus, ',', deltayplusw, ',', deltazplus, ',',              & 
+                         xlxplus,    ',', ylyplus,     ',', zlzplus,    ',',              &
+                         t,          ',', itime
+      end if
+          close(iunit)
+  end if
              
   end subroutine print_cf
   

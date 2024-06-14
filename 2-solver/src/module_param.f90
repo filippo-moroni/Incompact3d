@@ -353,7 +353,6 @@ module param
   real(mytype), allocatable, dimension(:,:) :: alpha_sc, beta_sc, g_sc
   real(mytype) :: g_bl_inf, f_bl_inf
 
-
   !! Scalars
   logical, allocatable, dimension(:) :: sc_even, sc_skew
   real(mytype), allocatable, dimension(:) :: scalar_lbound, scalar_ubound
@@ -437,6 +436,16 @@ module param
   real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
   real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
   real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
+  
+  real(mytype), save :: deltaxplus   ! delta x^+
+  real(mytype), save :: deltayplusw  ! delta y^+ at the wall
+  real(mytype), save :: deltazplus   ! delta z^+
+  
+  real(mytype), save :: xlxplus      ! Lx^+
+  real(mytype), save :: ylyplus      ! Ly^+
+  real(mytype), save :: zlzplus      ! Lz^+
+  
+  real(mytype), save :: delta_nu     ! viscous unit
   
   !--- Additional controls namelist and related quantities ---!
   
