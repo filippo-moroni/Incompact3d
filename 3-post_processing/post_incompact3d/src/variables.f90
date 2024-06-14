@@ -46,8 +46,7 @@ module var
   real(mytype), save, allocatable, dimension(:,:,:) :: rho2, rho3
   real(mytype), save, allocatable, dimension(:,:,:) :: divu3
   
-  ! modified to reduce the arrays dimension of 1 (only one scalar is allowed in this way)
-  !real(mytype), save, allocatable, dimension(:,:,:,:) :: phi1, phi2, phi3  
+  ! modified to reduce the arrays dimension of 1 (only one scalar is allowed in this way) 
   real(mytype), save, allocatable, dimension(:,:,:) :: phi1, phi2, phi3
   
   real(mytype), save, allocatable, dimension(:,:,:) :: px1, py1, pz1
@@ -64,10 +63,6 @@ module var
   !arrays for post processing
   real(mytype), save, allocatable, dimension(:,:,:) :: f1,fm1
   
-  !arrays for statistic collection
-  !real(mytype), save, allocatable, dimension(:,:,:) :: umean,vmean,wmean,pmean,uumean,vvmean,wwmean,uvmean,uwmean,vwmean,tmean
-  !real(mytype), save, allocatable, dimension(:,:,:,:) :: phimean,phiphimean,uphimean,vphimean,wphimean
-
   !arrays for visualization
   real(mytype), save, allocatable, dimension(:,:,:) :: uvisu
 

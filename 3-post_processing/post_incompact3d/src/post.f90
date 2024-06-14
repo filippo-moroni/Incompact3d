@@ -55,8 +55,8 @@ PROGRAM post
   
   ! Setting up the 2d decomposition
   call decomp_2d_init(nx,ny,nz,1,nproc)                      ! modified by R. Corsini
-  
   !call decomp_2d_init(nx,ny,nz,p_row,p_col)
+  
   call decomp_2d_io_init()
   
   ! Initialize post-processing variables
@@ -107,11 +107,13 @@ PROGRAM post
   if (post_mean) then
      read_vel=.true.
      read_pre=.true.
-     if (iscalar==1) read_phi=.true. 
   endif
   
   ! Reading of velocity only if necessary
   if (post_vort .or. post_diss .or. post_corz) read_vel=.true.
+  
+  ! Read of scalar field only if necessary
+  if (iscalar==1) read_phi=.true. 
   
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
@@ -119,9 +121,7 @@ PROGRAM post
   ! Initialize statistics
   call init_statistics()
   
-#ifdef TTBL_MODE
-
-#else
+#ifndef TTBL_MODE
 
   ! Reading of previously calculated mean velocity field for a channel,
   ! if correlation needs to be calculated.
@@ -234,15 +234,13 @@ PROGRAM post
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz,mean_gradphi)
      
      if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
 
   enddo ! closing of the do-loop on the different flow realizations
 
-#ifdef TTBL_MODE
-
-#else  
+#ifndef TTBL_MODE 
    
    !--- Correlation for channel, mean statistics must be calculated in a previous post-processing run ---!
    if(post_corz) then
@@ -314,7 +312,8 @@ PROGRAM post
               vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/den 
               mean_gradientpH1(j)=mean_gradientpH1(j)+mean_gradientp(i,j,k)/den
               mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/den 
-              mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den                   
+              mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den 
+              mean_gradphiH1(j)=mean_gradphiH1(j)+mean_gradphi(i,j,k)/den                   
            enddo
         enddo
      enddo
@@ -369,6 +368,7 @@ PROGRAM post
      call MPI_ALLREDUCE(mean_gradientpH1,mean_gradientpHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code) 
      call MPI_ALLREDUCE(mean_gradientxH1,mean_gradientxHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(mean_gradientzH1,mean_gradientzHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(mean_gradphiH1,mean_gradphiHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   endif
   
   if (post_diss) then
@@ -529,17 +529,19 @@ PROGRAM post
         
         if (j .eq. 1) then
         
-        write(iunit, '(6(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
-                                          'dU_par/dy'    , ',', 'dU/dy'        , ',', 'dW/dy'          
+        write(iunit, '(7(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
+                                          'dU_par/dy'   , ',', 'dU/dy'        , ',', 'dW/dy',         ',', &
+                                          'dPhi/dy'          
                                
         else
         
-        write(iunit, '(6(F13.9, A1, 1X))') vortxmeanHT(j-1),      ',',  &
+        write(iunit, '(7(F13.9, A1, 1X))') vortxmeanHT(j-1),      ',',  &
                                            vortymeanHT(j-1),      ',',  &       
                                            vortzmeanHT(j-1),      ',',  &
                                            mean_gradientpHT(j-1), ',',  &
                                            mean_gradientxHT(j-1), ',',  &
-                                           mean_gradientzHT(j-1)        
+                                           mean_gradientzHT(j-1), ',',  &
+                                           mean_gradphiHT(j-1)      
         end if
         
         end do
@@ -692,6 +694,7 @@ PROGRAM post
      print *,''
      print *,'mean[omega_x], mean[omega_y], mean[omega_z]'
      print *,'dU_par/dy,     dU/dy,         dW/dy'
+     print *,'dPhi/dy'
      print *,''    
      endif
      

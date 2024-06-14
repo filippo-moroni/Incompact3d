@@ -152,7 +152,10 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
 end subroutine stat_mean
 !********************************************************************
 ! Vorticity and mean gradient sqrt[ (du/dy)**2 + (dw/dy)**2 ]
-subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mean_gradientp2,mean_gradientx2,mean_gradientz2)   
+subroutine stat_vorticity(ux1,uy1,uz1,nr,nt, &
+                          vortxmean2,vortymean2,vortzmean2, &
+                          mean_gradientp2,mean_gradientx2,mean_gradientz2, &
+                          mean_gradphi2)   
 
   use param
   use variables
@@ -163,9 +166,12 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   
   implicit none
   
-  real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
-  integer,     intent(in) :: nr                                                 ! number of flow realizations
-  integer,     intent(in) :: nt                                                 ! number of snapshots
+  ! In post_incompact3d, phi1 variable is rank 3 array and not 4 (only 1 scalar field allowed)
+  real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1
+  
+  ! Number of flow realizations and number of snapshots
+  integer,     intent(in) :: nr, nt                                                  
+  integer,     intent(in) :: nt                                                 
   integer                 :: i,j,k
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
@@ -180,6 +186,9 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   
   ! Mean gradients (mean gradients, y-pencils) (p: parallel, x:streamwise, z: spanwise)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradientp2, mean_gradientx2, mean_gradientz2
+  
+  ! Mean scalar gradient (y-pencils)
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradphi2
         
   ! x-derivatives
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
@@ -275,6 +284,17 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean2,vortymean2,vortzmean2,mea
   ! Transpose array along y and sum
   call transpose_x_to_y(di1,di2)
   vortzmean2 = vortzmean2 + di2/den
+  
+  !--- Scalar gradient ---!
+  
+  ! Transpose to y-pencils
+  call transpose_x_to_y(phi1,td2)
+  
+  ! y-derivative
+  call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
+  
+  ! Summation
+  mean_gradphi2 = mean_gradphi2 + ta2/den
    
 end subroutine stat_vorticity
 

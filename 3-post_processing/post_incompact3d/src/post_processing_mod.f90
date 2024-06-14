@@ -66,6 +66,11 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: mean_gradientzH1
   real(mytype), save, allocatable, dimension(:)     :: mean_gradientzHT
   
+  ! Arrays for scalar gradient (dPhi/dy)
+  real(mytype), save, allocatable, dimension(:,:,:) :: mean_gradphi
+  real(mytype), save, allocatable, dimension(:)     :: mean_gradphiH1
+  real(mytype), save, allocatable, dimension(:)     :: mean_gradphiHT
+  
   ! Arrays for total dissipation rate eps
   real(mytype), save, allocatable, dimension(:,:,:) :: epsmean
   real(mytype), save, allocatable, dimension(:)     :: epsmeanH1
@@ -212,8 +217,7 @@ contains
     allocate(cfi6z(nz),cci6z(nz),cbi6z(nz),cfip6z(nz),csip6z(nz),cwip6z(nz),&
          csi6z(nz),cwi6z(nz),cifi6z(nz),cici6z(nz))
     allocate(cibi6z(nz),cifip6z(nz),cisip6z(nz),ciwip6z(nz),cisi6z(nz),ciwi6z(nz))
-   
-    
+       
     ! Module mesh 
     allocate(ppy(ny))
     ppy=zero
@@ -370,13 +374,15 @@ contains
        allocate(vortzmeanHT(ysize(2)));
        vortxmeanHT=zero;vortymeanHT=zero;vortzmeanHT=zero
        
-       ! Mean gradients
+       ! Mean gradients (velocity and scalar)
        allocate(mean_gradientp(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
        mean_gradientp=zero
        allocate(mean_gradientx(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
        mean_gradientx=zero
        allocate(mean_gradientz(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
        mean_gradientz=zero
+       allocate(mean_gradphi(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    ! global indices
+       mean_gradphi=zero
        
        allocate(mean_gradientpH1(ysize(2)))
        mean_gradientpH1=zero
@@ -384,6 +390,8 @@ contains
        mean_gradientxH1=zero
        allocate(mean_gradientzH1(ysize(2)))
        mean_gradientzH1=zero
+       allocate(mean_gradphiH1(ysize(2)))
+       mean_gradphiH1=zero
        
        allocate(mean_gradientpHT(ysize(2)))
        mean_gradientpHT=zero
@@ -391,6 +399,8 @@ contains
        mean_gradientxHT=zero
        allocate(mean_gradientzHT(ysize(2)))
        mean_gradientzHT=zero
+       allocate(mean_gradphiHT(ysize(2)))
+       mean_gradphiHT=zero
                                                                                                                                                                       
     endif
     
@@ -461,8 +471,8 @@ contains
   
   if (post_vort) then
       vortxmean=zero; vortymean=zero; vortzmean=zero
-      
       mean_gradientp=zero; mean_gradientx=zero; mean_gradientz=zero
+      mean_gradphi=zero
   end if
   
   if (post_diss) then
@@ -510,10 +520,12 @@ contains
       ! Subdomains
       vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
       mean_gradientpH1=zero; mean_gradientxH1=zero; mean_gradientzH1=zero
+      mean_gradphiH1=zero
   
       ! Total domain
       vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
       mean_gradientpHT=zero; mean_gradientxHT=zero; mean_gradientzHT=zero
+      mean_gradphiHT=zero
   
   end if
   
