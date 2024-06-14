@@ -115,9 +115,9 @@ phiwall = 1.0         ! Scalar value at the wall
 
 /End
 
-!================
+!====================
 &WallOscillations
-!================
+!====================
 
 a_wo = 0.0            ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
 t_wo = 100.0          ! Period of spanwise wall oscillations (in friction units if feedback control enabled)
