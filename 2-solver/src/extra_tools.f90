@@ -411,7 +411,7 @@ contains
   use decomp_2d,   only : xsize, ysize, ystart, yend
   use decomp_2d,   only : transpose_x_to_y
     
-  use param,       only : zpzeroone 
+  use param,       only : zpzeroone, zero
   use variables
     
   implicit none
@@ -444,6 +444,9 @@ contains
   
   ! Calculate temporal BL thickness (delta_99)
   if(nrank .eq. 0) then
+      
+      ! Set again delta_99 to zero
+      delta_99 = zero
       
       do j = 1, ysize(2)
      
