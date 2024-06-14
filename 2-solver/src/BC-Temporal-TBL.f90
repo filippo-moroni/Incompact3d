@@ -38,16 +38,16 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
 
-    real(mytype) :: y          ! y coordinate of grid points
-    real(mytype) :: theta_sl   ! momentum thickness of the initial shear layer
-    real(mytype) :: um         ! initial mean streamwise velocity profile 
-    real(mytype) :: phim       ! initial mean scalar profile
-    real(mytype) :: diff       ! difference between wall and mean velocities
-    real(mytype) :: mg         ! mean gradient of the initial velocity profile
-    real(mytype) :: sh_vel_ic  ! shear velocity of the initial velocity profile
-    real(mytype) :: delta_nu   ! viscous length of the initial velocity profile    
+    real(mytype) :: y           ! y coordinate of grid points
+    real(mytype) :: theta_sl    ! momentum thickness of the initial shear layer
+    real(mytype) :: um          ! initial mean streamwise velocity profile 
+    real(mytype) :: phim        ! initial mean scalar profile
+    real(mytype) :: diff        ! difference between wall and mean velocities
+    real(mytype) :: mg          ! mean gradient of the initial velocity profile
+    real(mytype) :: sh_vel_ic   ! shear velocity of the initial velocity profile
+    real(mytype) :: delta_nu_ic ! viscous length of the initial velocity profile    
             
-    integer      :: ii,code    ! for random numbers generation 
+    integer      :: ii,code     ! for random numbers generation 
     integer      :: i,j,k
         
     ! Momentum thickness calculation 
@@ -60,7 +60,7 @@ contains
     sh_vel_ic = sqrt_prec(xnu * abs_prec(mg))
     
     ! Initial viscous length
-    delta_nu = xnu / sh_vel_ic
+    delta_nu_ic = xnu / sh_vel_ic
 
     ! Initialize velocity fields
     ux1 = zero 
@@ -111,7 +111,7 @@ contains
        diff = uwall - um
                     
              ! Add noise near the wall, excluding first grid points if requested 
-             if (diff < uln*uwall .and. y/delta_nu > lln) then            
+             if (diff < uln*uwall .and. y/delta_nu_ic > lln) then            
                                
                 do i=1,xsize(1)
                                 
