@@ -76,7 +76,7 @@ ioutput_cf = 100      ! Frequency for saving cf and related quantities
 ioutput_plane = 100   ! Frequency for saving planes for visualization
 ilist = 100           ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
-output2D = 0          ! Writing snapshots2d on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
+output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
 
 /End
 
