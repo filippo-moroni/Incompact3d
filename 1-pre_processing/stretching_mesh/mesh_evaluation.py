@@ -23,6 +23,10 @@ import math
 import csv
 from tabulate import tabulate
 
+# Filter warnings
+import warnings
+warnings.filterwarnings("error")
+
 # Font settings
 plt.rcParams.update({
     "text.usetex": True,
@@ -31,7 +35,7 @@ plt.rcParams.update({
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 2.5               # beta parameter for mesh stretching
+beta = 2.0               # beta parameter for mesh stretching
 delta_t = 0.01           # time-step
 
 # Reynolds number
@@ -59,9 +63,9 @@ if istret == 3:
 elif istret == 2:
     cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
-nx = 250                 # number of points in x direction
+nx = 320                 # number of points in x direction
 ny = 649                 # number of points in y direction
-nz = 250                 # number of points in z direction
+nz = 320                 # number of points in z direction
 
 
 xlx = 4.0*bl_thickness       # domain dimension in x direction
@@ -275,11 +279,11 @@ if istret == 3:
     yp_ic = yp / delta_nu_ic
         
     # Plotting of the initial velocity profile in wall units, first 50 points
-    plt.scatter(yp_ic[0:50], Uo[0:50])
-    plt.title("Initial velocity profile near the wall", fontsize=30)
-    plt.xlabel("$y^+$", fontsize=30)
-    plt.ylabel("$U_o^+$", fontsize=30)
-    plt.show()
+    #plt.scatter(yp_ic[0:50], Uo[0:50])
+    #plt.title("Initial velocity profile near the wall", fontsize=30)
+    #plt.xlabel("$y^+$", fontsize=30)
+    #plt.ylabel("$U_o^+$", fontsize=30)
+    #plt.show()
         
     # Calculate the thickness delta99^+ of the initial shear layer
     j = 0
