@@ -59,15 +59,6 @@ fs2 = f"<{c_w}.8f"
 
 #!--------------------------------------------------------------------------------------!
 
-# Initialize variables
-itype = None
-nx = None
-nz = None
-Lx = None
-Ly = None
-Lz = None
-re = None
-
 # Read the name of the flowcase
 with open('post.prm', 'r') as file:
     
