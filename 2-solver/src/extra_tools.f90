@@ -495,7 +495,7 @@ contains
       j = 1
       
       ! Cycle to check the BL thickness
-      do while(u1meanHT(j) < temp)
+      do while(u1meanHT(j) > temp)
       
       delta_99 = yp(j)
       
