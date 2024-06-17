@@ -430,7 +430,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99,counter)
   
-  use var,         only : ux2, nx, ny, nz   
+  use var,         only : nx, ny, nz   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize
@@ -449,9 +449,10 @@ contains
   integer,      intent(out) :: counter   ! counter for the index of the BL mean interface for yp coordinates 
    
   ! Local variables 
-  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
-  real(mytype)                      :: temp
-  integer                           :: code,i,j,k,iunit
+  real(mytype), dimension(ysize(1),ysize(2),ysize(3)) :: ux2
+  real(mytype), dimension(ysize(2))                   :: u1meanH1,u1meanHT
+  real(mytype)                                        :: temp
+  integer                                             :: code,i,j,k,iunit
       
   ! Transpose data to y-pencils 
   call transpose_x_to_y(ux,ux2)
