@@ -5,16 +5,16 @@
 !                    of R. Corsini                         !
 !----------------------------------------------------------!
 
-PROGRAM post
+program post
 
-  USE decomp_2d
-  USE decomp_2d_io
-  USE variables
-  USE param
-  USE var
-  USE MPI
-  USE post_processing
-  USE tools
+  use decomp_2d
+  use decomp_2d_io
+  use variables
+  use param
+  use var
+  use MPI
+  use post_processing
+  use tools
 
   implicit none
 
@@ -35,6 +35,9 @@ PROGRAM post
  
   character(99):: filename,dirname,snap_index
   character(1) :: a
+  
+  ! Format for snapshots numbers
+  character(len=9) :: ifilenameformat = '(I4.4)'
   
   ! Integer for MPI
   integer :: code
@@ -166,7 +169,11 @@ PROGRAM post
       
      ! Number of snapshot  
      ifile = (ie-1)*icrfile+file1
-          
+     
+     ! Writing the snapshot index as character
+     write(snap_index, ifilenameformat) ifile 
+     snap_index = adjustl(snap_index) 
+                       
      ! Show progress on post-processing    
      if (nrank==0) then
         print *,'----------------------------------------------------'
@@ -196,28 +203,33 @@ PROGRAM post
      ! Reading of velocity, pressure and scalar fields if required     
      if (read_vel) then  
           
-        ! Reading the x-pencils (snapshots have metadata of the default saving along x)    
-        write(filename,"('ux-',I3.3,'.bin')") ifile           
-        call decomp_2d_read_one(1,ux1,dirname,filename,a)
-  
-        write(filename,"('uy-',I3.3,'.bin')") ifile           
-        call decomp_2d_read_one(1,uy1,dirname,filename,a) 
-
-        write(filename,"('uz-',I3.3,'.bin')") ifile           
-        call decomp_2d_read_one(1,uz1,dirname,filename,a)    
+         ! Reading the x-pencils (snapshots have metadata of the default saving along x)    
+         write(filename, '(A,A,A)') 'ux-', trim(snap_index), '.bin' 
+         filename = adjustl(filename)         
+         call decomp_2d_read_one(1,ux1,dirname,filename,a)
         
-        ! Check if divergent values are present             
-        call test_speed_min_max(ux1,uy1,uz1)
+         write(filename, '(A,A,A)') 'uy-', trim(snap_index), '.bin' 
+         filename = adjustl(filename)         
+         call decomp_2d_read_one(1,uy1,dirname,filename,a)
+  
+         write(filename, '(A,A,A)') 'uz-', trim(snap_index), '.bin' 
+         filename = adjustl(filename)         
+         call decomp_2d_read_one(1,uz1,dirname,filename,a)
+        
+         ! Check if divergent values are present             
+         call test_speed_min_max(ux1,uy1,uz1)
      endif
      
-     if (read_pre) then    
-        write(filename,"('pp-',I3.3,'.bin')") ifile            
-        call decomp_2d_read_one(1,pre1,dirname,filename,a)        
+     if (read_pre) then
+         write(filename, '(A,A,A)') 'pp-', trim(snap_index), '.bin' 
+         filename = adjustl(filename)         
+         call decomp_2d_read_one(1,pre1,dirname,filename,a)     
      endif
      
-     if (read_phi) then      
-        write(filename,"('phi01-',I3.3,'.bin')") ifile            
-        call decomp_2d_read_one(1,phi1(:,:,:),dirname,filename,a)           
+     if (read_phi) then   
+         write(filename, '(A,A,A)') 'phi01-', trim(snap_index), '.bin' 
+         filename = adjustl(filename)         
+         call decomp_2d_read_one(1,phi1,dirname,filename,a)       
      endif
         
      ! Transpose data to y-pencils 
@@ -445,7 +457,7 @@ PROGRAM post
 
 #ifdef TTBL_MODE  
         ! Writing the snapshot index as character
-        write(snap_index,'(I3.3)') ifile 
+        write(snap_index, ifilenameformat) ifile 
         snap_index = adjustl(snap_index) 
         
         ! Write the mean_stats filename for TTBL
@@ -510,7 +522,7 @@ PROGRAM post
 
 #ifdef TTBL_MODE  
         ! Writing the snapshot index as character
-        write(snap_index,'(I3.3)') ifile 
+        write(snap_index, ifilenameformat) ifile 
         snap_index = adjustl(snap_index) 
         
         ! Write the vort_stats filename for TTBL
@@ -554,7 +566,7 @@ PROGRAM post
 
 #ifdef TTBL_MODE  
         ! Writing the snapshot index as character
-        write(snap_index,'(I3.3)') ifile
+        write(snap_index, ifilenameformat) ifile 
         snap_index = adjustl(snap_index) 
         
         ! Write the diss_stats filename for TTBL
@@ -595,7 +607,7 @@ PROGRAM post
 
 #ifdef TTBL_MODE
         ! Writing the snapshot index as character
-        write(snap_index,'(I3.3)') ifile
+        write(snap_index, ifilenameformat) ifile 
         snap_index = adjustl(snap_index) 
         
         ! Write the corr_stats filename for TTBL
