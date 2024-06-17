@@ -440,7 +440,8 @@ module param
   real(mytype), save :: deltaxplus   ! delta x^+
   real(mytype), save :: deltayplusw  ! delta y^+ at the wall
   real(mytype), save :: deltazplus   ! delta z^+
-  
+  real(mytype), save :: deltayplusd  ! delta y^+ at the TTBL mean interface or at channel half-height
+    
   real(mytype), save :: xlxplus      ! Lx^+
   real(mytype), save :: ylyplus      ! Ly^+
   real(mytype), save :: zlzplus      ! Lz^+
@@ -464,7 +465,8 @@ module param
   
   ! Boundary layer thickness parameters (TTBLs only)
   real(mytype), save :: delta_99     ! BL thickness (1% of velocity of the wall)   
-  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient 
+  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient
+  integer,      save :: counter      ! Index to save the position of the yp array at which there is the BL mean interface 
   
   !--- Extra numerics control namelist and related quantities ---!
   

@@ -40,6 +40,7 @@ contains
   
   ! Locals
   integer :: iunit, j
+  integer :: nyh         ! half - 1 points in y direction for a channel (h: half)
   logical :: exists
   character(len=90) :: filename
     
@@ -54,7 +55,7 @@ contains
       call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
       
       ! Boundary layer thickness
-      call calculate_bl_thick(ux,delta_99)
+      call calculate_bl_thick(ux,delta_99,counter)
       
       ! Create or open a file to store sh_vel, cf coefficients, viscous time and time unit
       if(nrank .eq. 0) then
@@ -180,6 +181,20 @@ contains
       ylyplus = yly / delta_nu
       zlzplus = zlz / delta_nu
       
+      ! Calculate grid spacing at interface (TTBL) or at centerline (Channel)
+      if(itype .eq. itype_ttbl) then
+       
+          deltayplusd = (yp(counter + 1) - yp(counter)) / delta_nu
+      
+      else if(itype .eq. itype_channel) then 
+          
+          ! Half - 1 points in y-dir. for a channel
+          nyh = (ny - 1)/2
+          
+          deltayplusd = (yp(nyh) - yp(nyh - 1)) / delta_nu
+          
+      end if
+      
       ! Half the height for a channel
       if(itype .eq. itype_channel) ylyplus = ylyplus / two    
           
@@ -187,22 +202,25 @@ contains
       if (exists) then
           open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.6,A,F12.6,A, F12.4,A,I12)') &
-                         deltaxplus, ',', deltayplusw, ',', deltazplus, ',',              & 
-                         xlxplus,    ',', ylyplus,     ',', zlzplus,    ',',              &
-                         t,          ',', itime
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.6,A,F12.6,A, F12.6,A, F12.4,A,I12)') &
+                         deltaxplus,  ',', deltayplusw, ',', deltazplus, ',',                      & 
+                         xlxplus,     ',', ylyplus,     ',', zlzplus,    ',',                      &
+                         deltayplusd, ',',                                                         &
+                         t,           ',', itime
       else
           open(newunit=iunit, file=filename, status="new", action="write")
           ! Header
-          write(iunit, '(A12,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12)')     &
-                        'delta_x^+', ',', 'delta_yw^+', ',', 'delta_z^+', ',',  &
-                        'Lx^+',      ',', 'Ly^+',       ',', 'Lz^+',      ',',  &
+          write(iunit, '(A12,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12,A, A12,A,A12)') &
+                        'delta_x^+', ',', 'delta_yw^+', ',', 'delta_z^+', ',',     &
+                        'Lx^+',      ',', 'Ly^+',       ',', 'Lz^+',      ',',     &
+                        'delta_yd^+' ',',                                          &
                         'T',         ',', 'ts'          
               
-          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.6,A,F12.6,A, F12.4,A,I12)') &
-                         deltaxplus, ',', deltayplusw, ',', deltazplus, ',',              & 
-                         xlxplus,    ',', ylyplus,     ',', zlzplus,    ',',              &
-                         t,          ',', itime
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.6,A,F12.6,A, F12.6,A, F12.4,A,I12)') &
+                         deltaxplus,  ',', deltayplusw, ',', deltazplus, ',',                      & 
+                         xlxplus,     ',', ylyplus,     ',', zlzplus,    ',',                      &
+                         deltayplusd, ',',                                                         &
+                         t,           ',', itime
       end if
           close(iunit)
   end if
@@ -410,7 +428,7 @@ contains
   !---------------------------------------------------------------------------! 
   ! Calculate the boundary layer thickness for a TTBL.
   !---------------------------------------------------------------------------!
-  subroutine calculate_bl_thick(ux,delta_99)
+  subroutine calculate_bl_thick(ux,delta_99,counter)
   
   use var,         only : ux2, nx, ny, nz   
   use MPI
@@ -427,13 +445,14 @@ contains
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
   
   ! Outputs
-  real(mytype), intent(out) :: delta_99  ! BL thickness 
+  real(mytype), intent(out) :: delta_99  ! BL thickness
+  integer,      intent(out) :: counter   ! counter for the index of the BL mean interface for yp coordinates 
    
   ! Local variables 
   real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
   real(mytype)                      :: temp
   integer                           :: code,i,j,k,iunit
-    
+      
   ! Transpose data to y-pencils 
   call transpose_x_to_y(ux,ux2)
   
@@ -452,8 +471,9 @@ contains
   ! Calculate temporal BL thickness (delta_99)
   if(nrank .eq. 0) then
       
-      ! Set again delta_99 to zero
+      ! Set again delta_99 and the counter to zero
       delta_99 = zero
+      counter  = 0
       
       ! Open and read yp coordinates
       open(newunit=iunit, file="yp.dat", status="old", form="formatted")
@@ -463,13 +483,16 @@ contains
       close(iunit)
       
       do j = 1, ysize(2)
-     
+          
+          ! Increase the counter of 1
+          counter = counter + 1
+          
           ! BL thickness equivalent to the y-coordinate
           delta_99 = yp(j)  
         
           ! %1 of the velocity at the wall (valid only for TTBLs with translating wall)
           temp = zpzeroone*u1meanHT(1)
-                 
+                           
           if(u1meanHT(j) < temp) exit  
                
       end do
