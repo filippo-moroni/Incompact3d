@@ -56,7 +56,8 @@ yp = data[:]
 y0 = data[0]   # First element of yp vector (y = 0)
 yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
-# Reading of time units
+# Reading of time units (to be fixed: cf is saved more frequently than snapshots!)
+# open the file in restart_info folder is a possible solution if checkpoints and snapshots are saved at the same time
 file_path = f"monitoring/cf_history.txt"
       
 data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
