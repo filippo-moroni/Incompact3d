@@ -35,8 +35,9 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
   ! Variables definition
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2     ! velocity components and pressure
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: phi2                 ! scalar field
-  integer,     intent(in) :: nr                                                         ! number of flow realizations
-  integer,     intent(in) :: nt                                                         ! number of snapshots
+  
+  ! Number of flow realizations and number of snapshots
+  integer,     intent(in) :: nr, nt 
   
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                             ! temporary array (local)
   
@@ -152,7 +153,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
 end subroutine stat_mean
 !********************************************************************
 ! Vorticity and mean gradient sqrt[ (du/dy)**2 + (dw/dy)**2 ]
-subroutine stat_vorticity(ux1,uy1,uz1,nr,nt, &
+subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt, &
                           vortxmean2,vortymean2,vortzmean2, &
                           mean_gradientp2,mean_gradientx2,mean_gradientz2, &
                           mean_gradphi2)   
@@ -170,8 +171,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,nr,nt, &
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1
   
   ! Number of flow realizations and number of snapshots
-  integer,     intent(in) :: nr, nt                                                  
-  integer,     intent(in) :: nt                                                 
+  integer,     intent(in) :: nr, nt                                                                                                  
   integer                 :: i,j,k
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
@@ -312,8 +312,9 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   implicit none
   
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
-  integer,     intent(in) :: nr                                                 ! number of flow realizations
-  integer,     intent(in) :: nt                                                 ! number of snapshots
+  
+  ! Number of flow realizations and number of snapshots
+  integer,     intent(in) :: nr, nt 
   integer                 :: i,j,k
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1

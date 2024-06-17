@@ -160,7 +160,7 @@ contains
       ! Open and read yp coordinates
       open(newunit=iunit, file="yp.dat", form="formatted", action="read")
       do j=1,ny
-          read(iunit,*)yp(j)
+          read(iunit,*) yp(j)
       enddo
       close(iunit)
   
@@ -412,7 +412,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99)
   
-  use var,         only : ux2    
+  use var,         only : ux2, ny, yp   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize, ystart, yend
@@ -432,7 +432,7 @@ contains
   ! Local variables 
   real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
   real(mytype)                      :: temp
-  integer                           :: code,i,j,k
+  integer                           :: code,i,j,k,iunit
     
   ! Transpose data to y-pencils 
   call transpose_x_to_y(ux,ux2)
@@ -454,6 +454,13 @@ contains
       
       ! Set again delta_99 to zero
       delta_99 = zero
+      
+      ! Open and read yp coordinates
+      open(newunit=iunit, file="yp.dat", form="formatted", action="read")
+      do j=1,ny
+          read(iunit,*) yp(j)
+      enddo
+      close(iunit)
       
       do j = 1, ysize(2)
      

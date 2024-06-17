@@ -246,7 +246,7 @@ program post
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
                                    phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz,mean_gradphi)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz,mean_gradphi)
      
      if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
 
