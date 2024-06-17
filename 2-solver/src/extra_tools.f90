@@ -24,14 +24,14 @@ contains
   ! Write shear velocities, skin friction coefficients,
   ! viscous time unit, time unit, bulk velocity (channel only) 
   ! boundary layer thickness and Re_tau (TTBL only) and stores
-  ! them in a .txt file (used for TTBL and Channel).
+  ! them in a .txt file (used for TTBLs and Channels).
   !---------------------------------------------------------------------------!
   subroutine print_cf(ux,uz)
   
   use param
   use decomp_2d
   use dbg_schemes, only : sqrt_prec
-  use variables,   only : nx,nz,yp
+  use variables,   only : nx,ny,nz,yp
       
   implicit none
  
@@ -39,7 +39,7 @@ contains
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
   
   ! Locals
-  integer :: iunit
+  integer :: iunit, j
   logical :: exists
   character(len=90) :: filename
     
@@ -156,6 +156,13 @@ contains
   
   ! Create or open a file to store non-dimensional mesh spacings and domain dimensions
   if(nrank .eq. 0) then
+  
+      ! Open and read yp coordinates
+      open(newunit=iunit, file="yp.dat", form="formatted", action="read")
+      do j=1,ny
+          read(iunit,*)yp(j)
+      enddo
+      close(iunit)
   
       ! Write filename
       write(filename,"('monitoring/grid_spacings.txt')") 
