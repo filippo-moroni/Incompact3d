@@ -412,7 +412,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99)
   
-  use var          only : ux2, ny   
+  use var,         only : ux2, ny   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize, ystart, yend
