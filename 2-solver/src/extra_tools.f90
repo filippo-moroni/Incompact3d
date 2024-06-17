@@ -172,7 +172,7 @@ contains
    
       ! Calculate non-dimensional grid spacings
       deltaxplus  = xlx / nx / delta_nu
-      deltayplusw = yp(1) / delta_nu
+      deltayplusw = yp(2) / delta_nu
       deltazplus  = zlz / nz / delta_nu
       
       ! Calculate non-dimensional domain dimensions
@@ -412,7 +412,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99)
   
-  use var,         only : ux2, ny   
+  use var,         only : ux2, nx, ny, nz   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize, ystart, yend
