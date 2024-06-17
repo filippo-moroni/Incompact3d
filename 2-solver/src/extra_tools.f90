@@ -158,7 +158,7 @@ contains
   if(nrank .eq. 0) then
   
       ! Open and read yp coordinates
-      open(newunit=iunit, file="yp.dat", form="formatted", action="read")
+      open(newunit=iunit, file="yp.dat", status="old", form="formatted")
       do j=1,ny
           read(iunit,*) yp(j)
       enddo
@@ -412,7 +412,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99)
   
-  use var,         only : ux2, ny, yp   
+  use var          only : ux2, ny   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize, ystart, yend
@@ -456,7 +456,7 @@ contains
       delta_99 = zero
       
       ! Open and read yp coordinates
-      open(newunit=iunit, file="yp.dat", form="formatted", action="read")
+      open(newunit=iunit, file="yp.dat", status="old", form="formatted")
       do j=1,ny
           read(iunit,*) yp(j)
       enddo
@@ -468,7 +468,7 @@ contains
           delta_99 = yp(j)  
         
           ! %1 of the velocity at the wall (valid only for TTBLs with translating wall)
-          temp = zpzeroone*u1meanHT(ystart(2))
+          temp = zpzeroone*u1meanHT(1)
                  
           if(u1meanHT(j) < temp) exit  
                
