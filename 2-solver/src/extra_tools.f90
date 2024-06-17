@@ -492,31 +492,20 @@ contains
       ! Condition: %1 of the velocity at the wall (valid only for TTBLs with translating wall)
       temp = zpzeroone*u1meanHT(1)
       
+      ! Initialize the index
       j = 1
       
       ! Cycle to check the BL thickness
       do while(u1meanHT(j) > temp)
       
-      delta_99 = yp(j)
+          delta_99 = yp(j)
       
-      j = j + 1
+          j = j + 1
       
-      counter = j
+          counter = j
       
       end do
-      
-      
-      !do j=1,ysize(2)   
-      !    ! Increase the counter of 1
-      !    counter = counter + 1
-      !    
-      !    ! BL thickness equivalent to the y-coordinate
-      !    delta_99 = yp(j)  
-      !                             
-      !    if(u1meanHT(j) < temp) exit  
-      !         
-      !end do
-    
+          
   end if
   
   end subroutine calculate_bl_thick
