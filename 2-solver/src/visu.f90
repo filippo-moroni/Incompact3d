@@ -45,7 +45,7 @@ module visu
   integer, save :: output2D
    
   integer :: ioxdmf
-  character(len=9) :: ifilenameformat = '(I3.3)'
+  character(len=9) :: ifilenameformat = '(I4.4)'  ! This was I3.3; modified to account for > 999 planes' savings
   real, save :: tstart, tend
 
   character(len=*), parameter :: io_name = "solution-io"
@@ -125,7 +125,8 @@ contains
        enddo
     endif
     
-    ! Add extra IO name for saving streamwise vorticity with x-normal
+    ! Add extra IO name for saving helicity density and streamwise vorticity with x-normal plane
+    call decomp_2d_register_variable(io_name, "hel",   1, 0, 1, mytype)
     call decomp_2d_register_variable(io_name, "vortx", 1, 0, 1, mytype)
     
     ! Add extra IO name for saving scalar planes with z-normal 
