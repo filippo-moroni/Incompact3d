@@ -59,6 +59,15 @@ fs2 = f"<{c_w}.8f"
 
 #!--------------------------------------------------------------------------------------!
 
+# Initialize variables
+itype = None
+nx = None
+nz = None
+Lx = None
+Ly = None
+Lz = None
+re = None
+
 # Read the name of the flowcase
 with open('post.prm', 'r') as file:
     
@@ -80,10 +89,10 @@ with open('input.i3d', 'r') as file:
     itype = lines[7]  
     nx    = lines[14]
     nz    = lines[16]
-    Lx    = lines[21]
-    Ly    = lines[22]
-    Lz    = lines[23]
-    re    = lines[26]
+    Lx    = lines[22]
+    Ly    = lines[23]
+    Lz    = lines[24]
+    re    = lines[27]
     
     # Removing characters in front of the extracted strings and the comments
     itype = itype.split('=')[-1].strip()
