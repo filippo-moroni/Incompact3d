@@ -415,7 +415,7 @@ contains
   use var,         only : ux2, nx, ny, nz   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
-  use decomp_2d,   only : xsize, ysize, ystart, yend
+  use decomp_2d,   only : xsize, ysize
   use decomp_2d,   only : transpose_x_to_y
     
   use param,       only : zpzeroone, zero
@@ -438,9 +438,9 @@ contains
   call transpose_x_to_y(ux,ux2)
   
   ! Summation over x and z directions
-  do k=ystart(3),yend(3)
-      do i=ystart(1),yend(1)
-          do j=ystart(2),yend(2)          
+  do k=ysize(3)
+      do i=ysize(1)
+          do j=ysize(2)          
               u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/real(nx*nz,mytype)                                
           enddo          
       enddo
