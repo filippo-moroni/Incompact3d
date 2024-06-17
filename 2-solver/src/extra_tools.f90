@@ -430,7 +430,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99,counter)
   
-  use var,         only : nx, ny, nz   
+  use var,         only : ux2, nx, ny, nz   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize
@@ -449,10 +449,16 @@ contains
   integer,      intent(out) :: counter   ! counter for the index of the BL mean interface for yp coordinates 
    
   ! Local variables 
-  real(mytype), dimension(ysize(1),ysize(2),ysize(3)) :: ux2
-  real(mytype), dimension(ysize(2))                   :: u1meanH1,u1meanHT
-  real(mytype)                                        :: temp
-  integer                                             :: code,i,j,k,iunit
+  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
+  real(mytype)                      :: temp, den
+  integer                           :: code,i,j,k,iunit
+  
+  ! Set again variables to zero
+  u1meanH1 = zero
+  u1meanHT = zero
+    
+  ! Denominator of the divisions
+  den = real(nx*nz,mytype)
       
   ! Transpose data to y-pencils 
   call transpose_x_to_y(ux,ux2)
@@ -461,7 +467,7 @@ contains
   do k=1,ysize(3)
       do i=1,ysize(1)
           do j=1,ysize(2)          
-              u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/real(nx*nz,mytype)                                
+              u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/den                               
           enddo          
       enddo
   enddo
@@ -472,7 +478,7 @@ contains
   ! Calculate temporal BL thickness (delta_99)
   if(nrank .eq. 0) then
       
-      ! Set again delta_99 and the counter to zero
+      ! Set again delta_99 and counter to 0 
       delta_99 = zero
       counter  = 0
       
@@ -483,20 +489,33 @@ contains
       enddo
       close(iunit)
       
-      do j=1,ysize(2)
-          
-          ! Increase the counter of 1
-          counter = counter + 1
-          
-          ! BL thickness equivalent to the y-coordinate
-          delta_99 = yp(j)  
-        
-          ! %1 of the velocity at the wall (valid only for TTBLs with translating wall)
-          temp = zpzeroone*u1meanHT(1)
-                           
-          if(u1meanHT(j) < temp) exit  
-               
+      ! Condition: %1 of the velocity at the wall (valid only for TTBLs with translating wall)
+      temp = zpzeroone*u1meanHT(1)
+      
+      j = 1
+      
+      ! Cycle to check the BL thickness
+      do while(u1meanHT(j) < temp)
+      
+      delta_99 = yp(j)
+      
+      j = j + 1
+      
+      counter = j
+      
       end do
+      
+      
+      !do j=1,ysize(2)   
+      !    ! Increase the counter of 1
+      !    counter = counter + 1
+      !    
+      !    ! BL thickness equivalent to the y-coordinate
+      !    delta_99 = yp(j)  
+      !                             
+      !    if(u1meanHT(j) < temp) exit  
+      !         
+      !end do
     
   end if
   
