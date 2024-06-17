@@ -71,7 +71,7 @@ time_unit = data[:, 7]
 for i in range(file1, filen + icrfile, icrfile):
          
     # Reading of mean streamwise velocity
-    file_path = f"data_post/mean_stats-{i:03d}.txt"
+    file_path = f"data_post/mean_stats-{i:04d}.txt"
        
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     umean = data[:, 0]
@@ -97,7 +97,7 @@ for i in range(file1, filen + icrfile, icrfile):
     mom_t[ii] = spl.integral(y0, yn)
     
     # Reading of the mean streamwise gradient
-    file_path = f"data_post/vort_stats-{i:03d}.txt"
+    file_path = f"data_post/vort_stats-{i:04d}.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     mg = data[:, 4]
