@@ -457,9 +457,9 @@ contains
   call transpose_x_to_y(ux,ux2)
   
   ! Summation over x and z directions
-  do k=ysize(3)
-      do i=ysize(1)
-          do j=ysize(2)          
+  do k=1,ysize(3)
+      do i=1,ysize(1)
+          do j=1,ysize(2)          
               u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/real(nx*nz,mytype)                                
           enddo          
       enddo
@@ -482,7 +482,7 @@ contains
       enddo
       close(iunit)
       
-      do j = 1, ysize(2)
+      do j=1,ysize(2)
           
           ! Increase the counter of 1
           counter = counter + 1
