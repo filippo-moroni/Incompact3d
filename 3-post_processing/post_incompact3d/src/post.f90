@@ -517,7 +517,7 @@ program post
         close(iunit)
      endif
      
-     ! Vorticity mean statistics and mean gradient writing
+     ! Vorticity mean statistics and mean gradients writing
      if (post_vort) then
 
 #ifdef TTBL_MODE  
