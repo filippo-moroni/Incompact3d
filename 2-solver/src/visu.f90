@@ -489,7 +489,8 @@ contains
 
     if (nrank.eq.0) then
       write(ioxdmf,'(/)')
-      write(ioxdmf,*)'        <Time Value="'//tfieldchar//'" />'
+      !write(ioxdmf,*)'        <Time Value="'//tfieldchar//'" />'
+      write(ioxdmf,*)'        <Time Value="',t,'" />'
       write(ioxdmf,'(/)')
       write(ioxdmf,*)'    </Grid>'
       write(ioxdmf,*)'</Domain>'
