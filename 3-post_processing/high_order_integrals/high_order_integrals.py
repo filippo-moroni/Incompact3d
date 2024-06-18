@@ -59,13 +59,6 @@ yp = data[:]
 y0 = data[0]   # First element of yp vector (y = 0)
 yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
-# Reading of time units (to be fixed: cf is saved more frequently than snapshots!)
-# open the file in restart_info folder is a possible solution if checkpoints and snapshots are saved at the same time
-#file_path = f"monitoring/cf_history.txt"
-      
-#data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
-#time_unit = data[:, 7]
-
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
 # spline function that passes through all provided points.
@@ -74,14 +67,13 @@ yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 # Do loop over different time units
 for i in range(file1, filen + icrfile, icrfile):
     
-    # Use the first realization folder (named differently if more than 1 realizations are present),
-    # to read time units from snapshots
+    # Use first realization folder to read time units from snapshots
     if nr != 1:
-        
+        # /data_ri folders if nr /= 1
         file_path = f"data_r{nr:01d}/snapshot-{i:04d}.xdmf"
-
+       
     elif nr == 1:
-    
+        # /data folder if nr = 1
         file_path = f"data/snapshot-{i:04d}.xdmf"
     
     # Read .xdmf snapshot header to extract time unit
@@ -99,15 +91,7 @@ for i in range(file1, filen + icrfile, icrfile):
             print(f"Warning: Failed to convert '{time_str}' to float for snapshot-{i:04d}")
     else:
         print(f"Warning: 'Time' element not found in {file_path}")
-    
-    # Removing characters around the time unit value          
-    #tu    = tu.split('" /')[0]
-    #tu    = tu.split('="')[-1].strip()
-    #tu    = np.float64(tu)
-        
-    # Save the extracted time unit value inside its array
-    #time_unit[ii] = tu 
-            
+                
     # Reading of mean streamwise velocity
     file_path = f"data_post/mean_stats-{i:04d}.txt"
        
