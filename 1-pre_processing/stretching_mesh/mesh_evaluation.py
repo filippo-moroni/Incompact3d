@@ -34,12 +34,12 @@ plt.rcParams.update({
 })
 
 # Inputs
-istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 2.0               # beta parameter for mesh stretching
-delta_t = 0.01           # time-step
+istret = 2               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+beta = 0.2               # beta parameter for mesh stretching
+delta_t = 0.0025         # time-step
 
 # Reynolds number
-re = 500.0               # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
+re = 4764.0              # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
 nu = 1.0/re              # kinematic viscosity as defined in Incompact3d
 
 # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
@@ -63,17 +63,19 @@ if istret == 3:
 elif istret == 2:
     cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
-nx = 80                  # number of points in x direction
-ny = 649                 # number of points in y direction
-nz = 64                  # number of points in z direction
-
-xlx = 1.0*bl_thickness       # domain dimension in x direction
-zlz = 0.4*bl_thickness       # domain dimension in z direction
+nx = 400                 # number of points in x direction
+ny = 241                 # number of points in y direction
+nz = 150                 # number of points in z direction
 
 if istret == 3:
+    xlx = 1.0*bl_thickness   # domain dimension in x direction
     yly = 3.0*bl_thickness   # domain dimension in y direction
+    zlz = 0.4*bl_thickness   # domain dimension in z direction
+    
 elif istret == 2:
+    xlx = 21.0               # domain dimension in x direction
     yly = 2.0                # domain dimension in y direction
+    zlz = 4.2                # domain dimension in z direction
 
 nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
 
@@ -450,19 +452,34 @@ with open('mesh_y.txt', 'w') as f:
     f.write(f"{'yp':<{c_w}}, {'delta_y':<{c_w}}, {'gr_y':<{c_w}}, {'AR_xy':<{c_w}}\n")
     for j in range(0,ny):
         f.write(f"{yp[j]:<{c_w}}, {delta_y[j]:<{c_w}}, {gr_y[j]:<{c_w}}, {AR_xy[j]:<{c_w}}\n")
-     
+    
 # Create data arrays with inputs
-data = [
-        ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
-        [ nx,         xlx,        xlx/bl_thickness               ],
-        [ ny,         yly,        yly/bl_thickness               ],
-        [ nz,         zlz,        zlz/bl_thickness               ],
-       ] 
+if istret == 3:
+    data = [
+            ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
+            [ nx,         xlx,        xlx/bl_thickness               ],
+            [ ny,         yly,        yly/bl_thickness               ],
+            [ nz,         zlz,        zlz/bl_thickness               ],
+           ] 
 
-data2 = [
-         ["beta", "nu", "U_ref", "delta_t", "Re", "Re_tau", "cf"],
-         [ beta,   nu,   uref,    delta_t,   re,   re_tau,   cf ],
-        ]
+    data2 = [
+             ["beta", "nu", "U_ref", "delta_t", "Re", "cf"],
+             [ beta,   nu,   uref,    delta_t,   re,   cf ],
+            ]
+            
+elif istret == 2:
+    data = [
+            ["nx/ny/nz", "Lx/Ly/Lz" ],
+            [ nx,         xlx,      ],
+            [ ny,         yly,      ],
+            [ nz,         zlz,      ],
+           ] 
+
+    data2 = [
+             ["beta", "nu", "U_ref", "delta_t", "Re", "Re_tau", "cf"],
+             [ beta,   nu,   uref,    delta_t,   re,   re_tau,   cf ],
+            ]
+
 
 # File creation and saving for TTBL
 if istret == 3:    
