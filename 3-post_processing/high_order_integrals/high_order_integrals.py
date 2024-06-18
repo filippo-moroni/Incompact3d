@@ -37,7 +37,7 @@ data = np.loadtxt(file_path, delimiter=None, dtype=int, comments='#', skiprows=5
 file1   = data[0]  # First snapshot index
 filen   = data[1]  # Final snapshot index
 icrfile = data[2]  # File increment
-nr      = data[8]  # Number of flow realizations
+nr      = data[3]  # Number of flow realizations
 
 # Number of snapshots
 ns = (filen - file1)//icrfile + 1 
