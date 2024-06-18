@@ -477,21 +477,10 @@ contains
     use param,     only : t
 
     implicit none
-    
-    ! Locals
-    character(99):: tfieldchar
-    character(len=9) :: tfieldformat = '(F12.4)'
-    
-    ! Write time unit as character 
-    write(tfieldchar, tfieldformat) t 
-    tfieldchar = adjustl(tfieldchar)
-    tfieldchar = trim(tfieldchar) 
-
+        
     if (nrank.eq.0) then
-      write(ioxdmf,'(/)')
-      !write(ioxdmf,*)'        <Time Value="'//tfieldchar//'" />'
       write(ioxdmf,*)'        <Time Value="',t,'" />'
-      write(ioxdmf,'(/)')
+      !write(ioxdmf,'(/)')
       write(ioxdmf,*)'    </Grid>'
       write(ioxdmf,*)'</Domain>'
       write(ioxdmf,'(A7)')'</Xdmf>'
