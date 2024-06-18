@@ -1,9 +1,9 @@
 #!---------------------------------------------------------!
 #!    With this script, we perform 6th order accurate      !
-#!       calculations of BL thickness parameters           !
+#!          calculations of thickness parameters           !
 #! (delta_99, displacement thickness, momentum thickness), !
-#!      related Reynolds numbers, shear velocity and       !
-#! friction coefficient for a TTBL (streamwise direction). !
+#! related Reynolds numbers, streamwise shear velocity and !
+#!      streamwise friction coefficient for a TTBL.        !
 #!---------------------------------------------------------!
 
 # Libraries
@@ -37,16 +37,18 @@ data = np.loadtxt(file_path, delimiter=None, dtype=int, comments='#', skiprows=5
 file1   = data[0]  # First snapshot index
 filen   = data[1]  # Final snapshot index
 icrfile = data[2]  # File increment
+nr      = data[8]  # Number of flow realizations
 
 # Number of snapshots
 ns = (filen - file1)//icrfile + 1 
 
 # Work arrays
-delta_99 = np.zeros(ns)
-disp_t   = np.zeros(ns)
-mom_t    = np.zeros(ns)
-sh_vel   = np.zeros(ns)
-cf       = np.zeros(ns)
+delta_99  = np.zeros(ns)
+disp_t    = np.zeros(ns)
+mom_t     = np.zeros(ns)
+sh_vel    = np.zeros(ns)
+cf        = np.zeros(ns)
+time_unit = np.zeros(ns)
 
 # Reading of yp coordinates
 file_path = 'yp.dat'
@@ -58,10 +60,10 @@ yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
 # Reading of time units (to be fixed: cf is saved more frequently than snapshots!)
 # open the file in restart_info folder is a possible solution if checkpoints and snapshots are saved at the same time
-file_path = f"monitoring/cf_history.txt"
+#file_path = f"monitoring/cf_history.txt"
       
-data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
-time_unit = data[:, 7]
+#data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
+#time_unit = data[:, 7]
 
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
@@ -70,7 +72,34 @@ time_unit = data[:, 7]
 
 # Do loop over different time units
 for i in range(file1, filen + icrfile, icrfile):
-         
+    
+    # Use the first realization folder (named differently if more than 1 realizations are present),
+    # to read time units from snapshots
+    if nr != 1:
+        
+        file_path = f"data_r{nr:01d}/snapshot-{i:04d}.xdmf"
+
+    elif nr == 1:
+    
+        file_path = f"data/snapshot-{i:04d}.xdmf"
+    
+    # Reading of .xdmf snapshot header
+    with open(file_path, 'r') as file:
+    
+        # Read all lines into a list
+        lines = file.readlines()
+    
+        # Extract time unit line
+        tu    = lines[56]
+    
+        # Removing characters around the time unit value          
+        tu    = tu.split('" /')[0]
+        tu    = tu.split('="')[-1].strip()
+        tu    = np.float64(tu)
+        
+        # Save the extracted time unit value inside its array
+        time_unit[ii] = tu 
+            
     # Reading of mean streamwise velocity
     file_path = f"data_post/mean_stats-{i:04d}.txt"
        
@@ -151,7 +180,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{re_theta[j]:{fs}}, " +
             f"{sh_vel[j]:{fs}}, " +
             f"{cf[j]:{fs2}}, " +
-            f"{time_unit[j+1]:{fs}}\n")
+            f"{time_unit[j]:{fs}}\n")
            
 #!---------------------------------------------------------!
 # Check section (everything works)
