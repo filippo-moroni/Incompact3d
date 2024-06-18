@@ -480,7 +480,6 @@ contains
         
     if (nrank.eq.0) then
       write(ioxdmf,*)'        <Time Value="',t,'" />'
-      !write(ioxdmf,'(/)')
       write(ioxdmf,*)'    </Grid>'
       write(ioxdmf,*)'</Domain>'
       write(ioxdmf,'(A7)')'</Xdmf>'
