@@ -10,7 +10,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import InterpolatedUnivariateSpline
-import os 
+import os
+import xml.etree.ElementTree as ET 
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -83,30 +84,29 @@ for i in range(file1, filen + icrfile, icrfile):
     
         file_path = f"data/snapshot-{i:04d}.xdmf"
     
-    # Reading of .xdmf snapshot header
-    with open(file_path, 'r') as file:
-    
-        # Read all lines into a list
-        lines = file.readlines()
-    
-        # Extract time unit line
-        input_str    = lines[53]
+    # Read .xdmf snapshot header to extract time unit
+    tree = ET.parse(file_path)
+    root = tree.getroot()
         
-        # Extract the part between the double quotes
-        number_str = input_str.split('"')[1].strip()
-
-        # Convert the string to a float
-        number = float(number_str)
-
-        print(f"Extracted number: {number}")
+    # Find the 'Time' attribute within the 'Grid' element
+    time_element = root.find(".//Grid/Time")
+    if time_element is not None:
+        time_str = time_element.attrib.get('Value', '').strip()
+        try:
+            time_unit[ii] = float(time_str)
+            print(f"Extracted time unit for snapshot-{i:04d}: {time_unit[ii]}")
+        except ValueError:
+            print(f"Warning: Failed to convert '{time_str}' to float for snapshot-{i:04d}")
+    else:
+        print(f"Warning: 'Time' element not found in {file_path}")
     
-        # Removing characters around the time unit value          
-        #tu    = tu.split('" /')[0]
-        #tu    = tu.split('="')[-1].strip()
-        #tu    = np.float64(tu)
+    # Removing characters around the time unit value          
+    #tu    = tu.split('" /')[0]
+    #tu    = tu.split('="')[-1].strip()
+    #tu    = np.float64(tu)
         
-        # Save the extracted time unit value inside its array
-        time_unit[ii] = tu 
+    # Save the extracted time unit value inside its array
+    #time_unit[ii] = tu 
             
     # Reading of mean streamwise velocity
     file_path = f"data_post/mean_stats-{i:04d}.txt"
