@@ -30,7 +30,7 @@ cpg = F               ! if cpg=T, then re is friction Reynolds number
 ! Time stepping
 dt = 0.0025           ! Time step
 ifirst = 1            ! First iteration
-ilast = 200000        ! Last iteration
+ilast = 800000        ! Last iteration
 
 ! Enable modelling tools
 numscalar = 0         ! Number of scalars 
@@ -75,10 +75,10 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 
 ! Basic I/O
 irestart = 0          ! Read initial flow field ? If not 0, set n+1 with respect to the checkpoint at time step n
-icheckpoint = 10000   ! Frequency for writing backup file
-ioutput = 10000       ! Frequency for saving and visualization
-ioutput_cf = 10000    ! Frequency for saving cf and related quantities
-ioutput_plane = 100   ! Frequency for saving planes for visualization
+icheckpoint = 20000   ! Frequency for writing backup file
+ioutput = 20000       ! Frequency for saving and visualization
+ioutput_cf = 20000    ! Frequency for saving cf and related quantities
+ioutput_plane = 5000  ! Frequency for saving planes for visualization
 ilist = 25            ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
