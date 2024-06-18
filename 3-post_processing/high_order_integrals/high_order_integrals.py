@@ -90,12 +90,20 @@ for i in range(file1, filen + icrfile, icrfile):
         lines = file.readlines()
     
         # Extract time unit line
-        tu    = lines[56]
+        input_str    = lines[53]
+        
+        # Extract the part between the double quotes
+        number_str = input_str.split('"')[1].strip()
+
+        # Convert the string to a float
+        number = float(number_str)
+
+        print(f"Extracted number: {number}")
     
         # Removing characters around the time unit value          
-        tu    = tu.split('" /')[0]
-        tu    = tu.split('="')[-1].strip()
-        tu    = np.float64(tu)
+        #tu    = tu.split('" /')[0]
+        #tu    = tu.split('="')[-1].strip()
+        #tu    = np.float64(tu)
         
         # Save the extracted time unit value inside its array
         time_unit[ii] = tu 
