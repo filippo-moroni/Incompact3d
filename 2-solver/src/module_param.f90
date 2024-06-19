@@ -463,6 +463,9 @@ module param
   real(mytype) :: lln                ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall            ! scalar value at the wall
   
+  ! Temporal TBL output(s)
+  real(mytype) :: powerin            ! power input to the TTBL 
+  
   ! Boundary layer thickness parameters (TTBLs only)
   real(mytype), save :: delta_99     ! BL thickness (1% of velocity of the wall)   
   real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient

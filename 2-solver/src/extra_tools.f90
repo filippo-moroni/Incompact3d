@@ -64,6 +64,19 @@ contains
           fric_coeffx = two * ((sh_velx / uwall)**2)
           fric_coeffz = two * ((sh_velz / uwall)**2)
           
+          ! Calculate power input
+          if(iswitch_wo .eq. 0) then
+              
+              ! Fixed walls
+              powerin = (sh_velx**2)*uwall
+          
+          else if(iswitch .eq. 1) then
+          
+              ! Oscillating walls 
+              powerin = (sh_velx**2)*uwall + (sh_velz**2)*span_vel
+          
+          end if
+          
           ! Calculate friction Re number for a TBL
           re_tau_tbl = delta_99 * sh_velx / xnu
           
@@ -80,27 +93,28 @@ contains
           if (exists) then
               open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                         & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                         &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                         &
-                             delta_99,   ',', re_tau_tbl
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                 & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                 &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                                 &
+                             delta_99,   ',', re_tau_tbl,  ',', powerin
           else
               open(newunit=iunit, file=filename, status="new", action="write")
               ! Header
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12,A,A12)') &
-                            'sh_vel',    ',', 'sh_velx', ',', 'sh_velz', ',',                      &
-                            'cf,tot',    ',', 'cf,x',    ',', 'cf,z',    ',',                      &
-                            't_nu',      ',', 'T',       ',', 'ts',      ',',                      &
-                            'delta_99',  ',', 'Re_tau'          
+                            'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                      &
+                            'cf,tot',    ',', 'cf,x',      ',', 'cf,z',    ',',                      &
+                            't_nu',      ',', 'T',         ',', 'ts',      ',',                      &
+                            'delta_99',  ',', 'Re_tau',    ',', 'P_in'         
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                         & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                         &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                         &
-                             delta_99,   ',', re_tau_tbl
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                 & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                 &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                                 &
+                             delta_99,   ',', re_tau_tbl,  ',', powerin
           end if
               close(iunit)
+      
       end if
  
   ! Channel
