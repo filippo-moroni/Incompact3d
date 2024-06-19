@@ -555,6 +555,7 @@ contains
   
 end module matinv
 
+!--------------------------------------------------------------------------!
 module ydiff_implicit
 
   implicit none
@@ -563,22 +564,23 @@ module ydiff_implicit
   public :: inttimp, init_implicit, implicit_schemes
 
   contains
-!
+!-----------------------------------------------------------------------------!
 ! Time integration, (semi)implicit Y diffusion
-!    var1, input : variable at time n
+!    var1, input  : variable at time n
 !          output : variable at time n+1
-!    dvar1 : r.h.s. of transport equation
-!    npaire : odd / even variable, important when ncly*=1
-!    isc : 0 for momentum, id of the scalar otherwise
-!    forcing1 : r.h.s. term not present in dvar1 (pressure gradient)
-!
+!    dvar1        : r.h.s. of transport equation
+!    npaire       : odd / even variable, important when ncly*=1
+!    isc          : 0 for momentum, id of the scalar otherwise
+!    forcing1     : r.h.s. term not present in dvar1 (pressure gradient)
+!    wall_vel     : wall velocity, it depends on the direction of integration
+!-----------------------------------------------------------------------------!
 subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
 
-  USE MPI
-  USE param
-  USE variables
-  USE var, ONLY: ta1, ta2, tb2, tc2, td2
-  USE decomp_2d
+  use MPI
+  use param
+  use variables
+  use var, only: ta1, ta2, tb2, tc2, td2
+  use decomp_2d
   use derivY
   use matinv
 
@@ -586,18 +588,18 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
 
   integer :: i,j,k,code,ierror
 
-  !! IN
+  ! IN
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)), optional, intent(in) :: forcing1
   integer, intent(in) :: npaire, isc
   
   ! Wall-velocity BC, in order to differentiate between different directions
   real(mytype), intent(in), optional :: wall_vel
 
-  !! IN/OUT
+  ! IN/OUT
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: var1
   real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dvar1
 
-  !! LOCAL
+  ! LOCAL
   real(mytype),dimension(ysize(1),ysize(3)) :: bctop, bcbot
 
   if (itimescheme.eq.1) then
@@ -713,12 +715,13 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      bctop(:,:) = zero
        
   ! Generic homogeneous cases after
-  else if (isc.ne.0) then
-     bcbot(:,:) = g_sc(isc, 1)
-     bctop(:,:) = g_sc(isc, 2)
-  else
-     bcbot(:,:) = zero
-     bctop(:,:) = zero
+  !else if (isc.ne.0) then
+  !   bcbot(:,:) = g_sc(isc, 1)
+  !   bctop(:,:) = g_sc(isc, 2)
+  !else
+  !   bcbot(:,:) = zero
+  !   bctop(:,:) = zero
+  
   endif
  
   !ta2: A.uhat
