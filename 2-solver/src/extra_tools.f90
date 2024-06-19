@@ -280,6 +280,7 @@ contains
     real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
     real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
     real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
+    real(mytype) :: mean_phiw  ! Mean scalar gradient at each processor
     real(mytype) :: den        ! Denominator of the divisions
        
     integer      :: ierr         
@@ -322,6 +323,12 @@ contains
            
                ! Mean spanwise gradient dW/dy
                mean_gwz = mean_gwz + tc2(i,1,k) / den
+               
+               if(iscalar .eq. 1) then
+               
+               ! mean scalar gradient calculation
+               
+               end if
            
            ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
            else if (itype .eq. itype_channel) then
