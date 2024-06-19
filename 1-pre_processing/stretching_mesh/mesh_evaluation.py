@@ -34,12 +34,12 @@ plt.rcParams.update({
 })
 
 # Inputs
-istret = 2               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
-beta = 0.2               # beta parameter for mesh stretching
-delta_t = 0.0025         # time-step
+istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+beta = 2.0               # beta parameter for mesh stretching
+delta_t = 0.01           # time-step
 
 # Reynolds number
-re = 4764.0              # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
+re = 500.0               # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
 nu = 1.0/re              # kinematic viscosity as defined in Incompact3d
 
 # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
@@ -63,14 +63,14 @@ if istret == 3:
 elif istret == 2:
     cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
-nx = 400                 # number of points in x direction
-ny = 241                 # number of points in y direction
-nz = 150                 # number of points in z direction
+nx = 320                 # number of points in x direction
+ny = 649                 # number of points in y direction
+nz = 320                 # number of points in z direction
 
 if istret == 3:
-    xlx = 1.0*bl_thickness   # domain dimension in x direction
+    xlx = 4.0*bl_thickness   # domain dimension in x direction
     yly = 3.0*bl_thickness   # domain dimension in y direction
-    zlz = 0.4*bl_thickness   # domain dimension in z direction
+    zlz = 2.0*bl_thickness   # domain dimension in z direction
     
 elif istret == 2:
     xlx = 21.0               # domain dimension in x direction
