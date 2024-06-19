@@ -249,7 +249,7 @@ contains
     use decomp_2d,   only : xsize, ysize
     use decomp_2d,   only : transpose_x_to_y
     
-    use param,       only : zero, xnu, itype, itype_channel, itype_ttbl
+    use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl
     use variables
     
     implicit none
@@ -313,13 +313,13 @@ contains
            else if (itype .eq. itype_channel) then
            
                ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-               mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt_prec(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den
+               mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt_prec(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den / two
            
                ! Mean streamwise gradient dU/dy
-               mean_gwx = mean_gwx + (ta2(i,1,k) - ta2(i,ysize(2),k)) / den
+               mean_gwx = mean_gwx + (ta2(i,1,k) - ta2(i,ysize(2),k)) / den / two
            
                ! Mean spanwise gradient dW/dy
-               mean_gwz = mean_gwz + (tc2(i,1,k) - tc2(i,ysize(2),k)) / den
+               mean_gwz = mean_gwz + (tc2(i,1,k) - tc2(i,ysize(2),k)) / den / two
            
            end if              
        enddo
@@ -560,7 +560,7 @@ contains
   call write_xdmf_header("planes", "phiplanez", trim(num))
    
   ! Write first scalar field
-  call write_field(phi1(:,:,:,1), "planes", "phiplanez", trim(num))
+  call write_field(phi1(:,:,:,1), "planes", "phiplanez", trim(num), flush = .true.)
   
 !--- End snapshot part ---!
   
