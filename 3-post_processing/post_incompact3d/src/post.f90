@@ -148,7 +148,7 @@ program post
   
       read(iunit, *)
   
-      do j = ystart(2),yend(2)
+      do j = 1, ysize(2)
   
           read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), a, &
                                             v1meanHT(j), a, &       
@@ -285,9 +285,9 @@ program post
 
   ! Summation over x and z directions
   if (post_mean) then
-     do k=ystart(3),yend(3)
-        do i=ystart(1),yend(1)
-           do j=ystart(2),yend(2)          
+     do k=1,ysize(3)
+        do i=1,ysize(1)
+           do j=1,ysize(2)          
               u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)/den
               v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)/den
               w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)/den
@@ -316,9 +316,9 @@ program post
   endif
   
   if (post_vort) then
-     do k=ystart(3),yend(3)
-        do i=ystart(1),yend(1)
-           do j=ystart(2),yend(2)          
+     do k=1,ysize(3)
+        do i=1,ysize(1)
+           do j=1,ysize(2)          
               vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/den
               vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/den
               vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/den 
@@ -332,9 +332,9 @@ program post
   endif
   
   if (post_diss) then
-     do k=ystart(3),yend(3)
-        do i=ystart(1),yend(1)
-           do j=ystart(2),yend(2)          
+     do k=1,ysize(3)
+        do i=1,ysize(1)
+           do j=1,ysize(2)          
               epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/den                  
            enddo
         enddo
@@ -420,7 +420,7 @@ program post
   if(nrank.eq.0) then  
      
      if (post_mean) then
-        do j=ystart(2),yend(2)
+        do j=1,ysize(2)
            u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
            v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
            w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
