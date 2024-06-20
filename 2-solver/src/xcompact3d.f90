@@ -135,7 +135,7 @@ program xcompact3d
          
          ! Save a scalar plane with z-normal 
          if (iscalar .eq. 1) then
-             call write_scalar_plane_z(phi1,itime)       
+             call write_scalar_plane_z(phi1,ux1,uz1,itime)       
          end if
      end if
      

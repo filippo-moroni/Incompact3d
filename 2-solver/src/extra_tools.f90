@@ -536,7 +536,7 @@ contains
   ! for visualization.
   ! Adapted from 'write_snapshot' and 'end_snapshot' subroutines.
   !---------------------------------------------------------------------------! 
-  subroutine write_scalar_plane_z(phi1,itime)
+  subroutine write_scalar_plane_z(phi1,ux1,uz1,itime)
  
   use visu
   
@@ -549,6 +549,7 @@ contains
   
   ! Inputs
   real(mytype), dimension(xsize(1), xsize(2), xsize(3), numscalar), intent(in) :: phi1
+  real(mytype), dimension(xsize(1), xsize(2), xsize(3)),            intent(in) :: ux1,uz1
   integer,                                                          intent(in) :: itime
   
   ! Locals
@@ -586,7 +587,7 @@ contains
 !--- End snapshot part ---!
   
   ! Write XDMF footer
-  call write_xdmf_footer(ux1,uz1)
+  call write_xdmf_footer()
   
 #ifdef ADIOS2
   call decomp_2d_end_io(io_name, "data")
