@@ -11,11 +11,11 @@
 ! - average, variance, skewness and kurtosis of velocity components
 ! - Reynolds stresses
 ! - average and variance of pressure, scalar field and mixed fluctuations
-! - vorticity and mean gradient
+! - vorticity and mean gradients (velocity parallel to the wall, x, z and scalar field)
 ! - total dissipation rate
 
 ! Two-points statistics:
-! - (to be implemented, e.g. correlations) 
+! - spanwise correlation functions 
 !----------------------------------------------------------!
 
 ! Mean statistics (average, variance, skewness, kurtosis)
