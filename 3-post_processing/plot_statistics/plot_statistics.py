@@ -173,7 +173,7 @@ elif itype == 13:
     M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
     # Reading of correlations
-    Ruuz = np.loadtxt(f'data_post/corr_stats-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Rz = np.loadtxt(f'data_post/corr_stats-{snap_numb}.txt', skiprows=1, delimiter=None, dtype=np.float64)
 
 print()
 

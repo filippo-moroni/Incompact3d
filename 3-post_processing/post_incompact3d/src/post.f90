@@ -584,20 +584,21 @@ program post
         close(iunit)
      endif
           
-     ! Correlation functions writing
+     ! Correlation functions along z writing
      if (post_corz) then
      
+!--- Streamwise ---!     
 #ifdef TTBL_MODE
         ! Writing the snapshot index as character
         write(snap_index, ifilenameformat) ifile 
         snap_index = adjustl(snap_index) 
         
-        ! Write the corr_stats filename for TTBL
-        write(filename, '(A,A,A)') 'corr_stats-', trim(snap_index), '.txt'
+        ! Write the Ruuz filename for TTBL
+        write(filename, '(A,A,A)') 'Ruuz-', trim(snap_index), '.txt'
         filename = adjustl(filename)
 #else
-        ! Write the corr_stats filename for channel flow
-        write(filename, '(A)') 'corr_stats.txt'
+        ! Write the Ruuz filename for channel flow
+        write(filename, '(A)') 'Ruuz.txt'
         filename = adjustl(filename)
 #endif       
 
@@ -607,35 +608,77 @@ program post
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Streamwise fluctuations correlation function
-        write(iunit, '(1(A13, A1, 1X))') 'Ruuz' 
-        
+        ! Streamwise fluctuations correlation function        
         do j = 1, ysize(2)
                 
             write(iunit, format_string) (RuuzHT(j, k), ' ', k = 1, zsize(3))
                
         end do
+                                       
+        close(iunit)
+
+!--- Vertical ---!
+#ifdef TTBL_MODE
+        ! Writing the snapshot index as character
+        write(snap_index, ifilenameformat) ifile 
+        snap_index = adjustl(snap_index) 
         
-        ! Vertical fluctuations correlation function
-        write(iunit, '(1(A13, A1, 1X))') 'Rvvz'
+        ! Write the Rvvz filename for TTBL
+        write(filename, '(A,A,A)') 'Rvvz-', trim(snap_index), '.txt'
+        filename = adjustl(filename)
+#else
+        ! Write the Rvvz filename for channel flow
+        write(filename, '(A)') 'Rvvz.txt'
+        filename = adjustl(filename)
+#endif       
+
+        ! Construct the format string
+        write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
+
+        ! Open the file and write      
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        ! Vertical fluctuations correlation function        
         do j = 1, ysize(2)
                 
             write(iunit, format_string) (RvvzHT(j, k), ' ', k = 1, zsize(3))
                
         end do
+                                       
+        close(iunit)
+
+!--- Spanwise ---!
+#ifdef TTBL_MODE
+        ! Writing the snapshot index as character
+        write(snap_index, ifilenameformat) ifile 
+        snap_index = adjustl(snap_index) 
         
-        ! Spanwise fluctuations correlation function     
-        write(iunit, '(1(A13, A1, 1X))') 'Rwwz'
+        ! Write the Rwwz filename for TTBL
+        write(filename, '(A,A,A)') 'Rwwz-', trim(snap_index), '.txt'
+        filename = adjustl(filename)
+#else
+        ! Write the Rwwz filename for channel flow
+        write(filename, '(A)') 'Rwwz.txt'
+        filename = adjustl(filename)
+#endif       
+
+        ! Construct the format string
+        write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
+
+        ! Open the file and write      
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        ! Vertical fluctuations correlation function        
         do j = 1, ysize(2)
                 
             write(iunit, format_string) (RwwzHT(j, k), ' ', k = 1, zsize(3))
                
         end do
-                               
-        close(iunit)
+                                       
+        close(iunit)     
+     
      endif
-  
-                         
+                     
   endif ! closing of the if-statement for processor 0
 
 #ifdef TTBL_MODE   
