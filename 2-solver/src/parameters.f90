@@ -87,12 +87,7 @@ subroutine parameter(input_i3d)
   NAMELIST /LMN/ dens1, dens2, prandtl, ilmn_bound, ivarcoeff, ilmn_solve_temp, &
        massfrac, mol_weight, imultispecies, primary_species, &
        Fr, ibirman_eos
-  NAMELIST /ABL/ z_zero, iwallmodel, k_roughness, ustar, dBL, &
-       imassconserve, ibuoyancy, iPressureGradient, iCoriolis, CoriolisFreq, &
-       istrat, idamping, iheight, TempRate, TempFlux, itherm, gravv, UG, T_wall, T_top, ishiftedper, iconcprec, pdl 
   NAMELIST /CASE/ tgv_twod
-  NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
-  NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
   NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
   NAMELIST /ExtraNumControl/ icfllim,cfl_limit
   NAMELIST /WallOscillations/ a_wo,t_wo,ifeedback_control
@@ -701,30 +696,6 @@ subroutine parameter_defaults()
   ifilter=0
   C_filter=0.49_mytype
 
-  ! ABL
-  z_zero=zpone
-  k_roughness=zpfour
-  ustar=0.45_mytype
-  dBL=250._mytype
-  iPressureGradient=1
-  iwallmodel=1
-  imassconserve=0
-  ibuoyancy=1
-  iheight=0
-  itherm=1
-  idamping=0
-  gravv=9.81_mytype
-  TempRate=-zptwofive/3600_mytype
-  TempFlux=0.24_mytype
-  UG=[zero,zero,zero]
-  ishiftedper=0
-  iconcprec=0
-  pdl=zero
-  
-  ! Turbine modelling
-  iturbine=0
-  rho_air=one
-
   ! IO
   ivisu = 1  ! save snapshots: 1, do not save snapshots: 0
   ipost = 0
@@ -748,13 +719,6 @@ subroutine parameter_defaults()
 
   ! CASE specific variables
   tgv_twod = .FALSE.
-
-  ! Tripping
-  A_tr=zero
-  xs_tr_tbl=1.402033_mytype
-  ys_tr_tbl=0.350508_mytype
-  ts_tr_tbl=1.402033_mytype
-  x0_tr_tbl=3.505082_mytype
   
   ! Temporal TBL
   if(itype .eq. itype_ttbl) then
