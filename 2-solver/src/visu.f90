@@ -220,7 +220,7 @@ contains
 
     implicit none
 
-    !! inputs
+    ! Inputs
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ep1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), nrhotime), intent(in) :: rho1
@@ -301,15 +301,18 @@ contains
 
   end subroutine write_snapshot
 
-  subroutine end_snapshot(itime, num)
+  subroutine end_snapshot(ux1, uz1, itime, num)
 
-    use decomp_2d, only : nrank
+    use decomp_2d,    only : nrank
     use decomp_2d_io, only : decomp_2d_end_io
-    use param, only : istret, xlx, yly, zlz
-    use variables, only : nx, ny, nz, beta
-    use var, only : dt,t
+    use param,        only : istret, xlx, yly, zlz
+    use variables,    only : nx, ny, nz, beta
+    use var,          only : dt,t
 
     implicit none
+    
+    ! Inputs
+    real(mytype), intent(in), optional, dimension(xsize(1), xsize(2), xsize(3)),  :: ux1, uz1
 
     integer, intent(in) :: itime
     character(len=32), intent(in) :: num
@@ -319,7 +322,7 @@ contains
     integer :: ierr
     
     ! Write XDMF footer
-    if (use_xdmf) call write_xdmf_footer()
+    if (use_xdmf) call write_xdmf_footer(ux1,uz1)
 
     ! Add metadata if XDMF is not used
     if (.not. use_xdmf) then
@@ -360,10 +363,10 @@ contains
 
   end subroutine end_snapshot
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write the header of the XDMF file
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !
+  !-----------------------------------------------------------------------------!
   subroutine write_xdmf_header(pathname, filename, num)
 
     use variables, only : nvisu, yp
@@ -471,13 +474,17 @@ contains
   ! Write the footer of the XDMF file
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
   !-----------------------------------------------------------------------------!
-  subroutine write_xdmf_footer()
+  subroutine write_xdmf_footer(ux,uz)
 
     use decomp_2d, only : nrank
     use param
 
     implicit none
     
+    ! Inputs 
+    real(mytype), intent(in), optional, dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
+    
+    ! Locals
     character(len=20) :: char_value
 
     ! Calculate Re_tau for a TTBL to add its value to the end of the snapshot
@@ -506,7 +513,7 @@ contains
       ! Add Re_tau to a TTBL .xdmf footer
       if(itype .eq. itype_ttbl) then
           write(ioxdmf,*)'<!>'
-          write(ioxdmf,*)'<!Friction Reynolds number, Re_tau = //'char_value'>'
+          write(ioxdmf,*)'<! Friction Reynolds number, Re_tau = //'char_value'>'
           write(ioxdmf,*)'<!>'
       end if
             
