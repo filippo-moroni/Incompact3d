@@ -261,7 +261,7 @@ for j in range(0, ny-1, 1):
 print("Actual y+ value selected:", y_plus[c])
 
 # Take the Ruu value at rz = 0 and rescale to obtain correlation coefficients
-Ruuz[c,0] = temp
+temp = Ruuz[c,0]
 Ruuz = Ruuz / temp
 
 # Create the separation variable array
