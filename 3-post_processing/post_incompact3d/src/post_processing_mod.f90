@@ -433,9 +433,8 @@ contains
         
         RuuzHT=zero;RvvzHT=zero;RwwzHT=zero
         
-#ifdef TTBL_MODE
+#ifndef TTBL_MODE
 
-#else
         ! If we are in Channel mode, allocate memory for reading of mean velocity field         
         allocate(u1meanHT(ysize(2)))   
         allocate(v1meanHT(ysize(2)))  
