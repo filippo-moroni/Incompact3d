@@ -39,6 +39,9 @@ program post
   ! Format for snapshots numbers
   character(len=9) :: ifilenameformat = '(I4.4)'
   
+  ! Format for correlations
+  character(len=50) :: format_string
+  
   ! Integer for MPI
   integer :: code
   
@@ -215,8 +218,6 @@ program post
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,uz1,dirname,filename,a)
         
-         ! Check if divergent values are present             
-         call test_speed_min_max(ux1,uy1,uz1)
      endif
      
      if (read_pre) then
@@ -406,11 +407,7 @@ program post
 
 #endif
    
-   ! Summation over all MPI processes (valid for both TTBL and Channel)
-   !call MPI_ALLREDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-   !call MPI_ALLREDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-   !call MPI_ALLREDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-   
+   ! Summation over all MPI processes (valid for both TTBL and Channel)   
    call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
@@ -618,14 +615,21 @@ program post
         filename = adjustl(filename)
 #endif       
 
+        ! Construct the format string
+        write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
+
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
              
-        !do j = 1, ysize(2)
+        do j = 1, ysize(2)
         
-        write(iunit, *) RuuzHT
+            do k = 1, zsize(3)
+        
+                write(iunit, format_string) RuuzHT(j,k), ' '
+        
+            end do
                
-        !end do
+        end do
                                
         close(iunit)
      endif
