@@ -5,6 +5,7 @@
 #! - mean statistics (mean[u], var[u], etc.)               !
 #! - Kolmogorov time scale tau_eta (to be done)            !
 #! - non-dimensional grid spacings and domain dimensions   !
+#! - correlation coefficients for spanwise correlations    !
 #!---------------------------------------------------------!
 
 import numpy as np
