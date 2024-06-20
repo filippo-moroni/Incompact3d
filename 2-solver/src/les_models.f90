@@ -68,10 +68,6 @@ contains
        if(jles==1) then
           write(*, *) ' Classic Smagorinsky is used ... '
           write(*, *) ' Smagorinsky constant = ', smagcst
-          if (itype==itype_abl) then
-             write(*,*) ' with Mason and Thomson damping function ... '
-             write(*,*) ' n = ', nSmag
-          endif
        else if (jles==2) then
           write(*, *) ' WALE SGS model is used ... '
           write(*, *) ' Max value for the WALE constant  = ', walecst
@@ -245,15 +241,9 @@ contains
     do k = 1, ysize(3)
        do j = 1, ysize(2)
           do i = 1, ysize(1)
-             if(itype.eq.itype_abl) then
-                !Mason and Thomson damping coefficient
-                if (istret == 0) y=real(j+ystart(2)-1-1,mytype)*dy
-                if (istret /= 0) y=yp(j+ystart(2)-1)
-                smag_constant=(smagcst**(-nSmag)+(k_roughness*(y/del(j)+z_zero/del(j)))**(-nSmag))**(-one/nSmag)
-                length=smag_constant*del(j)
-             else
-                length=smagcst*del(j)
-             endif
+
+             length=smagcst*del(j)
+                
              !Calculate eddy visc nu_t
              nut2(i, j, k) = ((length)**two) * sqrt_prec(two * srt_smag2(i, j, k))
           enddo

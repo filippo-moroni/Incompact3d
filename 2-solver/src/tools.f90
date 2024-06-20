@@ -469,18 +469,7 @@ contains
               write(varname, *) "dphi-", is, "-3"
               call decomp_2d_read_one(1,dphi1(:,:,:,3,is),resfile,varname,io_restart,reduce_prec=.false.)
            end if
-           ! ABL 
-           if (itype==itype_abl) then
-             do j=1,xsize(2)
-               if (istret==0) y = (j + xstart(2)-1-1)*dy
-               if (istret.ne.0) y = yp(j+xstart(2)-1)
-               if (ibuoyancy==1) then
-                 Tstat(j,1) = T_wall - (T_wall-T_top)*y/yly
-               else
-                 Tstat(j,1) = zero
-               endif
-             enddo
-           endif
+           
          end do
        endif
        if (ilmn) then

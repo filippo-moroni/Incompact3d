@@ -299,6 +299,7 @@ module param
   integer :: itype
   integer, parameter :: itype_user = 0,    &
                         itype_channel = 3, &
+                        itype_dbg = 6,     &
                         itype_ttbl = 13
 
   integer :: cont_phi,itr,itime,itest,iprocessing

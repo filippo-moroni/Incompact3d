@@ -204,13 +204,7 @@ contains
     T = zero
 
     ! Recover temperature when decomposed (pressure to be recovered externally)
-    if (itype.eq.itype_abl.and.ibuoyancy.eq.1) then
-      do j=1,xsize(2) 
-        T(:,j,:,1) = phi1(:,j,:,1) + Tstat(j,1)
-      enddo
-    else
-      T = phi1
-    endif
+    T = phi1
 
     ! Writing the snapshot if requested from the user and if we are at the right time step
     if ((ivisu .ne. 0) .and. ((mod(itime, ioutput) .eq. 0) .or. (itime.eq.ifirst))) then

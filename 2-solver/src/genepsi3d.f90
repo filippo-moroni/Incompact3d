@@ -55,7 +55,6 @@ contains
     if (nrank==0) then
       inquire(file="geometry", exist=dir_exists)
       if (.not.dir_exists) then
-        !call system("mkdir geometry 2> /dev/null")
         call execute_command_line("mkdir geometry 2> /dev/null")
       end if
     end if
@@ -97,7 +96,7 @@ contains
   subroutine genepsi3d(ep1)
 
     USE variables, only : nx,ny,nz,nxm,nym,nzm,yp, ilist
-    USE param, only : xlx,yly,zlz,dx,dy,dz,izap,npif,nclx,ncly,nclz,istret,itype,itype_sandbox
+    USE param, only : xlx,yly,zlz,dx,dy,dz,izap,npif,nclx,ncly,nclz,istret,itype
     use param, only : itime
     USE complex_geometry
     use decomp_2d
@@ -111,8 +110,8 @@ contains
     ! 4- You can add your own subroutine for your own object
     ! 7- Please cite the following paper if you are using this file:
     ! Gautier R., Laizet S. & Lamballais E., 2014, A DNS study of
-    ! jet control with microjets using an alterna ng direc on forcing
-    ! strategy, Int. J. of Computa onal Fluid Dynamics, 28, 393--410
+    ! jet control with microjets using an alternating direction forcing
+    ! strategy, Int. J. of Computational Fluid Dynamics, 28, 393--410
     !*****************************************************************!
     !
     logical :: dir_exists
@@ -128,28 +127,22 @@ contains
     if (nrank==0) then
       inquire(file="data", exist=dir_exists)
       if (.not.dir_exists) then
-        !call system("mkdir data 2> /dev/null")
         call execute_command_line("mkdir data 2> /dev/null")
       end if
       inquire(file="data/geometry", exist=dir_exists)
       if (.not.dir_exists) then
-        !call system("mkdir data/geometry 2> /dev/null")
         call execute_command_line("mkdir data/geometry 2> /dev/null")
       end if
     end if
     !###################################################################
     
-    if (itype.eq.itype_sandbox) then !F.Schuch 2020-08-14T11:44:11-03:00
-      call geomcomplex_io(nx,ny,nz,ep1,nobjx,nobjy,nobjz,xi,xf,yi,yf,zi,zf,&
-           nxipif,nxfpif,nyipif,nyfpif,nzipif,nzfpif,nobjmax,npif,.true.)
-    else
       call gene_epsi_3D(ep1,nx,ny,nz,dx,dy,dz,xlx,yly,zlz ,&
            nclx,ncly,nclz,nxraf,nyraf,nzraf   ,&
            xi,xf,yi,yf,zi,zf,nobjx,nobjy,nobjz,&
            nobjmax,yp,nraf)
       call verif_epsi(ep1,npif,izap,nx,ny,nz,nobjmax,&
            nxipif,nxfpif,nyipif,nyfpif,nzipif,nzfpif)
-    endif
+
     ! call geomcomplex_io(nx,ny,nz,ep1,nobjx,nobjy,nobjz,xi,xf,yi,yf,zi,zf,&
     !      nxipif,nxfpif,nyipif,nyfpif,nzipif,nzfpif,nobjmax,npif,.false.)
     !

@@ -545,7 +545,7 @@ contains
 
     !********NCLX==2*************************************
     !we are in X pencils:
-    if ((itype.eq.itype_channel.or.itype.eq.itype_uniform).and.(nclx1==2.and.nclxn==2)) then
+    if ((itype.eq.itype_channel).and.(nclx1==2.and.nclxn==2)) then
 
        !Computation of the flow rate Inflow/Outflow
        ut1=zero
@@ -573,8 +573,6 @@ contains
        enddo
 
     endif
-
-    if (itype.eq.itype_tbl) call tbl_flrt(ux,uy,uz)
 
     if (nclx1==2) then
        do k=1,xsize(3)

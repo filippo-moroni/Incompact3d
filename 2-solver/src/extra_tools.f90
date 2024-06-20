@@ -70,7 +70,7 @@ contains
               ! Fixed walls
               powerin = (sh_velx**2)*uwall
           
-          else if(iswitch .eq. 1) then
+          else if(iswitch_wo .eq. 1) then
           
               ! Oscillating walls 
               powerin = (sh_velx**2)*uwall + (sh_velz**2)*span_vel
@@ -263,7 +263,7 @@ contains
     use decomp_2d,   only : xsize, ysize
     use decomp_2d,   only : transpose_x_to_y
     
-    use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl
+    use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl, iscalar
     use variables
     
     implicit none
