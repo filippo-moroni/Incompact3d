@@ -467,22 +467,49 @@ contains
     endif
   end subroutine write_xdmf_header
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write the footer of the XDMF file
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !
+  !-----------------------------------------------------------------------------!
   subroutine write_xdmf_footer()
 
     use decomp_2d, only : nrank
-    use param,     only : t
+    use param
 
     implicit none
+    
+    character(len=20) :: char_value
+
+    ! Calculate Re_tau for a TTBL to add its value to the end of the snapshot
+    if(itype .eq. itype_ttbl) then
+      ! Shear velocity bottom wall
+      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+      
+      ! Boundary layer thickness
+      call calculate_bl_thick(ux,delta_99,counter)
+      
+      if(nrank .eq. 0) then
+          ! Calculate friction Re number for a TBL
+          re_tau_tbl = delta_99 * sh_velx / xnu
+          
+          ! Convert Re_tau from real to character
+          write(char_value, '(F12.6)') re_tau_tbl
+      end if
+    end if  
         
     if (nrank.eq.0) then
       write(ioxdmf,*)'        <Time Value="',t,'" />'
       write(ioxdmf,*)'    </Grid>'
       write(ioxdmf,*)'</Domain>'
       write(ioxdmf,'(A7)')'</Xdmf>'
+      
+      ! Add Re_tau to a TTBL .xdmf footer
+      if(itype .eq. itype_ttbl) then
+          write(ioxdmf,*)'<!>'
+          write(ioxdmf,*)'<!Friction Reynolds number, Re_tau = //'char_value'>'
+          write(ioxdmf,*)'<!>'
+      end if
+            
       close(ioxdmf)
     endif
 
