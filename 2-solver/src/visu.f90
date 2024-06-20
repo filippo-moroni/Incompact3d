@@ -303,7 +303,7 @@ contains
 
   subroutine end_snapshot(ux1, uz1, itime, num)
 
-    use decomp_2d,    only : nrank
+    use decomp_2d,    only : nrank, mytype, xsize
     use decomp_2d_io, only : decomp_2d_end_io
     use param,        only : istret, xlx, yly, zlz
     use variables,    only : nx, ny, nz, beta
@@ -312,7 +312,7 @@ contains
     implicit none
     
     ! Inputs
-    real(mytype), intent(in), optional, dimension(xsize(1), xsize(2), xsize(3)),  :: ux1, uz1
+    real(mytype), intent(in), optional, dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uz1
 
     integer, intent(in) :: itime
     character(len=32), intent(in) :: num
@@ -476,7 +476,7 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine write_xdmf_footer(ux,uz)
 
-    use decomp_2d, only : nrank
+    use decomp_2d, only : nrank, mytype, xsize
     use param
 
     implicit none
@@ -513,7 +513,7 @@ contains
       ! Add Re_tau to a TTBL .xdmf footer
       if(itype .eq. itype_ttbl) then
           write(ioxdmf,*)'<!>'
-          write(ioxdmf,*)'<! Friction Reynolds number, Re_tau = //'char_value'>'
+          write(ioxdmf,*)'<! Friction Reynolds number, Re_tau = '// trim(adjustl(char_value)) //'>'
           write(ioxdmf,*)'<!>'
       end if
             
