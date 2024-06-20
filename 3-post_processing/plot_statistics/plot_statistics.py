@@ -153,6 +153,10 @@ if itype == 3:
     
     # Reading of vorticity components and mean gradient
     M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    
+    # Reading of correlations
+    try:
+        Ruuz = np.loadtxt('data_post/corr_stats.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
 # TTBL
 elif itype == 13:
@@ -167,6 +171,10 @@ elif itype == 13:
     
     # Reading of vorticity components and mean gradient
     M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    
+    # Reading of correlations
+    try:
+        Ruuz = np.loadtxt(f'data_post/corr_stats-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
 print()
 
@@ -209,6 +217,9 @@ if itype == 3:
 #M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
 #eps = M[:]
 
+# Select the height at which correlations are plotted
+y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
+
 #!--------------------------------!
 
 #!--- Calculations ---!
@@ -240,6 +251,15 @@ vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
 
+# Search for the index correspoding to the target y+ for correlations
+c = 0 # generic counter
+
+for j in range(0, ny-1, 1):   
+    if y_plus[j] < y_plus_in: c = c + 1
+
+# Create the separation variable array
+rz = np.linspace(0, Lz, nz)
+    
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
 if itype == 3:
 
@@ -534,6 +554,51 @@ elif itype == 3:
 # Show the figure
 plt.show()
 
+#!--------------------------------------------------------------------------------------!
+
+# Ruuz
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+
+# TTBL
+if itype == 13:
+    
+    # <Ruuz
+    ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+        
+    # y-axis label
+    ax.set_ylabel(r'$R_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+        
+# Channel    
+elif itype == 3:
+
+    # <Ruuz
+    ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+        
+    # y-axis label
+    ax.set_ylabel(r'$R_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+
+# Axes labels
+ax.set_xlabel(r'$r_z$', fontsize=fla, labelpad=pad_axes_lab)
+
+# Both axes linear
+ax.set_xscale('linear')
+ax.set_yscale('linear')
+    
+# Setting major and minor ticks on both axes
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+
+# Setting x-ticks labels
+plt.xticks(ha='left')
+
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/Ruuz-{snap_numb}_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+elif itype == 3:
+    plt.savefig(f'plots/Ruuz_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+
+# Show the figure
+plt.show()
 
 #!--- Plot section, dissipation-related statistics ---!
 
