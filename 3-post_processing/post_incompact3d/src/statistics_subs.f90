@@ -401,7 +401,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
   
   ! Correlation functions (first index: j (rows); second index: r (columns))
-  real(mytype),intent(inout),dimension(ysize(2),ysize(3)) :: RuuzH1, RvvzH1, RwwzH1
+  real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1
   
   real(mytype) :: den          ! denominator of the divisions
   integer      :: i,j,k,rr,kpr 
