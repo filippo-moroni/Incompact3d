@@ -610,8 +610,6 @@ elif itype == 3:
 # Show the figure
 plt.show()
 
-print(rz)
-
 #!--- Plot section, dissipation-related statistics ---!
 
 # to do
