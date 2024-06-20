@@ -69,7 +69,7 @@ subroutine parameter(input_i3d)
        ivisu, ipost, &
        gravx, gravy, gravz, &
        cpg, idir_stream, &
-       ifilter, C_filter, iturbine
+       ifilter, C_filter
   NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
        nu0nu, cnu, ipinter
   NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, nvisu, ilist, iprocessing, &
@@ -625,7 +625,6 @@ subroutine parameter_defaults()
   nraf = 0
   nobjmax = 0
 
-  itrip = 0
   wrotation = zero
   irotation = 0
   itest=1
