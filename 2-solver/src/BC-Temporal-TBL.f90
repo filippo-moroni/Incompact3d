@@ -16,9 +16,12 @@ module temporal_tbl
   character(len=100) :: fileformat
   character(len=1),parameter :: NL=char(10) !new line character
 
-  PRIVATE   ! All functions/subroutines private by default
-  PUBLIC :: init_temporal_tbl,boundary_conditions_ttbl, postprocess_ttbl, &
-            visu_ttbl_init, visu_ttbl
+  private   ! All functions/subroutines private by default
+  public :: init_temporal_tbl,        &
+            boundary_conditions_ttbl, &
+            postprocess_ttbl,         &
+            visu_ttbl_init,           &
+            visu_ttbl
 
 contains
   !---------------------------------------------------------------------------!
