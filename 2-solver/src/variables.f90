@@ -93,16 +93,9 @@ module var
   real(mytype), save, allocatable, dimension(:,:,:)   :: srt_smag, srt_smag2
   real(mytype), save, allocatable, dimension(:,:,:)   :: srt_wale, srt_wale2, srt_wale3, srt_wale4
 
-  ! working arrays for ABL
-  real(mytype), save, allocatable, dimension(:,:) :: heatflux
-
-  ! arrays for turbine modelling
-  real(mytype), save, allocatable, dimension(:,:,:) :: FTx, FTy, FTz, Fdiscx, Fdiscy, Fdiscz
-  real(mytype), save, allocatable, dimension(:,:,:,:) ::  GammaDisc
-
   ! arrays for inflow/outflow - precursor simulations
-  real(mytype), save, allocatable, dimension(:,:,:) :: ux_inflow, uy_inflow, uz_inflow
-  real(mytype), save, allocatable, dimension(:,:,:) :: ux_recoutflow, uy_recoutflow, uz_recoutflow
+  real(mytype), save, allocatable, dimension(:,:,:)   :: ux_inflow, uy_inflow, uz_inflow
+  real(mytype), save, allocatable, dimension(:,:,:)   :: ux_recoutflow, uy_recoutflow, uz_recoutflow
 
 contains
 
@@ -1329,35 +1322,6 @@ contains
     allocate(dphi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),ntime,1:numscalar)) !global indices
     dphi1=zero
     
-    ! ABL
-    allocate(heatflux(xsize(1),xsize(3)))
-    heatflux = zero
-    allocate(PsiM(xsize(1),xsize(3)))
-    PsiM = zero
-    allocate(PsiH(xsize(1),xsize(3)))
-    PsiH = zero
-    allocate(Tstat(xsize(2),1))
-    Tstat = zero
-
-    ! Turbine Modelling
-    if (iturbine.eq.1) then
-       allocate(FTx(xsize(1),xsize(2),xsize(3)))
-       FTx = zero
-       allocate(FTy(xsize(1),xsize(2),xsize(3)))
-       FTy = zero
-       allocate(FTz(xsize(1),xsize(2),xsize(3)))
-       FTz = zero
-    else if (iturbine.eq.2) then
-       allocate(Fdiscx(xsize(1),xsize(2),xsize(3)))
-       Fdiscx = zero
-       allocate(Fdiscy(xsize(1),xsize(2),xsize(3)))
-       Fdiscy = zero
-       allocate(Fdiscz(xsize(1),xsize(2),xsize(3)))
-       Fdiscz = zero
-       allocate(Gammadisc(xsize(1),xsize(2),xsize(3),Ndiscs))
-       Gammadisc = zero
-    endif
-
     ! LMN
     if (.not.ilmn) then
        nrhotime = 1 !! Save some space
@@ -1373,25 +1337,6 @@ contains
 
     call alloc_z(divu3, opt_global=.true.) !global indices
     divu3=zero
-
-    ! TRIPPING
-    zs_param=1.7_mytype
-    randomseed=4600._mytype
-    zs_tr=zs_param/2.853_mytype
-    z_modes=zlz/zs_tr
-
-    allocate(h_coeff1(z_modes))
-    h_coeff1=zero
-    allocate(h_coeff2(z_modes))
-    h_coeff2=zero
-    allocate(phase1(z_modes))
-    phase1=zero
-    allocate(phase2(z_modes))
-    phase2=zero
-    allocate(h_1(xsize(3)))
-    h_1=zero
-    allocate(h_2(xsize(3)))
-    h_2=zero
 
 #ifdef DEBG
     if (nrank ==  0) write(*,*) '# init_variables done'
