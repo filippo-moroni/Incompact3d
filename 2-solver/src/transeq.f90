@@ -45,7 +45,7 @@ contains
 
     use decomp_2d, only : mytype, xsize, zsize
     use variables, only : numscalar
-    use param, only : ntime, ilmn, nrhotime, ilmn_solve_temp
+    use param,     only : ntime, ilmn, nrhotime, ilmn_solve_temp
 
     implicit none
 
