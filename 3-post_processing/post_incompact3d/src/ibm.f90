@@ -1021,40 +1021,24 @@ end subroutine ana_x_cyl
 !*******************************************************************
 SUBROUTINE analitic_x(j,x_pos,ana_res,k)
 
-  USE param, ONLY : itype, itype_cyl
   USE decomp_2d, ONLY : mytype
-!  USE cyl, ONLY : geomcomplex_cyl
 
   IMPLICIT NONE
 
   integer                                            :: j,k
   real(mytype)                                       :: x_pos,ana_res 
 
-  IF (itype.EQ.itype_cyl) THEN
-
-     CALL ana_x_cyl(j,x_pos,ana_res)
-
-  ENDIF
-
 END SUBROUTINE analitic_x
 !*******************************************************************
 !*******************************************************************
 SUBROUTINE analitic_y(i,y_pos,ana_res,k)
 
-  USE param, ONLY : itype, itype_cyl
   USE decomp_2d, ONLY : mytype
-!  USE cyl, ONLY : geomcomplex_cyl
 
   IMPLICIT NONE
 
   integer                                            :: i,k
   real(mytype)                                       :: y_pos,ana_res 
-
-  IF (itype.EQ.itype_cyl) THEN
-
-     CALL ana_y_cyl(i,y_pos,ana_res)
-
-  ENDIF
 
 END SUBROUTINE analitic_y
 !*******************************************************************
