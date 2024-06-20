@@ -83,7 +83,7 @@ program post
   open(10,file='post.prm',status='old',form='formatted')
   read (10,'(A1)') a
   read (10,'(A1)') a
-  read (10,'(A1)') a
+  read (10,'(A1)') a 
   read (10,'(A1)') a
   read (10,'(A1)') a
   read (10,*) file1

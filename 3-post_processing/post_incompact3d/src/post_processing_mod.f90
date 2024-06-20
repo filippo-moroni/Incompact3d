@@ -280,23 +280,23 @@ contains
   implicit none
       
     if (post_mean) then
-       allocate(u1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
-       allocate(v1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
-       allocate(w1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
-       allocate(u2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(v2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(w2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(u3mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(v3mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
-       allocate(w3mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(u4mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  
-       allocate(v4mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(w4mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))      
-       allocate(uvmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))      
-       allocate(uwmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))       
-       allocate(vwmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))     
-       allocate(pre1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(pre2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  
+       allocate(u1mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(v1mean(ysize(1),ysize(2),ysize(3)))   
+       allocate(w1mean(ysize(1),ysize(2),ysize(3)))   
+       allocate(u2mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(v2mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(w2mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(u3mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(v3mean(ysize(1),ysize(2),ysize(3)))   
+       allocate(w3mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(u4mean(ysize(1),ysize(2),ysize(3)))  
+       allocate(v4mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(w4mean(ysize(1),ysize(2),ysize(3)))      
+       allocate(uvmean(ysize(1),ysize(2),ysize(3)))      
+       allocate(uwmean(ysize(1),ysize(2),ysize(3)))       
+       allocate(vwmean(ysize(1),ysize(2),ysize(3)))     
+       allocate(pre1mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(pre2mean(ysize(1),ysize(2),ysize(3)))  
        
        allocate(u1meanH1(ysize(2)));   allocate(v1meanH1(ysize(2)));  allocate(w1meanH1(ysize(2)))
        allocate(u2meanH1(ysize(2)));   allocate(v2meanH1(ysize(2)));  allocate(w2meanH1(ysize(2)))
@@ -334,11 +334,11 @@ contains
        pre1meanHT=zero;pre2meanHT=zero
       
        ! With the current version, we can deal only with 1 scalar field (otherwise a rank 4 array cannot be transposed)   
-       allocate(phi1mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices   
-       allocate(phi2mean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(uphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
-       allocate(vphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))   
-       allocate(wphimean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    
+       allocate(phi1mean(ysize(1),ysize(2),ysize(3)))   
+       allocate(phi2mean(ysize(1),ysize(2),ysize(3)))    
+       allocate(uphimean(ysize(1),ysize(2),ysize(3)))    
+       allocate(vphimean(ysize(1),ysize(2),ysize(3)))   
+       allocate(wphimean(ysize(1),ysize(2),ysize(3)))    
 
        allocate(phi1meanH1(ysize(2))); allocate(phi2meanH1(ysize(2)))
        allocate(uphimeanH1(ysize(2))); allocate(vphimeanH1(ysize(2))); allocate(wphimeanH1(ysize(2)))
@@ -359,9 +359,9 @@ contains
     if (post_vort) then
        
        ! Vorticity
-       allocate(vortxmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices 
-       allocate(vortymean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  
-       allocate(vortzmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))
+       allocate(vortxmean(ysize(1),ysize(2),ysize(3))) 
+       allocate(vortymean(ysize(1),ysize(2),ysize(3)))  
+       allocate(vortzmean(ysize(1),ysize(2),ysize(3)))
        vortxmean=zero; vortymean=zero; vortzmean=zero  
        
        allocate(vortxmeanH1(ysize(2)));
@@ -375,13 +375,13 @@ contains
        vortxmeanHT=zero;vortymeanHT=zero;vortzmeanHT=zero
        
        ! Mean gradients (velocity and scalar)
-       allocate(mean_gradientp(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
+       allocate(mean_gradientp(ysize(1),ysize(2),ysize(3)))
        mean_gradientp=zero
-       allocate(mean_gradientx(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
+       allocate(mean_gradientx(ysize(1),ysize(2),ysize(3)))
        mean_gradientx=zero
-       allocate(mean_gradientz(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
+       allocate(mean_gradientz(ysize(1),ysize(2),ysize(3)))
        mean_gradientz=zero
-       allocate(mean_gradphi(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))    ! global indices
+       allocate(mean_gradphi(ysize(1),ysize(2),ysize(3)))
        mean_gradphi=zero
        
        allocate(mean_gradientpH1(ysize(2)))
@@ -407,7 +407,7 @@ contains
     if (post_diss) then
     
        ! Total dissipation rate
-       allocate(epsmean(ystart(1):yend(1),ystart(2):yend(2),ystart(3):yend(3)))  ! global indices
+       allocate(epsmean(ysize(1),ysize(2),ysize(3)))
        epsmean=zero
        
        allocate(epsmeanH1(ysize(2)))
