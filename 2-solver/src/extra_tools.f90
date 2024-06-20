@@ -25,7 +25,6 @@ contains
   use decomp_2d
   use dbg_schemes, only : sqrt_prec
   use variables,   only : nx,ny,nz,yp
-  use extra_tools
       
   implicit none
  
@@ -472,7 +471,7 @@ contains
   use decomp_2d,   only : transpose_x_to_y
     
   use param,       only : zpzeroone, zero
-  use variables
+  !use variables
     
   implicit none
   

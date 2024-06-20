@@ -130,7 +130,6 @@ contains
 
     !xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system. Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, it is easier to know which process owns the plane if global index is used).
 
-
     !X PENCILS
     call alloc_x(ux1, opt_global=.true.) !global indices
     ux1 = zero
