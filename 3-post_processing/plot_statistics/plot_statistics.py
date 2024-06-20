@@ -260,6 +260,10 @@ for j in range(0, ny-1, 1):
 # Print the actual y+ value selected
 print("Actual y+ value selected:", y_plus[c])
 
+# Take the Ruu value at rz = 0 and rescale to obtain correlation coefficients
+Ruuz[c,0] = temp
+Ruuz = Ruuz / temp
+
 # Create the separation variable array
 rz = np.linspace(0, Lz, nz)
 
@@ -561,7 +565,7 @@ plt.show()
 
 #!--------------------------------------------------------------------------------------!
 
-# Ruuz
+# Correlation coefficients
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # TTBL
@@ -571,7 +575,7 @@ if itype == 13:
     ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
         
     # y-axis label
-    ax.set_ylabel(r'$R_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+    ax.set_ylabel(r'$C_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
         
 # Channel    
 elif itype == 3:
@@ -580,7 +584,7 @@ elif itype == 3:
     ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
         
     # y-axis label
-    ax.set_ylabel(r'$R_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+    ax.set_ylabel(r'$C_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
     
 # Axes limits
 xliminf = 0.0
@@ -603,9 +607,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/Ruuz-{snap_numb}_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Cuuz-{snap_numb}_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/Ruuz_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Cuuz_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
