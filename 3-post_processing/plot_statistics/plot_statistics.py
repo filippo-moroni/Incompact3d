@@ -155,8 +155,7 @@ if itype == 3:
     M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
     # Reading of correlations
-    try:
-        Ruuz = np.loadtxt('data_post/corr_stats.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Ruuz = np.loadtxt('data_post/corr_stats.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
 # TTBL
 elif itype == 13:
@@ -173,8 +172,7 @@ elif itype == 13:
     M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
     # Reading of correlations
-    try:
-        Ruuz = np.loadtxt(f'data_post/corr_stats-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Ruuz = np.loadtxt(f'data_post/corr_stats-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
 print()
 
@@ -251,14 +249,21 @@ vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
 
+#!--- Calculations for correlations ---!
+
 # Search for the index correspoding to the target y+ for correlations
 c = 0 # generic counter
 
 for j in range(0, ny-1, 1):   
     if y_plus[j] < y_plus_in: c = c + 1
 
+# Print the actual y+ value selected
+print("Actual y+ value selected:", y_plus[c])
+
 # Create the separation variable array
 rz = np.linspace(0, Lz, nz)
+
+#!-------------------------------------!
     
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
 if itype == 3:
@@ -576,6 +581,11 @@ elif itype == 3:
         
     # y-axis label
     ax.set_ylabel(r'$R_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+    
+# Axes limits
+xliminf = 0.0
+xlimsup = Lz
+plt.xlim([xliminf, xlimsup])
 
 # Axes labels
 ax.set_xlabel(r'$r_z$', fontsize=fla, labelpad=pad_axes_lab)
@@ -599,6 +609,8 @@ elif itype == 3:
 
 # Show the figure
 plt.show()
+
+print(rz)
 
 #!--- Plot section, dissipation-related statistics ---!
 
