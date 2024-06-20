@@ -408,9 +408,9 @@ program post
 #endif
    
    ! Summation over all MPI processes (valid for both TTBL and Channel)
-   !call MPI_ALLREDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-   !call MPI_ALLREDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-   !call MPI_ALLREDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   call MPI_ALLREDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   call MPI_ALLREDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   call MPI_ALLREDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
    
   end if
 
@@ -620,7 +620,7 @@ program post
              
         !do j = 1, ysize(2)
         
-        !write(iunit, *) RuuzHT
+        write(iunit, *) RuuzHT
                
         !end do
                                
