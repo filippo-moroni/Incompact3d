@@ -156,8 +156,10 @@ if itype == 3:
     M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
     # Reading of correlations
-    Ruuz = np.loadtxt('data_post/corr_stats.txt', skiprows=0, delimiter=None, dtype=np.float64)
-
+    Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    
 # TTBL
 elif itype == 13:
 
@@ -171,9 +173,11 @@ elif itype == 13:
     
     # Reading of vorticity components and mean gradient
     M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-    
+        
     # Reading of correlations
-    Rz = np.loadtxt(f'data_post/corr_stats-{snap_numb}.txt', skiprows=1, delimiter=None, dtype=np.float64)
+    Ruuz = np.loadtxt('data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Rvvz = np.loadtxt('data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Rwwz = np.loadtxt('data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
 print()
 
@@ -261,9 +265,15 @@ for j in range(0, ny-1, 1):
 # Print the actual y+ value selected
 print("Actual y+ value selected:", y_plus[c])
 
-# Take the Ruu value at rz = 0 and rescale to obtain correlation coefficients
+# Take the Rii value at rz = 0 and rescale to obtain correlation coefficients
 temp = Ruuz[c,0]
 Ruuz = Ruuz / temp
+
+temp = Rvvz[c,0]
+Rvvz = Rvvz / temp
+
+temp = Rwwz[c,0]
+Rwwz = Rwwz / temp
 
 # Create the separation variable array
 rz = np.linspace(0, Lz, nz)
@@ -569,24 +579,14 @@ plt.show()
 # Correlation coefficients
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
-# TTBL
-if itype == 13:
-    
-    # <Ruuz
-    ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+# Cuuz, Cvvz, Cwwz
+ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Rvvz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+ax.scatter(rz, Rwwz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
         
-    # y-axis label
-    ax.set_ylabel(r'$C_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
-        
-# Channel    
-elif itype == 3:
-
-    # <Ruuz
-    ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-        
-    # y-axis label
-    ax.set_ylabel(r'$C_{uu}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
-    
+# y-axis label
+ax.set_ylabel(r'$C_{ii}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+            
 # Axes limits
 xliminf = 0.0
 xlimsup = Lz
@@ -608,9 +608,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/Cuuz-{snap_numb}_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Ciiz-{snap_numb}_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/Cuuz_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Ciiz_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
