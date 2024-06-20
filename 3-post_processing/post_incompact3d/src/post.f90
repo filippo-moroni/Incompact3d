@@ -622,12 +622,8 @@ program post
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
              
         do j = 1, ysize(2)
-        
-            do k = 1, zsize(3)
-        
-                write(iunit, format_string) RuuzHT(j,k), ' '
-        
-            end do
+                
+            write(iunit, format_string) (RuuzHT(j, k), ' ', k = 1, zsize(3))
                
         end do
                                
