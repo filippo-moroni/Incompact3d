@@ -623,7 +623,7 @@ program post
              
         do j = 1, ysize(2)
                 
-            write(iunit, format_string) (RuuzHT(j, k), ' ', k = 1, zsize(3))
+            write(iunit, format_string) (RuuzHT(j, k), ',', k = 1, zsize(3))
                
         end do
                                
