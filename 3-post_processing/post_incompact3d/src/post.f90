@@ -395,9 +395,9 @@ program post
    do k=1,ysize(3)
        do i=1,ysize(1)
            do j=1,ysize(2)
-               ux2(i,j,k) = ux2(i,j,k) - u1meanHT(j)
-               uy2(i,j,k) = uy2(i,j,k) - v1meanHT(j)
-               uz2(i,j,k) = uz2(i,j,k) - w1meanHT(j)
+               ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
+               uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
+               uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
            enddo
        enddo
    enddo
