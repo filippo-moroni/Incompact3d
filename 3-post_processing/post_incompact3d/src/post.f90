@@ -471,11 +471,8 @@ program post
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
-               
-        do j = 1, ysize(2) + 1
         
-        if (j .eq. 1) then
-        
+        ! Header
         write(iunit, '(22(A13, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
                                           'var[u]'   , ',', 'var[v]'   , ',', 'var[w]' , ',', &
                                           'skew[u]'  , ',', 'skew[v]'  , ',', 'skew[w]', ',', &
@@ -484,34 +481,32 @@ program post
                                           'mean[p]'  , ',', 'var[p]'   , ',',                 &
                                           'mean[phi]', ',', 'var[phi]' , ',',                 &
                                           "<u'phi'>" , ',', "<v'phi'>" , ',', "<w'phi'>" 
-                               
-        else
-                
-        write(iunit, '(22(F13.9, A1, 1X))') u1meanHT(j-1),   ',', &
-                                            v1meanHT(j-1),   ',', &       
-                                            w1meanHT(j-1),   ',', &
-                                            u2meanHT(j-1),   ',', &
-                                            v2meanHT(j-1),   ',', &
-                                            w2meanHT(j-1),   ',', &
-                                            u3meanHT(j-1),   ',', &
-                                            v3meanHT(j-1),   ',', &
-                                            w3meanHT(j-1),   ',', &
-                                            u4meanHT(j-1),   ',', &
-                                            v4meanHT(j-1),   ',', &
-                                            w4meanHT(j-1),   ',', &
-                                            uvmeanHT(j-1),   ',', &
-                                            uwmeanHT(j-1),   ',', &  
-                                            vwmeanHT(j-1),   ',', &                                              
-                                            pre1meanHT(j-1), ',', &
-                                            pre2meanHT(j-1), ',', &                     
-                                            phi1meanHT(j-1), ',', &
-                                            phi2meanHT(j-1), ',', &                        
-                                            uphimeanHT(j-1), ',', &
-                                            vphimeanHT(j-1), ',', &
-                                            wphimeanHT(j-1)
-        
-        end if
-        
+               
+        do j = 1, ysize(2) 
+       
+            write(iunit, '(22(F13.9, A1, 1X))') u1meanHT(j),   ',', &
+                                                v1meanHT(j),   ',', &       
+                                                w1meanHT(j),   ',', &
+                                                u2meanHT(j),   ',', &
+                                                v2meanHT(j),   ',', &
+                                                w2meanHT(j),   ',', &
+                                                u3meanHT(j),   ',', &
+                                                v3meanHT(j),   ',', &
+                                                w3meanHT(j),   ',', &
+                                                u4meanHT(j),   ',', &
+                                                v4meanHT(j),   ',', &
+                                                w4meanHT(j),   ',', &
+                                                uvmeanHT(j),   ',', &
+                                                uwmeanHT(j),   ',', &  
+                                                vwmeanHT(j),   ',', &                                              
+                                                pre1meanHT(j), ',', &
+                                                pre2meanHT(j), ',', &                     
+                                                phi1meanHT(j), ',', &
+                                                phi2meanHT(j), ',', &                        
+                                                uphimeanHT(j), ',', &
+                                                vphimeanHT(j), ',', &
+                                                wphimeanHT(j)
+
         end do
                                
         close(iunit)
@@ -537,24 +532,20 @@ program post
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        do j = 1, ysize(2) + 1
-        
-        if (j .eq. 1) then
-        
+        ! Header
         write(iunit, '(7(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
-                                          'dU_par/dy'   , ',', 'dU/dy'        , ',', 'dW/dy',         ',', &
-                                          'dPhi/dy'          
-                               
-        else
+                                         'dU_par/dy'    , ',', 'dU/dy'        , ',', 'dW/dy',         ',', &
+                                         'dPhi/dy'   
         
-        write(iunit, '(7(F13.9, A1, 1X))') vortxmeanHT(j-1),      ',',  &
-                                           vortymeanHT(j-1),      ',',  &       
-                                           vortzmeanHT(j-1),      ',',  &
-                                           mean_gradientpHT(j-1), ',',  &
-                                           mean_gradientxHT(j-1), ',',  &
-                                           mean_gradientzHT(j-1), ',',  &
-                                           mean_gradphiHT(j-1)      
-        end if
+        do j = 1, ysize(2) 
+                
+            write(iunit, '(7(F13.9, A1, 1X))') vortxmeanHT(j),      ',',  &
+                                               vortymeanHT(j),      ',',  &       
+                                               vortzmeanHT(j),      ',',  &
+                                               mean_gradientpHT(j), ',',  &
+                                               mean_gradientxHT(j), ',',  &
+                                               mean_gradientzHT(j), ',',  &
+                                               mean_gradphiHT(j)      
         
         end do
                                
@@ -581,18 +572,13 @@ program post
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        do j = 1, ysize(2) + 1
-        
-        if (j .eq. 1) then
-        
+        ! Header
         write(iunit, '(1(A13, A1, 1X))') 'mean[eps]'
-                               
-        else
         
-        write(iunit, '(1(F13.9, A1, 1X))') epsmeanHT(j-1)
-        
-        end if
-        
+        do j = 1, ysize(2) 
+      
+            write(iunit, '(1(F13.9, A1, 1X))') epsmeanHT(j)
+               
         end do
                                
         close(iunit)
@@ -620,10 +606,29 @@ program post
 
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
-             
+        
+        ! Streamwise fluctuations correlation function
+        write(iunit, '(1(A13, A1, 1X))') 'Ruuz' 
+        
         do j = 1, ysize(2)
                 
             write(iunit, format_string) (RuuzHT(j, k), ' ', k = 1, zsize(3))
+               
+        end do
+        
+        ! Vertical fluctuations correlation function
+        write(iunit, '(1(A13, A1, 1X))') 'Rvvz'
+        do j = 1, ysize(2)
+                
+            write(iunit, format_string) (RvvzHT(j, k), ' ', k = 1, zsize(3))
+               
+        end do
+        
+        ! Spanwise fluctuations correlation function     
+        write(iunit, '(1(A13, A1, 1X))') 'Rwwz'
+        do j = 1, ysize(2)
+                
+            write(iunit, format_string) (RwwzHT(j, k), ' ', k = 1, zsize(3))
                
         end do
                                
@@ -730,7 +735,7 @@ program post
      print *,'The following statistics have been saved in'
      print *,'"corr_stats" file(s):'
      print *,''
-     print *,'Ruu(z)'
+     print *,'Ruu(z), Rvv(z), Rww(z)'
      print *,''    
      endif
      
