@@ -191,10 +191,10 @@ contains
     use var,         only : itime
     use var,         only : numscalar, nrhotime, npress
     
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux1, uy1, uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime), intent(in) :: rho1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ep1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime),  intent(in) :: rho1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ep1
     real(mytype),dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp3
 
     integer :: j
@@ -214,7 +214,7 @@ contains
        !      Currently, needs some way to "register" variables for IO
        call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
 
-       call end_snapshot(itime, num)
+       call end_snapshot(ux1, uz1, itime, num)
                      
     end if
 

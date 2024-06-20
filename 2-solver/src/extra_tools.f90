@@ -1,26 +1,19 @@
 !----------------------------------------------------------!
 !         This module is used to store useful              !
-! subroutines for general purpose, not present in standard !
+!    subroutines for monitoring, not present in standard   !
 !                  Incompact3d releases.                   !
 !----------------------------------------------------------!
-
-module extra_tools
+module monitoring
 
   implicit none
   
   private 
   
-  public :: print_cf,                   &
-            calculate_shear_velocity,   &
-            spanwise_wall_oscillations, &
-            calculate_ubulk,            &
-            calculate_bl_thick,         &
-            write_scalar_plane_z,       &
-            write_hd_vortx
+  public :: print_cf
 
 contains
-  
-  !---------------------------------------------------------------------------!
+
+!---------------------------------------------------------------------------!
   ! Write shear velocities, skin friction coefficients,
   ! viscous time unit, time unit, bulk velocity (channel only) 
   ! boundary layer thickness and Re_tau (TTBL only) and stores
@@ -32,6 +25,7 @@ contains
   use decomp_2d
   use dbg_schemes, only : sqrt_prec
   use variables,   only : nx,ny,nz,yp
+  use extra_tools
       
   implicit none
  
@@ -240,6 +234,26 @@ contains
   end if
              
   end subroutine print_cf
+
+end module monitoring
+
+!----------------------------------------------------------!
+!         This module is used to store useful              !
+! subroutines for general purpose, not present in standard !
+!                  Incompact3d releases.                   !
+!----------------------------------------------------------!
+module extra_tools
+
+  implicit none
+  
+  private 
+  
+  public :: calculate_shear_velocity,   &
+            spanwise_wall_oscillations, &
+            calculate_ubulk,            &
+            calculate_bl_thick
+
+contains
   
   !---------------------------------------------------------------------------!
   ! Calculate total shear velocity and its x and z components 
@@ -531,6 +545,24 @@ contains
   
   end subroutine calculate_bl_thick
   
+end module extra_tools
+
+!----------------------------------------------------------!
+!       This module is used to store subroutines for       !
+!        2D visualizations, not present in standard        ! 
+!                  Incompact3d releases.                  !
+!----------------------------------------------------------!
+module extra_visu
+
+  implicit none
+  
+  private 
+  
+  public :: write_scalar_plane_z,       &
+            write_hd_vortx
+
+contains
+
   !---------------------------------------------------------------------------! 
   ! Write an instantaneous plane with z-dir. normal of the scalar field 
   ! for visualization.
@@ -735,8 +767,8 @@ contains
   output2D = 0
   
   end subroutine write_hd_vortx
- 
-end module extra_tools
+
+end module extra_visu
 
 
 

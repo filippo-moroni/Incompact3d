@@ -476,9 +476,10 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine write_xdmf_footer(ux,uz)
 
-    use decomp_2d, only : nrank, mytype, xsize
+    use decomp_2d,   only : nrank, mytype, xsize
     use param
-
+    use extra_tools, only : calculate_shear_velocity, calculate_bl_thick
+    
     implicit none
     
     ! Inputs 
@@ -489,19 +490,21 @@ contains
 
     ! Calculate Re_tau for a TTBL to add its value to the end of the snapshot
     if(itype .eq. itype_ttbl) then
-      ! Shear velocity bottom wall
-      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+    
+        ! Shear velocity bottom wall
+        call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
       
-      ! Boundary layer thickness
-      call calculate_bl_thick(ux,delta_99,counter)
+        ! Boundary layer thickness
+        call calculate_bl_thick(ux,delta_99,counter)
       
-      if(nrank .eq. 0) then
-          ! Calculate friction Re number for a TBL
-          re_tau_tbl = delta_99 * sh_velx / xnu
+        if(nrank .eq. 0) then
+        
+            ! Calculate friction Re number for a TBL
+            re_tau_tbl = delta_99 * sh_velx / xnu
           
-          ! Convert Re_tau from real to character
-          write(char_value, '(F12.6)') re_tau_tbl
-      end if
+            ! Convert Re_tau from real to character
+            write(char_value, '(F12.6)') re_tau_tbl
+        end if
     end if  
         
     if (nrank.eq.0) then
