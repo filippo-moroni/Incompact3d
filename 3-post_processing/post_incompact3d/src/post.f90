@@ -472,7 +472,7 @@ program post
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
                
-        do j = ystart(2),yend(2) + 1
+        do j = 1, ysize(2) + 1
         
         if (j .eq. 1) then
         
@@ -537,7 +537,7 @@ program post
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        do j = ystart(2),yend(2) + 1
+        do j = 1, ysize(2) + 1
         
         if (j .eq. 1) then
         
@@ -581,7 +581,7 @@ program post
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        do j = ystart(2),yend(2) + 1
+        do j = 1, ysize(2) + 1
         
         if (j .eq. 1) then
         
@@ -601,30 +601,29 @@ program post
      ! Correlation functions writing
      if (post_corz) then
      
-     ! Unformatted data
-     print *,'----------------------------------------------------'
-     write(*,"(1x,'Writing correlations data in unformatted .bin file(s)')")
-
 #ifdef TTBL_MODE
         ! Writing the snapshot index as character
         write(snap_index, ifilenameformat) ifile 
         snap_index = adjustl(snap_index) 
         
         ! Write the corr_stats filename for TTBL
-        write(filename, '(A,A,A)') 'corr_stats-', trim(snap_index), '.bin'
+        write(filename, '(A,A,A)') 'corr_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
 #else
         ! Write the corr_stats filename for channel flow
-        write(filename, '(A)') 'corr_stats.bin'
+        write(filename, '(A)') 'corr_stats.txt'
         filename = adjustl(filename)
 #endif       
 
         ! Open the file and write      
-        open(newunit=iunit,file=trim(dirname)//trim(filename),form='unformatted', &
-             access='stream',status='replace')
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
              
-        write(iunit,pos=1) RuuzHT, RvvzHT, RwwzHT                     
+        !do j = 1, ysize(2)
         
+        write(iunit, *) RuuzHT
+               
+        !end do
+                               
         close(iunit)
      endif
   
