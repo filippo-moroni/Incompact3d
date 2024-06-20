@@ -400,8 +400,8 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
   ! Local work arrays
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
   
-  ! Correlation functions (first index: r; second index: j)
-  real(mytype),intent(inout),dimension(zsize(3),zsize(2)) :: RuuzH1, RvvzH1, RwwzH1
+  ! Correlation functions (first index: j (rows); second index: r (columns))
+  real(mytype),intent(inout),dimension(ysize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1
   
   real(mytype) :: den          ! denominator of the divisions
   integer      :: i,j,k,rr,kpr 
@@ -435,7 +435,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
                   ta3(i,j,k) = ux3(i,j,k)*ux3(i,j,kpr)
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
-                  RuuzH1(rr,j) = RuuzH1(rr,j) + ta3(i,j,k)/den
+                  RuuzH1(j,rr) = RuuzH1(j,rr) + ta3(i,j,k)/den
                   
                   !--- Vertical fluctuations correlation ---!
                   
@@ -443,7 +443,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
                   ta3(i,j,k) = uy3(i,j,k)*uy3(i,j,kpr)
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
-                  RvvzH1(rr,j) = RvvzH1(rr,j) + ta3(i,j,k)/den
+                  RvvzH1(j,rr) = RvvzH1(j,rr) + ta3(i,j,k)/den
                   
                   !--- Spanwise fluctuations correlation ---!
                   
@@ -451,7 +451,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
                   ta3(i,j,k) = uz3(i,j,k)*uz3(i,j,kpr)
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
-                  RwwzH1(rr,j) = RwwzH1(rr,j) + ta3(i,j,k)/den
+                  RwwzH1(j,rr) = RwwzH1(j,rr) + ta3(i,j,k)/den
                   
               enddo
           enddo

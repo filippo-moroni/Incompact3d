@@ -297,21 +297,9 @@ module param
   logical :: nclx,ncly,nclz
 
   integer :: itype
-  integer, parameter :: &
-       itype_user = 0, &
-       itype_lockexch = 1, &
-       itype_tgv = 2, &
-       itype_channel = 3, &
-       itype_hill = 4, &
-       itype_cyl = 5, &
-       itype_dbg = 6, &
-       itype_mixlayer = 7, &
-       itype_jet = 8, &
-       itype_tbl = 9, &
-       itype_abl = 10, &
-       itype_uniform = 11, &
-       itype_sandbox = 12, &
-       itype_ttbl = 13
+  integer, parameter :: itype_user = 0,    &
+                        itype_channel = 3, &
+                        itype_ttbl = 13
 
   integer :: cont_phi,itr,itime,itest,iprocessing
   integer :: ifft,istret,iforc_entree,iturb
@@ -353,7 +341,6 @@ module param
   real(mytype), allocatable, dimension(:,:) :: alpha_sc, beta_sc, g_sc
   real(mytype) :: g_bl_inf, f_bl_inf
 
-
   !! Scalars
   logical, allocatable, dimension(:) :: sc_even, sc_skew
   real(mytype), allocatable, dimension(:) :: scalar_lbound, scalar_ubound
@@ -382,26 +369,6 @@ module param
   integer :: primary_species
 
   logical :: ibirman_eos
-
-  !! ABL
-  integer :: iwallmodel, iPressureGradient, imassconserve, ibuoyancy, iStrat, iCoriolis, idamping, iheight, itherm, iconcprec, ishiftedper
-  real(mytype) :: z_zero, k_roughness, u_shear, ustar, dBL, CoriolisFreq, TempRate, TempFlux, gravv, T_wall, T_top, pdl
-  real(mytype), dimension(3) :: UG
-  real(mytype), save, allocatable, dimension(:,:) :: Tstat
-  real(mytype), save, allocatable, dimension(:,:) :: PsiM, PsiH
-
-  !! Turbine modelling
-  integer :: iturbine        ! 1: Actuator line, 2: actuator disk
-  integer :: iturboutput     ! Steps for turbine output
-  real(mytype) :: rho_air
-  ! Actuator disk
-  character(len=100) :: admCoords
-  integer :: Ndiscs          ! number of actuator discs
-  real(mytype) :: C_T, aind
-  ! Actuator line
-  integer :: NTurbines, NActuatorlines
-  character, dimension(100) :: TurbinesPath*80, ActuatorlinesPath*80
-  real(mytype) :: eps_factor ! Smoothing factor
   
   !! Case-specific variables
   logical :: tgv_twod
@@ -417,17 +384,6 @@ module param
   integer :: save_ibm,save_dmap,save_utmap,save_dudx,save_dudy,save_dudz
   integer :: save_dvdx,save_dvdy,save_dvdz,save_dwdx,save_dwdy,save_dwdz
   integer :: save_dphidx,save_dphidy,save_dphidz,save_abs,save_V
-
-  !module tripping
-  integer ::  z_modes, nxt_itr, itrip
-  real(mytype) :: x0_tr, xs_tr, ys_tr, ts_tr, zs_param, zs_tr, randomseed, A_trip
-  real(mytype) :: x0_tr_tbl, xs_tr_tbl, ys_tr_tbl, ts_tr_tbl, A_tr
-  real(mytype), allocatable, dimension(:) :: h_coeff, h_nxt,h_i
-  !module TBL tripping
-  !integer ::  z_modes, nxt_itr, itrip
-  !real(mytype) ::  zs_param, zs_tr, A_trip, randomseed
-  real(mytype), allocatable, dimension(:) :: h_coeff1, h_1,phase1
-  real(mytype), allocatable, dimension(:) :: h_coeff2, h_2,phase2
     
   ! Shear quantities at the wall (used for Channel and TTBL)
   real(mytype), save :: sh_vel       ! total shear velocity
@@ -437,6 +393,17 @@ module param
   real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
   real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
   real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
+  
+  real(mytype), save :: deltaxplus   ! delta x^+
+  real(mytype), save :: deltayplusw  ! delta y^+ at the wall
+  real(mytype), save :: deltazplus   ! delta z^+
+  real(mytype), save :: deltayplusd  ! delta y^+ at the TTBL mean interface or at channel half-height
+    
+  real(mytype), save :: xlxplus      ! Lx^+
+  real(mytype), save :: ylyplus      ! Ly^+
+  real(mytype), save :: zlzplus      ! Lz^+
+  
+  real(mytype), save :: delta_nu     ! viscous unit
   
   !--- Additional controls namelist and related quantities ---!
   
@@ -453,9 +420,13 @@ module param
   real(mytype) :: lln                ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
   real(mytype) :: phiwall            ! scalar value at the wall
   
+  ! Temporal TBL output(s)
+  real(mytype) :: powerin            ! power input to the TTBL 
+  
   ! Boundary layer thickness parameters (TTBLs only)
   real(mytype), save :: delta_99     ! BL thickness (1% of velocity of the wall)   
-  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient 
+  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient
+  integer,      save :: counter      ! Index to save the position of the yp array at which there is the BL mean interface 
   
   !--- Extra numerics control namelist and related quantities ---!
   

@@ -421,15 +421,15 @@ contains
     if (post_corz) then
     
         ! Correlation functions in z-direction
-        allocate(RuuzH1(zsize(3),zsize(2)))
-        allocate(RvvzH1(zsize(3),zsize(2)))
-        allocate(RwwzH1(zsize(3),zsize(2)))
+        allocate(RuuzH1(ysize(2),zsize(3)))
+        allocate(RvvzH1(ysize(2),zsize(3)))
+        allocate(RwwzH1(ysize(2),zsize(3)))
         
         RuuzH1=zero;RvvzH1=zero;RwwzH1=zero
         
-        allocate(RuuzHT(zsize(3),ysize(2)))
-        allocate(RvvzHT(zsize(3),ysize(2)))
-        allocate(RwwzHT(zsize(3),ysize(2)))
+        allocate(RuuzHT(ysize(2),zsize(3)))
+        allocate(RvvzHT(ysize(2),zsize(3)))
+        allocate(RwwzHT(ysize(2),zsize(3)))
         
         RuuzHT=zero;RvvzHT=zero;RwwzHT=zero
         

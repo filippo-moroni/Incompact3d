@@ -82,17 +82,11 @@ subroutine parameter(input_i3d)
        alpha_sc, beta_sc, g_sc, Tref
   NAMELIST /LESModel/ jles, smagcst, smagwalldamp, nSmag, walecst, maxdsmagcst, iwall
   NAMELIST /WallModel/ smagwalldamp
-  NAMELIST /Tripping/ itrip,A_tr,xs_tr_tbl,ys_tr_tbl,ts_tr_tbl,x0_tr_tbl
   NAMELIST /ibmstuff/ cex,cey,cez,ra,nobjmax,nraf, npif, izap, ianal, imove, thickness, chord, omega ,ubcx,ubcy,ubcz,rads, c_air
   NAMELIST /LMN/ dens1, dens2, prandtl, ilmn_bound, ivarcoeff, ilmn_solve_temp, &
        massfrac, mol_weight, imultispecies, primary_species, &
        Fr, ibirman_eos
-  NAMELIST /ABL/ z_zero, iwallmodel, k_roughness, ustar, dBL, &
-       imassconserve, ibuoyancy, iPressureGradient, iCoriolis, CoriolisFreq, &
-       istrat, idamping, iheight, TempRate, TempFlux, itherm, gravv, UG, T_wall, T_top, ishiftedper, iconcprec, pdl 
   NAMELIST /CASE/ tgv_twod
-  NAMELIST /ALMParam/ iturboutput,NTurbines,TurbinesPath,NActuatorlines,ActuatorlinesPath,eps_factor,rho_air
-  NAMELIST /ADMParam/ Ndiscs,ADMcoords,C_T,aind,iturboutput,rho_air
   NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
   NAMELIST /ExtraNumControl/ icfllim,cfl_limit
   NAMELIST /WallOscillations/ a_wo,t_wo,ifeedback_control
@@ -212,18 +206,6 @@ subroutine parameter(input_i3d)
   
   if(ilesmod.ne.0) then
      read(10, nml=LESModel); rewind(10)
-  endif
-  if (itype.eq.itype_tbl) then
-     read(10, nml=Tripping); rewind(10)
-  endif
-  if (itype.eq.itype_abl) then
-     read(10, nml=ABL); rewind(10)
-  endif
-  
-  if (iturbine.eq.1) then
-     read(10, nml=ALMParam); rewind(10)
-  else if (iturbine.eq.2) then
-     read(10, nml=ADMParam); rewind(10)
   endif
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
@@ -349,8 +331,6 @@ subroutine parameter(input_i3d)
      if (iscalar.eq.1) xcst_sc = xcst / sc
   endif
 
-  if (itype==itype_tbl.and.A_tr .gt. zero.and.nrank==0)  write(*,*)  "TBL tripping is active"
-
   anglex = sin_prec(pi*angle/onehundredeighty)
   angley = cos_prec(pi*angle/onehundredeighty)
   !###########################################################################
@@ -369,6 +349,9 @@ subroutine parameter(input_i3d)
   ! Creating /planes folder inside /data
   if (nrank==0) call execute_command_line('mkdir -p data/planes')
   
+  ! Creating /checkpoints folder
+  if (nrank==0) call execute_command_line('mkdir -p checkpoints')
+  
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
@@ -376,30 +359,8 @@ subroutine parameter(input_i3d)
      print *,'==========================================================='
      if (itype.eq.itype_user) then
         print *,'User-defined simulation'
-     elseif (itype.eq.itype_lockexch) then
-        print *,'Simulating lock-exchange'
-     elseif (itype.eq.itype_tgv) then
-        print *,'Simulating TGV'
      elseif (itype.eq.itype_channel) then
         print *,'Simulating channel'
-     elseif (itype.eq.itype_hill) then
-        print *,'Simulating periodic hill'
-     elseif (itype.eq.itype_cyl) then
-        print *,'Simulating cylinder'
-     elseif (itype.eq.itype_dbg) then
-        print *,'Debug schemes'
-     elseif (itype.eq.itype_mixlayer) then
-        print *,'Mixing layer'
-     elseif (itype.eq.itype_jet) then
-        print *,'Jet'
-     elseif (itype.eq.itype_tbl) then
-        print *,'Turbulent boundary layer'
-     elseif (itype.eq.itype_abl) then
-        print *,'Atmospheric boundary layer'
-     elseif (itype.eq.itype_uniform) then
-        print *,'Uniform flow'
-     elseif (itype.eq.itype_sandbox) then
-        print *,'Sandbox'
      elseif (itype.eq.itype_ttbl) then
         print *,'Temporal TBL'
      else
@@ -698,30 +659,6 @@ subroutine parameter_defaults()
   ifilter=0
   C_filter=0.49_mytype
 
-  ! ABL
-  z_zero=zpone
-  k_roughness=zpfour
-  ustar=0.45_mytype
-  dBL=250._mytype
-  iPressureGradient=1
-  iwallmodel=1
-  imassconserve=0
-  ibuoyancy=1
-  iheight=0
-  itherm=1
-  idamping=0
-  gravv=9.81_mytype
-  TempRate=-zptwofive/3600_mytype
-  TempFlux=0.24_mytype
-  UG=[zero,zero,zero]
-  ishiftedper=0
-  iconcprec=0
-  pdl=zero
-  
-  ! Turbine modelling
-  iturbine=0
-  rho_air=one
-
   ! IO
   ivisu = 1  ! save snapshots: 1, do not save snapshots: 0
   ipost = 0
@@ -745,13 +682,6 @@ subroutine parameter_defaults()
 
   ! CASE specific variables
   tgv_twod = .FALSE.
-
-  ! Tripping
-  A_tr=zero
-  xs_tr_tbl=1.402033_mytype
-  ys_tr_tbl=0.350508_mytype
-  ts_tr_tbl=1.402033_mytype
-  x0_tr_tbl=3.505082_mytype
   
   ! Temporal TBL
   if(itype .eq. itype_ttbl) then
@@ -773,7 +703,7 @@ subroutine parameter_defaults()
   ! Controls for wall oscillations
   a_wo = twelve          ! amplitude of spanwise wall oscillations (in friction units if feedback control enabled) 
   t_wo = onehundred      ! period of spanwise wall oscillations (in friction units if feedback control enabled) 
-  ifeedback_control = 1  ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
+  ifeedback_control = 0  ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
 
 end subroutine parameter_defaults
 
