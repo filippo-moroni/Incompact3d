@@ -66,9 +66,9 @@ program post
   call init_post_variables()
   
   ! Call subroutines from the decomp2d library 
-  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)      !start from 1 == true
-  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)      !start from 1 == true
-  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)   !start from 1 == true
+  call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)      ! start from 1 == true
+  call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)      ! start from 1 == true
+  call init_coarser_mesh_statP(nprobe,nprobe,nprobe,.true.)   ! start from 1 == true
   
   call schemes()
   call decomp_info_init(nxm,nym,nzm,phG)
@@ -620,7 +620,7 @@ program post
              
         !do j = 1, ysize(2)
         
-        write(iunit, *) RuuzHT
+        !write(iunit, *) RuuzHT
                
         !end do
                                
