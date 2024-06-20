@@ -392,9 +392,9 @@ program post
 ! Correlations calculation for TTBL
 #ifdef TTBL_MODE  
    ! Fluctuations calculation
-   do k=ystart(3),yend(3)
-       do i=ystart(1),yend(1)
-           do j=ystart(2),yend(2)
+   do k=1,ysize(3)
+       do i=1,ysize(1)
+           do j=1,ysize(2)
                ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
                uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
                uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
@@ -408,9 +408,9 @@ program post
 #endif
    
    ! Summation over all MPI processes (valid for both TTBL and Channel)
-   call MPI_ALLREDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-   call MPI_ALLREDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-   call MPI_ALLREDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   !call MPI_ALLREDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   !call MPI_ALLREDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+   !call MPI_ALLREDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,MPI_COMM_WORLD,code)
    
   end if
 
