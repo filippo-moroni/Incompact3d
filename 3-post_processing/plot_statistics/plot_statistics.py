@@ -296,21 +296,21 @@ if itype == 3:
            
     # Create the file and write  
     with open('data_post/grid_spacings.txt', 'w') as f:
-        f.write(f"{'delta_x_plus':<{c_w}},  " +
+        f.write(f"{'delta_x_plus':<{c_w}}, "  +
                 f"{'delta_y1_plus':<{c_w}}, " +
-                f"{'delta_z_plus':<{c_w}},  " +
-                f"{'Lx_plus':<{c_w}},       " +
-                f"{'Ly_plus/2':<{c_w}},     " +
-                f"{'Lz_plus':<{c_w}},       " +
+                f"{'delta_z_plus':<{c_w}}, "  +
+                f"{'Lx_plus':<{c_w}}, "       +
+                f"{'Ly_plus/2':<{c_w}}, "     +
+                f"{'Lz_plus':<{c_w}}, "       +
                 f"{'delta_yd_plus':<{c_w}}\n" )
 
-        f.write(f"{delta_x_plus:{fs}},      " +
-                f"{y_plus[1]:{fs}},         " +
-                f"{delta_z_plus:{fs}},      " +
-                f"{Lx_plus:{fs}},           " +
-                f"{Ly_plus/2:{fs}},         " +
-                f"{Lz_plus:{fs}},           " +
-                f"{delta_yd_plus:{fs}}    \n" ) 
+        f.write(f"{delta_x_plus:{fs}}, "      +
+                f"{y_plus[1]:{fs}}, "         +
+                f"{delta_z_plus:{fs}}, "      +
+                f"{Lx_plus:{fs}}, "           +
+                f"{Ly_plus/2:{fs}}, "         +
+                f"{Lz_plus:{fs}}, "           +
+                f"{delta_yd_plus:{fs}}\n"     ) 
 
 #!--- Reference mean profiles ---!
 
