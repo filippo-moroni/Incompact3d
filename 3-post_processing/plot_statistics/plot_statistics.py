@@ -254,11 +254,19 @@ vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
 
+# y+ at the centerline or at the BL edge
+if itype == 3:
+    delta_yd_plus = y_plus[ny-1] - y_plus[ny-2]
+elif itype == 13:
+    # Calculate the index at which the BL thickness delta99 is
+    j = 0
+    while mean_u[j] > mean_u[0]*0.01: j = j + 1
+    delta_yd_plus = y_plus[j] - y_plus[j-1] 
+
 #!--- Calculations for correlations ---!
 
-# Search for the index correspoding to the target y+ for correlations
-c = 0 # generic counter
-
+# Search for the index corresponding to the target y+ for correlations
+c = 0 
 for j in range(0, ny-1, 1):   
     if y_plus[j] < y_plus_in: c = c + 1
 
@@ -288,19 +296,21 @@ if itype == 3:
            
     # Create the file and write  
     with open('data_post/grid_spacings.txt', 'w') as f:
-        f.write(f"{'delta_x_plus':<{c_w}}, "  +
+        f.write(f"{'delta_x_plus':<{c_w}},  " +
                 f"{'delta_y1_plus':<{c_w}}, " +
-                f"{'delta_z_plus':<{c_w}}, "  +
-                f"{'Lx_plus':<{c_w}}, "       +
-                f"{'Ly_plus/2':<{c_w}}, "     +
-                f"{'Lz_plus':<{c_w}}\n")
+                f"{'delta_z_plus':<{c_w}},  " +
+                f"{'Lx_plus':<{c_w}},       " +
+                f"{'Ly_plus/2':<{c_w}},     " +
+                f"{'Lz_plus':<{c_w}},       " +
+                f"{'delta_yd_plus':<{c_w}}\n" )
 
-        f.write(f"{delta_x_plus:{fs}}, "      +
-                f"{y_plus[1]:{fs}}, "         +
-                f"{delta_z_plus:{fs}}, "      +
-                f"{Lx_plus:{fs}}, "           +
-                f"{Ly_plus/2:{fs}}, "         +
-                f"{Lz_plus:{fs}}\n") 
+        f.write(f"{delta_x_plus:{fs}},      " +
+                f"{y_plus[1]:{fs}},         " +
+                f"{delta_z_plus:{fs}},      " +
+                f"{Lx_plus:{fs}},           " +
+                f"{Ly_plus/2:{fs}},         " +
+                f"{Lz_plus:{fs}},           " +
+                f"{delta_yd_plus:{fs}}    \n" ) 
 
 #!--- Reference mean profiles ---!
 
