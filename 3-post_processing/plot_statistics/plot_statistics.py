@@ -579,19 +579,22 @@ plt.show()
 # Correlation coefficients
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
-# Cuuz, Cvvz, Cwwz
-ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-ax.scatter(rz, Rvvz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-ax.scatter(rz, Rwwz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
-        
-# y-axis label
-ax.set_ylabel(r'$C_{ii}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
-            
 # Axes limits
 xliminf = 0.0
 xlimsup = Lz
 plt.xlim([xliminf, xlimsup])
 
+# Cuuz, Cvvz, Cwwz
+ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Rvvz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+ax.scatter(rz, Rwwz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
+
+# Plot horizontal line at Cii = 0
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
+        
+# y-axis label
+ax.set_ylabel(r'$C_{ii}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+            
 # Axes labels
 ax.set_xlabel(r'$r_z$', fontsize=fla, labelpad=pad_axes_lab)
 
