@@ -43,10 +43,7 @@ program xcompact3d
   use ibm_param
   use ibm,         only : body
   use genepsi,     only : genepsi3d
-  
-  !use monitoring,  only : print_cf
-  !use extra_visu,  only : write_scalar_plane_z, write_hd_vortx
-  
+    
   implicit none
   
   call init_xcompact3d()

@@ -40,7 +40,6 @@ module case
   use dbg_schemes
   use channel
   use temporal_tbl
-  !use extra_tools
   
   use var, only : nzmsize
 
@@ -56,7 +55,7 @@ module case
 contains
   !##################################################################
   subroutine init (rho1, ux1, uy1, uz1, ep1, phi1, drho1, dux1, duy1, duz1, dphi1, &
-       pp3, px1, py1, pz1)
+                   pp3,  px1, py1, pz1)
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,ep1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho1

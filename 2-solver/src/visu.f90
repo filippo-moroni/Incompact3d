@@ -478,7 +478,6 @@ contains
 
     use decomp_2d,   only : nrank, mytype, xsize
     use param
-    !use extra_tools, only : calculate_shear_velocity, calculate_bl_thick
     
     implicit none
     
@@ -525,10 +524,10 @@ contains
 
   end subroutine write_xdmf_footer
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write the given field for visualization
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !
+  !-----------------------------------------------------------------------------!
   subroutine write_field(f1, pathname, filename, num, skip_ibm, flush)
 
     use MPI
