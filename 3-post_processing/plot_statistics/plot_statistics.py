@@ -357,20 +357,18 @@ lambda_z = lambda_z / delta_nu
 print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
 print()
 
-#!--- Writing to file the viscous time unit, Kolmogorov time scale and integral length scale ---!
+#!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
 
 # Creating the folder for grid spacings
 os.makedirs('data_post', mode=0o777, exist_ok=True)
            
 # Create the file and write  
-with open('data_post/time_length_scales.txt', 'w') as f:
-    f.write(f"{'t_nu':<{c_w}}, "     +
-            f"{'tau_eta':<{c_w}}, "  +
-            f"{'lambda_z':<{c_w}}\n" )
+with open('data_post/time_scales.txt', 'w') as f:
+    f.write(f"{'t_nu':<{c_w}}, "        +
+            f"{'min tau_eta':<{c_w}}\n" )  
 
-    f.write(f"{t_nu:{fs}}, "         +
-            f"{tau_eta:{fs}}, "      +
-            f"{lambda_z:{fs}}\n"     ) 
+    f.write(f"{t_nu:{fs}}, "            +
+            f"{tau_eta:{fs}}\n"         )      
 
 #!--- Reference mean profiles ---!
 
