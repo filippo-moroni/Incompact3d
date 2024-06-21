@@ -516,7 +516,7 @@ contains
       if(itype .eq. itype_ttbl) then
           write(ioxdmf,*)'<!-- Additional information -->'
           write(ioxdmf,*)'<!-- Friction Reynolds number, Re_tau = '// trim(adjustl(char_value)) //'-->'
-          write(ioxdmf,*)'<!---------------------------->'
+          write(ioxdmf,*)'<!--                        -->'
       end if
             
       close(ioxdmf)
