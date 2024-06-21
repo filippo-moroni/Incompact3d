@@ -515,7 +515,7 @@ contains
       ! Add Re_tau to a TTBL .xdmf footer
       if(itype .eq. itype_ttbl) then
           write(ioxdmf,*)'<!-- Additional information -->'
-          write(ioxdmf,*)'<!-- Friction Reynolds number, Re_tau = '// trim(adjustl(char_value)) //'-->'
+          write(ioxdmf,*)'<!-- Friction Reynolds number, Re_tau = '// trim(adjustl(char_value)) //' -->'
           write(ioxdmf,*)'<!--                        -->'
       end if
             
