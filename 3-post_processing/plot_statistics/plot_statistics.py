@@ -343,6 +343,9 @@ while Ruuz[c,k] > 0.0: k = k + 1
 
 rz0    = rz[0]    # First element of rz vector (rz = 0)
 rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
+
+# Rescale separation variable by viscous unit
+rz = rz / delta_nu
     
 #!--- Calculate the integral length scale lambda z ---!
 
@@ -658,14 +661,21 @@ ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
         
 # y-axis label
-ax.set_ylabel(r'$C_{ii}(r_z)$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$C_{ii}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
             
 # Axes labels
-ax.set_xlabel(r'$r_z$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Both axes linear
-ax.set_xscale('linear')
+#ax.set_xscale('linear')
+#ax.set_yscale('linear')
+
+# Logarithmic x-axis and linear y-axis
+ax.set_xscale('log')
 ax.set_yscale('linear')
+
+# Minor x-ticks based on log10
+ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
