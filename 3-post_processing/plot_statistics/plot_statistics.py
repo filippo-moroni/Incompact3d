@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
 import matplotlib as mpl
 import os
+from scipy.interpolate import InterpolatedUnivariateSpline
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -263,29 +264,6 @@ elif itype == 13:
     while mean_u[j] > mean_u[0]*0.01: j = j + 1
     delta_yd_plus = y_plus[j] - y_plus[j-1] 
 
-#!--- Calculations for correlations ---!
-
-# Search for the index corresponding to the target y+ for correlations
-c = 0 
-for j in range(0, ny-1, 1):   
-    if y_plus[j] < y_plus_in: c = c + 1
-
-# Print the actual y+ value selected
-print("Actual y+ value selected:", y_plus[c])
-
-# Take the Rii value at rz = 0 and rescale to obtain correlation coefficients
-temp = Ruuz[c,0]
-Ruuz = Ruuz / temp
-
-temp = Rvvz[c,0]
-Rvvz = Rvvz / temp
-
-temp = Rwwz[c,0]
-Rwwz = Rwwz / temp
-
-# Create the separation variable array
-rz = np.linspace(0, Lz, nz)
-
 #!-------------------------------------!
     
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
@@ -311,6 +289,46 @@ if itype == 3:
                 f"{Ly_plus/2:{fs}}, "      +
                 f"{Lz_plus:{fs}}, "        +
                 f"{delta_yd_plus:{fs}}\n"  ) 
+
+
+#!--- Calculations for correlations ---!
+
+# Search for the index corresponding to the target y+ for correlations
+c = 0 
+for j in range(0, ny-1, 1):   
+    if y_plus[j] < y_plus_in: c = c + 1
+
+# Print the actual y+ value selected
+print("Actual y+ value selected:", y_plus[c])
+
+# Take the Rii value at rz = 0 and rescale to obtain correlation coefficients
+temp = Ruuz[c,0]
+Ruuz = Ruuz / temp
+
+temp = Rvvz[c,0]
+Rvvz = Rvvz / temp
+
+temp = Rwwz[c,0]
+Rwwz = Rwwz / temp
+
+# Halve the number of points in z-dir. to avoid periodicity effects
+nz = nz // 2
+Lz = Lz / 2.0
+
+# Create the separation variable array
+rz = np.linspace(0, Lz, nz)
+
+# Calculate the index at which the correlation coefficient goes to zero
+k = 0
+while Ruuz[c,k] > 0.0: k = k + 1
+
+rz0    = rz[0]    # First element of rz vector (rz = 0)
+rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
+    
+# Calculate the integral length scale lambda z
+    # Interpolation at the 6th order of accuracy with a spline of 5th order
+    spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=5)
+    lambda_z = spl.integral(rz0, rzstar)
 
 #!--- Reference mean profiles ---!
 
@@ -595,9 +613,9 @@ xlimsup = Lz
 plt.xlim([xliminf, xlimsup])
 
 # Cuuz, Cvvz, Cwwz
-ax.scatter(rz, Ruuz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-ax.scatter(rz, Rvvz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-ax.scatter(rz, Rwwz[c,:], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
+ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
+ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
 
 # Plot horizontal line at Cii = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
