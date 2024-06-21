@@ -100,6 +100,8 @@ nclySn = 2
 nclzS1 = 0
 nclzSn = 0
 
+skewsc(1) = T         ! Enable skew-symmetric form of advective term for scalar field (default: F) (F: false, T: true)
+
 /End
 
 !====================
