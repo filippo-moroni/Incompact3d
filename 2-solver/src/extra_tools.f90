@@ -1,19 +1,10 @@
 !----------------------------------------------------------!
-!         This module is used to store useful              !
-!    subroutines for monitoring, not present in standard   !
+!            This file is used to store useful             !
+! subroutines for general purpose, not present in standard !
 !                  Incompact3d releases.                   !
 !----------------------------------------------------------!
-!module monitoring
 
-!  implicit none
-  
-!  private 
-  
-!  public :: print_cf
-
-!contains
-
-!---------------------------------------------------------------------------!
+  !---------------------------------------------------------------------------!
   ! Write shear velocities, skin friction coefficients,
   ! viscous time unit, time unit, bulk velocity (channel only) 
   ! boundary layer thickness and Re_tau (TTBL only) and stores
@@ -234,26 +225,6 @@
              
   end subroutine print_cf
 
-!end module monitoring
-
-!----------------------------------------------------------!
-!         This module is used to store useful              !
-! subroutines for general purpose, not present in standard !
-!                  Incompact3d releases.                   !
-!----------------------------------------------------------!
-!module extra_tools
-
-!  implicit none
-  
-!  private 
-  
-!  public :: calculate_shear_velocity,   &
-!            spanwise_wall_oscillations, &
-!            calculate_ubulk,            &
-!            calculate_bl_thick
-
-!contains
-  
   !---------------------------------------------------------------------------!
   ! Calculate total shear velocity and its x and z components 
   !
@@ -264,110 +235,110 @@
   !---------------------------------------------------------------------------!
   subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
     
-    use var,         only : ux2, uz2     
-    use ibm_param,   only : ubcx,ubcy,ubcz
-    use dbg_schemes, only : sqrt_prec, abs_prec
+  use var,         only : ux2, uz2     
+  use ibm_param,   only : ubcx,ubcy,ubcz
+  use dbg_schemes, only : sqrt_prec, abs_prec
     
-    use var,         only : ta2,tc2,di2
-    use ibm_param,   only : ubcx,ubcz
+  use var,         only : ta2,tc2,di2
+  use ibm_param,   only : ubcx,ubcz
     
-    use MPI
-    use decomp_2d,   only : mytype, real_type, nrank
-    use decomp_2d,   only : xsize, ysize
-    use decomp_2d,   only : transpose_x_to_y
+  use MPI
+  use decomp_2d,   only : mytype, real_type, nrank
+  use decomp_2d,   only : xsize, ysize
+  use decomp_2d,   only : transpose_x_to_y
     
-    use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl, iscalar
-    use variables
+  use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl, iscalar
+  use variables
     
-    implicit none
+  implicit none
     
-    ! Inputs
-    real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
+  ! Inputs
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
 
-    ! Outputs
-    real(mytype), intent(out) :: sh_vel  ! Total shear velocity 
-    real(mytype), intent(out) :: sh_velx ! Shear velocity along x 
-    real(mytype), intent(out) :: sh_velz ! Shear velocity along z
+  ! Outputs
+  real(mytype), intent(out) :: sh_vel  ! Total shear velocity 
+  real(mytype), intent(out) :: sh_velx ! Shear velocity along x 
+  real(mytype), intent(out) :: sh_velz ! Shear velocity along z
     
-    ! Work variables
-    real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
-    real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
-    real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
-    real(mytype) :: mean_phiw  ! Mean scalar gradient at each processor
-    real(mytype) :: den        ! Denominator of the divisions
+  ! Work variables
+  real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
+  real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
+  real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
+  real(mytype) :: mean_phiw  ! Mean scalar gradient at each processor
+  real(mytype) :: den        ! Denominator of the divisions
        
-    integer      :: ierr         
-    integer      :: i,k
+  integer      :: ierr         
+  integer      :: i,k
         
-    ! Set again variables to zero
-    mean_gw  = zero
-    mean_gwx = zero
-    mean_gwz = zero
-    sh_vel   = zero
-    sh_velx  = zero    
-    sh_velz  = zero 
+  ! Set again variables to zero
+  mean_gw  = zero
+  mean_gwx = zero
+  mean_gwz = zero
+  sh_vel   = zero
+  sh_velx  = zero    
+  sh_velz  = zero 
     
-    ! Denominator of the divisions
-    den = real(nx*nz,mytype)
+  ! Denominator of the divisions
+  den = real(nx*nz,mytype)
     
-    ! Transpose to y-pencils
-    call transpose_x_to_y(ux,ux2)
-    call transpose_x_to_y(uz,uz2)
+  ! Transpose to y-pencils
+  call transpose_x_to_y(ux,ux2)
+  call transpose_x_to_y(uz,uz2)
  
-    ! y-derivatives
-    call dery (ta2,ux2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcx)
-    call dery (tc2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcz)
+  ! y-derivatives
+  call dery (ta2,ux2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcx)
+  call dery (tc2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcz)
     
-    ! du/dy=ta2   
-    ! dw/dy=tc2
+  ! du/dy=ta2   
+  ! dw/dy=tc2
     
-    ! Index for j is 1, since we are dealing with y-pencils and summation over all points (each processor)
-    do k=1,ysize(3)
-       do i=1,ysize(1)
+  ! Index for j is 1, since we are dealing with y-pencils and summation over all points (each processor)
+  do k=1,ysize(3)
+     do i=1,ysize(1)
            
-           ! TTBL, only bottom wall (j = 1)
-           if (itype .eq. itype_ttbl) then
+         ! TTBL, only bottom wall (j = 1)
+         if (itype .eq. itype_ttbl) then
               
-               ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-               mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
+             ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
+             mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
            
-               ! Mean streamwise gradient dU/dy
-               mean_gwx = mean_gwx + ta2(i,1,k) / den
+             ! Mean streamwise gradient dU/dy
+             mean_gwx = mean_gwx + ta2(i,1,k) / den
            
-               ! Mean spanwise gradient dW/dy
-               mean_gwz = mean_gwz + tc2(i,1,k) / den
+             ! Mean spanwise gradient dW/dy
+             mean_gwz = mean_gwz + tc2(i,1,k) / den
                
-               if(iscalar .eq. 1) then
+             if(iscalar .eq. 1) then
                
-               ! mean scalar gradient calculation
+             ! mean scalar gradient calculation
                
-               end if
+             end if
            
-           ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
-           else if (itype .eq. itype_channel) then
+         ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
+         else if (itype .eq. itype_channel) then
            
-               ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-               mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt_prec(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den / two
+             ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
+             mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt_prec(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den / two
            
-               ! Mean streamwise gradient dU/dy
-               mean_gwx = mean_gwx + (ta2(i,1,k) - ta2(i,ysize(2),k)) / den / two
+             ! Mean streamwise gradient dU/dy
+             mean_gwx = mean_gwx + (ta2(i,1,k) - ta2(i,ysize(2),k)) / den / two
            
-               ! Mean spanwise gradient dW/dy
-               mean_gwz = mean_gwz + (tc2(i,1,k) - tc2(i,ysize(2),k)) / den / two
+             ! Mean spanwise gradient dW/dy
+             mean_gwz = mean_gwz + (tc2(i,1,k) - tc2(i,ysize(2),k)) / den / two
            
-           end if              
-       enddo
-    enddo
+         end if              
+     enddo
+  enddo
          
-    ! Summation over all MPI processes and broadcast the result          
-    call MPI_ALLREDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
-    call MPI_ALLREDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
-    call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+  ! Summation over all MPI processes and broadcast the result          
+  call MPI_ALLREDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+  call MPI_ALLREDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+  call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
     
-    ! Finalize shear velocities calculation
-    sh_vel  = sqrt_prec(sh_vel  * xnu)
-    sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
-    sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)  
+  ! Finalize shear velocities calculation
+  sh_vel  = sqrt_prec(sh_vel  * xnu)
+  sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
+  sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)  
                   
   end subroutine calculate_shear_velocity
   
@@ -464,14 +435,14 @@
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99,counter)
   
-  use var,         only : ux2, nx, ny, nz   
+  use var,         only : ux2   
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize
   use decomp_2d,   only : transpose_x_to_y
     
   use param,       only : zpzeroone, zero
-  !use variables
+  use variables,   only : yp, nx, ny, nz
     
   implicit none
   
@@ -544,24 +515,6 @@
   
   end subroutine calculate_bl_thick
   
-!end module extra_tools
-
-!----------------------------------------------------------!
-!       This module is used to store subroutines for       !
-!        2D visualizations, not present in standard        ! 
-!                  Incompact3d releases.                  !
-!----------------------------------------------------------!
-!module extra_visu
-
-!  implicit none
-  
-!  private 
-  
-!  public :: write_scalar_plane_z,       &
-!            write_hd_vortx
-
-!contains
-
   !---------------------------------------------------------------------------! 
   ! Write an instantaneous plane with z-dir. normal of the scalar field 
   ! for visualization.
@@ -767,7 +720,6 @@
   
   end subroutine write_hd_vortx
 
-!end module extra_visu
 
 
 
