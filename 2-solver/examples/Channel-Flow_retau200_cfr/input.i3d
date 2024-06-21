@@ -106,7 +106,9 @@ spinup_time = 10000   ! Number of time steps with rotation to trigger turbulence
 &ScalarParam
 !====================
 
-Sc(1) = 1.0           ! Schmidt number (or Prandtl, in case of a thermal problem)
+Sc(1) = 1.0           ! Schmidt number (or Prandtl number, in case of a thermal problem)
+sc_skew(1) = T        ! Enable skew-symmetric form of advective term for scalar field (default: F) (F: false, T: true)
+ri(1) = 0.0           ! Richardson number
 
 nclxS1 = 0            ! 1: first element, n: last element
 nclxSn = 0            ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
@@ -114,8 +116,6 @@ nclyS1 = 2
 nclySn = 2
 nclzS1 = 0
 nclzSn = 0
-
-skewsc(1) = T         ! Enable skew-symmetric form of advective term for scalar field (default: F) (F: false, T: true)
 
 /End
 
