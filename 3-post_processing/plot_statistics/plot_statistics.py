@@ -648,7 +648,7 @@ plt.show()
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # Axes limits
-xliminf = 1.0
+xliminf = delta_z_plus
 xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
