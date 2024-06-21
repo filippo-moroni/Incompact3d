@@ -608,9 +608,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/Ciiz-{snap_numb}_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Ciiz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/Ciiz_{add_string}_y+{y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Ciiz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
