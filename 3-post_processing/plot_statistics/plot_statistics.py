@@ -295,7 +295,7 @@ if itype == 3:
     os.makedirs('data_post', mode=0o777, exist_ok=True)
            
     # Create the file and write  
-    with open('data_post/grid_spacings.txt', 'w') as f:
+    with open('data_post/grid_spacings_post.txt', 'w') as f:
         f.write(f"{'delta_x_plus':<{c_w}}, "  +
                 f"{'delta_y1_plus':<{c_w}}, " +
                 f"{'delta_z_plus':<{c_w}}, "  +
