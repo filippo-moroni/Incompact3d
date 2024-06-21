@@ -3,7 +3,7 @@
 #! for TTBLs and channel flow simulations:                 !
 #!                                                         !
 #! - mean statistics (mean[u], var[u], etc.)               !
-#! - Kolmogorov time scale tau_eta (to be done)            !
+#! - mean total dissipation (to be done)                   !
 #! - non-dimensional grid spacings and domain dimensions   !
 #! - correlation coefficients for spanwise correlations    !
 #!---------------------------------------------------------!
@@ -51,7 +51,7 @@ grey = [0.5, 0.5, 0.5]
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
 # Column width for writing to .txt file
-c_w = 20  
+c_w = 16 
 
 # Format for numbers
 fs = f"<{c_w}.3f"
@@ -156,10 +156,16 @@ if itype == 3:
     # Reading of vorticity components and mean gradient
     M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
+    # Reading of the mean total dissipation
+    eps = np.loadtxt('data_post/diss_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    
     # Reading of correlations
     Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    
+    # Reading of the mean total dissipation
+    eps = np.loadtxt('data_post/diss_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
 # TTBL
 elif itype == 13:
@@ -174,6 +180,9 @@ elif itype == 13:
     
     # Reading of vorticity components and mean gradient
     M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    
+    # Reading of the mean total dissipation
+    eps = np.loadtxt('data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
         
     # Reading of correlations
     Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
@@ -217,12 +226,9 @@ ny = len(y)
 if itype == 3:
     ny = (ny - 1) // 2 + 1
 
-# Reading of the mean dissipation
-#M = np.loadtxt('data_post/diss_stats-030.txt', skiprows=1, delimiter=',', dtype=np.float64)
-#eps = M[:]
-
 # Select the height at which correlations are plotted
 y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
+print()
 
 #!--------------------------------!
 
@@ -254,6 +260,10 @@ mean_uv /= sh_vel ** 2
 vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
+
+# Print viscous time unit
+print("Viscous time unit, t_nu = ", t_nu)
+print()
 
 # y+ at the centerline or at the BL edge
 if itype == 3:
@@ -290,6 +300,15 @@ if itype == 3:
                 f"{Lz_plus:{fs}}, "        +
                 f"{delta_yd_plus:{fs}}\n"  ) 
 
+#!-------------------------------------!
+
+# Find the maximum of mean total dissipation
+eps_max = max(eps)
+
+# Minimum Kolmogorov time scale and print it
+tau_eta = np.sqrt(nu/eps_max)
+print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
+print()
 
 #!--- Calculations for correlations ---!
 
@@ -300,6 +319,7 @@ for j in range(0, ny-1, 1):
 
 # Print the actual y+ value selected
 print("Actual y+ value selected = ", y_plus[c])
+print()
 
 # Take the Rii value at rz = 0 and rescale to obtain correlation coefficients
 temp = Ruuz[c,0]
@@ -336,6 +356,7 @@ lambda_z = lambda_z / delta_nu
 
 # Print the integral length scale value
 print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
+print()
 
 #!--- Reference mean profiles ---!
 
@@ -369,9 +390,6 @@ y_plus_k = np.linspace(5, 180, 175)
 u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
 #!-------------------------------!
-
-# Kolmogorov time scale
-#tau_eta = np.sqrt(nu/eps)
 
 # Creating the folder for plots if it does not exist
 os.makedirs('plots', mode=0o777, exist_ok=True)
@@ -652,12 +670,6 @@ elif itype == 3:
 
 # Show the figure
 plt.show()
-
-#!--- Plot section, dissipation-related statistics ---!
-
-# to do
-
-
 
 
 
