@@ -331,8 +331,11 @@ rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
 spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=5)
 lambda_z = spl.integral(rz0, rzstar)
 
+# Rescale in wall units
+lambda_z = lambda_z / delta_nu
+
 # Print the integral length scale value
-print("Integral length scale, lambda_z = ", lambda_z)
+print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
 
 #!--- Reference mean profiles ---!
 
