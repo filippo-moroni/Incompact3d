@@ -299,7 +299,7 @@ for j in range(0, ny-1, 1):
     if y_plus[j] < y_plus_in: c = c + 1
 
 # Print the actual y+ value selected
-print("Actual y+ value selected:", y_plus[c])
+print("Actual y+ value selected = ", y_plus[c])
 
 # Take the Rii value at rz = 0 and rescale to obtain correlation coefficients
 temp = Ruuz[c,0]
@@ -325,10 +325,14 @@ while Ruuz[c,k] > 0.0: k = k + 1
 rz0    = rz[0]    # First element of rz vector (rz = 0)
 rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
     
-# Calculate the integral length scale lambda z
-    # Interpolation at the 6th order of accuracy with a spline of 5th order
-    spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=5)
-    lambda_z = spl.integral(rz0, rzstar)
+#!--- Calculate the integral length scale lambda z ---!
+
+# Interpolation at the 6th order of accuracy with a spline of 5th order
+spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=5)
+lambda_z = spl.integral(rz0, rzstar)
+
+# Print the integral length scale value
+print("Integral length scale, lambda_z = ", lambda_z)
 
 #!--- Reference mean profiles ---!
 
