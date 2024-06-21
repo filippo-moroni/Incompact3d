@@ -648,8 +648,8 @@ plt.show()
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # Axes limits
-xliminf = 0.0
-xlimsup = Lz
+xliminf = delta_z_plus / 2.0
+xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Cuuz, Cvvz, Cwwz
