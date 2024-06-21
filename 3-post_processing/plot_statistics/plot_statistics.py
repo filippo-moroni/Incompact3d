@@ -277,28 +277,27 @@ elif itype == 13:
 #!-------------------------------------!
     
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
-if itype == 3:
 
-    # Creating the folder for grid spacings
-    os.makedirs('data_post', mode=0o777, exist_ok=True)
+# Creating the folder for grid spacings
+os.makedirs('data_post', mode=0o777, exist_ok=True)
            
-    # Create the file and write  
-    with open('data_post/grid_spacings_post.txt', 'w') as f:
-        f.write(f"{'delta_x^+':<{c_w}}, "  +
-                f"{'delta_y1^+':<{c_w}}, " +
-                f"{'delta_z^+':<{c_w}}, "  +
-                f"{'Lx^+':<{c_w}}, "       +
-                f"{'Ly^+/2':<{c_w}}, "     +
-                f"{'Lz^+':<{c_w}}, "       +
-                f"{'delta_yd^+':<{c_w}}\n" )
+# Create the file and write  
+with open('data_post/grid_spacings_post.txt', 'w') as f:
+    f.write(f"{'delta_x^+':<{c_w}}, "  +
+            f"{'delta_y1^+':<{c_w}}, " +
+            f"{'delta_z^+':<{c_w}}, "  +
+            f"{'Lx^+':<{c_w}}, "       +
+            f"{'Ly^+/2':<{c_w}}, "     +
+            f"{'Lz^+':<{c_w}}, "       +
+            f"{'delta_yd^+':<{c_w}}\n" )
 
-        f.write(f"{delta_x_plus:{fs}}, "   +
-                f"{y_plus[1]:{fs}}, "      +
-                f"{delta_z_plus:{fs}}, "   +
-                f"{Lx_plus:{fs}}, "        +
-                f"{Ly_plus/2:{fs}}, "      +
-                f"{Lz_plus:{fs}}, "        +
-                f"{delta_yd_plus:{fs}}\n"  ) 
+    f.write(f"{delta_x_plus:{fs}}, "   +
+            f"{y_plus[1]:{fs}}, "      +
+            f"{delta_z_plus:{fs}}, "   +
+            f"{Lx_plus:{fs}}, "        +
+            f"{Ly_plus/2:{fs}}, "      +
+            f"{Lz_plus:{fs}}, "        +
+            f"{delta_yd_plus:{fs}}\n"  ) 
 
 #!-------------------------------------!
 
@@ -357,6 +356,21 @@ lambda_z = lambda_z / delta_nu
 # Print the integral length scale value
 print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
 print()
+
+#!--- Writing to file the viscous time unit, Kolmogorov time scale and integral length scale ---!
+
+# Creating the folder for grid spacings
+os.makedirs('data_post', mode=0o777, exist_ok=True)
+           
+# Create the file and write  
+with open('data_post/time_length_scales.txt', 'w') as f:
+    f.write(f"{'t_nu':<{c_w}}, "     +
+            f"{'tau_eta':<{c_w}}, "  +
+            f"{'lambda_z':<{c_w}}\n" )
+
+    f.write(f"{t_nu:{fs}}, "         +
+            f"{tau_eta:{fs}}, "      +
+            f"{lambda_z:{fs}}\n"     ) 
 
 #!--- Reference mean profiles ---!
 
