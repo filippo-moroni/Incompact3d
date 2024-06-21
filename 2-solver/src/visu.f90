@@ -478,7 +478,7 @@ contains
 
     use decomp_2d,   only : nrank, mytype, xsize
     use param
-    use extra_tools, only : calculate_shear_velocity, calculate_bl_thick
+    !use extra_tools, only : calculate_shear_velocity, calculate_bl_thick
     
     implicit none
     

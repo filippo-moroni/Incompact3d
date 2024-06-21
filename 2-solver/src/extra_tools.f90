@@ -3,15 +3,15 @@
 !    subroutines for monitoring, not present in standard   !
 !                  Incompact3d releases.                   !
 !----------------------------------------------------------!
-module monitoring
+!module monitoring
 
-  implicit none
+!  implicit none
   
-  private 
+!  private 
   
-  public :: print_cf
+!  public :: print_cf
 
-contains
+!contains
 
 !---------------------------------------------------------------------------!
   ! Write shear velocities, skin friction coefficients,
@@ -234,25 +234,25 @@ contains
              
   end subroutine print_cf
 
-end module monitoring
+!end module monitoring
 
 !----------------------------------------------------------!
 !         This module is used to store useful              !
 ! subroutines for general purpose, not present in standard !
 !                  Incompact3d releases.                   !
 !----------------------------------------------------------!
-module extra_tools
+!module extra_tools
 
-  implicit none
+!  implicit none
   
-  private 
+!  private 
   
-  public :: calculate_shear_velocity,   &
-            spanwise_wall_oscillations, &
-            calculate_ubulk,            &
-            calculate_bl_thick
+!  public :: calculate_shear_velocity,   &
+!            spanwise_wall_oscillations, &
+!            calculate_ubulk,            &
+!            calculate_bl_thick
 
-contains
+!contains
   
   !---------------------------------------------------------------------------!
   ! Calculate total shear velocity and its x and z components 
@@ -544,23 +544,23 @@ contains
   
   end subroutine calculate_bl_thick
   
-end module extra_tools
+!end module extra_tools
 
 !----------------------------------------------------------!
 !       This module is used to store subroutines for       !
 !        2D visualizations, not present in standard        ! 
 !                  Incompact3d releases.                  !
 !----------------------------------------------------------!
-module extra_visu
+!module extra_visu
 
-  implicit none
+!  implicit none
   
-  private 
+!  private 
   
-  public :: write_scalar_plane_z,       &
-            write_hd_vortx
+!  public :: write_scalar_plane_z,       &
+!            write_hd_vortx
 
-contains
+!contains
 
   !---------------------------------------------------------------------------! 
   ! Write an instantaneous plane with z-dir. normal of the scalar field 
@@ -767,7 +767,7 @@ contains
   
   end subroutine write_hd_vortx
 
-end module extra_visu
+!end module extra_visu
 
 
 
