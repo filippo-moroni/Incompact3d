@@ -104,7 +104,7 @@ if itype == 3:
 #!--- Reading of files section ---!
 
 # Reading of friction coefficient history
-M1 = np.loadtxt('cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+M1 = np.loadtxt('monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
