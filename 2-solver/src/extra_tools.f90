@@ -571,7 +571,7 @@
 !--- End snapshot part ---!
   
   ! Write XDMF footer
-  call write_xdmf_footer()
+  call write_xdmf_footer(ux1,uz1)
   
 #ifdef ADIOS2
   call decomp_2d_end_io(io_name, "data")

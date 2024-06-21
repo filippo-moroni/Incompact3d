@@ -301,6 +301,8 @@ contains
 
   end subroutine write_snapshot
 
+!---------------------------------------------------------------------------------!
+
   subroutine end_snapshot(ux1, uz1, itime, num)
 
     use decomp_2d,    only : nrank, mytype, xsize
@@ -312,7 +314,7 @@ contains
     implicit none
     
     ! Inputs
-    real(mytype), intent(in), optional, dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uz1
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uz1
 
     integer, intent(in) :: itime
     character(len=32), intent(in) :: num
@@ -482,7 +484,7 @@ contains
     implicit none
     
     ! Inputs 
-    real(mytype), intent(in), optional, dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
+    real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
     
     ! Locals
     character(len=20) :: char_value
