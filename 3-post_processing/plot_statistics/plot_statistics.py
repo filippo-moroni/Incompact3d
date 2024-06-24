@@ -263,7 +263,7 @@ Ly_plus = Ly / delta_nu
 Lz_plus = Lz / delta_nu
 
 mean_u  /= sh_vel
-mean_w  /= sh_vel
+#mean_w  /= sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
 mean_uv /= sh_vel ** 2
@@ -427,7 +427,8 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 
 # TTBL
 if itype == 13:
-
+    
+    xliminf = 0.1
     xlimsup = 520.0
     ylimsup = 20.0
         
@@ -437,6 +438,7 @@ if itype == 13:
 # Channel    
 elif itype == 3:
 
+    xliminf = 0.1
     xlimsup = 300.0
     ylimsup = 25.0
     
@@ -483,33 +485,35 @@ plt.show()
 
 #!--- Mean spanwise velocity profile ---!
 
-# Mean velocity profile
+# Mean spanwise velocity profile
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 if itype == 13:
     xlimsup = 520.0
 elif itype == 3:
-    xlimsup = 300.0
-
+    #xlimsup = 300.0
+    xliminf = 0.0
+    xlimsup = 1.0
+    
 ylimsup = max(mean_w)*1.2
         
 # Spanwise mean velocity profile
-ax.scatter(y_plus, mean_w, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
        
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
-ax.set_ylabel(r'$W^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$y/h$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$W/U_p$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
 plt.ylim([0, ylimsup])
 plt.xlim([xliminf, xlimsup])
 
 # Logarithmic x-axis and linear y-axis
-ax.set_xscale('log')
+ax.set_xscale('linear')
 ax.set_yscale('linear')
 
 # Minor x-ticks based on log10
-ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
+#ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
@@ -535,6 +539,7 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 # TTBL
 if itype == 13:
 
+    xliminf = 0.1
     xlimsup = 520.0
     ylimsup = 8.0
     
@@ -544,6 +549,7 @@ if itype == 13:
 # Channel    
 elif itype == 3:
 
+    xliminf = 0.1
     xlimsup = 300.0
     ylimsup = 8.0
     
@@ -590,6 +596,7 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 # TTBL
 if itype == 13:
 
+    xliminf = 0.1
     xlimsup = 520.0
     ylimsup = 0.8
     
@@ -599,6 +606,7 @@ if itype == 13:
 # Channel    
 elif itype == 3:
 
+    xliminf = 0.1
     xlimsup = 300.0
     ylimsup = 0.8
     
@@ -645,6 +653,7 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 # TTBL
 if itype == 13:
 
+    xliminf = 0.1
     xlimsup = 520.0
     ylimsup = 0.8
     
@@ -657,6 +666,7 @@ if itype == 13:
 # Channel    
 elif itype == 3:
 
+    xliminf = 0.1
     xlimsup = 300.0
     ylimsup = 0.8
     
