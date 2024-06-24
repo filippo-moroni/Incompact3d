@@ -583,7 +583,15 @@ elif itype == 3:
     
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+
+    # Lee & Moser (2015)
     ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=lw)
+    
+    # If wall oscillations are present
+    if iswitch_wo == 1:
+    
+        # Yao et al. (2019)
+        ax.plot(y_plus_uvar_yao, var_u_yao, color='k', linestyle='-.', linewidth=lw)
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -640,7 +648,15 @@ elif itype == 3:
     
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    
+    # Lee & Moser (2015)
     ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=lw)
+    
+    # If wall oscillations are present
+    if iswitch_wo == 1:
+    
+        # Yao et al. (2019)
+        ax.plot(y_plus_vvar_yao, var_v_yao, color='k', linestyle='-.', linewidth=lw)
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -700,10 +716,18 @@ elif itype == 3:
     
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    
+    # Lee & Moser (2015)
     ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=lw)
        
     # y-axis label
     ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
+    
+    # If wall oscillations are present
+    if iswitch_wo == 1:
+    
+        # Yao et al. (2019)
+        ax.plot(y_plus_uvmean_yao, mean_uv_yao, color='k', linestyle='-.', linewidth=lw)
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
