@@ -19,22 +19,24 @@ program post
   implicit none
 
   integer :: i,j,k,is
-  integer :: ii = 1,ie = 1                         ! internal and external loops 
-  integer :: file1,filen,icrfile                   ! indexes for opening snapshots (first, last & increment)
-  integer :: nt                                    ! total number of time units
-  integer :: nr                                    ! total number of flow realizations
-  integer :: ifile                                 ! index to open different snapshots in time
+  integer :: ii = 1,ie = 1                           ! internal and external loops 
+  integer :: file1,filen,icrfile                     ! indexes for opening snapshots (first, last & increment)
+  integer :: nt                                      ! total number of time units
+  integer :: nr                                      ! total number of flow realizations
+  integer :: ifile                                   ! index to open different snapshots in time
   
-  real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0   ! variables to count time spent to post-process data
-  real(mytype) :: den                              ! denominator of the divisions
+  real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0     ! variables to count time spent to post-process data
+  real(mytype) :: den                                ! denominator of the divisions
    
-  integer :: iunit		      		   ! unit for the file to open (assigned by the compiler)
+  integer :: iunit		      		     ! unit for the file to open (assigned by the compiler)
     
-  integer,dimension(4) :: sel                      ! index for the number of post-processing subroutines employed (selector index)
+  integer,dimension(4) :: sel                        ! index for the number of post-processing subroutines employed (selector index)
   logical :: read_vel,read_pre,read_phi  
  
-  character(99):: filename,dirname,snap_index
-  character(1) :: a
+  character(99) :: filename,dirname
+  character(99) :: snap_index,snap_n_index,printing  ! characters to print to screen and to read snapshots' indexes
+  
+  character(1)  :: a
   
   ! Format for snapshots numbers
   character(len=9) :: ifilenameformat = '(I4.4)'
@@ -48,10 +50,10 @@ program post
   ! Save the initial time of post-processing work
   call cpu_time(tstart)
     
-  ! Initialize MPI
+  ! Initialize MPI (same as R. Corsini & Xcompact3d)
   call MPI_INIT(code)
   call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,code) 
-  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)    ! same as R. Corsini & Xcompact3d
+  call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)     
   
   ! Reading of input.i3d file
   call reading_input_file()
@@ -164,6 +166,12 @@ program post
 !-----------------------------!
 ! Post-processing starts here !
 !-----------------------------!
+     
+! Writing the final snapshot index as character
+if (nrank==0) then
+    write(snap_n_index, ifilenameformat) filen 
+    snap_n_index = adjustl(snap_n_index)
+end if
 
 !------------Start of the time average cycle---------------!
 
@@ -179,13 +187,14 @@ program post
      ! Show progress on post-processing    
      if (nrank==0) then
         print *,'----------------------------------------------------'
-#ifdef TTBL_MODE
-        ! TTBL mode 
-        write(*,"('We are averaging the realizations of the snapshot = ',I3,'/',I3)") ifile,filen
-#else
-        ! Channel mode
-        write(*,"('We are processing snapshot = ',I3,'/',I3)") ifile,filen
-#endif
+
+        ! Print the snapshot currently processing         
+        write(printing, '(A,A,A,A)') 'We are averaging the snapshot = ', trim(snap_index), ' / ', trim(snap_n_index) 
+        printing = adjustl(printing) 
+        write(*,*) printing
+         
+        !write(*,"('We are averaging the realizations of the snapshot = ',I4.4,'/',I4.4)") ifile,filen
+        
      endif
  
 !---------Start of the ensemble average cycle--------------!
