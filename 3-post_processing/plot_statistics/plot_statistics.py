@@ -78,44 +78,49 @@ with open('input.i3d', 'r') as file:
     # Read all lines into a list
     lines = file.readlines()
     
-    # Extract itype, nx, nz, Lx, Ly, Lz, Re 
-    itype = lines[7]  
-    nx    = lines[14]
-    nz    = lines[16]
-    Lx    = lines[21]
-    Ly    = lines[22]
-    Lz    = lines[23]
-    re    = lines[26]
+    # Extract itype, nx, nz, Lx, Ly, Lz, Re, iswitch_wo 
+    itype      = lines[7]  
+    nx         = lines[14]
+    nz         = lines[16]
+    Lx         = lines[21]
+    Ly         = lines[22]
+    Lz         = lines[23]
+    re         = lines[26]
+    iswitch_wo = lines[91]
     
     # Removing characters in front of the extracted strings and the comments
     itype = itype.split('=')[-1].strip()
     
-    nx    = nx.split('!')[0]
-    nx    = nx.split('=')[-1].strip()
+    nx         = nx.split('!')[0]
+    nx         = nx.split('=')[-1].strip()
     
-    nz    = nz.split('!')[0]
-    nz    = nz.split('=')[-1].strip()
+    nz         = nz.split('!')[0]
+    nz         = nz.split('=')[-1].strip()
     
-    Lx    = Lx.split('!')[0]
-    Lx    = Lx.split('=')[-1].strip()
+    Lx         = Lx.split('!')[0]
+    Lx         = Lx.split('=')[-1].strip()
     
-    Ly    = Ly.split('!')[0]
-    Ly    = Ly.split('=')[-1].strip()
+    Ly         = Ly.split('!')[0]
+    Ly         = Ly.split('=')[-1].strip()
     
-    Lz    = Lz.split('!')[0]
-    Lz    = Lz.split('=')[-1].strip()
+    Lz         = Lz.split('!')[0]
+    Lz         = Lz.split('=')[-1].strip()
     
-    re    = re.split('!')[0]
-    re    = re.split('=')[-1].strip()
+    re         = re.split('!')[0]
+    re         = re.split('=')[-1].strip()
     
-    # Convert to integer
-    itype = int(itype)
-    nx    = int(nx)
-    nz    = int(nz)
-    Lx    = np.float64(Lx)
-    Ly    = np.float64(Ly)
-    Lz    = np.float64(Lz)
-    re    = np.float64(re)
+    iswitch_wo = iswitch_wo.split('!')[0]
+    iswitch_wo = iswitch_wo.split('=')[-1].strip()
+    
+    # Convert to needed variable type (integer, float, etc.)
+    itype      = int(itype)
+    nx         = int(nx)
+    nz         = int(nz)
+    Lx         = np.float64(Lx)
+    Ly         = np.float64(Ly)
+    Lz         = np.float64(Lz)
+    re         = np.float64(re)
+    iswitch_wo = int(iswitch_wo)
     
 #!--- Parameters & reference data ---!
 if itype == 13:
@@ -141,6 +146,10 @@ elif itype == 3:
     var_u_lm   =   M[:,2]
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
+    
+    if iswitch == 1:
+    
+    # add the reading of Touber and Leschziner (2012) data
                
 #!--- Reading of files section ---!
 print()
