@@ -188,13 +188,11 @@ end if
      if (nrank==0) then
         print *,'----------------------------------------------------'
 
-        ! Print the snapshot currently processing         
-        write(printing, '(A,A,A,A)') 'We are averaging the snapshot = ', trim(snap_index), ' / ', trim(snap_n_index) 
+        ! Print the snapshot currently being processed         
+        write(printing, '(A,A,A,A)') 'We are averaging snapshot = ', trim(snap_index), ' / ', trim(snap_n_index) 
         printing = adjustl(printing) 
         write(*,*) printing
-         
-        !write(*,"('We are averaging the realizations of the snapshot = ',I4.4,'/',I4.4)") ifile,filen
-        
+                 
      endif
  
 !---------Start of the ensemble average cycle--------------!
