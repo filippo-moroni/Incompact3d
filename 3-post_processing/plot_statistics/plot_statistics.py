@@ -271,6 +271,8 @@ delta_z = Lz / nz
            
 # Shear quantities
 sh_vel = np.sqrt(nu * np.abs(mg_x[0]))  
+#sh_vel = np.sqrt(nu * np.abs(mg_tot[0]))  
+
 delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
 
