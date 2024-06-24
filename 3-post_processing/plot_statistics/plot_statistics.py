@@ -496,6 +496,7 @@ elif itype == 3:
     xlimsup = 1.0
     
 ylimsup = max(mean_w)*1.2
+yliminf = min(mean_w)*1.2
         
 # Spanwise mean velocity profile
 ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
@@ -505,7 +506,7 @@ ax.set_xlabel(r'$y/h$', fontsize=fla, labelpad=pad_axes_lab)
 ax.set_ylabel(r'$W/U_p$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
-plt.ylim([0, ylimsup])
+plt.ylim([yliminf, ylimsup])
 plt.xlim([xliminf, xlimsup])
 
 # Logarithmic x-axis and linear y-axis
