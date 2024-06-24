@@ -201,7 +201,8 @@ elif itype == 13:
 print()
 
 # Extracting quantities from the full matrices
-mean_u  = M1[:,0]   
+mean_u  = M1[:,0]
+mean_w  = M1[:,2]   
 var_u   = M1[:,3]
 var_v   = M1[:,4]
 mean_uv = M1[:,12]
@@ -262,6 +263,7 @@ Ly_plus = Ly / delta_nu
 Lz_plus = Lz / delta_nu
 
 mean_u  /= sh_vel
+mean_w  /= sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
 mean_uv /= sh_vel ** 2
@@ -431,11 +433,7 @@ if itype == 13:
         
     # Mean velocity profile
     ax.scatter(y_plus, mean_u, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-    
-    # Viscous sublayer and log law
-    ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
-    ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
-        
+            
 # Channel    
 elif itype == 3:
 
@@ -446,9 +444,9 @@ elif itype == 3:
     ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
     ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=lw)
     
-    # Viscous sublayer and log law
-    ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
-    ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
+# Viscous sublayer and log law
+ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
+ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -477,6 +475,54 @@ if itype == 13:
     plt.savefig(f'plots/umean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
     plt.savefig(f'plots/umean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    
+# Show the figure
+plt.show()
+
+#!--------------------------------------------------------------------------------------!
+
+#!--- Mean spanwise velocity profile ---!
+
+# Mean velocity profile
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+
+if itype == 13:
+    xlimsup = 520.0
+elif itype == 3:
+    xlimsup = 300.0
+
+ylimsup = max(mean_w)*1.2
+        
+# Spanwise mean velocity profile
+ax.scatter(y_plus, mean_w, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+       
+# Axes labels
+ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$W^+$', fontsize=fla, labelpad=pad_axes_lab)
+
+# Axes limits
+plt.ylim([0, ylimsup])
+plt.xlim([xliminf, xlimsup])
+
+# Logarithmic x-axis and linear y-axis
+ax.set_xscale('log')
+ax.set_yscale('linear')
+
+# Minor x-ticks based on log10
+ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
+    
+# Setting major and minor ticks on both axes
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+
+# Setting x-ticks labels
+plt.xticks(ha='left')
+
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/wmean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+elif itype == 3:
+    plt.savefig(f'plots/wmean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
 plt.show()
