@@ -147,10 +147,31 @@ elif itype == 3:
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
     
-    #if iswitch_wo == 1:
+    # Reading of wall-oscillations data (A^+ = 12, T^* = 100) 
+    if iswitch_wo == 1:
     
-    # add the reading of Touber and Leschziner (2012) data
-               
+        # Mean velocity profile (Touber & Leschziner (2012))
+        M = np.loadtxt('reference_data/umean_touber2012.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        y_plus_touber = M[:,0]
+        mean_u_touber = M[:,1]
+        
+        # Mean velocity profile, Reynolds stress and variances (Yao et al. (2019))
+        M = np.loadtxt('reference_data/umean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        y_plus_umean_yao = M[:,0]
+        mean_u_yao       = M[:,1]
+        
+        M = np.loadtxt('reference_data/uvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        y_plus_uvar_yao = M[:,0]
+        var_u_yao       = M[:,1]
+        
+        M = np.loadtxt('reference_data/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        y_plus_vvar_yao = M[:,0]
+        var_v_yao       = M[:,1]
+        
+        M = np.loadtxt('reference_data/uvmean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        y_plus_uvmean_yao = M[:,0]
+        mean_uv_yao       = M[:,1]
+                         
 #!--- Reading of files section ---!
 print()
 
@@ -263,7 +284,6 @@ Ly_plus = Ly / delta_nu
 Lz_plus = Lz / delta_nu
 
 mean_u  /= sh_vel
-#mean_w  /= sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
 mean_uv /= sh_vel ** 2
@@ -442,9 +462,20 @@ elif itype == 3:
     xlimsup = 300.0
     ylimsup = 25.0
     
-    # Mean velocity profile
+    # Mean velocity profile 
     ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    
+    # Lee & Moser (2015)
     ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=lw)
+    
+    # If wall oscillations are present
+    if iswitch_wo == 1:
+    
+        # Touber & Leschziner (2012)
+        ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle='..', linewidth=lw)
+        
+        # Yao et al. (2019)
+        ax.plot(y_plus_umean_yao, mean_u_yao, color='C3', linestyle='-.', linewidth=lw)
     
 # Viscous sublayer and log law
 ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
@@ -489,9 +520,8 @@ plt.show()
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 if itype == 13:
-    xlimsup = 520.0
+    xlimsup = Ly
 elif itype == 3:
-    #xlimsup = 300.0
     xliminf = 0.0
     xlimsup = 1.0
     
@@ -509,12 +539,9 @@ ax.set_ylabel(r'$W/U_p$', fontsize=fla, labelpad=pad_axes_lab)
 plt.ylim([yliminf, ylimsup])
 plt.xlim([xliminf, xlimsup])
 
-# Logarithmic x-axis and linear y-axis
+# Both linear axes
 ax.set_xscale('linear')
 ax.set_yscale('linear')
-
-# Minor x-ticks based on log10
-#ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
