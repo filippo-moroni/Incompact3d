@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=test           # job name
+#SBATCH --job-name=post           # job name
 #SBATCH --account=fluids          # account name
 #SBATCH --partition=high          # partition name
 #SBATCH --time=23:59:59           # format HH : MM : SS

@@ -26,10 +26,11 @@ zlz = 8.68            ! Lz (Size of the box in z-direction)
 ! Flow parameters
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
+
 ! Time stepping
 dt = 0.01             ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 300000        ! Last iteration
+ilast = 160000        ! Last iteration
 
 ! Enable modelling tools
 numscalar = 1         ! Number of scalars 
@@ -37,6 +38,10 @@ numscalar = 1         ! Number of scalars
 ! Boundary and initial conditions
 iin = 1               ! Noise conditions: 0: same noise for all simulations, 1: pseudo-random noise based on system clock (default: 0)
 init_noise = 0.1      ! Noise maximum half-amplitude at IC (1=100%), symmetric with respect to zero 
+
+
+
+
 
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
@@ -61,6 +66,7 @@ itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 
 iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0->Same as convective, 1->Backward Euler, 2->CN
                       ! Implicit diffusion in y is valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
                       ! and it is experimental with the hyperviscous operator.
+
 /End
 
 !====================
@@ -69,8 +75,8 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 
 ! Basic I/O
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
-icheckpoint = 10000   ! Frequency for writing backup file
-ioutput = 10000       ! Frequency for saving and visualization
+icheckpoint = 20000   ! Frequency for writing backup file
+ioutput = 20000       ! Frequency for saving and visualization
 ioutput_cf = 100      ! Frequency for saving cf and related quantities
 ioutput_plane = 1000  ! Frequency for saving planes for visualization
 ilist = 25            ! Frequency for writing to screen        
@@ -86,6 +92,15 @@ output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir,
 iswitch_wo = 0        ! Switcher for wall oscillations (0: no, 1: yes)
 
 /End
+
+
+
+
+
+
+
+
+
 
 !====================
 &ScalarParam
@@ -105,6 +120,16 @@ nclzSn = 0
 /End
 
 !====================
+&WallOscillations
+!====================
+
+a_wo = 0.0            ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
+t_wo = 100.0          ! Period of spanwise wall oscillations (in friction units if feedback control enabled)
+ifeedback_control = 0 ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
+
+/End
+
+!====================
 &TemporalTBLParam
 !====================
 
@@ -116,13 +141,4 @@ phiwall = 1.0         ! Scalar value at the wall
 
 /End
 
-!====================
-&WallOscillations
-!====================
-
-a_wo = 0.0            ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
-t_wo = 100.0          ! Period of spanwise wall oscillations (in friction units if feedback control enabled)
-ifeedback_control = 0 ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
-
-/End
 
