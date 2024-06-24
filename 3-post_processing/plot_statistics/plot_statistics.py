@@ -147,7 +147,7 @@ elif itype == 3:
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
     
-    # Reading of wall-oscillations data (A^+ = 12, T^* = 100) 
+    # Reading of wall-oscillations data (A^+ = 12, T^+ = 100) 
     if iswitch_wo == 1:
     
         # Mean velocity profile (Touber & Leschziner (2012))
@@ -179,11 +179,11 @@ elif itype == 3:
         sh_vel_0_yao = (2.0/3.0)*np.sqrt(cf_0_yao / 2.0)
         sh_vel_c_yao = (2.0/3.0)*np.sqrt(cf_c_yao / 2.0)
         
-        var_u_yao   = (var_u_yao   * sh_vel_0_yao / sh_vel_c_yao)**2
-        var_v_yao   = (var_v_yao   * sh_vel_0_yao / sh_vel_c_yao)**2
-        mean_uv_yao = (mean_uv_yao * sh_vel_0_yao / sh_vel_c_yao)**2
+        var_u_yao   = (var_u_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
+        var_v_yao   = (var_v_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
+        mean_uv_yao = mean_uv_yao  * (sh_vel_0_yao / sh_vel_c_yao)**2
                                           
-                         
+                                                                  
 #!--- Reading of files section ---!
 print()
 
