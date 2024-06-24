@@ -171,6 +171,18 @@ elif itype == 3:
         M = np.loadtxt('reference_data/uvmean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
         y_plus_uvmean_yao = M[:,0]
         mean_uv_yao       = M[:,1]
+        
+        # Rescale Yao et al. (2019) data (0: uncontrolled, c: controlled)
+        cf_0_yao = 0.00790
+        cf_c_yao = 0.00511
+        
+        sh_vel_0_yao = (2.0/3.0)*np.sqrt(cf_0_yao / 2.0)
+        sh_vel_c_yao = (2.0/3.0)*np.sqrt(cf_c_yao / 2.0)
+        
+        var_u_yao   = (var_u_yao   * sh_vel_0_yao / sh_vel_c_yao)**2
+        var_v_yao   = (var_v_yao   * sh_vel_0_yao / sh_vel_c_yao)**2
+        mean_uv_yao = (mean_uv_yao * sh_vel_0_yao / sh_vel_c_yao)**2
+                                          
                          
 #!--- Reading of files section ---!
 print()
@@ -271,7 +283,6 @@ delta_z = Lz / nz
            
 # Shear quantities
 sh_vel = np.sqrt(nu * np.abs(mg_x[0]))  
-#sh_vel = np.sqrt(nu * np.abs(mg_tot[0]))  
 
 delta_nu = nu / sh_vel
 t_nu = nu / (sh_vel ** 2)
