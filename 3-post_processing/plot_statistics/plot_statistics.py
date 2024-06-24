@@ -147,7 +147,7 @@ elif itype == 3:
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
     
-    if iswitch == 1:
+    #if iswitch_wo == 1:
     
     # add the reading of Touber and Leschziner (2012) data
                
