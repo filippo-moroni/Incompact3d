@@ -704,7 +704,8 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      bctop(:,:) = tb2(:,ny-1,:)
   else if (itype .eq. itype_ttbl .and. isc .ne. 0) then
      bcbot(:,:) = phiwall
-     bctop(:,:) = zero
+     bctop(:,:) = tb2(:,ny-1,:)
+     !bctop(:,:) = zero
      
   ! Channel flow (velocity BCs and scalar BCs)
   else if (itype .eq. itype_channel .and. isc .eq. 0) then
