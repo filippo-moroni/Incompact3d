@@ -179,7 +179,8 @@ elif itype == 3:
         sh_vel_0_yao = (2.0/3.0)*np.sqrt(cf_0_yao / 2.0)
         sh_vel_c_yao = (2.0/3.0)*np.sqrt(cf_c_yao / 2.0)
         
-        y_plus_umean_yao  = y_plus_umean_yao  * (sh_vel_c_yao / sh_vel_0_yao)
+        # mean velocity is already rescaled by the actual shear velocity
+        
         y_plus_uvar_yao   = y_plus_uvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
         y_plus_vvar_yao   = y_plus_vvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
         y_plus_uvmean_yao = y_plus_uvmean_yao * (sh_vel_c_yao / sh_vel_0_yao)
