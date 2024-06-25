@@ -490,10 +490,10 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Touber & Leschziner (2012)
-        #ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle=':', linewidth=lw)
+        #ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle='-.', linewidth=lw)
         
         # Yao et al. (2019)
-        ax.plot(y_plus_umean_yao, mean_u_yao, color='k', linestyle='-.', linewidth=lw)
+        ax.plot(y_plus_umean_yao, mean_u_yao, color='k', linestyle=':', linewidth=lw)
     
 # Viscous sublayer and log law
 ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
@@ -609,7 +609,7 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.plot(y_plus_uvar_yao, var_u_yao, color='k', linestyle='-.', linewidth=lw)
+        ax.plot(y_plus_uvar_yao, var_u_yao, color='k', linestyle=':', linewidth=lw)
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -674,7 +674,7 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.plot(y_plus_vvar_yao, var_v_yao, color='k', linestyle='-.', linewidth=lw)
+        ax.plot(y_plus_vvar_yao, var_v_yao, color='k', linestyle=':', linewidth=lw)
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -745,7 +745,7 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.plot(y_plus_uvmean_yao, mean_uv_yao, color='k', linestyle='-.', linewidth=lw)
+        ax.plot(y_plus_uvmean_yao, mean_uv_yao, color='k', linestyle=':', linewidth=lw)
 
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
