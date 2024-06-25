@@ -172,18 +172,23 @@ elif itype == 3:
         y_plus_uvmean_yao = M[:,0]
         mean_uv_yao       = M[:,1]
         
-        # Rescale Yao et al. (2019) data (0: uncontrolled, c: controlled)
+        # Rescale Yao et al. (2019) data from uncontrolled to controlled shear velocity (0: uncontrolled, c: controlled)
         cf_0_yao = 0.00790
         cf_c_yao = 0.00511
         
         sh_vel_0_yao = (2.0/3.0)*np.sqrt(cf_0_yao / 2.0)
         sh_vel_c_yao = (2.0/3.0)*np.sqrt(cf_c_yao / 2.0)
         
+        y_plus_umean_yao  = y_plus_umean_yao  * (sh_vel_c_yao / sh_vel_0_yao)
+        y_plus_uvar_yao   = y_plus_uvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
+        y_plus_vvar_yao   = y_plus_vvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
+        y_plus_uvmean_yao = y_plus_uvmean_yao * (sh_vel_c_yao / sh_vel_0_yao)
+        
         var_u_yao   = (var_u_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
         var_v_yao   = (var_v_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
         mean_uv_yao = mean_uv_yao  * (sh_vel_0_yao / sh_vel_c_yao)**2
-                                          
-                                                                  
+        
+                                                                              
 #!--- Reading of files section ---!
 print()
 
