@@ -233,7 +233,7 @@
   ! - Used to print cf coefficients and shear velocities to an overall 
   !   .txt file for time evolution check.
   !---------------------------------------------------------------------------!
-  subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+  subroutine calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz)
     
   use var,         only : ux2, uz2     
   use ibm_param,   only : ubcx,ubcy,ubcz
@@ -253,7 +253,8 @@
   implicit none
     
   ! Inputs
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux, uz
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi
 
   ! Outputs
   real(mytype), intent(out) :: sh_vel  ! Total shear velocity 

@@ -2,9 +2,13 @@
 #!    With this script, we perform 6th order accurate      !
 #!          calculations of thickness parameters           !
 #! (delta_99, displacement thickness, momentum thickness), !
-#! related Reynolds numbers, streamwise shear velocity and !
-#!      streamwise friction coefficient for a TTBL.        !
+#! related Reynolds numbers, streamwise shear velocity,    !
+#!  streamwise friction coefficient and analogy factor     ! 
+#!                       for a TTBL.                       !
 #!---------------------------------------------------------!
+
+# We are assuming unitary molecular Prandtl number for the calculation
+# of the analogy factor of the Reynolds analogy. 
 
 # Libraries
 import numpy as np
@@ -25,8 +29,8 @@ plt.rcParams.update({
 plt.rcParams.update({'figure.autolayout': True})
 
 # Parameters
-uwall = np.float64(1.0)
-re = np.float64(500.0)  
+uwall = np.float64(1.0)    # Wall velocity, Uw
+re    = np.float64(500.0)  # Trip Reynolds number, Re_D
 nu = 1.0/re
 ii = 0
 
@@ -49,6 +53,7 @@ disp_t    = np.zeros(ns)
 mom_t     = np.zeros(ns)
 sh_vel    = np.zeros(ns)
 cf        = np.zeros(ns)
+a_fact    = np.zeros(ns)
 time_unit = np.zeros(ns)
 
 # Reading of yp coordinates
@@ -118,18 +123,24 @@ for i in range(file1, filen + icrfile, icrfile):
     spl = InterpolatedUnivariateSpline(yp, int2, k=5)
     mom_t[ii] = spl.integral(y0, yn)
     
-    # Reading of the mean streamwise gradient
+    # Reading of mean parallel gradient, mean streamwise gradient and mean scalar gradient
     file_path = f"data_post/vort_stats-{i:04d}.txt"
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
-    mg = data[:, 4]
     
+    mgpar = data[:, 4]  # mean gradient parallel to the wall
+    mgx   = data[:, 4]  # mean streamwise gradient 
+    mgphi = data[:, 6]  # mean scalar gradient
+        
     # Shear velocity
-    sh_vel[ii] = np.sqrt(nu * (np.absolute(mg[0])))
+    sh_vel[ii] = np.sqrt(nu * (np.absolute(mgx[0])))
     
     # Friction coefficient in x-dir.
     cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
             
+    # Analogy factor, ratio between mean gradient parallel to the wall of velocity and mean scalar gradient
+    a_fact[ii] = mgpar[0] / mgphi[0]
+    
     # Index for BL thickness parameters vectors
     ii = ii + 1
 
@@ -161,6 +172,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{'Re_theta O(6)':<{c_w}}, " +
             f"{'sh_velx O(6)':<{c_w}}, " +
             f"{'cf,x O(6)':<{c_w}}, " +
+            f"{'A_fact O(6)':<{c_w}}, " +
             f"{'time_unit':<{c_w}}\n")
 
     for j in range(0, ii):
@@ -172,6 +184,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{re_theta[j]:{fs}}, " +
             f"{sh_vel[j]:{fs}}, " +
             f"{cf[j]:{fs2}}, " +
+            f"{a_fact[j]:{fs2}}, " +
             f"{time_unit[j]:{fs}}\n")
            
 #!---------------------------------------------------------!
