@@ -233,13 +233,13 @@
   ! - Used to print cf coefficients and shear velocities to an overall 
   !   .txt file for time evolution check.
   !---------------------------------------------------------------------------!
-  subroutine calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz)
+  subroutine calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz,mean_phigw)
     
   use var,         only : ux2, uz2     
   use ibm_param,   only : ubcx,ubcy,ubcz
   use dbg_schemes, only : sqrt_prec, abs_prec
     
-  use var,         only : ta2,tc2,di2
+  use var,         only : ta2,tc2,td2,di2
   use ibm_param,   only : ubcx,ubcz
     
   use MPI
@@ -257,38 +257,53 @@
   real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi
 
   ! Outputs
-  real(mytype), intent(out) :: sh_vel  ! Total shear velocity 
-  real(mytype), intent(out) :: sh_velx ! Shear velocity along x 
-  real(mytype), intent(out) :: sh_velz ! Shear velocity along z
-    
+  real(mytype), intent(out) :: sh_vel     ! Total shear velocity 
+  real(mytype), intent(out) :: sh_velx    ! Shear velocity along x 
+  real(mytype), intent(out) :: sh_velz    ! Shear velocity along z
+  real(mytype), intent(out) :: mean_phigw ! Mean scalar gradient at the wall
+      
   ! Work variables
   real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
   real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
   real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
   real(mytype) :: mean_phiw  ! Mean scalar gradient at each processor
   real(mytype) :: den        ! Denominator of the divisions
-       
+  
+  ! Local variables for the scalar field (rank 3 and not 4 to transpose data)
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)):: phi1
+  real(mytype), dimension(ysize(1),ysize(2),ysize(3)):: phi2
+      
   integer      :: ierr         
   integer      :: i,k
         
-  ! Set again variables to zero
-  mean_gw  = zero
-  mean_gwx = zero
-  mean_gwz = zero
-  sh_vel   = zero
-  sh_velx  = zero    
-  sh_velz  = zero 
-    
+  ! Set variables to zero
+  mean_gw   = zero
+  mean_gwx  = zero
+  mean_gwz  = zero
+  mean_phiw = zero
+  
+  sh_vel     = zero
+  sh_velx    = zero    
+  sh_velz    = zero 
+  mean_phigw = zero  
+  
   ! Denominator of the divisions
   den = real(nx*nz,mytype)
+  
+  ! Copy first scalar field
+  phi1(:,:,:) = phi(:,:,:,1)
     
   ! Transpose to y-pencils
   call transpose_x_to_y(ux,ux2)
   call transpose_x_to_y(uz,uz2)
- 
+  call transpose_x_to_y(phi1,phi2)
+   
   ! y-derivatives
   call dery (ta2,ux2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcx)
   call dery (tc2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcz)
+  
+  ! to be completed for scalar derivative (check ubc*)
+  !call dery (tc2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcz)
     
   ! du/dy=ta2   
   ! dw/dy=tc2

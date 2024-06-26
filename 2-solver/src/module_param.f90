@@ -406,6 +406,8 @@ module param
   
   real(mytype), save :: delta_nu     ! viscous unit
   
+  real(mytype), save :: mean_phigw   ! mean scalar gradient at the wall
+  
   !--- Additional controls namelist and related quantities ---!
   
   ! Spanwise wall oscillations
