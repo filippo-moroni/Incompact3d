@@ -50,7 +50,7 @@
           fric_coeffx = two * ((sh_velx / uwall)**2)
           fric_coeffz = two * ((sh_velz / uwall)**2)
           
-          ! Calculate power input
+          ! Calculate power input (assuming unitary density)
           if(iswitch_wo .eq. 0) then
               
               ! Fixed walls
