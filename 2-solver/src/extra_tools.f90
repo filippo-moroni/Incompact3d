@@ -410,7 +410,7 @@
   subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
               
   use var,         only : td2,di2
-  use param,       only : zero,mean_phigwtot
+  use param,       only : zero
     
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
@@ -434,7 +434,7 @@
   integer      :: i,k
   
   ! Local variable for the scalar field (rank 3 and not 4 to derive data)
-  real(mytype), dimension(ysize(1),ysize(2),ysize(3)):: phi2
+  real(mytype), dimension(ysize(1),ysize(2),ysize(3)) :: phi2
               
   ! Set variables to zero
   mean_phigw = zero  
