@@ -441,7 +441,7 @@
   den = real(nx*nz,mytype)
       
   ! Transpose to y-pencils
-  call transpose_x_to_y(phi(:,:,:,1),phi2(:,:,:,1))
+  call transpose_x_to_y(phi(:,:,:,1), phi2(:,:,:,1))
      
   ! y-derivative, scalar field (IBM parameter is zero, similarly to what is done for 2nd derivative in navier module for mass fraction)
   call dery (td2,phi2(:,:,:,1),di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,zero)
