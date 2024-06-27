@@ -28,11 +28,9 @@
   integer :: nyh         ! half - 1 points in y direction for a channel (h: half)
   logical :: exists
   character(len=90) :: filename
-    
+      
   ! Write filename
-  if (nrank .eq. 0) then
-      write(filename,"('monitoring/cf_history.txt')") 
-  end if
+  if (nrank .eq. 0) write(filename,"('monitoring/cf_history.txt')") 
   
   ! TTBL
   if(itype .eq. itype_ttbl) then
@@ -41,6 +39,9 @@
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
+      
+      ! Calculate mean scalar gradient
+      if(iscalar .eq. 1) call calculate_scalar_grad_wall(phi,mean_phigwtot)
       
       ! Create or open a file to store sh_vel, cf coefficients, viscous time and time unit
       if(nrank .eq. 0) then
@@ -76,7 +77,7 @@
           
           ! Dissimilar control section
           if (iscalar .eq. 1) then
-          
+              
               ! Analogy factor
               A_fact = two * (xnu / sc(1)) * mean_phigwtot / sh_vel**2 
               
@@ -409,7 +410,7 @@
   subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
               
   use var,         only : td2,di2
-  use param,       only : zero
+  use param,       only : zero,mean_phigwtot
     
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
