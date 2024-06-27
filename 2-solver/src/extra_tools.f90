@@ -79,7 +79,7 @@
           if (iscalar .eq. 1) then
               
               ! Analogy factor
-              A_fact = two * (xnu / sc(1)) * abs_prec(mean_phigwtot) / sh_vel**2 
+              A_fact = (xnu / sc(1)) * abs_prec(mean_phigwtot) / sh_vel**2 
               
           end if
           
