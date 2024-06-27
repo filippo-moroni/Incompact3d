@@ -385,7 +385,7 @@
   ! With no feedback control, A and T are in outer units.
   ! With feedback control,    A and T are in viscous units, A^+, T^+.
   !---------------------------------------------------------------------------!
-  subroutine spanwise_wall_oscillations(ux1,uz1)
+  subroutine spanwise_wall_oscillations(ux1,uz1,phi1)
   
   use dbg_schemes, only : sin_prec, sqrt_prec
   use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
@@ -397,7 +397,8 @@
   implicit none
   
   real(mytype) :: amplitude, period
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux1, uz1
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
   
   ! Amplitude and period in outer units if feedback control is disabled (open loop)
   if (ifeedback_control .eq. 0) then
@@ -410,7 +411,7 @@
   else if (ifeedback_control .eq. 1) then 
   
       ! Calculate shear velocity    
-      call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
+      call calculate_shear_velocity(ux1,uz1,phi1,sh_vel,sh_velx,sh_velz,mean_phigwtot)
     
       ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
       amplitude = sh_velx * a_wo

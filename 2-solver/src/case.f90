@@ -136,7 +136,7 @@ contains
 
        ! Calculate the spanwise wall oscillations
        if (iswitch_wo .eq. 1) then
-           call spanwise_wall_oscillations (ux,uz)
+           call spanwise_wall_oscillations (ux,uz,phi)
        end if
 
        call boundary_conditions_channel (ux, uy, uz, phi)
@@ -149,7 +149,7 @@ contains
        
        ! Calculate the spanwise wall oscillations
        if (iswitch_wo .eq. 1) then
-           call spanwise_wall_oscillations (ux,uz)
+           call spanwise_wall_oscillations (ux,uz,phi)
        end if
        
        call boundary_conditions_ttbl (phi)   
