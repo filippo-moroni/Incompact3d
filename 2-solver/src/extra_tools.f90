@@ -37,7 +37,7 @@
   ! TTBL
   if(itype .eq. itype_ttbl) then
       ! Shear velocity bottom wall
-      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+      call calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz,mean_phigwtot)
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -74,29 +74,40 @@
               t_viscous = xnu / (sh_vel**2)
           end if
           
+          ! Dissimilar control section
+          if (iscalar .eq. 1) then
+          
+              ! Analogy factor
+              A_fact = two * (xnu / Sc(1)) * mean_phigwtot / sh_vel**2 
+              
+          end if
+          
           inquire(file=filename, exist=exists)
           if (exists) then
               open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                 & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                 &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                                 &
-                             delta_99,   ',', re_tau_tbl,  ',', powerin
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6,A, F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                          & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                          &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                                          &
+                             delta_99,   ',', re_tau_tbl,  ',', powerin,     ',',                                                          &
+                             A_fact
           else
               open(newunit=iunit, file=filename, status="new", action="write")
               ! Header
-              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12,A,A12)') &
-                            'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                      &
-                            'cf,tot',    ',', 'cf,x',      ',', 'cf,z',    ',',                      &
-                            't_nu',      ',', 'T',         ',', 'ts',      ',',                      &
-                            'delta_99',  ',', 'Re_tau',    ',', 'P_in'         
+              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12)') &
+                            'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                                 &
+                            'cf,tot',    ',', 'cf,x',      ',', 'cf,z',    ',',                                 &
+                            't_nu',      ',', 'T',         ',', 'ts',      ',',                                 &
+                            'delta_99',  ',', 'Re_tau',    ',', 'P_in',    ',',                                 &         
+                            'A_fact'
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                 & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                 &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                                 &
-                             delta_99,   ',', re_tau_tbl,  ',', powerin
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6,A, F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                          & 
+                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                          &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                                          &
+                             delta_99,   ',', re_tau_tbl,  ',', powerin,     ',',                                                          &
+                             A_fact
           end if
               close(iunit)
       
@@ -105,7 +116,7 @@
   ! Channel
   else if(itype .eq. itype_channel) then
       ! Shear velocity both walls
-      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+      call calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz,mean_phigwtot)
       ! Bulk velocity
       call calculate_ubulk(ux,ubulk)
     
@@ -223,12 +234,12 @@
       end if
           close(iunit)
   end if
-             
+               
   end subroutine print_cf
 
   !---------------------------------------------------------------------------!
   ! Calculate: total shear velocity and its x and z components;
-  !            mean scalar gradient at the wall
+  !            mean scalar gradient at the wall.
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
   !   for the spanwise wall oscillations with feedback control enabled. 
@@ -261,10 +272,10 @@
   real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi
 
   ! Outputs
-  real(mytype), intent(out) :: sh_vel        ! Total shear velocity 
-  real(mytype), intent(out) :: sh_velx       ! Shear velocity along x 
-  real(mytype), intent(out) :: sh_velz       ! Shear velocity along z
-  real(mytype), intent(out) :: mean_phigwtot ! Mean scalar gradient at the wall (all processors)
+  real(mytype), intent(out) :: sh_vel         ! Total shear velocity 
+  real(mytype), intent(out) :: sh_velx        ! Shear velocity along x 
+  real(mytype), intent(out) :: sh_velz        ! Shear velocity along z
+  real(mytype), intent(out) :: mean_phigwtot  ! Mean scalar gradient at the wall (all processors)
       
   ! Work variables
   real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor

@@ -404,10 +404,7 @@ module param
   real(mytype), save :: ylyplus       ! Ly^+
   real(mytype), save :: zlzplus       ! Lz^+
   
-  real(mytype), save :: delta_nu      ! viscous unit
-  
-  real(mytype), save :: mean_phigwtot ! mean scalar gradient at the wall total (all processors)
-  
+  real(mytype), save :: delta_nu      ! viscous unit  
   !--- Additional controls namelist and related quantities ---!
   
   ! Spanwise wall oscillations
@@ -430,6 +427,8 @@ module param
   real(mytype), save :: delta_99      ! BL thickness (1% of velocity of the wall)   
   real(mytype), save :: re_tau_tbl    ! Friction Reynolds number based on mean streamwise gradient
   integer,      save :: counter       ! Index to save the position of the yp array at which there is the BL mean interface 
+  real(mytype), save :: mean_phigwtot ! Mean scalar gradient at the wall total (all processors)
+  real(mytype), save :: A_fact        ! Analogy factor to monitor runtime the degree of dissimilarity
   
   !--- Extra numerics control namelist and related quantities ---!
   
