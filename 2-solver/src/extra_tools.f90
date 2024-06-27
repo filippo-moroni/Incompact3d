@@ -14,7 +14,7 @@
   
   use param
   use decomp_2d
-  use dbg_schemes, only : sqrt_prec
+  use dbg_schemes, only : sqrt_prec, abs_prec
   use variables,   only : nx,ny,nz,yp,numscalar,sc
       
   implicit none
@@ -79,7 +79,7 @@
           if (iscalar .eq. 1) then
               
               ! Analogy factor
-              A_fact = two * (xnu / sc(1)) * mean_phigwtot / sh_vel**2 
+              A_fact = two * (xnu / sc(1)) * abs_prec(mean_phigwtot) / sh_vel**2 
               
           end if
           
@@ -411,7 +411,7 @@
               
   use var,         only : td2,di2,phi2
   use param,       only : zero
-    
+      
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize
