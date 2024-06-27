@@ -248,11 +248,9 @@
   !---------------------------------------------------------------------------!
   subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
 
-  use var,         only : ux2, uz2
-  use ibm_param,   only : ubcx,ubcy,ubcz
-  use dbg_schemes, only : sqrt_prec, abs_prec
-
+  use var,         only : ux2,uz2
   use var,         only : ta2,tc2,di2
+  use dbg_schemes, only : sqrt_prec, abs_prec
   use ibm_param,   only : ubcx,ubcz
 
   use MPI
@@ -260,7 +258,7 @@
   use decomp_2d,   only : xsize, ysize
   use decomp_2d,   only : transpose_x_to_y
 
-  use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl, iscalar
+  use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl
   use variables
 
   implicit none
@@ -277,7 +275,6 @@
   real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
   real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
   real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
-  real(mytype) :: mean_phiw  ! Mean scalar gradient at each processor
   real(mytype) :: den        ! Denominator of the divisions
 
   integer      :: ierr
@@ -320,12 +317,6 @@
 
              ! Mean spanwise gradient dW/dy
              mean_gwz = mean_gwz + tc2(i,1,k) / den
-
-             if(iscalar .eq. 1) then
-
-             ! mean scalar gradient calculation
-
-             end if
 
          ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
          else if (itype .eq. itype_channel) then
