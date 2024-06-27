@@ -37,7 +37,7 @@
   ! TTBL
   if(itype .eq. itype_ttbl) then
       ! Shear velocity bottom wall
-      call calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz,mean_phigwtot)
+      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -116,7 +116,7 @@
   ! Channel
   else if(itype .eq. itype_channel) then
       ! Shear velocity both walls
-      call calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz,mean_phigwtot)
+      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
       ! Bulk velocity
       call calculate_ubulk(ux,ubulk)
     
@@ -238,142 +238,120 @@
   end subroutine print_cf
 
   !---------------------------------------------------------------------------!
-  ! Calculate: total shear velocity and its x and z components;
-  !            mean scalar gradient at the wall.
+  ! Calculate total shear velocity and its x and z components 
   !
   ! - Used in BC-Temporal-TBL and in BC-Channel-flow
   !   for the spanwise wall oscillations with feedback control enabled. 
   ! - Used to print cf coefficients and shear velocities to an overall 
   !   .txt file for time evolution check.
-  ! - Used to print analogy factor for dissimilar control monitoring 
-  !   if a scalar field is present.
   !---------------------------------------------------------------------------!
-  subroutine calculate_shear_velocity(ux,uz,phi,sh_vel,sh_velx,sh_velz,mean_phigwtot)
-    
-  use var,         only : ux2, uz2     
+  subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+
+  use var,         only : ux2, uz2
   use ibm_param,   only : ubcx,ubcy,ubcz
   use dbg_schemes, only : sqrt_prec, abs_prec
-    
-  use var,         only : ta2,tc2,td2,di2
+
+  use var,         only : ta2,tc2,di2
   use ibm_param,   only : ubcx,ubcz
-    
+
   use MPI
   use decomp_2d,   only : mytype, real_type, nrank
   use decomp_2d,   only : xsize, ysize
   use decomp_2d,   only : transpose_x_to_y
-    
+
   use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl, iscalar
   use variables
-    
+
   implicit none
-    
+
   ! Inputs
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux, uz
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
 
   ! Outputs
-  real(mytype), intent(out) :: sh_vel         ! Total shear velocity 
-  real(mytype), intent(out) :: sh_velx        ! Shear velocity along x 
-  real(mytype), intent(out) :: sh_velz        ! Shear velocity along z
-  real(mytype), intent(out) :: mean_phigwtot  ! Mean scalar gradient at the wall (all processors)
-      
+  real(mytype), intent(out) :: sh_vel  ! Total shear velocity 
+  real(mytype), intent(out) :: sh_velx ! Shear velocity along x 
+  real(mytype), intent(out) :: sh_velz ! Shear velocity along z
+
   ! Work variables
-  real(mytype) :: mean_gw     ! Mean total parallel gradient at each processor
-  real(mytype) :: mean_gwx    ! Mean gradient direction x at each processor
-  real(mytype) :: mean_gwz    ! Mean gradient direction z at each processor
-  real(mytype) :: mean_phigw  ! Mean scalar gradient at each processor
-  real(mytype) :: den         ! Denominator of the divisions
-  
-  integer      :: ierr         
+  real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
+  real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
+  real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
+  real(mytype) :: mean_phiw  ! Mean scalar gradient at each processor
+  real(mytype) :: den        ! Denominator of the divisions
+
+  integer      :: ierr
   integer      :: i,k
-  
-  ! Local variables for the scalar field (rank 3 and not 4 to transpose data)
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)):: phi1
-  real(mytype), dimension(ysize(1),ysize(2),ysize(3)):: phi2
-              
-  ! Set variables to zero
-  mean_gw    = zero
-  mean_gwx   = zero
-  mean_gwz   = zero
-  mean_phigw = zero
-  
-  sh_vel        = zero
-  sh_velx       = zero    
-  sh_velz       = zero 
-  mean_phigwtot = zero  
-  
+
+  ! Set again variables to zero
+  mean_gw  = zero
+  mean_gwx = zero
+  mean_gwz = zero
+  sh_vel   = zero
+  sh_velx  = zero
+  sh_velz  = zero
+
   ! Denominator of the divisions
   den = real(nx*nz,mytype)
-  
-  ! Copy first scalar field
-  phi1(:,:,:) = phi(:,:,:,1)
-    
+
   ! Transpose to y-pencils
   call transpose_x_to_y(ux,ux2)
   call transpose_x_to_y(uz,uz2)
-  call transpose_x_to_y(phi1,phi2)
-   
-  ! y-derivatives, velocity components
+
+  ! y-derivatives
   call dery (ta2,ux2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcx)
   call dery (tc2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,ubcz)
-  
-  ! y-derivative, scalar field (IBM parameter is zero, similarly to what is done for 2nd derivative in navier module for mass fraction)
-  call dery (td2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,zero)
-     
-  ! du/dy   = ta2   
-  ! dw/dy   = tc2
-  ! dphi/dy = td2
-    
+
+  ! du/dy=ta2   
+  ! dw/dy=tc2
+
   ! Index for j is 1, since we are dealing with y-pencils and summation over all points (each processor)
   do k=1,ysize(3)
      do i=1,ysize(1)
-           
+
          ! TTBL, only bottom wall (j = 1)
          if (itype .eq. itype_ttbl) then
-              
+
              ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
              mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
-           
+
              ! Mean streamwise gradient dU/dy
              mean_gwx = mean_gwx + ta2(i,1,k) / den
-           
+
              ! Mean spanwise gradient dW/dy
              mean_gwz = mean_gwz + tc2(i,1,k) / den
-             
-             ! Mean scalar gradient dPhi/dy  
+
              if(iscalar .eq. 1) then
-               
-                 mean_phigw = mean_phigw + td2(i,1,k) / den
-               
+
+             ! mean scalar gradient calculation
+
              end if
-           
+
          ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
          else if (itype .eq. itype_channel) then
-           
+
              ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
              mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt_prec(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den / two
-           
+
              ! Mean streamwise gradient dU/dy
              mean_gwx = mean_gwx + (ta2(i,1,k) - ta2(i,ysize(2),k)) / den / two
-           
+
              ! Mean spanwise gradient dW/dy
              mean_gwz = mean_gwz + (tc2(i,1,k) - tc2(i,ysize(2),k)) / den / two
-           
-         end if              
+
+         end if
      enddo
   enddo
-         
+
   ! Summation over all MPI processes and broadcast the result          
   call MPI_ALLREDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
   call MPI_ALLREDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
-  call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr) 
-  call MPI_ALLREDUCE(mean_phigw,mean_phigwtot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
-    
+  call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+
   ! Finalize shear velocities calculation
-  sh_vel  = sqrt_prec(sh_vel * xnu)
+  sh_vel  = sqrt_prec(sh_vel  * xnu)
   sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
   sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)
-                  
+
   end subroutine calculate_shear_velocity
   
   !---------------------------------------------------------------------------!
@@ -385,47 +363,109 @@
   ! With no feedback control, A and T are in outer units.
   ! With feedback control,    A and T are in viscous units, A^+, T^+.
   !---------------------------------------------------------------------------!
-  subroutine spanwise_wall_oscillations(ux1,uz1,phi1)
-  
+  subroutine spanwise_wall_oscillations(ux1,uz1)
+
   use dbg_schemes, only : sin_prec, sqrt_prec
-  use param,       only : sh_vel, sh_velx, sh_velz, mean_phigwtot, span_vel, t
+  use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
   use param,       only : a_wo, t_wo, ifeedback_control
   use param,       only : two, xnu, pi
   use decomp_2d,   only : xsize
   use decomp_2d,   only : mytype
-  use variables,   only : numscalar
-  
+
   implicit none
-  
+
   real(mytype) :: amplitude, period
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux1, uz1
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
-  
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+
   ! Amplitude and period in outer units if feedback control is disabled (open loop)
   if (ifeedback_control .eq. 0) then
-  
+
       amplitude = a_wo
-      
+
       period = t_wo
-  
+
   ! Rescale amplitude and period in friction units if feedback control is enabled (closed loop)
-  else if (ifeedback_control .eq. 1) then 
-  
+  else if (ifeedback_control .eq. 1) then
+
       ! Calculate shear velocity    
-      call calculate_shear_velocity(ux1,uz1,phi1,sh_vel,sh_velx,sh_velz,mean_phigwtot)
-    
+      call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
+
       ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
       amplitude = sh_velx * a_wo
-  
+
       ! Period of oscillation, based on longitudinal shear velocity
       period = xnu * t_wo / (sh_velx**2)
-  
+
   end if
-  
+
   ! Calculation of the spanwise wall velocity
   span_vel = amplitude * sin_prec(two*pi*t/period)
-   
+
   end subroutine spanwise_wall_oscillations
+  
+  !---------------------------------------------------------------------------!
+  ! Calculate mean scalar gradient at the wall.
+  !---------------------------------------------------------------------------!
+  subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
+              
+  use var,         only : td2,di2
+  use param,       only : zero
+    
+  use MPI
+  use decomp_2d,   only : mytype, real_type, nrank
+  use decomp_2d,   only : xsize, ysize
+  use decomp_2d,   only : transpose_x_to_y
+    
+  use variables
+    
+  implicit none
+    
+  ! Inputs
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi
+
+  ! Outputs
+  real(mytype), intent(out) :: mean_phigwtot  ! Mean scalar gradient at the wall (all processors)
+      
+  ! Work variables
+  real(mytype) :: mean_phigw  ! Mean scalar gradient at each processor
+  real(mytype) :: den         ! Denominator of the divisions 
+  integer      :: ierr         
+  integer      :: i,k
+  
+  ! Local variable for the scalar field (rank 3 and not 4 to derive data)
+  real(mytype), dimension(ysize(1),ysize(2),ysize(3)):: phi2
+              
+  ! Set variables to zero
+  mean_phigw = zero  
+  mean_phigwtot = zero  
+  
+  ! Denominator of the divisions
+  den = real(nx*nz,mytype)
+      
+  ! Transpose to y-pencils
+  call transpose_x_to_y(phi(:,:,:,1),phi2)
+     
+  ! y-derivative, scalar field (IBM parameter is zero, similarly to what is done for 2nd derivative in navier module for mass fraction)
+  call dery (td2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,zero)
+     
+  ! dphi/dy = td2
+    
+  ! Index for j is 1, since we are dealing with y-pencils and summation over all points (each processor)
+  do k=1,ysize(3)
+     do i=1,ysize(1)
+           
+         ! TTBL, only bottom wall (j = 1)
+                                 
+         ! Mean scalar gradient dPhi/dy at the wall
+         mean_phigw = mean_phigw + td2(i,1,k) / den         
+             
+     enddo
+  enddo
+         
+  ! Summation over all MPI processes and broadcast the result          
+  call MPI_ALLREDUCE(mean_phigw,mean_phigwtot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+      
+  end subroutine calculate_scalar_grad_wall
   
   !---------------------------------------------------------------------------!
   ! Calculate bulk velocity for a channel.
