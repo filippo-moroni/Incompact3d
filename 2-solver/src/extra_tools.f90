@@ -409,7 +409,7 @@
   !---------------------------------------------------------------------------!
   subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
               
-  use var,         only : td2,di2
+  use var,         only : td2,di2,phi2
   use param,       only : zero
     
   use MPI
@@ -432,10 +432,7 @@
   real(mytype) :: den         ! Denominator of the divisions 
   integer      :: ierr         
   integer      :: i,k
-  
-  ! Local variable for the scalar field (rank 3 and not 4 to derive data)
-  real(mytype), dimension(ysize(1),ysize(2),ysize(3)) :: phi2
-              
+                
   ! Set variables to zero
   mean_phigw = zero  
   mean_phigwtot = zero  
@@ -444,10 +441,10 @@
   den = real(nx*nz,mytype)
       
   ! Transpose to y-pencils
-  call transpose_x_to_y(phi(:,:,:,1),phi2)
+  call transpose_x_to_y(phi(:,:,:,1),phi2(:,:,:,1))
      
   ! y-derivative, scalar field (IBM parameter is zero, similarly to what is done for 2nd derivative in navier module for mass fraction)
-  call dery (td2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,zero)
+  call dery (td2,phi2(:,:,:,1),di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,zero)
      
   ! dphi/dy = td2
     
