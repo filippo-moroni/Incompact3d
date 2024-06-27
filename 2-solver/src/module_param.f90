@@ -387,55 +387,55 @@ module param
   integer :: save_dphidx,save_dphidy,save_dphidz,save_abs,save_V
     
   ! Shear quantities at the wall (used for Channel and TTBL)
-  real(mytype), save :: sh_vel       ! total shear velocity
-  real(mytype), save :: sh_velx      ! shear velocity along x
-  real(mytype), save :: sh_velz      ! shear velocity along z
-  real(mytype), save :: fric_coeff   ! total skin friction coefficient
-  real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
-  real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
-  real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
+  real(mytype), save :: sh_vel        ! total shear velocity
+  real(mytype), save :: sh_velx       ! shear velocity along x
+  real(mytype), save :: sh_velz       ! shear velocity along z
+  real(mytype), save :: fric_coeff    ! total skin friction coefficient
+  real(mytype), save :: fric_coeffx   ! skin friction coefficient along x
+  real(mytype), save :: fric_coeffz   ! skin friction coefficient along z
+  real(mytype), save :: t_viscous     ! viscous time unit (based on shear velocity and viscous length)
   
-  real(mytype), save :: deltaxplus   ! delta x^+
-  real(mytype), save :: deltayplusw  ! delta y^+ at the wall
-  real(mytype), save :: deltazplus   ! delta z^+
-  real(mytype), save :: deltayplusd  ! delta y^+ at the TTBL mean interface or at channel half-height
+  real(mytype), save :: deltaxplus    ! delta x^+
+  real(mytype), save :: deltayplusw   ! delta y^+ at the wall
+  real(mytype), save :: deltazplus    ! delta z^+
+  real(mytype), save :: deltayplusd   ! delta y^+ at the TTBL mean interface or at channel half-height
     
-  real(mytype), save :: xlxplus      ! Lx^+
-  real(mytype), save :: ylyplus      ! Ly^+
-  real(mytype), save :: zlzplus      ! Lz^+
+  real(mytype), save :: xlxplus       ! Lx^+
+  real(mytype), save :: ylyplus       ! Ly^+
+  real(mytype), save :: zlzplus       ! Lz^+
   
-  real(mytype), save :: delta_nu     ! viscous unit
+  real(mytype), save :: delta_nu      ! viscous unit
   
-  real(mytype), save :: mean_phigw   ! mean scalar gradient at the wall
+  real(mytype), save :: mean_phigwtot ! mean scalar gradient at the wall total (all processors)
   
   !--- Additional controls namelist and related quantities ---!
   
   ! Spanwise wall oscillations
-  integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters and the application of wall oscillations
-  real(mytype) :: span_vel           ! spanwise velocity at the wall due to imposed wall oscillations, variable calculated
+  integer      :: iswitch_wo          ! switcher to enable the reading of wall-oscillation parameters and the application of wall oscillations
+  real(mytype) :: span_vel            ! spanwise velocity at the wall due to imposed wall oscillations, variable calculated
   
   !--- TTBL namelist and related quantities ---!
   
   ! Temporal TBL input parameters
-  real(mytype) :: uwall              ! velocity of translating bottom wall (U_wall) 
-  real(mytype) :: twd                ! trip wire diameter (D)
-  real(mytype) :: uln                ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
-  real(mytype) :: lln                ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
-  real(mytype) :: phiwall            ! scalar value at the wall
+  real(mytype) :: uwall               ! velocity of translating bottom wall (U_wall) 
+  real(mytype) :: twd                 ! trip wire diameter (D)
+  real(mytype) :: uln                 ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
+  real(mytype) :: lln                 ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
+  real(mytype) :: phiwall             ! scalar value at the wall
   
   ! Temporal TBL output(s)
-  real(mytype) :: powerin            ! power input to the TTBL 
+  real(mytype) :: powerin             ! power input to the TTBL 
   
   ! Boundary layer thickness parameters (TTBLs only)
-  real(mytype), save :: delta_99     ! BL thickness (1% of velocity of the wall)   
-  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient
-  integer,      save :: counter      ! Index to save the position of the yp array at which there is the BL mean interface 
+  real(mytype), save :: delta_99      ! BL thickness (1% of velocity of the wall)   
+  real(mytype), save :: re_tau_tbl    ! Friction Reynolds number based on mean streamwise gradient
+  integer,      save :: counter       ! Index to save the position of the yp array at which there is the BL mean interface 
   
   !--- Extra numerics control namelist and related quantities ---!
   
   ! Extra controls for numerics 
-  integer      :: icfllim            ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-  real(mytype) :: cfl_limit          ! CFL limit to adjust the time-step
+  integer      :: icfllim             ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  real(mytype) :: cfl_limit           ! CFL limit to adjust the time-step
   
   ! Variable to save and show the maximum CFL in the restart file
   real(mytype) :: cflmax
@@ -443,11 +443,11 @@ module param
   !--- Wall oscillations namelist and related quantities ---!
   
   ! Parameters for wall oscillations (used for channel flows and TTBLs)
-  real(mytype) :: a_wo               ! amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
-  real(mytype) :: t_wo               ! period of spanwise wall oscillations (in friction units if feedback control enabled) 
-  integer      :: ifeedback_control  ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop)
+  real(mytype) :: a_wo                ! amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
+  real(mytype) :: t_wo                ! period of spanwise wall oscillations (in friction units if feedback control enabled) 
+  integer      :: ifeedback_control   ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop)
     
-  !numbers
+  ! Numbers
   real(mytype),parameter :: zpzeroone=0.01_mytype
   real(mytype),parameter :: zpone=0.1_mytype
   real(mytype),parameter :: zptwo=0.2_mytype
