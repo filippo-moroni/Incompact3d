@@ -138,11 +138,11 @@ elif itype == 3:
     nu      = 1.0/re_cent                # kinematic viscosity
                
     # Reading of Lee & Moser (2015) data
-    M = np.loadtxt('reference_data/data_lee_retau180.txt', skiprows=72, dtype=np.float64)
+    M = np.loadtxt('reference_data/lee&moser2015/mean_stats_lee&moser2015.txt', skiprows=72, dtype=np.float64)
     y_plus_lm = M[:,1]
     mean_u_lm = M[:,2]
     
-    M = np.loadtxt('reference_data/data_lee_fluct_retau180.txt', skiprows=75, dtype=np.float64)
+    M = np.loadtxt('reference_data/lee&moser2015/var_stats_lee&moser2015.txt', skiprows=75, dtype=np.float64)
     var_u_lm   =   M[:,2]
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
@@ -151,24 +151,24 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Mean velocity profile (Touber & Leschziner (2012))
-        M = np.loadtxt('reference_data/umean_touber2012.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        M = np.loadtxt('reference_data/touber2012/umean_touber2012.txt', skiprows=8, delimiter=',', dtype=np.float64)
         y_plus_touber = M[:,0]
         mean_u_touber = M[:,1]
         
         # Mean velocity profile, Reynolds stress and variances (Yao et al. (2019))
-        M = np.loadtxt('reference_data/umean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        M = np.loadtxt('reference_data/yao2019/umean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
         y_plus_umean_yao = M[:,0]
         mean_u_yao       = M[:,1]
         
-        M = np.loadtxt('reference_data/uvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        M = np.loadtxt('reference_data/yao2019/uvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
         y_plus_uvar_yao = M[:,0]
         var_u_yao       = M[:,1]
         
-        M = np.loadtxt('reference_data/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        M = np.loadtxt('reference_data/yao2019/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
         y_plus_vvar_yao = M[:,0]
         var_v_yao       = M[:,1]
         
-        M = np.loadtxt('reference_data/uvmean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+        M = np.loadtxt('reference_data/yao2019/uvmean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
         y_plus_uvmean_yao = M[:,0]
         mean_uv_yao       = M[:,1]
         

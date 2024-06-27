@@ -59,11 +59,11 @@ re_cent = 4764.0                     # centerline Re number laminar Poiseuille f
 nu      = 1.0/re_cent                # kinematic viscosity
                
 # Reading of Lee & Moser (2015) data
-M = np.loadtxt('reference_data/data_lee_retau180.txt', skiprows=72, dtype=np.float64)
+M = np.loadtxt('reference_data/lee&moser2015/mean_stats_lee&moser2015.txt', skiprows=72, dtype=np.float64)
 y_plus_lm = M[:,1]
 mean_u_lm = M[:,2]
     
-M = np.loadtxt('reference_data/data_lee_fluct_retau180.txt', skiprows=75, dtype=np.float64)
+M = np.loadtxt('reference_data/lee&moser2015/var_stats_lee&moser2015.txt', skiprows=75, dtype=np.float64)
 var_u_lm   =   M[:,2]
 var_v_lm   =   M[:,3]
 mean_uv_lm = - M[:,5]
