@@ -393,6 +393,7 @@
   use param,       only : two, xnu, pi
   use decomp_2d,   only : xsize
   use decomp_2d,   only : mytype
+  use variables,   only : numscalar
   
   implicit none
   
