@@ -147,6 +147,19 @@ elif itype == 3:
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
     
+    # Velocity auto-correlations, Jimenez & Moin (1991) data
+    M = np.loadtxt('reference_data/jimenez&moin1991/cuuz_jimenez&moin1991.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    rz_plus_cuuz_jm = M[:,0]
+    cuuz_jm         = M[:,1]
+    
+    M = np.loadtxt('reference_data/jimenez&moin1991/cvvz_jimenez&moin1991.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    rz_plus_cvvz_jm = M[:,0]
+    cvvz_jm         = M[:,1]
+    
+    M = np.loadtxt('reference_data/jimenez&moin1991/cwwz_jimenez&moin1991.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    rz_plus_cwwz_jm = M[:,0]
+    cwwz_jm         = M[:,1]
+    
     # Reading of wall-oscillations data (A^+ = 12, T^+ = 100) 
     if iswitch_wo == 1:
     
@@ -780,14 +793,19 @@ plt.show()
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # Axes limits
-xliminf = delta_z_plus
-xlimsup = Lz_plus / 2.0
+xliminf = 0.0
+xlimsup = Lz / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Cuuz, Cvvz, Cwwz
-ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
+
+# Jimenez & Moin (1991) data
+ax.scatter(rz_plus_cuuz_jm, cuuz_jm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C3')
+ax.scatter(rz_plus_cvvz_jm, cvvz_jm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C4')
+ax.scatter(rz_plus_cwwz_jm, cwwz_jm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C5')
 
 # Plot horizontal line at Cii = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
@@ -799,15 +817,15 @@ ax.set_ylabel(r'$C_{ii}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
 ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Both axes linear
-#ax.set_xscale('linear')
-#ax.set_yscale('linear')
-
-# Logarithmic x-axis and linear y-axis
-ax.set_xscale('log')
+ax.set_xscale('linear')
 ax.set_yscale('linear')
 
+# Logarithmic x-axis and linear y-axis
+#ax.set_xscale('log')
+#ax.set_yscale('linear')
+
 # Minor x-ticks based on log10
-ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
+#ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
