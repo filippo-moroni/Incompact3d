@@ -794,11 +794,11 @@ fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dp
 
 # Axes limits
 xliminf = 0.0
-xlimsup = Lz / 2.0
+xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Cuuz, Cvvz, Cwwz
-
+ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
 
