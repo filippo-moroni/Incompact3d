@@ -15,7 +15,7 @@
   use param
   use decomp_2d
   use dbg_schemes, only : sqrt_prec
-  use variables,   only : nx,ny,nz,yp
+  use variables,   only : nx,ny,nz,yp,numscalar,sc
       
   implicit none
  
@@ -78,7 +78,7 @@
           if (iscalar .eq. 1) then
           
               ! Analogy factor
-              A_fact = two * (xnu / Sc(1)) * mean_phigwtot / sh_vel**2 
+              A_fact = two * (xnu / sc(1)) * mean_phigwtot / sh_vel**2 
               
           end if
           
@@ -278,11 +278,11 @@
   real(mytype), intent(out) :: mean_phigwtot  ! Mean scalar gradient at the wall (all processors)
       
   ! Work variables
-  real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
-  real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
-  real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
-  real(mytype) :: mean_phiw  ! Mean scalar gradient at each processor
-  real(mytype) :: den        ! Denominator of the divisions
+  real(mytype) :: mean_gw     ! Mean total parallel gradient at each processor
+  real(mytype) :: mean_gwx    ! Mean gradient direction x at each processor
+  real(mytype) :: mean_gwz    ! Mean gradient direction z at each processor
+  real(mytype) :: mean_phigw  ! Mean scalar gradient at each processor
+  real(mytype) :: den         ! Denominator of the divisions
   
   integer      :: ierr         
   integer      :: i,k
