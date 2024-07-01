@@ -147,19 +147,11 @@ elif itype == 3:
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
     
-    # Velocity auto-correlations, Jimenez & Moin (1991) data
-    M = np.loadtxt('reference_data/jimenez&moin1991/cuuz_jimenez&moin1991.txt', skiprows=7, delimiter=',', dtype=np.float64)
-    rz_plus_cuuz_jm = M[:,0]
-    cuuz_jm         = M[:,1]
-    
-    M = np.loadtxt('reference_data/jimenez&moin1991/cvvz_jimenez&moin1991.txt', skiprows=7, delimiter=',', dtype=np.float64)
-    rz_plus_cvvz_jm = M[:,0]
-    cvvz_jm         = M[:,1]
-    
-    M = np.loadtxt('reference_data/jimenez&moin1991/cwwz_jimenez&moin1991.txt', skiprows=7, delimiter=',', dtype=np.float64)
-    rz_plus_cwwz_jm = M[:,0]
-    cwwz_jm         = M[:,1]
-    
+    # Velocity auto-correlations, Kim et al. (1987) data
+    M = np.loadtxt('reference_data/kim1987/cuuz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    rz_plus_cuuz_kim = M[:,0]
+    cuuz_kim         = M[:,1]
+        
     # Reading of wall-oscillations data (A^+ = 12, T^+ = 100) 
     if iswitch_wo == 1:
     
@@ -802,10 +794,8 @@ ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
 
-# Jimenez & Moin (1991) data
+# Velocity auto-correlations, Kim et al. (1987) data
 ax.scatter(rz_plus_cuuz_jm, cuuz_jm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C3')
-ax.scatter(rz_plus_cvvz_jm, cvvz_jm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C4')
-ax.scatter(rz_plus_cwwz_jm, cwwz_jm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C5')
 
 # Plot horizontal line at Cii = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
