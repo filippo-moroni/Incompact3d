@@ -795,7 +795,7 @@ ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
 
 # Velocity auto-correlations, Kim et al. (1987) data
-ax.scatter(rz_plus_cuuz_jm, cuuz_jm, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C3')
+ax.scatter(rz_plus_cuuz_kim, cuuz_kim, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C3')
 
 # Plot horizontal line at Cii = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
