@@ -789,19 +789,17 @@ xliminf = 0.0
 xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
-# Cuuz, Cvvz, Cwwz
+# Streamwise velocity auto-correlations, Cuuz
 ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
-ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C1')
-ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C2')
 
-# Velocity auto-correlations, Kim et al. (1987) data
-ax.scatter(rz_plus_cuuz_kim, cuuz_kim, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C3')
+# Kim et al. (1987) data
+ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=lw)
 
-# Plot horizontal line at Cii = 0
+# Plot horizontal line at Cuu = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
         
 # y-axis label
-ax.set_ylabel(r'$C_{ii}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
             
 # Axes labels
 ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -809,13 +807,6 @@ ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
 # Both axes linear
 ax.set_xscale('linear')
 ax.set_yscale('linear')
-
-# Logarithmic x-axis and linear y-axis
-#ax.set_xscale('log')
-#ax.set_yscale('linear')
-
-# Minor x-ticks based on log10
-#ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
 ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
@@ -826,9 +817,9 @@ plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
-    plt.savefig(f'plots/Ciiz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Cuuz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
-    plt.savefig(f'plots/Ciiz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(f'plots/Cuuz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
