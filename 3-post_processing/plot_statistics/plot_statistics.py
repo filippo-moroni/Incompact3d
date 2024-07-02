@@ -151,6 +151,14 @@ elif itype == 3:
     M = np.loadtxt('reference_data/kim1987/cuuz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
     rz_plus_cuuz_kim = M[:,0]
     cuuz_kim         = M[:,1]
+    
+    M = np.loadtxt('reference_data/kim1987/cvvz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    rz_plus_cvvz_kim = M[:,0]
+    cvvz_kim         = M[:,1]
+    
+    M = np.loadtxt('reference_data/kim1987/cwwz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    rz_plus_cwwz_kim = M[:,0]
+    cwwz_kim         = M[:,1]
         
     # Reading of wall-oscillations data (A^+ = 12, T^+ = 100) 
     if iswitch_wo == 1:
