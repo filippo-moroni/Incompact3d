@@ -147,7 +147,7 @@ elif itype == 3:
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
     
-    # Velocity auto-correlations, Kim et al. (1987) data
+    # Velocity auto-correlations, Kim et al. (1987) data, y+ = 10.52
     M = np.loadtxt('reference_data/kim1987/cuuz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
     rz_plus_cuuz_kim = M[:,0]
     cuuz_kim         = M[:,1]
@@ -782,6 +782,10 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # Correlation coefficients
+
+#!--------------------------------------------------------------------------------------!
+
+# Cuuz
 fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
 
 # Axes limits
@@ -824,6 +828,95 @@ elif itype == 3:
 # Show the figure
 plt.show()
 
+#!--------------------------------------------------------------------------------------!
+
+# Cvvz
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+
+# Axes limits
+xliminf = 0.0
+xlimsup = Lz_plus / 2.0
+plt.xlim([xliminf, xlimsup])
+
+# Vertical velocity auto-correlations, Cvvz
+ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+
+# Kim et al. (1987) data
+ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=lw)
+
+# Plot horizontal line at Cvv = 0
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
+        
+# y-axis label
+ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
+            
+# Axes labels
+ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
+
+# Both axes linear
+ax.set_xscale('linear')
+ax.set_yscale('linear')
+    
+# Setting major and minor ticks on both axes
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+
+# Setting x-ticks labels
+plt.xticks(ha='left')
+
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/Cvvz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+elif itype == 3:
+    plt.savefig(f'plots/Cvvz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+
+# Show the figure
+plt.show()
+
+#!--------------------------------------------------------------------------------------!
+
+# Cwwz
+fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+
+# Axes limits
+xliminf = 0.0
+xlimsup = Lz_plus / 2.0
+plt.xlim([xliminf, xlimsup])
+
+# Spanwise velocity auto-correlations, Cwwz
+ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+
+# Kim et al. (1987) data
+ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=lw)
+
+# Plot horizontal line at Cww = 0
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
+        
+# y-axis label
+ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
+            
+# Axes labels
+ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
+
+# Both axes linear
+ax.set_xscale('linear')
+ax.set_yscale('linear')
+    
+# Setting major and minor ticks on both axes
+ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+
+# Setting x-ticks labels
+plt.xticks(ha='left')
+
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/Cwwz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+elif itype == 3:
+    plt.savefig(f'plots/Cwwz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+
+# Show the figure
+plt.show()
 
 
 
