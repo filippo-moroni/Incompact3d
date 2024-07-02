@@ -6,7 +6,7 @@
 #SBATCH --nodes=1                 # node number
 #SBATCH --ntasks-per-node=52      # tasks out of 52
 #SBATCH --cpus-per-task=1         # CPUs per task
-#SBATCH --mem=400g                # memory per node
+#SBATCH --mem=490g                # memory per node
 #SBATCH --exclusive               # exclusive use of the nodes
 #SBATCH --exclude=cnode[06,17,19] # to exclude some nodes
 #------------------- End of SLURM directives -----------------#
