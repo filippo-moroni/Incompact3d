@@ -581,6 +581,8 @@ if istret == 3:
          f.write("n_tot:         Total number of grid points.\n")
          f.write("\n")
          f.write("!-------------------------------------!\n")
+         f.write("\n")
+         f.write("\n")
          
 # File creation and saving for Channel         
 else:
@@ -636,7 +638,9 @@ else:
          f.write("!--- Shear velocity and total number of points: ---!\n")
          f.write(table3) 
          f.write("\n")
-         f.write("!-------------------------------------!\n") 
+         f.write("!-------------------------------------!\n")
+         f.write("\n")
+         f.write("\n") 
 
          
          
