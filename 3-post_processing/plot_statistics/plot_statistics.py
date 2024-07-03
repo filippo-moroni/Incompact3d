@@ -452,6 +452,9 @@ xliminf = 0.1
 yliminf = 0.0
 ylimsup = 25.0
 
+# Switcher for semilog plot
+iswitch_slp = 1
+
 # Mean velocity profile 
 ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
@@ -485,23 +488,26 @@ ax.plot(y_plus_k, u_plus_k, color=pp.grey, linestyle='--', linewidth=pp.lw)
 ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
+# Set the plot parameters using the function
+set_semilog_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp)
+
 # Axes limits
-plt.xlim([xliminf, xlimsup])
-plt.ylim([yliminf, ylimsup])
+#plt.xlim([xliminf, xlimsup])
+#plt.ylim([yliminf, ylimsup])
 
 # Logarithmic x-axis and linear y-axis
-ax.set_xscale('log')
-ax.set_yscale('linear')
+#ax.set_xscale('log')
+#ax.set_yscale('linear')
 
 # Minor x-ticks based on log10
-ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
+#ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
+#ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+#ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
-plt.xticks(ha='left')
+#plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
@@ -544,9 +550,6 @@ elif itype == 3:
     # Axes labels
     ax.set_xlabel(r'$y/h$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$W/U_p$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-# Set the plot parameters using the function
-set_semilog_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp) 
     
 # Axes limits
 #plt.xlim([xliminf, xlimsup])
@@ -605,8 +608,8 @@ elif itype == 3:
         ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
     
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
-ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Axes limits
 plt.xlim([xliminf, xlimsup])
