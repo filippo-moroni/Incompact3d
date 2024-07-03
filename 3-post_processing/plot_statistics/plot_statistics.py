@@ -457,27 +457,23 @@ os.makedirs('plots', mode=0o777, exist_ok=True)
 # Mean velocity profile
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Inferior limits for axes
+# Limits for axes
 xliminf = 0.1
 yliminf = 0.0
+ylimsup = 25.0
 
+# Mean velocity profile 
+ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
 # TTBL
 if itype == 13:
     
     xlimsup = 520.0
-    ylimsup = 20.0
-        
-    # Mean velocity profile
-    ax.scatter(y_plus, mean_u, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-            
+                    
 # Channel    
 elif itype == 3:
 
     xlimsup = 300.0
-    ylimsup = 25.0
-    
-    # Mean velocity profile 
-    ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
@@ -533,37 +529,43 @@ plt.show()
 # Mean spanwise velocity profile
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Inferior limits for axes
+# Limits for axes
 xliminf = 0.0
-yliminf = 0.0
+yliminf = min(mean_w)*1.2    
+ylimsup = max(mean_w)*1.2
 
+# Spanwise mean velocity profile
+ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+# TTBL
 if itype == 13:
+    
     xlimsup = Ly
+    
+    # Axes labels
+    ax.set_xlabel(r'$y/D$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$W/U_w$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Channel
 elif itype == 3:
-    xliminf = 0.0
+    
     xlimsup = 1.0
     
-ylimsup = max(mean_w)*1.2
-yliminf = min(mean_w)*1.2
-        
-# Spanwise mean velocity profile
-ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
-       
-# Axes labels
-ax.set_xlabel(r'$y/h$', fontsize=fla, labelpad=pad_axes_lab)
-ax.set_ylabel(r'$W/U_p$', fontsize=fla, labelpad=pad_axes_lab)
-
+    # Axes labels
+    ax.set_xlabel(r'$y/h$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$W/U_p$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
 # Axes limits
-plt.ylim([yliminf, ylimsup])
 plt.xlim([xliminf, xlimsup])
+plt.ylim([yliminf, ylimsup])
 
 # Both linear axes
 ax.set_xscale('linear')
 ax.set_yscale('linear')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -580,28 +582,26 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <u'u'>
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = 0.1
+yliminf = 0.0
+ylimsup = 8.0
+
+# <u'u'>
+ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # TTBL
 if itype == 13:
-
-    xliminf = 0.1
-    xlimsup = 520.0
-    ylimsup = 8.0
     
-    # <u'u'>
-    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
-        
+    xlimsup = 520.0
+           
 # Channel    
 elif itype == 3:
 
-    xliminf = 0.1
     xlimsup = 300.0
-    ylimsup = 8.0
     
-    # <u'u'>
-    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
-
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
     
@@ -609,15 +609,15 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
 ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
 
 # Axes limits
-plt.ylim([0, ylimsup])
 plt.xlim([xliminf, xlimsup])
+plt.ylim([yliminf, ylimsup])
 
 # Logarithmic x-axis and linear y-axis
 ax.set_xscale('log')
@@ -627,8 +627,8 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -645,27 +645,25 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <v'v'>
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = 0.1
+yliminf = 0.0
+ylimsup = 0.8
+
+# <v'v'>
+ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # TTBL
 if itype == 13:
 
-    xliminf = 0.1
     xlimsup = 520.0
-    ylimsup = 0.8
-    
-    # <v'v'>
-    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
-        
+            
 # Channel    
 elif itype == 3:
 
-    xliminf = 0.1
     xlimsup = 300.0
-    ylimsup = 0.8
-    
-    # <v'v'>
-    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
     
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
@@ -674,15 +672,15 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
     
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
-ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Axes limits
-plt.ylim([0, ylimsup])
 plt.xlim([xliminf, xlimsup])
+plt.ylim([yliminf, ylimsup])
 
 # Logarithmic x-axis and linear y-axis
 ax.set_xscale('log')
@@ -692,8 +690,8 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -710,49 +708,47 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # <u'v'>
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
+# Limits for axes
+xliminf = 0.1
+yliminf = 0.0
+ylimsup = 0.8
+
+# <u'v'>
+ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
 # TTBL
 if itype == 13:
 
-    xliminf = 0.1
     xlimsup = 520.0
-    ylimsup = 0.8
-    
-    # <u'v'>
-    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
         
     # y-axis label
-    ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
+    ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
         
 # Channel    
 elif itype == 3:
 
-    xliminf = 0.1
     xlimsup = 300.0
-    ylimsup = 0.8
-    
-    # <u'v'>
-    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
-    
+        
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
        
     # y-axis label
-    ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
+    ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
     # If wall oscillations are present
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.scatter(y_plus_uvmean_yao, mean_uv_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_uvmean_yao, mean_uv_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
  
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Axes limits
-plt.ylim([0, ylimsup])
 plt.xlim([xliminf, xlimsup])
+plt.ylim([yliminf, ylimsup])
 
 # Logarithmic x-axis and linear y-axis
 ax.set_xscale('log')
@@ -762,8 +758,8 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -784,35 +780,35 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # Cuuz
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Axes limits
+# Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Streamwise velocity auto-correlations, Cuuz
-ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # Kim et al. (1987) data
 ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cuu = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=grey, linestyles='dashed')
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
         
 # y-axis label
-ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
             
 # Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Both axes linear
 ax.set_xscale('linear')
 ax.set_yscale('linear')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -829,35 +825,35 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # Cvvz
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Axes limits
+# Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Vertical velocity auto-correlations, Cvvz
-ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # Kim et al. (1987) data
 ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cvv = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=grey, linestyles='dashed')
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
         
 # y-axis label
-ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
             
 # Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Both axes linear
 ax.set_xscale('linear')
 ax.set_yscale('linear')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -874,35 +870,35 @@ plt.show()
 #!--------------------------------------------------------------------------------------!
 
 # Cwwz
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Axes limits
+# Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
-# Spanwise velocity auto-correlations, Cwwz
-ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
+# Spanwise velocity auto-correlations, Cuuz
+ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # Kim et al. (1987) data
 ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cww = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=grey, linestyles='dashed')
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
         
 # y-axis label
-ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
             
 # Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Both axes linear
 ax.set_xscale('linear')
 ax.set_yscale('linear')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -916,5 +912,6 @@ elif itype == 3:
 # Show the figure
 plt.show()
 
+#!--------------------------------------------------------------------------------------!
 
 
