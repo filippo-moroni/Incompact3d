@@ -99,7 +99,7 @@
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12)') &
                             'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                                 &
                             'cf,tot',    ',', 'cf,x',      ',', 'cf,z',    ',',                                 &
-                            't_nu',      ',', 'T',         ',', 'ts',      ',',                                 &
+                            't_nu',      ',', 't',         ',', 'ts',      ',',                                 &
                             'delta_99',  ',', 'Re_tau',    ',', 'P_in',    ',',                                 &         
                             'A_fact'
               
@@ -152,7 +152,7 @@
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12)') &
                             'sh_vel', ',', 'sh_velx', ',', 'sh_velz', ',',                   &
                             'cf,tot', ',', 'cf,x',    ',', 'cf,z',    ',',                   &
-                            't_nu',   ',', 'T',       ',', 'ts',      ',',                   &
+                            't_nu',   ',', 't',       ',', 'ts',      ',',                   &
                             'Ubulk'          
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.4)') &
@@ -225,7 +225,7 @@
                         'delta_x^+',  ',', 'delta_yw^+', ',', 'delta_z^+', ',',    &
                         'Lx^+',       ',', 'Ly^+',       ',', 'Lz^+',      ',',    &
                         'delta_yd^+', ',',                                         &
-                        'T',          ',', 'ts'          
+                        't',          ',', 'ts'          
               
           write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.6,A,F12.6,A, F12.6,A, F12.4,A,I12)') &
                          deltaxplus,  ',', deltayplusw, ',', deltazplus, ',',                      & 
