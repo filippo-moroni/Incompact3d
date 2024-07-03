@@ -3,11 +3,10 @@
 #! coefficient and its mean value calculation.             !
 #!---------------------------------------------------------!
 
+import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-import os
-from matplotlib.ticker import (AutoMinorLocator)
 import matplotlib.patches as patches
 
 # Get the current directory
