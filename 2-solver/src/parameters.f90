@@ -86,10 +86,9 @@ subroutine parameter(input_i3d)
   NAMELIST /LMN/ dens1, dens2, prandtl, ilmn_bound, ivarcoeff, ilmn_solve_temp, &
        massfrac, mol_weight, imultispecies, primary_species, &
        Fr, ibirman_eos
-  NAMELIST /CASE/ tgv_twod
   NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
   NAMELIST /ExtraNumControl/ icfllim,cfl_limit
-  NAMELIST /WallOscillations/ a_wo,t_wo,ifeedback_control
+  NAMELIST /WallOscillations/ a_wo,t_wo,ifeedback_control,in_phase
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -387,10 +386,16 @@ subroutine parameter(input_i3d)
      
      write(*,"(' xnu                           : ',F17.8)") xnu
      
-     ! Displaying if we are using wall oscillations
+     ! Displaying if we are using wall oscillations and if open or closed loop strategy
      if (iswitch_wo .eq. 1) then
-     write(*,*) '==========================================================='
-     write(*,*) 'Spanwise wall oscillations enabled'
+         write(*,*) '==========================================================='
+         write(*,*) 'Spanwise wall oscillations enabled'
+     
+         if (ifeedback_control .eq. 0) then
+             write(*,*) 'Open-loop control'
+         else if (ifeedback_control .eq. 1) then
+             write(*,*) 'Closed-loop control (feedback control)'
+         end if    
      end if
      
      write(*,*) '==========================================================='
@@ -576,13 +581,13 @@ subroutine parameter(input_i3d)
   return
 end subroutine parameter
 
-!###########################################################################
-!
-!  SUBROUTINE: parameter_defaults
-! DESCRIPTION: Sets the default simulation parameters.
-!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>
-!
-!###########################################################################
+!--------------------------------------------------------------------------!
+!                                                                          !
+!  SUBROUTINE: parameter_defaults                                          !
+! DESCRIPTION: Sets the default simulation parameters.                     !
+!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>        !
+!                                                                          !
+!--------------------------------------------------------------------------!
 subroutine parameter_defaults()
 
   use param
@@ -678,32 +683,30 @@ subroutine parameter_defaults()
   
   ! Additional controls
   iswitch_wo = 0 ! (wall oscillations 0: no, 1: yes)
-
-  ! CASE specific variables
-  tgv_twod = .FALSE.
   
   ! Temporal TBL
   if(itype .eq. itype_ttbl) then
-      uwall   = one       ! velocity of translating bottom wall (U_wall)   
-      phiwall = one       ! scalar value at the wall
+      uwall   = one       ! Velocity of translating bottom wall (U_wall)   
+      phiwall = one       ! Scalar value at the wall
   else
-      uwall   = zero      ! velocity of translating bottom wall (U_wall)   
-      phiwall = zero      ! scalar value at the wall
+      uwall   = zero      ! Velocity of translating bottom wall (U_wall)   
+      phiwall = zero      ! Scalar value at the wall
   end if 
   
-  twd = one           ! trip wire diameter (D)
-  uln = 0.01_mytype   ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
-  lln = 0.5_mytype    ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+  twd = one               ! Trip wire diameter (D)
+  uln = 0.01_mytype       ! Upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
+  lln = 0.5_mytype        ! Lower limit of the noise; y+ restriction, based on the mean gradient of the IC
     
   ! Extra numerics control
-  icfllim = 0         ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-  cfl_limit = 0.95    ! CFL limit to adjust the time-step 
+  icfllim = 0             ! Index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  cfl_limit = 0.95        ! CFL limit to adjust the time-step 
   
   ! Controls for wall oscillations
-  a_wo = twelve          ! amplitude of spanwise wall oscillations (in friction units if feedback control enabled) 
-  t_wo = onehundred      ! period of spanwise wall oscillations (in friction units if feedback control enabled) 
-  ifeedback_control = 0  ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
-
+  a_wo = twelve           ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled) 
+  t_wo = onehundred       ! Period of spanwise wall oscillations (in friction units if feedback control enabled) 
+  ifeedback_control = 0   ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
+  in_phase = zero         ! Initial phase of the wall oscillations, given as fraction of pi [rad]
+  
 end subroutine parameter_defaults
 
 
