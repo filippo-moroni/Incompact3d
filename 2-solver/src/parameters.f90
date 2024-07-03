@@ -115,7 +115,7 @@ subroutine parameter(input_i3d)
       read(10, nml=WallOscillations); rewind(10); 
   end if 
   
-  if(itype .ne. itype_ttbl) then
+  if(itype .eq. itype_channel) then
      read(10, nml=Statistics); rewind(10)
   end if
   
