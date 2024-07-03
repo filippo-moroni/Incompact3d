@@ -403,7 +403,6 @@ contains
          write(111,'(A)')'!==========================='
          write(111,fmt3) 'tfield=     ',t
          write(111,fmt2) 'itime=      ',itime
-         write(111,'(A)')'/End'
          write(111,'(A)')'!==========================='
          write(111,'(A)')'&NumParam'
          write(111,'(A)')'!==========================='
@@ -423,7 +422,6 @@ contains
          write(111,'(A)')'!==========================='
          write(111,fmt3) 'dt=         ',dt
          write(111,fmt3) 'CFL,max,sum=',cflmax        
-         write(111,'(A)')'/End'
          write(111,'(A)')'!==========================='
 
          close(111)
