@@ -452,9 +452,6 @@ xliminf = 0.1
 yliminf = 0.0
 ylimsup = 25.0
 
-# Switcher for semilog plot (1: yes, 0: no)
-iswitch_slp = 1
-
 # Mean velocity profile 
 ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
@@ -489,7 +486,8 @@ ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Set the plot parameters using the function 'set_plot_settings'
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp)
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Saving the figure
 if itype == 13:
@@ -511,9 +509,6 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 xliminf = 0.0
 yliminf = min(mean_w)*1.2    
 ylimsup = max(mean_w)*1.2
-
-# Switcher for semilog plot (1: yes, 0: no)
-iswitch_slp = 0
 
 # Spanwise mean velocity profile
 ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -537,7 +532,8 @@ elif itype == 3:
     ax.set_ylabel(r'$W/U_p$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
 # Set the plot parameters using the function 'set_plot_settings'
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp)
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure
 if itype == 13:
@@ -584,23 +580,9 @@ elif itype == 3:
 ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Axes limits
-plt.xlim([xliminf, xlimsup])
-plt.ylim([yliminf, ylimsup])
-
-# Logarithmic x-axis and linear y-axis
-ax.set_xscale('log')
-ax.set_yscale('linear')
-
-# Minor x-ticks based on log10
-ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
-    
-# Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
-
-# Setting x-ticks labels
-plt.xticks(ha='left')
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Saving the figure
 if itype == 13:
@@ -647,23 +629,9 @@ elif itype == 3:
 ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Axes limits
-plt.xlim([xliminf, xlimsup])
-plt.ylim([yliminf, ylimsup])
-
-# Logarithmic x-axis and linear y-axis
-ax.set_xscale('log')
-ax.set_yscale('linear')
-
-# Minor x-ticks based on log10
-ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
-    
-# Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
-
-# Setting x-ticks labels
-plt.xticks(ha='left')
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Saving the figure
 if itype == 13:
@@ -715,23 +683,9 @@ elif itype == 3:
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Axes limits
-plt.xlim([xliminf, xlimsup])
-plt.ylim([yliminf, ylimsup])
-
-# Logarithmic x-axis and linear y-axis
-ax.set_xscale('log')
-ax.set_yscale('linear')
-
-# Minor x-ticks based on log10
-ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
-    
-# Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
-
-# Setting x-ticks labels
-plt.xticks(ha='left')
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Saving the figure
 if itype == 13:
@@ -754,7 +708,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-plt.xlim([xliminf, xlimsup])
+yliminf = 1.2*min(Ruuz)
+ylimsup = 1.2*max(Ruuz)
 
 # Streamwise velocity auto-correlations, Cuuz
 ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -771,16 +726,9 @@ ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Axes labels
 ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Both axes linear
-ax.set_xscale('linear')
-ax.set_yscale('linear')
-    
-# Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
-
-# Setting x-ticks labels
-plt.xticks(ha='left')
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure
 if itype == 13:
@@ -799,7 +747,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-plt.xlim([xliminf, xlimsup])
+yliminf = 1.2*min(Rvvz)
+ylimsup = 1.2*max(Rvvz)
 
 # Vertical velocity auto-correlations, Cvvz
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -816,16 +765,9 @@ ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Axes labels
 ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Both axes linear
-ax.set_xscale('linear')
-ax.set_yscale('linear')
-    
-# Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
-
-# Setting x-ticks labels
-plt.xticks(ha='left')
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure
 if itype == 13:
@@ -844,7 +786,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-plt.xlim([xliminf, xlimsup])
+yliminf = 1.2*min(Rwwz)
+ylimsup = 1.2*max(Rwwz)
 
 # Spanwise velocity auto-correlations, Cuuz
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -861,16 +804,9 @@ ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Axes labels
 ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Both axes linear
-ax.set_xscale('linear')
-ax.set_yscale('linear')
-    
-# Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
-
-# Setting x-ticks labels
-plt.xticks(ha='left')
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure
 if itype == 13:
