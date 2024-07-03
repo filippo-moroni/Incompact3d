@@ -15,8 +15,12 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
 from scipy.interpolate import InterpolatedUnivariateSpline
 
-# Add the 'python_common' directory to the system path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'python_common'))
+# Get the current directory of the script
+current_dir = os.path.dirname(__file__)
+
+# Add the path to the 'python_common' directory relative to the script's directory
+config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
+sys.path.append(config_path)
 
 # Now you can import the plotting_params module
 import plotting_params as pp
@@ -49,7 +53,7 @@ xinches      = 2.6             # size in inches in x direction of the image
 yinches      = 2.2             # size in inches in y direction of the image
 
 # Axes width
-mpl.rcParams['axes.linewidth'] = tick_width
+#mpl.rcParams['axes.linewidth'] = tick_width
 
 # Set some useful colors
 grey = [0.5, 0.5, 0.5]
@@ -503,23 +507,23 @@ elif itype == 3:
     ylimsup = 25.0
     
     # Mean velocity profile 
-    ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
     
     # Lee & Moser (2015)
-    ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=lw)
+    ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
     
     # If wall oscillations are present
     if iswitch_wo == 1:
     
         # Touber & Leschziner (2012)
-        #ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle='-.', linewidth=lw)
+        #ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle='-.', linewidth=pp.lw)
         
         # Yao et al. (2019)
-        ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
     
 # Viscous sublayer and log law
-ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=lw)
-ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=lw)
+ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=pp.lw)
+ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=pp.lw)
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -569,7 +573,7 @@ ylimsup = max(mean_w)*1.2
 yliminf = min(mean_w)*1.2
         
 # Spanwise mean velocity profile
-ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
        
 # Axes labels
 ax.set_xlabel(r'$y/h$', fontsize=fla, labelpad=pad_axes_lab)
@@ -612,7 +616,7 @@ if itype == 13:
     ylimsup = 8.0
     
     # <u'u'>
-    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
         
 # Channel    
 elif itype == 3:
@@ -622,16 +626,16 @@ elif itype == 3:
     ylimsup = 8.0
     
     # <u'u'>
-    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
 
     # Lee & Moser (2015)
-    ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=lw)
+    ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
     
     # If wall oscillations are present
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -677,7 +681,7 @@ if itype == 13:
     ylimsup = 0.8
     
     # <v'v'>
-    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
         
 # Channel    
 elif itype == 3:
@@ -687,16 +691,16 @@ elif itype == 3:
     ylimsup = 0.8
     
     # <v'v'>
-    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
     
     # Lee & Moser (2015)
-    ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=lw)
+    ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
     
     # If wall oscillations are present
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
     
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -742,7 +746,7 @@ if itype == 13:
     ylimsup = 0.8
     
     # <u'v'>
-    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
         
     # y-axis label
     ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -755,10 +759,10 @@ elif itype == 3:
     ylimsup = 0.8
     
     # <u'v'>
-    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
     
     # Lee & Moser (2015)
-    ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=lw)
+    ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
        
     # y-axis label
     ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -767,7 +771,7 @@ elif itype == 3:
     if iswitch_wo == 1:
     
         # Yao et al. (2019)
-        ax.scatter(y_plus_uvmean_yao, mean_uv_yao, marker='^', linewidth=lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_uvmean_yao, mean_uv_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
  
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
@@ -814,13 +818,13 @@ xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Streamwise velocity auto-correlations, Cuuz
-ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
 
 # Kim et al. (1987) data
-ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=lw)
+ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cuu = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=grey, linestyles='dashed')
         
 # y-axis label
 ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
@@ -859,13 +863,13 @@ xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Vertical velocity auto-correlations, Cvvz
-ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
 
 # Kim et al. (1987) data
-ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=lw)
+ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cvv = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=grey, linestyles='dashed')
         
 # y-axis label
 ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
@@ -904,13 +908,13 @@ xlimsup = Lz_plus / 2.0
 plt.xlim([xliminf, xlimsup])
 
 # Spanwise velocity auto-correlations, Cwwz
-ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
 
 # Kim et al. (1987) data
-ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=lw)
+ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cww = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed')
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=grey, linestyles='dashed')
         
 # y-axis label
 ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=fla, labelpad=pad_axes_lab)
