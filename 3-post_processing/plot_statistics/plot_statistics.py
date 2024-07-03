@@ -172,7 +172,7 @@ elif itype == 3:
         y_plus_touber = M[:,0]
         mean_u_touber = M[:,1]
         
-        # Mean velocity profile, Reynolds stress and variances (Yao et al. (2019))
+        # Mean velocity profile, Reynolds stress and RMSs (Yao et al. (2019))
         M = np.loadtxt('reference_data/yao2019/umean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
         y_plus_umean_yao = M[:,0]
         mean_u_yao       = M[:,1]
@@ -196,8 +196,9 @@ elif itype == 3:
         sh_vel_0_yao = (2.0/3.0)*np.sqrt(cf_0_yao / 2.0)
         sh_vel_c_yao = (2.0/3.0)*np.sqrt(cf_c_yao / 2.0)
         
-        # mean velocity is already rescaled by the actual shear velocity
+        # Mean velocity is already rescaled by the actual shear velocity
         
+        # Rescale RMSs and obtain variances
         y_plus_uvar_yao   = y_plus_uvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
         y_plus_vvar_yao   = y_plus_vvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
         y_plus_uvmean_yao = y_plus_uvmean_yao * (sh_vel_c_yao / sh_vel_0_yao)
