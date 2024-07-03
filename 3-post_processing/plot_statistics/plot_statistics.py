@@ -88,7 +88,11 @@ with open('input.i3d', 'r') as file:
     re         = lines[26]
     iswitch_wo = lines[91]
     
-    # Removing characters in front of the extracted strings and the comments
+    # Removing characters in front of the extracted strings and the comments:
+    # 1) split: the string is split when the specified character is encountered; 
+    # 2) we select the portion of string with index inside square brackets;
+    # 3) strip: removes leading or trailing whitespaces from the string. 
+    
     itype = itype.split('=')[-1].strip()
     
     nx         = nx.split('!')[0]
