@@ -19,14 +19,13 @@ plt.rcParams.update({
 # Parameters for plotting
 lw           = 0.6             # linewidth for plots
 markersize   = 8.0             # marker size for scatter plot
-fla          = 10              # fontsize of labels of x and y axes (major labels, variables)
+fla          = 10              # fontsize of labels of x and y axes (major labels, variables) (f: fontsize, l: label, a: axes)
 fla2         = 4.5             # fontsize of numbers of x and y axes 
 pad_axes_lab = 2               # padding of axes labels
 pad_numbers  = 3               # padding of numbers on both axes
 lmajt        = 4               # length of major ticks
 lmint        = 2               # length of minor ticks
 tick_width   = 0.5             # width of ticks and external box
-xliminf      = 0.1             # x axis inferior limit (y+)
 
 # Page settings (A4 paper format: 8.3 x 11.7 inches)
 xinches      = 2.6             # size in inches in x direction of the image
@@ -44,7 +43,7 @@ iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 # Column width for writing to .txt file
 c_w = 16 
 
-# Format for numbers
+# Format for numbers when written as strings (f: format, s: string)
 fs = f"<{c_w}.3f"
 
 # Format for cf only

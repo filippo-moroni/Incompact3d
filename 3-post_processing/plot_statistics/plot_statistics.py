@@ -15,48 +15,16 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
 from scipy.interpolate import InterpolatedUnivariateSpline
 
-# Get the current directory of the script
+# Get the current directory
 current_dir = os.path.dirname(__file__)
 
-# Add the path to the 'python_common' directory relative to the script's directory
+# Add the path to the 'python_common' directory relative to the current directory (plot_statistics.py)
 config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
 sys.path.append(config_path)
 
-# Now you can import the plotting_params module
+# Import the plotting_params module
 import plotting_params as pp
 
-
-# Settings
-#np.seterr(divide='ignore', invalid='ignore')
-
-#plt.rcParams.update({ 
-#    "text.usetex": True,  
-#    "font.family": "serif",
-#    "font.sans-serif": "Computer Modern",
-#    "figure.autolayout": True,
-#})
-
-# Parameters for plotting
-#lw           = 0.6             # linewidth for plots
-markersize   = 8.0             # marker size for scatter plot
-fla          = 10              # fontsize of labels of x and y axes (major labels, variables)
-fla2         = 4.5             # fontsize of numbers of x and y axes 
-pad_axes_lab = 2               # padding of axes labels
-pad_numbers  = 3               # padding of numbers on both axes
-lmajt        = 4               # length of major ticks
-lmint        = 2               # length of minor ticks
-tick_width   = 0.5             # width of ticks and external box
-xliminf      = 0.1             # x axis inferior limit (y+)
-
-# Page settings (A4 paper format: 8.3 x 11.7 inches)
-xinches      = 2.6             # size in inches in x direction of the image
-yinches      = 2.2             # size in inches in y direction of the image
-
-# Axes width
-#mpl.rcParams['axes.linewidth'] = tick_width
-
-# Set some useful colors
-grey = [0.5, 0.5, 0.5]
 
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
@@ -358,21 +326,21 @@ os.makedirs('data_post', mode=0o777, exist_ok=True)
            
 # Create the file and write  
 with open('data_post/grid_spacings_post.txt', 'w') as f:
-    f.write(f"{'delta_x^+':<{c_w}}, "  +
-            f"{'delta_y1^+':<{c_w}}, " +
-            f"{'delta_z^+':<{c_w}}, "  +
-            f"{'Lx^+':<{c_w}}, "       +
-            f"{'Ly^+/2':<{c_w}}, "     +
-            f"{'Lz^+':<{c_w}}, "       +
-            f"{'delta_yd^+':<{c_w}}\n" )
+    f.write(f"{'delta_x^+':<{pp.c_w}}, "  +
+            f"{'delta_y1^+':<{pp.c_w}}, " +
+            f"{'delta_z^+':<{pp.c_w}}, "  +
+            f"{'Lx^+':<{pp.c_w}}, "       +
+            f"{'Ly^+/2':<{pp.c_w}}, "     +
+            f"{'Lz^+':<{pp.c_w}}, "       +
+            f"{'delta_yd^+':<{pp.c_w}}\n" )
 
-    f.write(f"{delta_x_plus:{fs}}, "   +
-            f"{y_plus[1]:{fs}}, "      +
-            f"{delta_z_plus:{fs}}, "   +
-            f"{Lx_plus:{fs}}, "        +
-            f"{Ly_plus/2:{fs}}, "      +
-            f"{Lz_plus:{fs}}, "        +
-            f"{delta_yd_plus:{fs}}\n"  ) 
+    f.write(f"{delta_x_plus:{pp.fs}}, "   +
+            f"{y_plus[1]:{pp.fs}}, "      +
+            f"{delta_z_plus:{pp.fs}}, "   +
+            f"{Lx_plus:{pp.fs}}, "        +
+            f"{Ly_plus/2:{pp.fs}}, "      +
+            f"{Lz_plus:{pp.fs}}, "        +
+            f"{delta_yd_plus:{pp.fs}}\n"  ) 
 
 #!-------------------------------------!
 
@@ -442,11 +410,11 @@ os.makedirs('data_post', mode=0o777, exist_ok=True)
            
 # Create the file and write  
 with open('data_post/time_scales.txt', 'w') as f:
-    f.write(f"{'t_nu':<{c_w}}, "        +
-            f"{'min tau_eta':<{c_w}}\n" )  
+    f.write(f"{'t_nu':<{pp.c_w}}, "        +
+            f"{'min tau_eta':<{pp.c_w}}\n" )  
 
-    f.write(f"{t_nu:{fs}}, "            +
-            f"{tau_eta:{fs}}\n"         )      
+    f.write(f"{t_nu:{pp.fs}}, "            +
+            f"{tau_eta:{pp.fs}}\n"         )      
 
 #!--- Reference mean profiles ---!
 
@@ -463,13 +431,13 @@ if itype == 13:
         
 elif itype == 3:
 
-    if iswitch == 0:
+    if pp.iswitch == 0:
     
         # Lee and Moser (2015)
         k = 0.384
         B = 4.27
     
-    elif iswitch == 1:
+    elif pp.iswitch == 1:
         
         # Cimarelli ('Turbulence' lecture notes)
         k = 0.37
@@ -487,27 +455,29 @@ os.makedirs('plots', mode=0o777, exist_ok=True)
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
 # Mean velocity profile
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Inferior limits for axes
+xliminf = 0.1
+yliminf = 0.0
 
 # TTBL
 if itype == 13:
     
-    xliminf = 0.1
     xlimsup = 520.0
     ylimsup = 20.0
         
     # Mean velocity profile
-    ax.scatter(y_plus, mean_u, marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus, mean_u, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
             
 # Channel    
 elif itype == 3:
 
-    xliminf = 0.1
     xlimsup = 300.0
     ylimsup = 25.0
     
     # Mean velocity profile 
-    ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
@@ -519,19 +489,19 @@ elif itype == 3:
         #ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle='-.', linewidth=pp.lw)
         
         # Yao et al. (2019)
-        ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='k')
+        ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
     
 # Viscous sublayer and log law
-ax.plot(y_plus_vsl, u_plus_vsl, color=grey, linestyle='--', linewidth=pp.lw)
-ax.plot(y_plus_k, u_plus_k, color=grey, linestyle='--', linewidth=pp.lw)
+ax.plot(y_plus_vsl, u_plus_vsl, color=pp.grey, linestyle='--', linewidth=pp.lw)
+ax.plot(y_plus_k, u_plus_k, color=pp.grey, linestyle='--', linewidth=pp.lw)
     
 # Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=fla, labelpad=pad_axes_lab)
-ax.set_ylabel(r'$U^+$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Axes limits
-plt.ylim([0, ylimsup])
 plt.xlim([xliminf, xlimsup])
+plt.ylim([yliminf, ylimsup])
 
 # Logarithmic x-axis and linear y-axis
 ax.set_xscale('log')
@@ -541,8 +511,8 @@ ax.set_yscale('linear')
 ax.xaxis.set_minor_locator(LogLocator(base=10,subs='all'))
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, pad=pad_numbers, labelsize=fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width)
+ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
 plt.xticks(ha='left')
@@ -561,7 +531,11 @@ plt.show()
 #!--- Mean spanwise velocity profile ---!
 
 # Mean spanwise velocity profile
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Inferior limits for axes
+xliminf = 0.0
+yliminf = 0.0
 
 if itype == 13:
     xlimsup = Ly
