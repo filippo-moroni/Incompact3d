@@ -149,15 +149,15 @@ if itype == 3:
            
     # Create the file and write  
     with open('data_post/cf_mean.txt', 'w') as f:
-        f.write(f"{'cf_mean':<{pp.c_w}}, " +
-                f"{'t_tot':<{pp.c_w}}, " +
+        f.write(f"{'cf_mean':<{pp.c_w}}, "  +
+                f"{'t_tot':<{pp.c_w}}, "    +
                 f"{'delta_TU':<{pp.c_w}}, " +
-                f"{'n_snap':<{pp.c_w}}\n")
+                f"{'n_snap':<{pp.c_w}}\n"   )
 
-        f.write(f"{mean_cf:{pp.fs2}}, " +
-                f"{t_tot:{pp.fs}}, " +
-                f"{delta:<{pp.c_w}}, " +
-                f"{n_snap:{pp.fs}}\n")
+        f.write(f"{mean_cf:{pp.fs2}}, "     +
+                f"{t_tot:{pp.fs}}, "        +
+                f"{delta:<{pp.fs}}, "       +
+                f"{n_snap:{pp.fs}}\n"       )
                
 # Axes labels
 ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)

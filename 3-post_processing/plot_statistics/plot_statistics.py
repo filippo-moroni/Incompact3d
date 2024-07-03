@@ -32,6 +32,12 @@ from plot_settings import set_plot_settings
 
 #!--------------------------------------------------------------------------------------!
 
+# Create folders to store later results (e.g. grid spacings and time scales files, plots)
+os.makedirs('data_post', mode=0o777, exist_ok=True)
+os.makedirs('plots',     mode=0o777, exist_ok=True)
+
+#!--------------------------------------------------------------------------------------!
+
 # Read the name of the flowcase
 with open('post.prm', 'r') as file:
     
@@ -265,7 +271,7 @@ if itype == 3:
 y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
 print()
 
-#!--------------------------------!
+#!--------------------------------------------------------------------------------------!
 
 #!--- Calculations ---!
 
@@ -309,12 +315,9 @@ elif itype == 13:
     while mean_u[j] > mean_u[0]*0.01: j = j + 1
     delta_yd_plus = y_plus[j] - y_plus[j-1] 
 
-#!-------------------------------------!
+#!--------------------------------------------------------------------------------------!
     
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
-
-# Creating the folder for grid spacings
-os.makedirs('data_post', mode=0o777, exist_ok=True)
            
 # Create the file and write  
 with open('data_post/grid_spacings_post.txt', 'w') as f:
@@ -334,7 +337,7 @@ with open('data_post/grid_spacings_post.txt', 'w') as f:
             f"{Lz_plus:{pp.fs}}, "        +
             f"{delta_yd_plus:{pp.fs}}\n"  ) 
 
-#!-------------------------------------!
+#!--------------------------------------------------------------------------------------!
 
 # Find the maximum of mean total dissipation
 eps_max = max(eps)
@@ -396,9 +399,6 @@ print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
 print()
 
 #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
-
-# Creating the folder for grid spacings
-os.makedirs('data_post', mode=0o777, exist_ok=True)
            
 # Create the file and write  
 with open('data_post/time_scales.txt', 'w') as f:
@@ -439,10 +439,7 @@ elif itype == 3:
 y_plus_k = np.linspace(5, 180, 175)
 u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
-#!-------------------------------!
-
-# Creating the folder for plots if it does not exist
-os.makedirs('plots', mode=0o777, exist_ok=True)
+#!--------------------------------------------------------------------------------------!
     
 #!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
