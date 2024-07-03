@@ -25,19 +25,6 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plotting_params as pp
 
-
-# Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes
-iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
-
-# Column width for writing to .txt file
-c_w = 16 
-
-# Format for numbers
-fs = f"<{c_w}.3f"
-
-# Format for cf only
-fs2 = f"<{c_w}.8f"
-
 #!--------------------------------------------------------------------------------------!
 
 # Read the name of the flowcase
