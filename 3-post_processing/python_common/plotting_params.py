@@ -2,9 +2,9 @@
 #! This is a small module to store Python plotting parameters. !
 #!-------------------------------------------------------------!
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
@@ -31,7 +31,7 @@ tick_width   = 0.5             # width of ticks and external box
 xinches      = 2.6             # size in inches in x direction of the image
 yinches      = 2.2             # size in inches in y direction of the image
 
-# Axes width
+# Axes (line) width
 mpl.rcParams['axes.linewidth'] = tick_width
 
 # Set some useful colors
