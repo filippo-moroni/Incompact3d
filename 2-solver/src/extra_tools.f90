@@ -660,7 +660,7 @@
   use decomp_2d,    only : mytype, xsize, ysize, zsize, nrank
   use decomp_2d,    only : transpose_x_to_y, transpose_y_to_z, transpose_z_to_y, transpose_y_to_x
   use decomp_2d_io, only : decomp_2d_start_io
-  use param,        only : ioutput_plane, zero
+  use param,        only : ioutput_plane, zero, uwall
   use variables
   
   implicit none
@@ -715,10 +715,10 @@
   !--- Helicity density ---!
   hd1 = zero
     
-  ! Vorticity along x and u velocity component
+  ! Vorticity along x and u velocity component in the fixed reference frame
   di1 = tf1 - th1  !dw/dy - dv/dz
   
-  hd1(:,:,:) = ux1(:,:,:) * di1(:,:,:) 
+  hd1(:,:,:) = (ux1(:,:,:) - uwall) * di1(:,:,:) 
       
   ! Vorticity along y and v velocity component
   di1 = tg1 - tc1  !du/dz - dw/dx
