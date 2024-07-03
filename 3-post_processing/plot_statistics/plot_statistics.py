@@ -20,7 +20,7 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 # Get the current directory
 current_dir = os.path.dirname(__file__)
 
-# Add the path to the 'python_common' directory relative to the current directory (plot_statistics.py)
+# Add the path to the 'python_common' directory relative to the current directory 
 config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
 sys.path.append(config_path)
 

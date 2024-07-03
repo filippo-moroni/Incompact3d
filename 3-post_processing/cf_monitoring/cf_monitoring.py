@@ -10,30 +10,20 @@ import os
 from matplotlib.ticker import (AutoMinorLocator)
 import matplotlib.patches as patches
 
-# Settings
-np.seterr(divide='ignore', invalid='ignore')
+# Get the current directory
+current_dir = os.path.dirname(__file__)
 
-plt.rcParams.update({ 
-    "text.usetex": True,  
-    "font.family": "serif",
-    "font.sans-serif": "Computer Modern",
-    "figure.autolayout": True,
-})
+# Add the path to the 'python_common' directory relative to the current directory 
+config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
+sys.path.append(config_path)
 
-# Parameters for plotting
-lw           = 0.6             # linewidth for plots
-markersize   = 8.0             # marker size for scatter plot
-fla          = 10              # fontsize of labels of x and y axes (major labels, variables)
-fla2         = 4.5             # fontsize of numbers of x and y axes 
-pad_axes_lab = 2               # padding of axes labels
-pad_numbers  = 3               # padding of numbers on both axes
-lmajt        = 4               # length of major ticks
-lmint        = 2               # length of minor ticks
-tick_width   = 0.5             # width of ticks and external box
+# Import the plotting_params module
+import plotting_params as pp
 
-# Page settings (A4 paper format: 8.3 x 11.7 inches)
-xinches      = 2.6             # size in inches in x direction of the image
-yinches      = 2.2             # size in inches in y direction of the image
+# Import function to set plots
+from plot_settings import set_plot_settings
+
+#!--------------------------------------------------------------------------------------!
 
 # Default value for axes limits
 xliminf     = 0.0              # x axis inferior limit
@@ -41,23 +31,8 @@ xlimsup     = 1500.0           # x axis superior limit
 yliminf     = 0.0              # y axis inferior limit
 ylimsup     = 0.008            # y axis superior limit
 
-# Axes width
-mpl.rcParams['axes.linewidth'] = tick_width
-
-# Set some useful colors
-grey = [0.5, 0.5, 0.5]
-
 # CPG option when CFR is imposed
 cpg_check = 'F'
-
-# Column width for writing to .txt file
-c_w = 20  
-
-# Format for numbers
-fs = f"<{c_w}.3f"
-
-# Format for cf only
-fs2 = f"<{c_w}.8f"
 
 #!--------------------------------------------------------------------------------------!
 
@@ -153,10 +128,10 @@ print()
 os.makedirs('plots', mode=0o777, exist_ok=True)
 
 # Subplots environment
-fig, ax = plt.subplots(1, 1, figsize=(xinches,yinches), linewidth=tick_width, dpi=300)
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
 # Friction coefficient
-ax.scatter(time_unit, cfx, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # Create a rectangle patch to show points we are excluding from average
 rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none', facecolor='r', alpha=0.1)
@@ -168,43 +143,35 @@ if itype == 3:
     ax.add_patch(rect)
     
     # Horizontal line to show mean cf value
-    ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=lw, color=grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
+    ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
     
     # Creating the folder for cf average
     os.makedirs('data_post', mode=0o777, exist_ok=True)
            
     # Create the file and write  
     with open('data_post/cf_mean.txt', 'w') as f:
-        f.write(f"{'cf_mean':<{c_w}}, " +
-                f"{'t_tot':<{c_w}}, " +
-                f"{'delta_TU':<{c_w}}, " +
-                f"{'n_snap':<{c_w}}\n")
+        f.write(f"{'cf_mean':<{pp.c_w}}, " +
+                f"{'t_tot':<{pp.c_w}}, " +
+                f"{'delta_TU':<{pp.c_w}}, " +
+                f"{'n_snap':<{pp.c_w}}\n")
 
-        f.write(f"{mean_cf:{fs2}}, " +
-                f"{t_tot:{fs}}, " +
-                f"{delta:<{c_w}}, " +
-                f"{n_snap:{fs}}\n")
-        
-        
+        f.write(f"{mean_cf:{pp.fs2}}, " +
+                f"{t_tot:{pp.fs}}, " +
+                f"{delta:<{pp.c_w}}, " +
+                f"{n_snap:{pp.fs}}\n")
+               
 # Axes labels
-ax.set_ylabel(r'$c_{f,x}$', fontsize=fla, labelpad=pad_axes_lab)
+ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # x-axis label for Channel with CPG off
 if itype == 3 and cpg == cpg_check:
-    ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=fla, labelpad=pad_axes_lab)
+    ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 else:
-    ax.set_xlabel(r'$t$', fontsize=fla, labelpad=pad_axes_lab)
+    ax.set_xlabel(r'$t$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Axes limits
-plt.xlim([xliminf, xlimsup])
-plt.ylim([yliminf, ylimsup])
-
-# Setting major and minor ticks parameters on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=lmajt, width=tick_width, top=True, right=True, pad=pad_numbers) 
-ax.tick_params(axis='both', which='minor', direction='in', length=lmint, width=tick_width, top=True, right=True)
-
-# Setting ticks
-ax.tick_params(axis='both', labelcolor="k", labelsize=fla2)
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure and show it
 plt.savefig(f'plots/cf_vs_time_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
