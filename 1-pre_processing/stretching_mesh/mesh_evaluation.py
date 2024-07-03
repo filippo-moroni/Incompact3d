@@ -531,8 +531,8 @@ if istret == 3:
             ]
            
     data4 = [
-             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel Re_tau = 500", "n_tot" ],
-             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,            n_tot  ],
+             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500", "n_tot" ],
+             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,   n_tot  ],
             ] 
 
     # Create the tables using tabulate
