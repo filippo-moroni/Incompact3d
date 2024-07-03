@@ -33,7 +33,7 @@ import plotting_params as pp
 #})
 
 # Parameters for plotting
-lw           = 0.6             # linewidth for plots
+#lw           = 0.6             # linewidth for plots
 markersize   = 8.0             # marker size for scatter plot
 fla          = 10              # fontsize of labels of x and y axes (major labels, variables)
 fla2         = 4.5             # fontsize of numbers of x and y axes 
@@ -493,7 +493,7 @@ if itype == 13:
     ylimsup = 20.0
         
     # Mean velocity profile
-    ax.scatter(y_plus, mean_u, marker='o', linewidth=lw, s=markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus, mean_u, marker='o', linewidth=pp.lw, s=markersize, facecolors='none', edgecolors='C0')
             
 # Channel    
 elif itype == 3:
