@@ -25,8 +25,8 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plotting_params as pp
 
-# Import function to set semilog plots
-from semilog_plot_settings import set_semilog_plot_settings
+# Import function to set plots
+from plot_settings import set_plot_settings
 
 #!--------------------------------------------------------------------------------------!
 
@@ -489,7 +489,7 @@ ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Set the plot parameters using the function
-set_semilog_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp)
+set_semilog_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp)
 
 # Axes limits
 #plt.xlim([xliminf, xlimsup])
