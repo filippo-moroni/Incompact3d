@@ -8,22 +8,29 @@
 #! - correlation coefficients for spanwise correlations    !
 #!---------------------------------------------------------!
 
+import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
-import matplotlib as mpl
-import os
 from scipy.interpolate import InterpolatedUnivariateSpline
 
-# Settings
-np.seterr(divide='ignore', invalid='ignore')
+# Add the 'python_common' directory to the system path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'python_common'))
 
-plt.rcParams.update({ 
-    "text.usetex": True,  
-    "font.family": "serif",
-    "font.sans-serif": "Computer Modern",
-    "figure.autolayout": True,
-})
+# Now you can import the plotting_params module
+import plotting_params as pp
+
+
+# Settings
+#np.seterr(divide='ignore', invalid='ignore')
+
+#plt.rcParams.update({ 
+#    "text.usetex": True,  
+#    "font.family": "serif",
+#    "font.sans-serif": "Computer Modern",
+#    "figure.autolayout": True,
+#})
 
 # Parameters for plotting
 lw           = 0.6             # linewidth for plots

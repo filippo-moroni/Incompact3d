@@ -81,7 +81,7 @@ for i in range(file1, filen + icrfile, icrfile):
         # /data folder if nr = 1
         file_path = f"data/snapshot-{i:04d}.xdmf"
     
-    # Read .xdmf snapshot header to extract time unit
+    # Read .xdmf file of snapshots to extract time unit
     tree = ET.parse(file_path)
     root = tree.getroot()
         
