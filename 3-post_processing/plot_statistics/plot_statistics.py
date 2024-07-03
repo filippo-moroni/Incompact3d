@@ -708,8 +708,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-yliminf = 1.2*min(Ruuz)
-ylimsup = 1.2*max(Ruuz)
+yliminf = min(Ruuz[c,:])*1.2
+ylimsup = max(Ruuz[c,:])*1.2
 
 # Streamwise velocity auto-correlations, Cuuz
 ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -747,8 +747,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-yliminf = 1.2*min(Rvvz)
-ylimsup = 1.2*max(Rvvz)
+yliminf = min(Rvvz[c,:])*1.2
+ylimsup = max(Rvvz[c,:])*1.2
 
 # Vertical velocity auto-correlations, Cvvz
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -786,8 +786,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-yliminf = 1.2*min(Rwwz)
-ylimsup = 1.2*max(Rwwz)
+yliminf = min(Rwwz[c,:])*1.2
+ylimsup = max(Rwwz[c,:])*1.2
 
 # Spanwise velocity auto-correlations, Cuuz
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
