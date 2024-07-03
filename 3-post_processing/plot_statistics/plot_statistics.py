@@ -2,17 +2,19 @@
 #! With this script, we perform plotting of statistics     !
 #! for TTBLs and channel flow simulations:                 !
 #!                                                         !
-#! - mean statistics (mean[u], var[u], etc.)               !
-#! - mean total dissipation (to be done)                   !
-#! - non-dimensional grid spacings and domain dimensions   !
-#! - correlation coefficients for spanwise correlations    !
+#! - mean statistics (mean[u], var[u], etc.);              !
+#! - mean total dissipation (to be done);                  !
+#! - correlation coefficients for spanwise correlations.   !
+#!                                                         !
+#! Calculated and stored:                                  !
+#!                                                         !
+#! - non-dimensional grid spacings and domain dimensions.  !
 #!---------------------------------------------------------!
 
 import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.ticker import LogLocator
 from scipy.interpolate import InterpolatedUnivariateSpline
 
 # Get the current directory
@@ -165,7 +167,7 @@ elif itype == 3:
         sh_vel_0_yao = (2.0/3.0)*np.sqrt(cf_0_yao / 2.0)
         sh_vel_c_yao = (2.0/3.0)*np.sqrt(cf_c_yao / 2.0)
         
-        # Mean velocity is already rescaled by the actual shear velocity
+        # Mean velocity is already rescaled by the actual shear velocity in Yao's data
         
         # Rescale RMSs and obtain variances
         y_plus_uvar_yao   = y_plus_uvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
