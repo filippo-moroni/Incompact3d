@@ -25,6 +25,9 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plotting_params as pp
 
+# Import function to set semilog plots
+from semilog_plot_settings import set_semilog_plot_settings
+
 #!--------------------------------------------------------------------------------------!
 
 # Read the name of the flowcase
@@ -541,21 +544,24 @@ elif itype == 3:
     # Axes labels
     ax.set_xlabel(r'$y/h$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$W/U_p$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Set the plot parameters using the function
+set_semilog_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp) 
     
 # Axes limits
-plt.xlim([xliminf, xlimsup])
-plt.ylim([yliminf, ylimsup])
+#plt.xlim([xliminf, xlimsup])
+#plt.ylim([yliminf, ylimsup])
 
 # Both linear axes
-ax.set_xscale('linear')
-ax.set_yscale('linear')
+#ax.set_xscale('linear')
+#ax.set_yscale('linear')
     
 # Setting major and minor ticks on both axes
-ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
-ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
+#ax.tick_params(axis='both', which='major', direction='in', length=pp.lmajt, width=pp.tick_width, pad=pp.pad_numbers, labelsize=pp.fla2, labelcolor='k') 
+#ax.tick_params(axis='both', which='minor', direction='in', length=pp.lmint, width=pp.tick_width)
 
 # Setting x-ticks labels
-plt.xticks(ha='left')
+#plt.xticks(ha='left')
 
 # Saving the figure
 if itype == 13:
