@@ -100,9 +100,6 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Create a rectangle patch to show points we are excluding from average
-rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none', facecolor='r', alpha=0.1)
-
 # Axes labels
 ax.set_xlabel(r'$t$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -112,6 +109,9 @@ if itype == 3:
 
     # x-axis label 
     ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Create a rectangle patch to show points we are excluding from average
+    rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none', facecolor='r', alpha=0.1)
     
     # Add the patch to the plot
     ax.add_patch(rect)
