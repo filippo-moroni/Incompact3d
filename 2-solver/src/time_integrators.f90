@@ -189,13 +189,15 @@ contains
   SUBROUTINE int_time(rho1, ux1, uy1, uz1, phi1, drho1, dux1, duy1, duz1, dphi1)
 
     use decomp_2d, only : mytype, xsize, nrank
-    use param, only : zero, one
-    use param, only : ntime, nrhotime, ilmn, iscalar, ilmn_solve_temp,itimescheme
-    use param, only : iimplicit, sc_even
-    use param, only : primary_species, massfrac
-    use param, only : scalar_lbound, scalar_ubound
-    use variables, only : numscalar,nu0nu
-    use var, only : ta1, tb1
+    use param,     only : zero, one
+    use param,     only : ntime, nrhotime, ilmn, iscalar, ilmn_solve_temp,itimescheme
+    use param,     only : iimplicit, sc_even
+    use param,     only : primary_species, massfrac
+    use param,     only : scalar_lbound, scalar_ubound
+    use param,     only : nu0nu
+    use variables, only : numscalar
+    use var,       only : ta1, tb1
+
 #ifdef DEBG 
     use tools, only : avg3d
 #endif
