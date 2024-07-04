@@ -28,15 +28,14 @@
 !    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
 !    problems with up to 0(10^5) computational cores, Int. J. of Numerical
 !    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
-!###########################################################################
-!
-!  SUBROUTINE: parameter
-! DESCRIPTION: Reads the input.i3d file and sets the parameters of the
-!              simulation.
-!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>
-!
-!###########################################################################
+!-------------------------------------------------------------------------------!
+!                                                                               !
+!  SUBROUTINE: parameter                                                        !
+! DESCRIPTION: Reads the input.i3d file and sets the parameters of the          !
+!              simulation.                                                      !
+!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>             !
+!                                                                               !
+!-------------------------------------------------------------------------------!
 subroutine parameter(input_i3d)
 
   use MPI
@@ -81,7 +80,6 @@ subroutine parameter(input_i3d)
   NAMELIST /ChannelParam/ cpg, idir_stream, wrotation, spinup_time
   NAMELIST /TemporalTBLParam/ uwall, twd, uln, lln, phiwall 
   
-  
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
        scalar_lbound, scalar_ubound, sc_even, sc_skew, &
@@ -120,11 +118,19 @@ subroutine parameter(input_i3d)
   ! Controls for wall oscillations
   if(iswitch_wo .eq. 1) then
       read(10, nml=WallOscillations); rewind(10); 
-  end if 
+  end if
+  
+  ! Read parameters for Channel case
+  if (itype.eq.itype_channel) then
+     read(10, nml=ChannelParam); rewind(10);   
+  end if
+  
+  ! Read parameters for temporal TBL case
+  if (itype.eq.itype_ttbl) then
+     read(10, nml=TemporalTBLParam); rewind(10);   
+  end if
   
   
-  !read(10, nml=Statistics); rewind(10)
-    
   if (iibm.ne.0) then
       read(10, nml=ibmstuff); rewind(10)
   endif
@@ -215,13 +221,8 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-               
-  
-  ! Read parameters for temporal TBL case
-  if (itype.eq.itype_ttbl) then
-     read(10, nml=TemporalTBLParam); rewind(10);   
-  end if
-  
+  !read(10, nml=Statistics); rewind(10)
+    
   ! Read extra numerics control (Adjustable time-step)
   !read(10, nml=ExtraNumControl); rewind(10);
        
@@ -608,10 +609,8 @@ subroutine parameter_defaults()
 
   ro = 99999999._mytype
   angle = zero
-  u1 = 2
-  u2 = 1
+
   init_noise = zero
-  inflow_noise = zero
   iin = 0
   itimescheme = 4
   iimplicit = 0
