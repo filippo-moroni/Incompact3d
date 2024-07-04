@@ -331,8 +331,6 @@ subroutine parameter(input_i3d)
      if (iscalar.eq.1) xcst_sc = xcst / sc
   endif
 
-  anglex = sin_prec(pi*angle/onehundredeighty)
-  angley = cos_prec(pi*angle/onehundredeighty)
   !###########################################################################
   ! Log-output
   !###########################################################################
@@ -549,7 +547,6 @@ subroutine parameter(input_i3d)
      write(*,*) 'Numerical precision: Single'
 #endif
      write(*,*) '==========================================================='
-     write(*,"(' High and low speed : u1=',F6.2,' and u2=',F6.2)") u1,u2
      write(*,"(' Gravity vector     : (gx, gy, gz)=(',F15.8,',',F15.8,',',F15.8,')')") gravx, gravy, gravz
      if (ilmn) then
         write(*,*)  "LMN                : Enabled"
@@ -566,7 +563,6 @@ subroutine parameter(input_i3d)
         write(*,"(' dens1 and dens2    : ',F6.2,',',F6.2)") dens1, dens2
         write(*,"(' Prandtl number Re  : ',F15.8)") prandtl
      endif
-     if (angle.ne.0.) write(*,"(' Solid rotation     : ',F6.2)") angle
      write(*,*) ' '
      write(*,*) '==========================================================='
   endif
@@ -691,7 +687,6 @@ subroutine parameter_defaults()
   !-- Additional parameters not present in namelists --!                  
   imodulo2  = 1
   ro        = 99999999._mytype
-  angle     = zero
   cont_phi  = 0
   filepath  = './data/'
   datapath  = './data/'

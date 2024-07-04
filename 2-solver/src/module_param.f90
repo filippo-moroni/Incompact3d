@@ -314,7 +314,7 @@ module param
   integer :: ivisu, ipost, initstat
   integer :: ifilter
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
-  real(mytype) :: dt,re,xnu,init_noise,inflow_noise,u1,u2,angle,anglex,angley
+  real(mytype) :: dt,re,xnu,init_noise
   real(mytype) :: wrotation,ro
   real(mytype) :: dens1, dens2
   real(mytype) :: C_filter
