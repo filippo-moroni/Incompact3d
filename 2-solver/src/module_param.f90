@@ -65,6 +65,7 @@ module variables
   integer,parameter :: prec = 8
 #endif
 #endif
+
   !module filter
   real(mytype),dimension(200) :: idata
   real(mytype),allocatable,dimension(:) :: fiffx, fifcx, fifbx, fisfx, fiscx, fisbx,fifsx,fifwx,fissx,fiswx
@@ -542,7 +543,6 @@ module param
 
 end module param
 !############################################################################
-!############################################################################
 module complex_geometry
 
   use decomp_2d,only : mytype
@@ -553,7 +553,6 @@ module complex_geometry
   real(mytype),allocatable,dimension(:,:,:) :: xi,xf,yi,yf,zi,zf
   integer :: nxraf,nyraf,nzraf,nraf,nobjmax
 end module complex_geometry
-!############################################################################
 !############################################################################
 module derivX
 
@@ -574,7 +573,6 @@ module derivX
 
 end module derivX
 !############################################################################
-!############################################################################
 module derivY
 
   use decomp_2d, only : mytype
@@ -594,7 +592,6 @@ module derivY
 
 end module derivY
 !############################################################################
-!############################################################################
 module derivZ
 
   use decomp_2d, only : mytype
@@ -612,9 +609,7 @@ module derivZ
   real(mytype) :: alsakz,askz,bskz,cskz,dskz
   real(mytype) :: alsakzt,askzt,bskzt,cskzt,dskzt
 
-
 end module derivZ
-!############################################################################
 !############################################################################
 ! Describes the parameters for the discrete filters in X-Pencil
 module parfiX
@@ -628,9 +623,7 @@ module parfiX
   real(mytype) :: fialpx, fiapx, fibpx, ficpx, fidpx, fiepx, fifpx  ! Coefficient for filter at boundary point p=n-2
 end module parfiX
 !############################################################################
-!############################################################################
 module parfiY
-
   use decomp_2d, only : mytype
   real(mytype) :: fial1y, fia1y, fib1y, fic1y, fid1y, fie1y, fif1y ! Coefficients for filter at boundary point 1
   real(mytype) :: fial2y, fia2y, fib2y, fic2y, fid2y, fie2y, fif2y ! Coefficients for filter at boundary point 2
@@ -641,9 +634,7 @@ module parfiY
   real(mytype) :: fialpy, fiapy, fibpy, ficpy, fidpy, fiepy, fifpy ! Coefficient for filter at boundary point p=n-2
 end module parfiY
 !############################################################################
-!############################################################################
 module parfiZ
-
   use decomp_2d, only : mytype
   real(mytype) :: fial1z, fia1z, fib1z, fic1z, fid1z, fie1z, fif1z ! Coefficients for filter at boundary point 1
   real(mytype) :: fial2z, fia2z, fib2z, fic2z, fid2z, fie2z, fif2z ! Coefficients for filter at boundary point 2
@@ -654,11 +645,9 @@ module parfiZ
   real(mytype) :: fialpz, fiapz, fibpz, ficpz, fidpz, fiepz, fifpz ! Coefficient for filter at boundary point p=n-2
 end module parfiZ
 !############################################################################
-!############################################################################
 module simulation_stats
   real(8) :: tstart,time1,trank,tranksum,ttotal,tremaining,telapsed
 end module simulation_stats
-!############################################################################
 !############################################################################
 module ibm_param
   use decomp_2d, only : mytype
