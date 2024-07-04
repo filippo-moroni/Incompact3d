@@ -14,22 +14,22 @@ p_col=0               ! Column partition
 ! Mesh
 nx=80                 ! X-direction nodes
 ny=649                ! Y-direction nodes
-nz=80                 ! Z-direction nodes
+nz=64                 ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 2.0            ! Refinement parameter (beta)
 
 ! Domain dimensions
-xlx = 86.8            ! Lx (Size of the box in x-direction)
+xlx = 21.7            ! Lx (Size of the box in x-direction)
 yly = 65.1            ! Ly (Size of the box in y-direction)
-zlz = 43.4            ! Lz (Size of the box in z-direction)
+zlz = 8.68            ! Lz (Size of the box in z-direction)
 
 ! Flow parameters
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
 
 ! Time stepping
-dt = 0.005            ! Time step
+dt = 0.01             ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 320000        ! Last iteration
+ilast = 160000        ! Last iteration
 
 ! Enable modelling tools
 numscalar = 1         ! Number of scalars 
@@ -71,10 +71,10 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 
 ! Basic I/O
 irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
-icheckpoint = 40000   ! Frequency for writing backup file
-ioutput = 40000       ! Frequency for saving and visualization
-ioutput_cf = 200      ! Frequency for saving cf and related quantities
-ioutput_plane = 2000  ! Frequency for saving planes for visualization
+icheckpoint = 20000   ! Frequency for writing backup file
+ioutput = 20000       ! Frequency for saving and visualization
+ioutput_cf = 100      ! Frequency for saving cf and related quantities
+ioutput_plane = 1000  ! Frequency for saving planes for visualization
 ilist = 25            ! Frequency for writing to screen        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
@@ -128,5 +128,6 @@ nclzS1 = 0
 nclzSn = 0
 
 /End
+
 
 
