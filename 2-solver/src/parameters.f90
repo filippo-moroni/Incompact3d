@@ -60,22 +60,28 @@ subroutine parameter(input_i3d)
   real(mytype) :: theta,cfl,cf2
   integer :: longueur,impi,j,is,total
 
-  NAMELIST /BasicParam/ p_row, p_col, nx, ny, nz, istret, beta, xlx, yly, zlz, &
-       itype, iin, re, u1, u2, init_noise, inflow_noise, &
-       dt, ifirst, ilast, &
-       numscalar, iibm, ilmn, &
-       ilesmod, iscalar, &
-       nclx1, nclxn, ncly1, nclyn, nclz1, nclzn, &
-       ivisu, ipost, &
-       gravx, gravy, gravz, &
-       cpg, idir_stream, &
-       ifilter, C_filter
-  NAMELIST /NumOptions/ ifirstder, isecondder, itimescheme, iimplicit, &
-       nu0nu, cnu, ipinter
-  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, nvisu, ilist, iprocessing, &
-       ninflows, ntimesteps, inflowpath, ioutflow, output2D
+  NAMELIST /BasicParam/ itype, p_row, p_col, nx, ny, nz,          &
+                        istret, beta, xlx, yly, zlz,              &
+                        re, dt, ifirst, ilast, numscalar,         &
+                        iin, init_noise,                          &
+                        nclx1, nclxn, ncly1, nclyn, nclz1, nclzn, &
+                        iibm, ilmn, ilesmod, iscalar,             &
+                        ivisu, ipost, ifilter, C_filter,          &
+                        gravx, gravy, gravz
+       
+  NAMELIST /NumOptions/ ifirstder, isecondder, ipinter, itimescheme, iimplicit, &
+                        nu0nu, cnu
+                        
+  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, ilist, nvisu, output2D, &
+                        iprocessing, ninflows, ntimesteps, inflowpath, ioutflow 
+  
   NAMELIST /AdditionalControls/ iswitch_wo
-  NAMELIST /Statistics/ wrotation,spinup_time, nstat, initstat
+  NAMELIST /WallOscillations/ a_wo, t_wo, ifeedback_control, in_phase
+  
+  NAMELIST /ChannelParam/ cpg, idir_stream, wrotation, spinup_time
+  NAMELIST /TemporalTBLParam/ uwall, twd, uln, lln, phiwall 
+  
+  
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
        nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
        scalar_lbound, scalar_ubound, sc_even, sc_skew, &
@@ -86,9 +92,10 @@ subroutine parameter(input_i3d)
   NAMELIST /LMN/ dens1, dens2, prandtl, ilmn_bound, ivarcoeff, ilmn_solve_temp, &
        massfrac, mol_weight, imultispecies, primary_species, &
        Fr, ibirman_eos
-  NAMELIST /TemporalTBLParam/ uwall,twd,uln,lln,phiwall 
+  
+  ! Not used at the moment
+  NAMELIST /Statistics/ nstat, initstat
   NAMELIST /ExtraNumControl/ icfllim,cfl_limit
-  NAMELIST /WallOscillations/ a_wo,t_wo,ifeedback_control,in_phase
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -115,10 +122,9 @@ subroutine parameter(input_i3d)
       read(10, nml=WallOscillations); rewind(10); 
   end if 
   
-  if(itype .eq. itype_channel) then
-     read(10, nml=Statistics); rewind(10)
-  end if
   
+  !read(10, nml=Statistics); rewind(10)
+    
   if (iibm.ne.0) then
       read(10, nml=ibmstuff); rewind(10)
   endif
@@ -209,8 +215,7 @@ subroutine parameter(input_i3d)
   
   !read(10, nml=TurbulenceWallModel); rewind(10)
   
-  ! Read case-specific variables
-  !read(10, nml=CASE); rewind(10)                  
+               
   
   ! Read parameters for temporal TBL case
   if (itype.eq.itype_ttbl) then
