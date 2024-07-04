@@ -94,7 +94,7 @@ subroutine parameter(input_i3d)
   
   ! Not used at the moment
   NAMELIST /Statistics/ nstat, initstat
-  NAMELIST /ExtraNumControl/ icfllim,cfl_limit
+  NAMELIST /ExtraNumControl/ icfllim, cfl_limit
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter start'
@@ -131,7 +131,7 @@ subroutine parameter(input_i3d)
      read(10, nml=TemporalTBLParam); rewind(10);   
   end if
   
-  
+  ! Immersed boundary method
   if (iibm.ne.0) then
       read(10, nml=ibmstuff); rewind(10)
   endif
