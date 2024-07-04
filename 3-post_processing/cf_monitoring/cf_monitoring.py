@@ -91,6 +91,7 @@ if itype == 3:
     t_tot = (n_snap - 1)*delta
 
 #!--- Plot section, friction coefficient ---!
+print()
 print("!--- Plotting of friction coefficient ---!")
 print()
 

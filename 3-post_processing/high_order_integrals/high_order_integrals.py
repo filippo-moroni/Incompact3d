@@ -167,6 +167,11 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{cf[j]:{pp.fs2}}, "            +
             f"{a_fact[j]:{pp.fs}}, "         +
             f"{time_unit[j]:{pp.fs}}\n"      )
+            
+# Print that calculations have been completed
+print()
+print("Results saved in integral_statistics/integral_statistics.txt")
+print()
            
 #!---------------------------------------------------------!
 # Check section (everything works)
