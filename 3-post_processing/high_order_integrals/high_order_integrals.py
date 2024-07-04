@@ -170,7 +170,9 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             
 # Print that calculations have been completed
 print()
-print("Results saved in integral_statistics/integral_statistics.txt")
+print("Done!")
+print()
+print("Results saved in: integral_statistics/integral_statistics.txt.")
 print()
            
 #!---------------------------------------------------------!
