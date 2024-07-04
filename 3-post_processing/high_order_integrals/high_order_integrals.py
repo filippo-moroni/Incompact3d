@@ -44,10 +44,10 @@ os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 # Local variables
-uwall = np.float64(1.0)            # Wall velocity for TTBL
-nu    = np.float64(1.0/re)         # Kinematic viscosity
-ii    = 0                          # Index for BL thickness parameters vectors 
-ns = (filen - file1)//icrfile + 1  # Number of snapshots
+uwall = np.float64(1.0)               # Wall velocity for TTBL
+nu    = np.float64(1.0/re)            # Kinematic viscosity
+ii    = 0                             # Index for BL thickness parameters vectors 
+ns    = (filen - file1)//icrfile + 1  # Number of snapshots
 
 # Work arrays
 delta_99  = np.zeros(ns)
