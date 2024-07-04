@@ -315,7 +315,7 @@ module param
   integer :: ifilter
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
   real(mytype) :: dt,re,xnu,init_noise
-  real(mytype) :: wrotation,ro
+  real(mytype) :: wrotation
   real(mytype) :: dens1, dens2
   real(mytype) :: C_filter
   character(len=100) :: inflowpath
@@ -400,8 +400,8 @@ module param
   real(mytype), save :: xlxplus       ! Lx^+
   real(mytype), save :: ylyplus       ! Ly^+
   real(mytype), save :: zlzplus       ! Lz^+
-  
-  real(mytype), save :: delta_nu      ! Viscous unit (length)  
+  real(mytype), save :: delta_nu      ! Viscous unit (length)
+    
   !--- Additional controls namelist and related quantities ---!
   
   ! Spanwise wall oscillations

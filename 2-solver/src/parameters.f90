@@ -47,9 +47,7 @@ subroutine parameter(input_i3d)
   use complex_geometry
   use decomp_2d
   use ibm_param
-  use dbg_schemes, only: sin_prec, cos_prec
 
-  use var,   only : dphi1
   use visu,  only : output2D
   use tools, only : program_header
 
@@ -686,7 +684,6 @@ subroutine parameter_defaults()
   
   !-- Additional parameters not present in namelists --!                  
   imodulo2  = 1
-  ro        = 99999999._mytype
   cont_phi  = 0
   filepath  = './data/'
   datapath  = './data/'
