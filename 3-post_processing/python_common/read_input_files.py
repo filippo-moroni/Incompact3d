@@ -15,6 +15,7 @@ def read_input_files(filename1,filename2):
         lines = file.readlines()
     
         # Extract itype, nx, nz, Lx, Ly, Lz, Re, iswitch_wo 
+        # As always, index is 1 less of the line number (Python convention)
         itype      = lines[7]  
         nx         = lines[14]
         nz         = lines[16]
@@ -22,7 +23,7 @@ def read_input_files(filename1,filename2):
         Ly         = lines[22]
         Lz         = lines[23]
         re         = lines[26]
-        iswitch_wo = lines[91]
+        iswitch_wo = lines[87]
     
         # Removing characters in front of the extracted strings and the comments:
         # 1) split: the string is split when the specified character is encountered; 

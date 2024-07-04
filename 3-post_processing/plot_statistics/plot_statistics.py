@@ -53,6 +53,7 @@ print(f"Ly: {Ly}")
 print(f"Lz: {Lz}")
 print(f"Re: {re}")
 print(f"iswitch_wo: {iswitch_wo}")
+print(f"add_string: {add_string}")
 
 exit()
 
