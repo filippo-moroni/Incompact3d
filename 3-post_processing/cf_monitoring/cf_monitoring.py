@@ -156,7 +156,7 @@ if itype == 3:
 
         f.write(f"{mean_cf:{pp.fs2}}, "     +
                 f"{t_tot:{pp.fs}}, "        +
-                f"{delta:<{pp.fs}}, "       +
+                f"{delta:{pp.fs}}, "        +
                 f"{n_snap:{pp.fs}}\n"       )
                
 # Axes labels
