@@ -208,13 +208,7 @@ subroutine parameter(input_i3d)
   if (numscalar.ne.0) then
      read(10, nml=ScalarParam); rewind(10)
   endif
-  
-  ! These are the 'optional'/model parameters
-  if(ilesmod==0) then
-     nu0nu=four
-     cnu=0.44_mytype
-  endif
-  
+    
   if(ilesmod.ne.0) then
      read(10, nml=LESModel); rewind(10)
   endif
@@ -606,19 +600,43 @@ subroutine parameter_defaults()
   implicit none
 
   integer :: i
+  
+  ! BasicParam
+  istret      = 0
+  beta        = 0
+  iin         = 0
+  init_noise  = zero
+  iibm        = 0                      
+  ilmn        = .FALSE.                      
+  ilesmod     = 0
+  iscalar     = 0
+  ivisu       = 1  ! save snapshots: 1, do not save snapshots: 0
+  ipost       = 0
+  ifilter     = 0
+  C_filter    = 0.49_mytype
+  gravx       = zero
+  gravy       = zero
+  gravz       = zero 
+  
+  ! NumOptions
+  ipinter     = 3
+  itimescheme = 3
+  iimplicit   = 0                 
+  nu0nu       = four
+  cnu         = 0.44_mytype
+                     
+                       
 
   ro = 99999999._mytype
   angle = zero
 
-  init_noise = zero
-  iin = 0
-  itimescheme = 4
-  iimplicit = 0
-  istret = 0
-  ipinter=3
-  beta = 0
-  ilesmod = 0
-  iscalar = 0
+  
+  
+  
+  
+
+  
+  
   cont_phi = 0
   filepath = './data/'
   irestart = 0
@@ -639,12 +657,10 @@ subroutine parameter_defaults()
   itest=1
 
   ! Gravity field
-  gravx = zero
-  gravy = zero
-  gravz = zero
+
 
   ! LMN stuff
-  ilmn = .FALSE.
+  
   ilmn_bound = .TRUE.
   pressure0 = one
   prandtl = one
@@ -664,11 +680,10 @@ subroutine parameter_defaults()
   idir_stream = 1
 
   ! Filter
-  ifilter=0
-  C_filter=0.49_mytype
+  
 
   ! IO
-  ivisu = 1  ! save snapshots: 1, do not save snapshots: 0
+  
   ipost = 0
   iprocessing = huge(i)
   initstat = huge(i)
@@ -678,8 +693,8 @@ subroutine parameter_defaults()
   ioutflow=0
   output2D = 0
 
-  ipost = 0
-  iibm=0
+  
+  
   npif = 2
   izap = 1
 
