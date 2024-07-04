@@ -30,8 +30,7 @@
 !    Methods in Fluids, vol 67 (11), pp 1735-1757
 !################################################################################
 module variables
-  !USE param
-  !USE var
+    
   use decomp_2d, only : mytype
 
   ! Boundary conditions : ncl = 2 --> Dirichlet
@@ -52,12 +51,11 @@ module variables
 
   !Possible n points: 3 5 7 9 11 13 17 19 21 25 31 33 37 41 49 51 55 61 65 73 81 91 97 101 109 121 129 145 151 161 163 181 193 201 217 241 251 257 271 289 301 321 325 361 385 401 433 451 481 487 501 513 541 577 601 641 649 721 751 769 801 811 865 901 961 973 1001 1025 1081 1153 1201 1251 1281 1297 1351 1441 1459 1501 1537 1601 1621 1729 1801 1921 1945 2001 2049 2161 2251 2305 2401 2431 2501 2561 2593 2701 2881 2917 3001 3073 3201 3241 3457 3601 3751 3841 3889 4001 4051 4097 4321 4375 4501 4609 4801 4861 5001 5121 5185 5401 5761 5833 6001 6145 6251 6401 6481 6751 6913 7201 7291 7501 7681 7777 8001 8101 8193 8641 8749 9001 9217 9601 9721 enough
 
-  integer :: nx,ny,nz,numscalar,p_row,p_col,nxm,nym,nzm,spinup_time
+  integer :: nx,ny,nz,numscalar,p_row,p_col,nxm,nym,nzm
   integer :: nstat=1,nvisu=1,nprobe=1,nlength=1,ilist=25
 
   real(mytype),allocatable,dimension(:) :: sc,uset,cp,ri,group
-  real(mytype) :: nu0nu, cnu
-
+  
 #ifndef DOUBLE_PREC
   integer,parameter :: prec = 4
 #else
@@ -284,7 +282,6 @@ module variables
 
 end module variables
 !############################################################################
-!############################################################################
 module param
 
   use decomp_2d, only : mytype
@@ -299,11 +296,12 @@ module param
   integer :: itype
   integer, parameter :: itype_user = 0,    &
                         itype_channel = 3, &
+                        itype_dbg = 6,     &
                         itype_ttbl = 13
 
   integer :: cont_phi,itr,itime,itest,iprocessing
   integer :: ifft,istret,iforc_entree,iturb
-  integer :: iin,itimescheme,iimplicit,ifirst,ilast,iles
+  integer :: iin,ifirst,ilast,iles
   integer :: ntime ! How many (sub)timestpeps do we need to store?
   integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,imodulo2,idemarre,icommence,irecord
   integer :: ioutflow, ninflows, ntimesteps
@@ -313,8 +311,8 @@ module param
   integer :: ivisu, ipost, initstat
   integer :: ifilter
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
-  real(mytype) :: dt,re,xnu,init_noise,inflow_noise,u1,u2,angle,anglex,angley
-  real(mytype) :: wrotation,ro
+  real(mytype) :: dt,re,xnu,init_noise
+  
   real(mytype) :: dens1, dens2
   real(mytype) :: C_filter
   character(len=100) :: inflowpath
@@ -322,17 +320,19 @@ module param
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.
   logical, save :: sync_scal_needed = .true.
-
-  ! Channel flow
-  integer :: idir_stream
-  logical :: cpg
-  real(mytype) :: re_cent, fcpg, re_bulk, re_tau
+  
+  ! Numerics control
+  integer      :: ifirstder,isecondder,ipinter,itimescheme,iimplicit
+  real(mytype) :: nu0nu, cnu
+  
+  !--- Channel flow ---!
+  logical            :: cpg
+  integer            :: idir_stream, spinup_time
+  real(mytype)       :: wrotation
+  real(mytype)       :: re_cent, fcpg, re_bulk, re_tau
   real(mytype), save :: ubulk  ! Bulk velocity
 
-  !! Numerics control
-  integer :: ifirstder,isecondder,ipinter
-
-  !! CFL_diffusion parameter
+  ! Numerical Fourier (CFL diffusion parameter)
   real(mytype) :: cfl_diff_x,cfl_diff_y,cfl_diff_z,cfl_diff_sum
 
   !!
@@ -370,9 +370,6 @@ module param
 
   logical :: ibirman_eos
   
-  !! Case-specific variables
-  logical :: tgv_twod
-
   character :: filesauve*80, filenoise*80, &
        nchamp*80,filepath*80, fileturb*80, filevisu*80, datapath*80
   real(mytype), dimension(5) :: adt,bdt,cdt,ddt,gdt
@@ -386,53 +383,54 @@ module param
   integer :: save_dphidx,save_dphidy,save_dphidz,save_abs,save_V
     
   ! Shear quantities at the wall (used for Channel and TTBL)
-  real(mytype), save :: sh_vel       ! total shear velocity
-  real(mytype), save :: sh_velx      ! shear velocity along x
-  real(mytype), save :: sh_velz      ! shear velocity along z
-  real(mytype), save :: fric_coeff   ! total skin friction coefficient
-  real(mytype), save :: fric_coeffx  ! skin friction coefficient along x
-  real(mytype), save :: fric_coeffz  ! skin friction coefficient along z
-  real(mytype), save :: t_viscous    ! viscous time unit (based on shear velocity and viscous length)
+  real(mytype), save :: sh_vel        ! Total shear velocity
+  real(mytype), save :: sh_velx       ! Shear velocity along x
+  real(mytype), save :: sh_velz       ! Shear velocity along z
+  real(mytype), save :: fric_coeff    ! Total skin friction coefficient
+  real(mytype), save :: fric_coeffx   ! Skin friction coefficient along x
+  real(mytype), save :: fric_coeffz   ! Skin friction coefficient along z
+  real(mytype), save :: t_viscous     ! Viscous time unit (based on shear velocity and viscous length)
   
-  real(mytype), save :: deltaxplus   ! delta x^+
-  real(mytype), save :: deltayplusw  ! delta y^+ at the wall
-  real(mytype), save :: deltazplus   ! delta z^+
-  real(mytype), save :: deltayplusd  ! delta y^+ at the TTBL mean interface or at channel half-height
+  real(mytype), save :: deltaxplus    ! Delta x^+
+  real(mytype), save :: deltayplusw   ! Delta y^+ at the wall
+  real(mytype), save :: deltazplus    ! Delta z^+
+  real(mytype), save :: deltayplusd   ! Delta y^+ at the TTBL mean interface or at channel half-height
     
-  real(mytype), save :: xlxplus      ! Lx^+
-  real(mytype), save :: ylyplus      ! Ly^+
-  real(mytype), save :: zlzplus      ! Lz^+
-  
-  real(mytype), save :: delta_nu     ! viscous unit
-  
+  real(mytype), save :: xlxplus       ! Lx^+
+  real(mytype), save :: ylyplus       ! Ly^+
+  real(mytype), save :: zlzplus       ! Lz^+
+  real(mytype), save :: delta_nu      ! Viscous unit (length)
+    
   !--- Additional controls namelist and related quantities ---!
   
   ! Spanwise wall oscillations
-  integer      :: iswitch_wo         ! switcher to enable the reading of wall-oscillation parameters and the application of wall oscillations
-  real(mytype) :: span_vel           ! spanwise velocity at the wall due to imposed wall oscillations, variable calculated
+  integer      :: iswitch_wo          ! Switcher to enable the reading of wall-oscillation parameters and the application of wall oscillations
+  real(mytype) :: span_vel            ! Spanwise velocity at the wall due to imposed wall oscillations, variable calculated
   
   !--- TTBL namelist and related quantities ---!
   
   ! Temporal TBL input parameters
-  real(mytype) :: uwall              ! velocity of translating bottom wall (U_wall) 
-  real(mytype) :: twd                ! trip wire diameter (D)
-  real(mytype) :: uln                ! upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
-  real(mytype) :: lln                ! lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
-  real(mytype) :: phiwall            ! scalar value at the wall
+  real(mytype) :: uwall               ! Velocity of translating bottom wall (U_wall) 
+  real(mytype) :: twd                 ! Trip wire diameter (D)
+  real(mytype) :: uln                 ! Upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al.)
+  real(mytype) :: lln                 ! Lower limit of the noise; y+ restriction, based on the mean gradient of the IC 
+  real(mytype) :: phiwall             ! Scalar value at the wall
   
   ! Temporal TBL output(s)
-  real(mytype) :: powerin            ! power input to the TTBL 
+  real(mytype) :: powerin             ! Power input to the TTBL 
   
   ! Boundary layer thickness parameters (TTBLs only)
-  real(mytype), save :: delta_99     ! BL thickness (1% of velocity of the wall)   
-  real(mytype), save :: re_tau_tbl   ! Friction Reynolds number based on mean streamwise gradient
-  integer,      save :: counter      ! Index to save the position of the yp array at which there is the BL mean interface 
+  real(mytype), save :: delta_99      ! BL thickness (1% of velocity of the wall)   
+  real(mytype), save :: re_tau_tbl    ! Friction Reynolds number based on mean streamwise gradient
+  integer,      save :: counter       ! Index to save the position of the yp array at which there is the BL mean interface 
+  real(mytype), save :: mean_phigwtot ! Mean scalar gradient at the wall total (all processors)
+  real(mytype), save :: A_fact        ! Analogy factor to monitor runtime the degree of dissimilarity
   
   !--- Extra numerics control namelist and related quantities ---!
   
   ! Extra controls for numerics 
-  integer      :: icfllim            ! index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-  real(mytype) :: cfl_limit          ! CFL limit to adjust the time-step
+  integer      :: icfllim             ! Index or switcher for enabling CFL limit constraint (0: no, 1: yes)
+  real(mytype) :: cfl_limit           ! CFL limit to adjust the time-step
   
   ! Variable to save and show the maximum CFL in the restart file
   real(mytype) :: cflmax
@@ -440,11 +438,12 @@ module param
   !--- Wall oscillations namelist and related quantities ---!
   
   ! Parameters for wall oscillations (used for channel flows and TTBLs)
-  real(mytype) :: a_wo               ! amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
-  real(mytype) :: t_wo               ! period of spanwise wall oscillations (in friction units if feedback control enabled) 
-  integer      :: ifeedback_control  ! switcher to enable feedback control from run-time streamwise shear velocity (closed loop)
+  real(mytype) :: a_wo                ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
+  real(mytype) :: t_wo                ! Period of spanwise wall oscillations (in friction units if feedback control enabled) 
+  integer      :: ifeedback_control   ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop)
+  real(mytype) :: in_phase            ! Initial phase of the wall oscillations, given as fraction of pi [rad]
     
-  !numbers
+  ! Numbers
   real(mytype),parameter :: zpzeroone=0.01_mytype
   real(mytype),parameter :: zpone=0.1_mytype
   real(mytype),parameter :: zptwo=0.2_mytype
