@@ -245,6 +245,7 @@ subroutine parameter(input_i3d)
      nzm=nz-1
   endif
 
+  ! Mesh spacings
   dx=xlx/real(nxm,mytype)
   dy=yly/real(nym,mytype)
   dz=zlz/real(nzm,mytype)
@@ -253,7 +254,7 @@ subroutine parameter(input_i3d)
   dy2 = dy * dy
   dz2 = dz * dz
 
-  xnu=one/re
+  xnu = one/re
   
   ! Calculation of correct viscosity and Re numbers for a channel flow case
   if (itype .eq. itype_channel) then
@@ -311,10 +312,12 @@ subroutine parameter(input_i3d)
 #endif
 
   if (iimplicit.ne.0) then
+     
      !if ((itimescheme==5).or.(itimescheme==6)) then
      !   if (nrank==0) write(*,*) 'Error: implicit Y diffusion not yet compatible with RK time schemes'
      !   stop
      !endif
+     
      if (isecondder==5) then
         if (nrank==0) write(*,*)  "Warning : support for implicit Y diffusion and isecondder=5 is experimental"
      endif
