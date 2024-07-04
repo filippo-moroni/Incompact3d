@@ -17,7 +17,7 @@ config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
 sys.path.append(config_path)
 
 # Import the plotting_params module
-import plotting_params as pp
+import plot_params as pp
 
 # Import function to set plots
 from plot_settings import set_plot_settings

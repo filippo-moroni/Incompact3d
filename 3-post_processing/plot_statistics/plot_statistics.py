@@ -25,10 +25,13 @@ config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
 sys.path.append(config_path)
 
 # Import the plotting_params module
-import plotting_params as pp
+import plot_params as pp
 
 # Import function to set plots
 from plot_settings import set_plot_settings
+
+# Import function to read 'input.i3d' and 'post.prm' files
+from read_input_files import read_input_files
 
 #!--------------------------------------------------------------------------------------!
 
@@ -37,6 +40,22 @@ os.makedirs('data_post', mode=0o777, exist_ok=True)
 os.makedirs('plots',     mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
+
+# Read useful flow parameters from 'input.i3d' and 'post.prm' files
+itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, add_string = read_input_files('input.i3d','post.prm')
+
+# Now you can use the variables as needed
+print(f"itype: {itype}")
+print(f"nx: {nx}")
+print(f"nz: {nz}")
+print(f"Lx: {Lx}")
+print(f"Ly: {Ly}")
+print(f"Lz: {Lz}")
+print(f"Re: {re}")
+print(f"iswitch_wo: {iswitch_wo}")
+
+exit()
+
 
 # Read the name of the flowcase
 with open('post.prm', 'r') as file:
