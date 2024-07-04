@@ -27,9 +27,6 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plot_params as pp
 
-# Import function to set plots
-from plot_settings import set_plot_settings
-
 # Import function to read 'input.i3d' and 'post.prm' files
 from read_incompact3d_files import read_input_files
 
@@ -40,12 +37,16 @@ itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string
 
 #!--------------------------------------------------------------------------------------!
 
-# Local variables
-nu = 1.0/re
-ii = 0
+# Create the folder to store the results
+os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
 
-# Number of snapshots
-ns = (filen - file1)//icrfile + 1 
+#!--------------------------------------------------------------------------------------!
+
+# Local variables
+uwall = np.float64(1.0)            # Wall velocity for TTBL
+nu    = np.float64(1.0/re)         # Kinematic viscosity
+ii    = 0                          # Index for BL thickness parameters vectors 
+ns = (filen - file1)//icrfile + 1  # Number of snapshots
 
 # Work arrays
 delta_99  = np.zeros(ns)
@@ -147,42 +148,30 @@ re_tau   = delta_99*sh_vel*re
 re_ds    = disp_t*uwall*re
 re_theta = mom_t*uwall*re
 
-# Column width for writing to .txt file
-c_w = 20  
-
-# Format for numbers
-fs = f"<{c_w}.3f"
-
-# Format for cf only
-fs2 = f"<{c_w}.6f"
-
-# Create the folder to store the results
-os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
-
 # Create the file and write  
 with open('integral_statistics/integral_statistics.txt', 'w') as f:
-    f.write(f"{'delta_99 O(6)':<{c_w}}, " +
-            f"{'disp_t O(6)':<{c_w}}, " +
-            f"{'mom_t O(6)':<{c_w}}, " +
-            f"{'Re_tau O(6)':<{c_w}}, " +
-            f"{'Re_ds O(6)':<{c_w}}, " +
-            f"{'Re_theta O(6)':<{c_w}}, " +
-            f"{'sh_velx O(6)':<{c_w}}, " +
-            f"{'cf,x O(6)':<{c_w}}, " +
-            f"{'A_fact O(6)':<{c_w}}, " +
-            f"{'time_unit':<{c_w}}\n")
+    f.write(f"{'delta_99 O(6)':<{pp.c_w}}, " +
+            f"{'disp_t O(6)':<{pp.c_w}}, "   +
+            f"{'mom_t O(6)':<{pp.c_w}}, "    +
+            f"{'Re_tau O(6)':<{pp.c_w}}, "   +
+            f"{'Re_ds O(6)':<{pp.c_w}}, "    +
+            f"{'Re_theta O(6)':<{pp.c_w}}, " +
+            f"{'sh_velx O(6)':<{pp.c_w}}, "  +
+            f"{'cf,x O(6)':<{pp.c_w}}, "     +
+            f"{'A_fact O(6)':<{pp.c_w}}, "   +
+            f"{'time_unit':<{pp.c_w}}\n"     )
 
     for j in range(0, ii):
-        f.write(f"{delta_99[j]:{fs}}, " +
-            f"{disp_t[j]:{fs}}, " +
-            f"{mom_t[j]:{fs}}, " +
-            f"{re_tau[j]:{fs}}, " +
-            f"{re_ds[j]:{fs}}, " +
-            f"{re_theta[j]:{fs}}, " +
-            f"{sh_vel[j]:{fs}}, " +
-            f"{cf[j]:{fs2}}, " +
-            f"{a_fact[j]:{fs}}, " +
-            f"{time_unit[j]:{fs}}\n")
+        f.write(f"{delta_99[j]:{pp.fs}}, "   +
+            f"{disp_t[j]:{pp.fs}}, "         +
+            f"{mom_t[j]:{pp.fs}}, "          +
+            f"{re_tau[j]:{pp.fs}}, "         +
+            f"{re_ds[j]:{pp.fs}}, "          +
+            f"{re_theta[j]:{pp.fs}}, "       +
+            f"{sh_vel[j]:{pp.fs}}, "         +
+            f"{cf[j]:{pp.fs2}}, "            +
+            f"{a_fact[j]:{pp.fs}}, "         +
+            f"{time_unit[j]:{pp.fs}}\n"      )
            
 #!---------------------------------------------------------!
 # Check section (everything works)
