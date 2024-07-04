@@ -11,11 +11,11 @@
 # of the analogy factor of the Reynolds analogy. 
 
 # Libraries
+import os
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import InterpolatedUnivariateSpline
-import os
 import xml.etree.ElementTree as ET 
+from scipy.interpolate import InterpolatedUnivariateSpline
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
