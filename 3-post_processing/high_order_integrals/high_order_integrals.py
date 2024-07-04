@@ -128,7 +128,7 @@ for i in range(file1, filen + icrfile, icrfile):
     
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     
-    mgpar = data[:, 4]  # mean gradient parallel to the wall
+    mgpar = data[:, 3]  # mean gradient parallel to the wall
     mgx   = data[:, 4]  # mean streamwise gradient 
     mgphi = data[:, 6]  # mean scalar gradient
         

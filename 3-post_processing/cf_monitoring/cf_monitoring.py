@@ -23,7 +23,7 @@ import plot_params as pp
 from plot_settings import set_plot_settings
 
 # Import function to read 'input.i3d' and 'post.prm' files
-from read_input_files import read_input_files
+from read_incompact3d_files import read_input_files
 
 #!--------------------------------------------------------------------------------------!
 
