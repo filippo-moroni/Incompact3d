@@ -25,7 +25,6 @@ zlz = 4.2             ! Lz (Size of the box in z-direction)
 
 ! Flow parameters
 re  = 4764.0          ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) 
-cpg = F               ! if cpg=T, then re is friction Reynolds number
 
 ! Time stepping
 dt = 0.0025           ! Time step
@@ -35,14 +34,11 @@ ilast = 800000        ! Last iteration
 ! Enable modelling tools
 numscalar = 0         ! Number of scalars 
 
-! Boundary and initial conditions
+! Initial conditions
 iin = 1               ! Inflow conditions (1: classic, 2: turbinit, 4: SEM)
-u1  = 1.0             ! u1 (max velocity) (for inflow condition)
-u2  = 1.0             ! u2 (min velocity) (for inflow condition)
-init_noise = 0.125    ! Turbulence intensity (1=100%)  ! Initial condition
-inflow_noise = 0.0    ! Turbulence intensity (1=100%)  ! Inflow condition
-idir_stream  = 1      ! Index of the streamwise direction (1=X, 3=Z, 2 not available)
+init_noise = 0.125    ! Turbulence intensity for initial condition (1=100%)  
 
+! Boundary conditions
 nclx1 = 0             ! 1: first element, n: last element
 nclxn = 0             ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
 ncly1 = 2
@@ -62,7 +58,7 @@ isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th
 ipinter = 2           ! Interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2, spectral-like behaviour)
 
 ! Time scheme
-itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler,2->AB2, 3->AB3, 4->AB4,5->RK3,6->RK4, 7-->CN2+AB3
+itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 4->AB4, 5->RK3, 6->RK4, 7-->CN2+AB3
 iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0->Same as convective, 1->Backward Euler, 2->CN
                       ! Implicit diffusion in y is valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
                       ! and it is experimental with the hyperviscous operator.
@@ -94,42 +90,26 @@ iswitch_wo = 0        ! Switcher for wall oscillations (0: no, 1: yes)
 /End
 
 !====================
-&Statistics
-!====================
-
-wrotation = 0.12      ! Rotation speed to trigger turbulence
-spinup_time = 10000   ! Number of time steps with rotation to trigger turbulence
-
-/End
-
-!====================
-&ScalarParam
-!====================
-
-Sc(1) = 1.0           ! Schmidt number (or Prandtl number, in case of a thermal problem)
-sc_skew(1) = T        ! Enable skew-symmetric form of advective term for scalar field (default: F) (F: false, T: true)
-ri(1) = 0.0           ! Richardson number
-
-nclxS1 = 0            ! 1: first element, n: last element
-nclxSn = 0            ! Values available: 0: periodic, 1: free-slip, 2: Dirichlet
-nclyS1 = 2
-nclySn = 2
-nclzS1 = 0
-nclzSn = 0
-
-/End
-
-!====================
 &WallOscillations
 !====================
 
+ifeedback_control = 0 ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
 a_wo = 0.0            ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
 t_wo = 100.0          ! Period of spanwise wall oscillations (in friction units if feedback control enabled)
-ifeedback_control = 0 ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
 in_phase = 0.0        ! Initial phase of the wall oscillations, given as fraction of pi [rad]
 
 /End
 
+!====================
+&ChannelParam
+!====================
+
+cpg = F               ! If cpg=T, then re is friction Reynolds number Re_tau
+idir_stream = 1       ! Streamwise direction (1: x-dir, 3: z-dir, 2: y-dir, not available)
+wrotation = 0.12      ! Rotation speed to trigger turbulence
+spinup_time = 10000   ! Number of time steps with rotation to trigger turbulence
+
+/End
 
 
 
