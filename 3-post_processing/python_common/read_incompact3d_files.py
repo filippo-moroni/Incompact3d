@@ -1,11 +1,13 @@
 #!-----------------------------------------------------------!
-#! This is a small function to read parameters of simulation !
-#! from 'input.i3d' and 'post.prm' files.                    !
+#! Here we store functions to read Incompact3d files:        !
+#! 'input.i3d', 'post.prm', 'yp.dat'.                        !
 #!-----------------------------------------------------------!
 
 import numpy as np
 
-# Define 'read_input_files' function
+# Define 'read_input_files' function, that reads parameters of simulation 
+# from 'input.i3d' and 'post.prm' files.
+
 def read_input_files(filename1,filename2):
     
     # Opening of 'input.i3d' file
@@ -69,13 +71,32 @@ def read_input_files(filename1,filename2):
         # Read all lines into a list
         lines = file.readlines()
    
-        # Extract flowcase name
-        add_string = lines[3] 
+        # Extract needed lines  
+        add_string = lines[3]   # Flow case name
+        file1      = lines[7]   # First snapshot index
+        filen      = lines[8]   # Final snapshot index
+        icrfile    = lines[9]   # File increment
+        nr         = lines[10]  # Number of flow realizations
+        
+        # Extract the needed variables
+        file1   =   file1.split('#')[0].strip()
+        filen   =   filen.split('#')[0].strip()
+        icrfile = icrfile.split('#')[0].strip()
+        nr      =      nr.split('#')[0].strip()
+        
         add_string = add_string.split('!')[0]
         add_string = add_string.rstrip()
-
+        
+        # Convert to needed variable type (integer)
+        file1      = int(file1)
+        filen      = int(filen)
+        icrfile    = int(icrfile)
+        nr         = int(nr)
+        
     # Return to main program with extracted parameters
-    return itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, add_string
+    return itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string
+    
+
     
     
     

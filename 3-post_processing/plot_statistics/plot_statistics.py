@@ -42,7 +42,7 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
-itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, add_string = read_input_files('input.i3d','post.prm')
+itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
     
@@ -201,7 +201,7 @@ mg_x   = M2[:,4]
 mg_z   = M2[:,5]
 
 # Reading of grid points
-y = np.loadtxt('yp.dat')
+y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Number of points in y direction
 ny = len(y)

@@ -17,32 +17,32 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 import os
 import xml.etree.ElementTree as ET 
 
-# Settings
-np.seterr(divide='ignore', invalid='ignore')
+# Get the current directory
+current_dir = os.path.dirname(__file__)
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "sans-serif",
-    "font.sans-serif": "Computer Modern Sans serif",
-})
+# Add the path to the 'python_common' directory relative to the current directory 
+config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
+sys.path.append(config_path)
 
-plt.rcParams.update({'figure.autolayout': True})
+# Import the plotting_params module
+import plot_params as pp
 
-# Parameters
-uwall = np.float64(1.0)    # Wall velocity, Uw
-re    = np.float64(500.0)  # Trip Reynolds number, Re_D
+# Import function to set plots
+from plot_settings import set_plot_settings
+
+# Import function to read 'input.i3d' and 'post.prm' files
+from read_incompact3d_files import read_input_files
+
+#!--------------------------------------------------------------------------------------!
+
+# Read useful flow parameters from 'input.i3d' and 'post.prm' files
+itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
+
+#!--------------------------------------------------------------------------------------!
+
+# Local variables
 nu = 1.0/re
 ii = 0
-
-# Reading of the post-processing input file for indexes calculation of snapshots
-file_path = f"post.prm"
-data = np.loadtxt(file_path, delimiter=None, dtype=int, comments='#', skiprows=5)
-
-# Inputs
-file1   = data[0]  # First snapshot index
-filen   = data[1]  # Final snapshot index
-icrfile = data[2]  # File increment
-nr      = data[3]  # Number of flow realizations
 
 # Number of snapshots
 ns = (filen - file1)//icrfile + 1 
@@ -57,12 +57,9 @@ a_fact    = np.zeros(ns)
 time_unit = np.zeros(ns)
 
 # Reading of yp coordinates
-file_path = 'yp.dat'
-data = np.loadtxt(file_path, delimiter=None, dtype=np.float64)
-yp = data[:]
-
-y0 = data[0]   # First element of yp vector (y = 0)
-yn = data[-1]  # Last  element of yp vector (y = Ly, height of the domain)
+yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+y0 = yp[0]   # First element of yp vector (y = 0)
+yn = yp[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
