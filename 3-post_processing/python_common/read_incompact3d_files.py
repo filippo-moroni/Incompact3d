@@ -73,10 +73,10 @@ def read_input_files(filename1,filename2):
    
         # Extract needed lines  
         add_string = lines[3]   # Flow case name
-        file1      = lines[7]   # First snapshot index
-        filen      = lines[8]   # Final snapshot index
-        icrfile    = lines[9]   # File increment
-        nr         = lines[10]  # Number of flow realizations
+        file1      = lines[5]   # First snapshot index
+        filen      = lines[6]   # Final snapshot index
+        icrfile    = lines[7]   # File increment
+        nr         = lines[8]   # Number of flow realizations
         
         # Extract the needed variables
         file1   =   file1.split('#')[0].strip()
