@@ -9,6 +9,7 @@ import matplotlib as mpl
 # Settings
 np.seterr(divide='ignore', invalid='ignore')
 
+plt.rcdefaults() 
 plt.rcParams.update({ 
     "text.usetex": True,  
     "font.family": "serif",
