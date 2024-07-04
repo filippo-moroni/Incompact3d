@@ -75,21 +75,24 @@ subroutine parameter(input_i3d)
                         iprocessing, ninflows, ntimesteps, inflowpath, ioutflow 
   
   NAMELIST /AdditionalControls/ iswitch_wo
-  NAMELIST /WallOscillations/ a_wo, t_wo, ifeedback_control, in_phase
+  NAMELIST /WallOscillations/ ifeedback_control, a_wo, t_wo, in_phase
   
   NAMELIST /ChannelParam/ cpg, idir_stream, wrotation, spinup_time
   NAMELIST /TemporalTBLParam/ uwall, twd, uln, lln, phiwall 
   
   NAMELIST /ScalarParam/ sc, ri, uset, cp, &
-       nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
-       scalar_lbound, scalar_ubound, sc_even, sc_skew, &
-       alpha_sc, beta_sc, g_sc, Tref
-  NAMELIST /LESModel/ jles, smagcst, smagwalldamp, nSmag, walecst, maxdsmagcst, iwall
-  NAMELIST /WallModel/ smagwalldamp
-  NAMELIST /ibmstuff/ cex,cey,cez,ra,nobjmax,nraf, npif, izap, ianal, imove, thickness, chord, omega ,ubcx,ubcy,ubcz,rads, c_air
+                         nclxS1, nclxSn, nclyS1, nclySn, nclzS1, nclzSn, &
+                         scalar_lbound, scalar_ubound, sc_even, sc_skew, &
+                         alpha_sc, beta_sc, g_sc, Tref
+       
+  NAMELIST /LESModel/ jles, smagcst, smagwalldamp, nsmag, walecst, maxdsmagcst, iwall
+  
+  NAMELIST /IbmStuff/ cex, cey, cez, ra, nobjmax, nraf, npif, izap, ianal, &
+                      imove, thickness, chord, omega, ubcx, ubcy, ubcz, rads, c_air
+  
   NAMELIST /LMN/ dens1, dens2, prandtl, ilmn_bound, ivarcoeff, ilmn_solve_temp, &
-       massfrac, mol_weight, imultispecies, primary_species, &
-       Fr, ibirman_eos
+                 massfrac, mol_weight, imultispecies, primary_species, &
+                 Fr, ibirman_eos
   
   ! Not used at the moment
   NAMELIST /Statistics/ nstat, initstat
@@ -212,9 +215,7 @@ subroutine parameter(input_i3d)
   if(ilesmod.ne.0) then
      read(10, nml=LESModel); rewind(10)
   endif
-  
-  !read(10, nml=TurbulenceWallModel); rewind(10)
-  
+    
   !read(10, nml=Statistics); rewind(10)
     
   ! Read extra numerics control (Adjustable time-step)
@@ -610,7 +611,7 @@ subroutine parameter_defaults()
   ilmn        = .FALSE.                      
   ilesmod     = 0
   iscalar     = 0
-  ivisu       = 1  ! save snapshots: 1, do not save snapshots: 0
+  ivisu       = 1  ! save snapshots (0: no, 1: yes)
   ipost       = 0
   ifilter     = 0
   C_filter    = 0.49_mytype
@@ -624,110 +625,84 @@ subroutine parameter_defaults()
   iimplicit   = 0                 
   nu0nu       = four
   cnu         = 0.44_mytype
-                     
-                       
-
-  ro = 99999999._mytype
-  angle = zero
-
   
+  ! InOutParam          
+  irestart    = 0                      
+  output2D    = 0                  
+  iprocessing = huge(i)                     
+  ninflows    = 1
+  ntimesteps  = 1
+  inflowpath  = './'
+  ioutflow    = 0
+
+  ! AdditionalControls
+  iswitch_wo  = 0  ! wall oscillations (0: no, 1: yes)
   
-  
-  
+  ! WallOscillations 
+  ifeedback_control = 0  ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
+  a_wo = twelve          ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled) 
+  t_wo = onehundred      ! Period of spanwise wall oscillations (in friction units if feedback control enabled) 
+  in_phase = zero        ! Initial phase of the wall oscillations, given as fraction of pi [rad]
 
-  
-  
-  cont_phi = 0
-  filepath = './data/'
-  irestart = 0
-  itime0 = 0
-  t0 = zero
-  datapath = './data/'
-
-  ! LES stuff
-  SmagWallDamp=0
-  nSmag=1
-
-  ! IBM stuff
-  nraf = 0
-  nobjmax = 0
-
-  wrotation = zero
-  irotation = 0
-  itest=1
-
-  ! Gravity field
-
-
-  ! LMN stuff
-  
-  ilmn_bound = .TRUE.
-  pressure0 = one
-  prandtl = one
-  dens1 = one
-  dens2 = one
-  ivarcoeff = .FALSE.
-  npress = 1 !! By default people only need one pressure field
-  ilmn_solve_temp = .FALSE.
-  imultispecies = .FALSE.
-  Fr = zero
-  ibirman_eos = .FALSE.
-
-  primary_species = -1
-
-  ! Channel
-  cpg = .false.
+  ! ChannelParam 
+  cpg         = .FALSE.
   idir_stream = 1
+  wrotation   = zero
 
-  ! Filter
+  ! TemporalTBLParam
+  uwall       = one          ! Velocity of translating bottom wall (U_wall)   
+  twd         = one          ! Trip wire diameter (D)
+  uln         = 0.01_mytype  ! Upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
+  lln         = 0.5_mytype   ! Lower limit of the noise; y+ restriction, based on the mean gradient of the IC
+  phiwall     = one          ! Scalar value at the wall
+   
+  ! ScalarParam
+  ! ...
   
+  ! LESModel 
+  smagwalldamp = 0
+  nsmag        = 1
+  
+  ! IbmStuff
+  nobjmax = 0
+  nraf    = 0
+  npif    = 2
+  izap    = 1
+  
+  ! LMN
+  dens1           = one
+  dens2           = one
+  prandtl         = one
+  ilmn_bound      = .TRUE.
+  ivarcoeff       = .FALSE.
+  ilmn_solve_temp = .FALSE.
+  imultispecies   = .FALSE.
+  primary_species = -1
+  Fr              = zero    
+  ibirman_eos     = .FALSE. 
+  
+  ! Statistics               
+  initstat = huge(i)                
+  
+  ! ExtraNumControl 
+  icfllim   = 0     ! Switcher to enable CFL limit constraint (0: no, 1: yes)
+  cfl_limit = 0.95  ! CFL limit to adjust time-step 
+  
+  !-- Additional parameters not present in namelists --!                  
+  imodulo2  = 1
+  ro        = 99999999._mytype
+  angle     = zero
+  cont_phi  = 0
+  filepath  = './data/'
+  datapath  = './data/'
+  itime0    = 0
+  t0        = zero
+  pressure0 = one
+  irotation = 0
+  itest     = 1
+  npress    = 1  ! By default only one pressure field is needed
 
-  ! IO
-  
-  ipost = 0
-  iprocessing = huge(i)
-  initstat = huge(i)
-  ninflows=1
-  ntimesteps=1
-  inflowpath='./'
-  ioutflow=0
-  output2D = 0
-
-  
-  
-  npif = 2
-  izap = 1
-
-  imodulo2 = 1
-  
-  ! Additional controls
-  iswitch_wo = 0 ! (wall oscillations 0: no, 1: yes)
-  
-  ! Temporal TBL
-  if(itype .eq. itype_ttbl) then
-      uwall   = one       ! Velocity of translating bottom wall (U_wall)   
-      phiwall = one       ! Scalar value at the wall
-  else
-      uwall   = zero      ! Velocity of translating bottom wall (U_wall)   
-      phiwall = zero      ! Scalar value at the wall
-  end if 
-  
-  twd = one               ! Trip wire diameter (D)
-  uln = 0.01_mytype       ! Upper limit of the noise; (uwall - um) < uln*uwall; (default value as Kozul et al. (2016))
-  lln = 0.5_mytype        ! Lower limit of the noise; y+ restriction, based on the mean gradient of the IC
-    
-  ! Extra numerics control
-  icfllim = 0             ! Index or switcher for enabling CFL limit constraint (0: no, 1: yes)
-  cfl_limit = 0.95        ! CFL limit to adjust the time-step 
-  
-  ! Controls for wall oscillations
-  a_wo = twelve           ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled) 
-  t_wo = onehundred       ! Period of spanwise wall oscillations (in friction units if feedback control enabled) 
-  ifeedback_control = 0   ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)
-  in_phase = zero         ! Initial phase of the wall oscillations, given as fraction of pi [rad]
-  
 end subroutine parameter_defaults
-
 
 
 
