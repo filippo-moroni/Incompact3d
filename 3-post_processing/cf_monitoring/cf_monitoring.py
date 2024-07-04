@@ -22,6 +22,9 @@ import plot_params as pp
 # Import function to set plots
 from plot_settings import set_plot_settings
 
+# Import function to read 'input.i3d' and 'post.prm' files
+from read_input_files import read_input_files
+
 #!--------------------------------------------------------------------------------------!
 
 # Default value for axes limits
@@ -30,50 +33,18 @@ xlimsup     = 1500.0           # x axis superior limit
 yliminf     = 0.0              # y axis inferior limit
 ylimsup     = 0.008            # y axis superior limit
 
-# CPG option when CFR is imposed
-cpg_check = 'F'
+#!--------------------------------------------------------------------------------------!
+
+# Create folders to store later results (e.g. cf_mean and plot)
+os.makedirs('data_post', mode=0o777, exist_ok=True)
+os.makedirs('plots',     mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
-# Read the name of the flowcase
-with open('post.prm', 'r') as file:
-    
-    # Read all lines into a list
-    lines = file.readlines()
-    
-    # Extract flowcase name
-    add_string = lines[3] 
-    add_string = add_string.split('!')[0]
-    add_string = add_string.rstrip()
+# Read useful flow parameters from 'input.i3d' and 'post.prm' files
+itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, add_string = read_input_files('input.i3d','post.prm')
 
-# Read if we are plotting a channel or a TTBL
-with open('input.i3d', 'r') as file:
-    
-    # Read all lines into a list
-    lines = file.readlines()
-    
-    # Extract the 8th line, where itype is specified 
-    line = lines[7]  
-    
-    # Removing characters in front of the itype value
-    itype = line.split('=')[-1].strip()
-    
-    # Convert to integer
-    itype = int(itype)
-
-# If channel flow, see if CPG option is enabled or not
-if itype == 3:
-    with open('input.i3d', 'r') as file:
-    
-        # Read all lines into a list
-        lines = file.readlines()
-    
-        # Extract the 28th line, where cpg option is specified 
-        line = lines[27]  
-    
-        # Removing characters in front of the cpg option and the comment
-        line = line.split('!')[0]
-        cpg = line.split('=')[-1].strip()
+#!--------------------------------------------------------------------------------------!
                          
 #!--- Reading of files section ---!
 
@@ -123,9 +94,6 @@ if itype == 3:
 print("!--- Plotting of friction coefficient ---!")
 print()
 
-# Creating the folder for cf plot if it does not exist
-os.makedirs('plots', mode=0o777, exist_ok=True)
-
 # Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
@@ -135,18 +103,22 @@ ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecol
 # Create a rectangle patch to show points we are excluding from average
 rect = patches.Rectangle((0, 0), lower_tu, ylimsup, linewidth=0, edgecolor='none', facecolor='r', alpha=0.1)
 
+# Axes labels
+ax.set_xlabel(r'$t$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
 # Channel flow only
 if itype == 3:
+
+    # x-axis label 
+    ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
     # Add the patch to the plot
     ax.add_patch(rect)
     
     # Horizontal line to show mean cf value
     ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
-    
-    # Creating the folder for cf average
-    os.makedirs('data_post', mode=0o777, exist_ok=True)
-           
+               
     # Create the file and write  
     with open('data_post/cf_mean.txt', 'w') as f:
         f.write(f"{'cf_mean':<{pp.c_w}}, "  +
@@ -159,15 +131,7 @@ if itype == 3:
                 f"{delta:{pp.fs}}, "        +
                 f"{n_snap:{pp.fs}}\n"       )
                
-# Axes labels
-ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-# x-axis label for Channel with CPG off
-if itype == 3 and cpg == cpg_check:
-    ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-else:
-    ax.set_xlabel(r'$t$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
+               
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
