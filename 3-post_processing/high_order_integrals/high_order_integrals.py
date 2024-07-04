@@ -11,6 +11,7 @@
 # of the analogy factor of the Reynolds analogy. 
 
 # Libraries
+import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -87,14 +88,8 @@ for i in range(file1, filen + icrfile, icrfile):
     time_element = root.find(".//Grid/Time")
     if time_element is not None:
         time_str = time_element.attrib.get('Value', '').strip()
-        try:
-            time_unit[ii] = float(time_str)
-            print(f"Extracted time unit for snapshot-{i:04d}: {time_unit[ii]}")
-        except ValueError:
-            print(f"Warning: Failed to convert '{time_str}' to float for snapshot-{i:04d}")
-    else:
-        print(f"Warning: 'Time' element not found in {file_path}")
-                
+        time_unit[ii] = np.float64(time_str)
+                        
     # Reading of mean streamwise velocity
     file_path = f"data_post/mean_stats-{i:04d}.txt"
        
@@ -137,7 +132,7 @@ for i in range(file1, filen + icrfile, icrfile):
     cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
             
     # Analogy factor, ratio between mean gradient parallel to the wall of velocity and mean scalar gradient
-    a_fact[ii] = mgpar[0] / mgphi[0]
+    a_fact[ii] = np.abs(mgpar[0] / mgphi[0])
     
     # Index for BL thickness parameters vectors
     ii = ii + 1
