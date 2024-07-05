@@ -55,6 +55,7 @@ with open(file_path, 'rb') as file:
 # Reshape the fields to 2D arrays using Fortran order
 data = data.reshape((nx, ny), order='F')
 
+data = np.flipud(data.T)
 
 # Create meshgrid from x and y
 X, Y = np.meshgrid(x, y)
@@ -68,17 +69,20 @@ xlimsup = Lx
 yliminf = 0.0
 ylimsup = Ly
 
+extent = [0.0, Lx, 0.0, Ly]
+
 # Plotting 
 divider = make_axes_locatable(ax)
 cax = divider.append_axes('right', size='5%', pad=0.05)
 
-im = ax.imshow(data.T, cmap='bone')
+im = ax.imshow(data, cmap='Blues', extent=extent)
 
 fig.colorbar(im, cax=cax, orientation='vertical')
 
 # Axes labels
 ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
 
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
