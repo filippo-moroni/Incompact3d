@@ -115,6 +115,8 @@ while True:
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
         
     # Plotting with filled contours
+    #data = 1 - data
+    
     C = ax.contourf(x, y, data, lvls, cmap='Blues')
     
     # Colorbar
