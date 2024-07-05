@@ -42,7 +42,7 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
-itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
+itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
                          
