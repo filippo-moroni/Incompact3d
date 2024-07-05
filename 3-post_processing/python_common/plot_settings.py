@@ -4,6 +4,7 @@
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
+from matplotlib.ticker import LinearLocator
 
 def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
@@ -24,7 +25,7 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
     
         # Linear x-axis   
         ax.set_xscale('linear')
-            
+                    
     # Linear y-axis
     ax.set_yscale('linear')
 
@@ -34,3 +35,5 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
     # Setting x-ticks labels
     plt.xticks(ha='left')
+    
+

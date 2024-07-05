@@ -9,6 +9,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.ticker import MultipleLocator
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -98,6 +99,10 @@ ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+# Specify manually the interval for xticks
+major_ticks_interval = 10.0
+ax.xaxis.set_major_locator(MultipleLocator(major_ticks_interval))
 
 # Saving the figure
 plt.savefig(f'images/phiplanez_{add_string}.png', format='png', bbox_inches='tight', dpi=300)
