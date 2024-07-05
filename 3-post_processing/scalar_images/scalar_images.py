@@ -50,6 +50,9 @@ ylimsup = 1.0
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lx, 0.0, Ly]
 
+print(Lx)
+print(Ly)
+
 #!--------------------------------------------------------------------------------------!
 
 #!--- Mesh section ---!
@@ -105,8 +108,8 @@ while True:
     # Plotting the image
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size='10%', pad=0.05)
-    im = ax.imshow(data, cmap='Blues', extent=extent, vmin=0.0, vmax=1.0)
-
+    im = ax.imshow(data, cmap='Blues', extent=extent, vmin=0.0, vmax=1.0, aspect='auto')
+    
     # Colorbar
     cbar = fig.colorbar(im, cax=cax, orientation='vertical')
 
