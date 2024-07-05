@@ -62,9 +62,6 @@ x = np.linspace(0.0, Lx, nx)
 # Read y-coordinates vector
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
-# Create meshgrid from x and y
-X, Y = np.meshgrid(x, y)
-
 #!--------------------------------------------------------------------------------------!
 
 # Use first realization folder to read planes if we have more than 1 realization
@@ -114,9 +111,7 @@ while True:
     # Values of iso-levels
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
         
-    # Plotting with filled contours
-    #data = 1 - data
-    
+    # Plotting with filled contours    
     C = ax.contourf(x, y, data, lvls, cmap='Blues')
     
     # Colorbar
@@ -126,7 +121,7 @@ while True:
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
      
     # Invert y axis of the colorbar 
-    cbar.ax.invert_yaxis() 
+    #cbar.ax.invert_yaxis() 
   
     # Colorbar label
     cbar.set_label(r'$\varphi/\varphi_w$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
@@ -148,6 +143,8 @@ while True:
     
     # Close the figure to release memory
     plt.close(fig)
+    plt.cla()
+    plt.clf()
         
     # Move to the next file index
     i += 1  
