@@ -43,7 +43,7 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 
 # Limits for axes (not used in reality, but needed to use 'set_plot_settings'
 xliminf = 0.0
-xlimsup = 1.0
+xlimsup = Lx
 yliminf = 0.0
 ylimsup = 1.0
 
