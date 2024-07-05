@@ -100,10 +100,8 @@ ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure
-plt.savefig(f'images/phiplanez_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'images/phiplanez_{add_string}.png', format='png', bbox_inches='tight', dpi=300)
     
-# Show the figure
-plt.show()
 
 
 
