@@ -54,18 +54,35 @@ with open(file_path, 'rb') as file:
 # Reshape the fields to 2D arrays using Fortran order
 data = data.reshape((nx, ny), order='F')
 
-# Print the reshaped data (optional)
-print(data)
 
+# Create meshgrid from x and y
+X, Y = np.meshgrid(x, y)
+
+# Mean velocity profile
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = 0.0
+xlimsup = Lx
+yliminf = 0.0
+ylimsup = Ly
 
 # Plotting with contourf
-plt.figure(figsize=(8, 6))
-plt.contourf(x, y, data, cmap='viridis')  # Plotting directly with X, Y, and data
-plt.colorbar(label='Value')  # Add a colorbar with label
-plt.title('Contour Plot of Data')
-plt.xlabel('X Axis')
-plt.ylabel('Y Axis')
-plt.grid(True)
+ax.contourf(X, Y, data.T, cmap='viridis')  # Plotting directly with X, Y, and data
+ax.colorbar(label='Value')  # Add a colorbar with label
+
+# Axes labels
+ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+# Saving the figure
+plt.savefig(f'images/phiplanez-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    
+# Show the figure
 plt.show()
 
 
