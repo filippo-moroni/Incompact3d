@@ -63,12 +63,11 @@ X, Y = np.meshgrid(x, y)
 # Mean velocity profile
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Limits for axes
-xliminf = 0.0
-xlimsup = Lx
-yliminf = 0.0
-ylimsup = Ly
 
+
+
+
+# Extent of the image (dimensions of the domain)
 extent = [0.0, Lx, 0.0, Ly]
 
 # Plotting 
@@ -77,7 +76,7 @@ cax = divider.append_axes('right', size='5%', pad=0.05)
 
 im = ax.imshow(data, cmap='Blues', extent=extent)
 
-fig.colorbar(im, cax=cax, orientation='vertical')
+fig.colorbar(im, cax=cax, orientation='vertical', vmin=0.0, vmax=1.0)
 
 # Axes labels
 ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
