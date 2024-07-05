@@ -12,6 +12,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.ticker import MultipleLocator
+import matplotlib
+
+# External component to avoid memory leaks in recursive plotting
+matplotlib.use('Agg')
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -120,9 +124,6 @@ while True:
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
      
-    # Invert y axis of the colorbar 
-    #cbar.ax.invert_yaxis() 
-  
     # Colorbar label
     cbar.set_label(r'$\varphi/\varphi_w$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
 
@@ -141,11 +142,10 @@ while True:
     # Saving the figure
     plt.savefig(f'images/phiplanez_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=300)
     
-    # Close the figure to release memory
-    plt.close(fig)
-    plt.cla()
+    # Clear and close the figure to release memory
     plt.clf()
-        
+    plt.close()
+    
     # Move to the next file index
     i += 1  
 
