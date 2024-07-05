@@ -72,7 +72,7 @@ ylimsup = Ly
 divider = make_axes_locatable(ax)
 cax = divider.append_axes('right', size='5%', pad=0.05)
 
-im = ax.imshow(data, cmap='bone')
+im = ax.imshow(data.T, cmap='bone')
 
 fig.colorbar(im, cax=cax, orientation='vertical')
 
