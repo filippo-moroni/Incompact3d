@@ -63,10 +63,7 @@ x = np.linspace(0.0, Lx, nx)
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Create meshgrid from x and y
-#X, Y = np.meshgrid(x, y)
-
-
-
+X, Y = np.meshgrid(x, y)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -110,15 +107,16 @@ while True:
     # Plotting the image
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size='10%', pad=0.05)
+    
     #im = ax.imshow(data, cmap='Blues', extent=extent, vmin=-0.001, vmax=1.0, origin='upper')
     
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
     
-    C = ax.contourf(x, y, data, lvls, extend='both', cmap='Blues')
+    C = ax.contourf(X, Y, data, lvls, extent=extent, cmap='Blues', aspect=(Lx, Ly))
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='vertical')
-    
+   
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
 
