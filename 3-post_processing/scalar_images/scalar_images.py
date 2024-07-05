@@ -122,7 +122,10 @@ while True:
        
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
-
+     
+    # Invert y axis of the colorbar 
+    cbar.ax.invert_yaxis() 
+  
     # Colorbar label
     cbar.set_label(r'$\varphi/\varphi_w$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
 
