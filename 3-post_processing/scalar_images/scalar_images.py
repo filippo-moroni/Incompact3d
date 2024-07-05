@@ -113,7 +113,7 @@ while True:
     
     # Values of iso-levels
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
-    
+        
     # Plotting with filled contours
     C = ax.contourf(x, y, data, lvls, cmap='Blues')
     
