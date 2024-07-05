@@ -8,6 +8,7 @@ import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -67,9 +68,13 @@ xlimsup = Lx
 yliminf = 0.0
 ylimsup = Ly
 
-# Plotting with contourf
-ax.contourf(X, Y, data.T, cmap='viridis')  # Plotting directly with X, Y, and data
-ax.colorbar(label='Value')  # Add a colorbar with label
+# Plotting 
+divider = make_axes_locatable(ax)
+cax = divider.append_axes('right', size='5%', pad=0.05)
+
+im = ax.imshow(data, cmap='bone')
+
+fig.colorbar(im, cax=cax, orientation='vertical')
 
 # Axes labels
 ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -80,7 +85,7 @@ ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure
-plt.savefig(f'images/phiplanez-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+plt.savefig(f'images/phiplanez_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
 plt.show()
