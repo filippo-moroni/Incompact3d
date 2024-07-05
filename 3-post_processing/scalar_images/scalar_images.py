@@ -68,19 +68,19 @@ X, Y = np.meshgrid(x, y)
 # Use first realization folder to read planes if we have more than 1 realization
 if nr != 1:
     # /data_ri folders if nr /= 1
-    file_path = f"data_r{nr:01d}/planes"
+    data_path = f"data_r{nr:01d}/planes"
 
 # Else use just /data folder       
 elif nr == 1:
     # /data folder if nr = 1
-    file_path = f"data/planes"
+    data_path = f"data/planes"
 
 # Cycle on all planes
 i = 0
 while True:
 
     # Create the file path for scalar planes
-    file_path = file_path + f'/phiplanez-{i:04d}.bin' 
+    file_path = data_path + f'/phiplanez-{i:04d}.bin' 
     
     # Exit the loop if the file does not exist
     if not os.path.exists(file_path):
@@ -126,7 +126,10 @@ while True:
     ax.xaxis.set_major_locator(MultipleLocator(major_ticks_interval))
 
     # Saving the figure
-    plt.savefig(f'images/phiplanez_{add_string}.png', format='png', bbox_inches='tight', dpi=300)
+    plt.savefig(f'images/phiplanez_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=300)
+    
+    # Close the figure to release memory
+    plt.close(fig)
     
     # Move to the next file index
     i += 1  
