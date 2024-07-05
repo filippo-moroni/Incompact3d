@@ -74,22 +74,23 @@ ylimsup = 1.0
 # Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lx, 0.0, Ly]
 
-# Plotting 
+# Plotting the image
 divider = make_axes_locatable(ax)
 cax = divider.append_axes('right', size='10%', pad=0.05)
-
 im = ax.imshow(data, cmap='Blues', extent=extent, vmin=0.0, vmax=1.0)
 
-fig.colorbar(im, cax=cax, orientation='vertical')
+# Colorbar
+cbar = fig.colorbar(im, cax=cax, orientation='vertical')
+
+# Colorbar ticks 
+cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
 
 # Axes labels
 ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
 
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
