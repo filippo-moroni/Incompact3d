@@ -109,7 +109,7 @@ while True:
     cax = divider.append_axes('right', size='10%', pad=0.05)
     
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
-    im = ax.imshow(data, cmap='Blues', extent=extent, vmin=-0.001, vmax=1.0, origin='upper')
+    im = ax.imshow(data, cmap='Blues', extent=extent, origin='upper')
     
     # Values of iso-levels
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
