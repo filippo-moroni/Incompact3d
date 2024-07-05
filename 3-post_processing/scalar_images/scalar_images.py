@@ -137,15 +137,7 @@ while True:
     # Move to the next file index
     i += 1  
 
-print(f"Reached file {i:04d} which does not exist. Stopping.")
-
-
-
-
-
-    
-
-
+print(f"Reached file index {i:04d} which does not exist. Stopping.")
 
 
 
