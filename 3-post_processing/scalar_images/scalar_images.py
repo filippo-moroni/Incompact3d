@@ -154,13 +154,13 @@ print(f"Reached file index {i:04d} which does not exist. Stopping.")
 #!--------------------------------------------------------------------------------------!
 
 # Change folder
-os.system("cd images")
+#os.system("cd images")
 
 # Create the video
-os.system("ffmpeg -y -framerate 30 -start_number 0 -i phiplanez_ttbl_small_%04d.png ttbl_phiplanez.mp4")
+#os.system("ffmpeg -y -framerate 30 -start_number 0 -i phiplanez_ttbl_small_%04d.png ttbl_phiplanez.mp4")
 
 # Slow-down it if necessary
-os.system("ffmpeg -y -i ttbl_phiplanez.mp4 -filter:v "setpts=4.0*PTS" ttbl_phiplanez_2.mp4")
+#os.system('fmpeg -i ttbl_phiplanez.mp4 -filter:v "setpts=4.0*PTS" ttbl_phiplanez_2.mp4')
 
 # Delete the original
 #os.system("rm ttbl_phiplanez.mp4")
