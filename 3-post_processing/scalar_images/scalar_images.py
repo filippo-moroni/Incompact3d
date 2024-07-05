@@ -48,9 +48,6 @@ with open(file_path, 'rb') as file:
 # Reshape the fields to 2D arrays using Fortran order
 data = data.reshape((nx, ny), order='F')
 
-# Access individual fields if needed, e.g., 'field1'
-field1 = data['field1']
-
 # Print the reshaped data (optional)
 print(data)
 
