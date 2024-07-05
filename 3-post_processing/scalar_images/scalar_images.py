@@ -115,10 +115,10 @@ while True:
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
     
     # Plotting with filled contours
-    C = ax.contourf(x, y, data, lvls, extent=extent, cmap='Blues')
+    C = ax.contourf(x, y, data, lvls, cmap='Blues')
     
     # Colorbar
-    cbar = fig.colorbar(C, cax=cax, orientation='vertical')
+    cbar = fig.colorbar(C, cax=cax, orientation='vertical', extend={0.0, 1.0})
    
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
