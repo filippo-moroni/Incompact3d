@@ -59,7 +59,7 @@ fs2 = f"<{c_w}.8f"
 
 # Parameters for contourf plots
 nlvl = 256         # number of isolevels
-pad_cbar_lab = 1   # padding of label of colorbar (cbar)
+pad_cbar_lab = -8  # padding of label of colorbar (cbar)
 
 
 
