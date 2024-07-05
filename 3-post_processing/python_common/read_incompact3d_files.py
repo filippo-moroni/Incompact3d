@@ -1,7 +1,7 @@
-#!-----------------------------------------------------------!
-#! Here we store functions to read Incompact3d files:        !
-#! 'input.i3d', 'post.prm', 'yp.dat'.                        !
-#!-----------------------------------------------------------!
+#!----------------------------------------------------!
+#! Here we store functions to read Incompact3d files: !
+#! 'input.i3d' and 'post.prm'.                        !
+#!----------------------------------------------------!
 
 import numpy as np
 

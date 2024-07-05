@@ -132,7 +132,7 @@ for i in range(file1, filen + icrfile, icrfile):
     cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
             
     # Analogy factor, ratio between mean gradient parallel to the wall of velocity and mean scalar gradient
-    a_fact[ii] = np.abs(mgpar[0] / mgphi[0])
+    a_fact[ii] = np.abs(mgphi[0] / mgpar[0])
     
     # Index for BL thickness parameters vectors
     ii = ii + 1
