@@ -42,7 +42,7 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
-itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
+itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
     
@@ -131,6 +131,9 @@ elif itype == 3:
 #!--- Reading of files section ---!
 print()
 
+# Reading of grid points
+y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+
 # Channel
 if itype == 3:
     
@@ -199,20 +202,6 @@ vort_z = M2[:,2]
 mg_tot = M2[:,3]
 mg_x   = M2[:,4]
 mg_z   = M2[:,5]
-
-# Reading of grid points
-y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-
-# Number of points in y direction
-ny = len(y)
-
-# Halve the points in y direction for a channel
-if itype == 3:
-    ny = (ny - 1) // 2 + 1
-
-# Select the height at which correlations are plotted
-y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
-print()
 
 #!--------------------------------------------------------------------------------------!
 
@@ -291,6 +280,10 @@ print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
 print()
 
 #!--- Calculations for correlations ---!
+
+# Select the height at which correlations are plotted
+y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
+print()
 
 # Search for the index corresponding to the target y+ for correlations
 c = 0 

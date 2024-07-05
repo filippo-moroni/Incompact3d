@@ -16,10 +16,11 @@ def read_input_files(filename1,filename2):
         # Read all lines into a list
         lines = file.readlines()
     
-        # Extract itype, nx, nz, Lx, Ly, Lz, Re, iswitch_wo 
+        # Extract itype, nx, ny, nz, Lx, Ly, Lz, Re, iswitch_wo 
         # As always, index is 1 less of the line number (Python convention)
         itype      = lines[7]  
         nx         = lines[14]
+        ny         = lines[15]
         nz         = lines[16]
         Lx         = lines[21]
         Ly         = lines[22]
@@ -36,6 +37,9 @@ def read_input_files(filename1,filename2):
     
         nx         = nx.split('!')[0]
         nx         = nx.split('=')[-1].strip()
+        
+        ny         = ny.split('!')[0]
+        ny         = ny.split('=')[-1].strip()
     
         nz         = nz.split('!')[0]
         nz         = nz.split('=')[-1].strip()
@@ -58,6 +62,7 @@ def read_input_files(filename1,filename2):
         # Convert to needed variable type (integer, float, etc.)
         itype      = int(itype)
         nx         = int(nx)
+        ny         = int(ny)
         nz         = int(nz)
         Lx         = np.float64(Lx)
         Ly         = np.float64(Ly)
@@ -92,9 +97,13 @@ def read_input_files(filename1,filename2):
         filen      = int(filen)
         icrfile    = int(icrfile)
         nr         = int(nr)
+    
+    # Halve the points in y direction for a channel
+    if itype == 3:
+        ny = (ny - 1) // 2 + 1
         
     # Return to main program with extracted parameters
-    return itype, nx, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string
+    return itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string
     
 
     
