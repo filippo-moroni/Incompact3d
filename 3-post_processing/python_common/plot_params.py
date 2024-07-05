@@ -49,3 +49,9 @@ fs = f"<{c_w}.3f"
 
 # Format for cf only
 fs2 = f"<{c_w}.8f"
+
+# Parameters for contourf plots
+nlvl = 256  # number of isolevels
+
+
+

@@ -2,6 +2,8 @@
 #! With this script, we perform plotting of 2D z-normal    !
 #! planes of instantaneous scalar field, used for visual   !
 #! check of the evolution of a TTBL.                       !
+#!                                                         !
+#! Inspired by 'snap2png.py' by R. Corsini                 !
 #!---------------------------------------------------------!
 
 import sys
@@ -43,15 +45,12 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 
 # Limits for axes (not used in reality, but needed to use 'set_plot_settings'
 xliminf = 0.0
-xlimsup = Lx
+xlimsup = 1.0
 yliminf = 0.0
 ylimsup = 1.0
 
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lx, 0.0, Ly]
-
-print(Lx)
-print(Ly)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -64,7 +63,10 @@ x = np.linspace(0.0, Lx, nx)
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Create meshgrid from x and y
-X, Y = np.meshgrid(x, y)
+#X, Y = np.meshgrid(x, y)
+
+
+
 
 #!--------------------------------------------------------------------------------------!
 
@@ -99,8 +101,8 @@ while True:
     # Reshape scalar field to 2D array using Fortran order
     data = data.reshape((nx, ny), order='F')
 
-    # Transpose and flip upside-down
-    data = np.flipud(data.T)
+    # Transpose data
+    data = data.T
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -108,11 +110,15 @@ while True:
     # Plotting the image
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size='10%', pad=0.05)
-    im = ax.imshow(data, cmap='Blues', extent=extent, vmin=0.0, vmax=1.0, aspect='auto')
+    #im = ax.imshow(data, cmap='Blues', extent=extent, vmin=-0.001, vmax=1.0, origin='upper')
+    
+    lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
+    
+    C = ax.contourf(x, y, data, lvls, extend='both', cmap='Blues')
     
     # Colorbar
-    cbar = fig.colorbar(im, cax=cax, orientation='vertical')
-
+    cbar = fig.colorbar(C, cax=cax, orientation='vertical')
+    
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
 
