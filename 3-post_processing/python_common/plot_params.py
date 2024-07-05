@@ -6,9 +6,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-# Settings
+# Set Numpy
 np.seterr(divide='ignore', invalid='ignore')
 
+# Set Latex 
 plt.rcdefaults() 
 plt.rcParams.update({ 
     "text.usetex": True,  
@@ -16,6 +17,8 @@ plt.rcParams.update({
     "font.sans-serif": "Computer Modern",
     "figure.autolayout": True,
 })
+
+#!--------------------------------------------------------------------------------------!
 
 # Parameters for plotting
 lw           = 0.6             # linewidth for plots
@@ -41,6 +44,8 @@ grey = [0.5, 0.5, 0.5]
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes for the log law
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
+#!--------------------------------------------------------------------------------------!
+
 # Column width for writing to .txt file
 c_w = 16 
 
@@ -50,8 +55,11 @@ fs = f"<{c_w}.3f"
 # Format for cf only
 fs2 = f"<{c_w}.8f"
 
+#!--------------------------------------------------------------------------------------!
+
 # Parameters for contourf plots
-nlvl = 256  # number of isolevels
+nlvl = 256         # number of isolevels
+pad_cbar_lab = 1   # padding of label of colorbar (cbar)
 
 
 

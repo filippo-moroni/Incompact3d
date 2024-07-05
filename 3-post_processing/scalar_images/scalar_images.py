@@ -118,13 +118,13 @@ while True:
     C = ax.contourf(x, y, data, lvls, cmap='Blues')
     
     # Colorbar
-    cbar = fig.colorbar(C, cax=cax, orientation='vertical', extend={0.0, 1.0})
-   
+    cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=[0.0,1.0])
+       
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
 
     # Colorbar label
-    cbar.set_label(r'$\varphi/\varphi_w$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)  
+    cbar.set_label(r'$\varphi/\varphi_w$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
 
     # Axes labels
     ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
