@@ -38,33 +38,41 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 
 #!--------------------------------------------------------------------------------------!
 
+#!--- Mesh section ---!
+
 # Create x-coordinates vector
 x = np.linspace(0.0, Lx, nx)
 
 # Read y-coordinates vector
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
+# Create meshgrid from x and y
+X, Y = np.meshgrid(x, y)
+
+#!--------------------------------------------------------------------------------------!
+
 # Define the binary file path
 file_path = 'data/planes/phiplanez-0059.bin'
 
 
-# Read the binary file into a numpy array
+# Read the instantaneous scalar field binary file into a numpy array
 with open(file_path, 'rb') as file:
     data = np.fromfile(file, dtype=np.float64)
 
-# Reshape the fields to 2D arrays using Fortran order
+# Reshape scalar field to 2D array using Fortran order
 data = data.reshape((nx, ny), order='F')
 
+# Transpose and flip upside-down
 data = np.flipud(data.T)
 
-# Create meshgrid from x and y
-X, Y = np.meshgrid(x, y)
+# Limits for axes (not used in reality, but needed to use 'set_plot_settings'
+xliminf = 0.0
+xlimsup = 1.0
+yliminf = 0.0
+ylimsup = 1.0
 
-# Mean velocity profile
+# Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-
-
 
 
 # Extent of the image (dimensions of the domain)
@@ -72,11 +80,11 @@ extent = [0.0, Lx, 0.0, Ly]
 
 # Plotting 
 divider = make_axes_locatable(ax)
-cax = divider.append_axes('right', size='5%', pad=0.05)
+cax = divider.append_axes('right', size='10%', pad=0.05)
 
-im = ax.imshow(data, cmap='Blues', extent=extent)
+im = ax.imshow(data, cmap='Blues', extent=extent, vmin=0.0, vmax=1.0)
 
-fig.colorbar(im, cax=cax, orientation='vertical', vmin=0.0, vmax=1.0)
+fig.colorbar(im, cax=cax, orientation='vertical')
 
 # Axes labels
 ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
