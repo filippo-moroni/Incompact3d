@@ -86,6 +86,9 @@ while True:
     if not os.path.exists(file_path):
         break  
     
+    # Inform on current state
+    print(f"We are processing file:", file_path)
+    
     # Read the instantaneous scalar field binary file into a numpy array
     with open(file_path, 'rb') as file:
         data = np.fromfile(file, dtype=np.float64)
@@ -130,7 +133,7 @@ while True:
     
     # Close the figure to release memory
     plt.close(fig)
-    
+        
     # Move to the next file index
     i += 1  
 
