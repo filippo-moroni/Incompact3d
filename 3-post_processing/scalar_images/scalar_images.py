@@ -104,15 +104,18 @@ while True:
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-    # Plotting the image
+    # Functions to locate the colorbar
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size='10%', pad=0.05)
     
-    #im = ax.imshow(data, cmap='Blues', extent=extent, vmin=-0.001, vmax=1.0, origin='upper')
+    # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
+    im = ax.imshow(data, cmap='Blues', extent=extent, vmin=-0.001, vmax=1.0, origin='upper')
     
+    # Values of iso-levels
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
     
-    C = ax.contourf(X, Y, data, lvls, extent=extent, cmap='Blues', aspect=(Lx, Ly))
+    # Plotting with filled contours
+    C = ax.contourf(x, y, data, lvls, extent=extent, cmap='Blues')
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='vertical')
