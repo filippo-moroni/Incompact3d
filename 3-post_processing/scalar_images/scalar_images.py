@@ -37,6 +37,12 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 
 #!--------------------------------------------------------------------------------------!
 
+# Create x-coordinates vector
+x = np.linspace(0.0, Lx, nx)
+
+# Read y-coordinates vector
+y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+
 # Define the binary file path
 file_path = 'data/planes/phiplanez-0059.bin'
 
@@ -50,6 +56,17 @@ data = data.reshape((nx, ny), order='F')
 
 # Print the reshaped data (optional)
 print(data)
+
+
+# Plotting with contourf
+plt.figure(figsize=(8, 6))
+plt.contourf(x, y, data, cmap='viridis')  # Plotting directly with X, Y, and data
+plt.colorbar(label='Value')  # Add a colorbar with label
+plt.title('Contour Plot of Data')
+plt.xlabel('X Axis')
+plt.ylabel('Y Axis')
+plt.grid(True)
+plt.show()
 
 
 
