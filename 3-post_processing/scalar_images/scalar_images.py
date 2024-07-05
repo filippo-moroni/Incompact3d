@@ -140,7 +140,7 @@ while True:
     ax.xaxis.set_major_locator(MultipleLocator(major_ticks_interval))
 
     # Saving the figure
-    plt.savefig(f'images/phiplanez_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=300)
+    plt.savefig(f'images/phiplanez_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
     
     # Clear and close the figure to release memory
     plt.clf()
