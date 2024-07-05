@@ -34,3 +34,27 @@ os.makedirs('images', mode=0o777, exist_ok=True)
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
 itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
+
+#!--------------------------------------------------------------------------------------!
+
+# Define the binary file path
+file_path = 'data/planes/phiplanez-0059.bin'
+
+
+# Read the binary file into a numpy array
+with open(file_path, 'rb') as file:
+    data = np.fromfile(file, dtype=np.float64)
+
+# Reshape the fields to 2D arrays using Fortran order
+data = data.reshape((nx, ny), order='F')
+
+# Access individual fields if needed, e.g., 'field1'
+field1 = data['field1']
+
+# Print the reshaped data (optional)
+print(data)
+
+
+
+
+
