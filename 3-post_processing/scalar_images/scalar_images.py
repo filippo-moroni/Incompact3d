@@ -107,7 +107,7 @@ while True:
 
     # Functions to locate the colorbar
     divider = make_axes_locatable(ax)
-    cax = divider.append_axes('right', size='10%', pad=0.05)
+    cax = divider.append_axes('right', size='5%', pad=0.05)
     
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
     im = ax.imshow(data, cmap='Blues', extent=extent, origin='upper')
