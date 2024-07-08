@@ -336,8 +336,10 @@ print()
 
 #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
            
-# Create the file and write  
-with open('data_post/time_scales.txt', 'w') as f:
+# Create the file and write 
+
+#! to be completed 
+with open('data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'t_nu':<{pp.c_w}}, "        +
             f"{'min tau_eta':<{pp.c_w}}\n" )  
 
