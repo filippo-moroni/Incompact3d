@@ -151,9 +151,10 @@ while True:
     # Colorbar label
     cbar.set_label(r'$\varphi/\varphi_w$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
 
-    # Axes labels
+    # Axes labels and title
     ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.title(r'$Re_\tau = 're_tau '$', fontsize=pp.fla)
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
