@@ -649,8 +649,11 @@ ylimsup = max(Ruuz[c,:])*1.2
 # Streamwise velocity auto-correlations, Cuuz
 ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Kim et al. (1987) data
-ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+# Reference data for channel
+if itype == 3:
+
+    # Kim et al. (1987) data
+    ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cuu = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
@@ -686,8 +689,11 @@ ylimsup = max(Rvvz[c,:])*1.2
 # Vertical velocity auto-correlations, Cvvz
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Kim et al. (1987) data
-ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+# Reference data for channel
+if itype == 3:
+
+    # Kim et al. (1987) data
+    ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cvv = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
@@ -723,8 +729,11 @@ ylimsup = max(Rwwz[c,:])*1.2
 # Spanwise velocity auto-correlations, Cuuz
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Kim et al. (1987) data
-ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+# Reference data for channel
+if itype == 3:
+
+    # Kim et al. (1987) data
+    ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
 
 # Plot horizontal line at Cww = 0
 ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
