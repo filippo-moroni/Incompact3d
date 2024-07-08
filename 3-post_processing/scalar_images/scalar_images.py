@@ -33,6 +33,9 @@ from plot_settings import set_plot_settings
 # Import function to read 'input.i3d' and 'post.prm' files
 from read_incompact3d_files import read_input_files
 
+# Import function to read friction Reynolds number Re_tau from .xdmf files
+from read_retau import extract_re_tau_value 
+
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store images
@@ -82,7 +85,7 @@ elif nr == 1:
 i = 0
 while True:
 
-    # Create the file path for scalar planes
+    # Create the file path for scalar planes binary files
     file_path = data_path + f'/phiplanez-{i:04d}.bin' 
     
     # Exit the loop if the file does not exist
@@ -95,6 +98,18 @@ while True:
     # Read the instantaneous scalar field binary file into a numpy array
     with open(file_path, 'rb') as file:
         data = np.fromfile(file, dtype=np.float64)
+        
+      
+    # Create the file path for scalar planes .xdmf files
+    file_path = data_path + f'/phiplanez-{i:04d}.xdmf' 
+    
+    # Call external function to extract Re_tau value
+    re_tau = extract_re_tau_value(file_path)
+    if re_tau is not None:
+        print(f"Re_tau value: {re_tau}")
+    else:
+        print("Re_tau value could not be extracted.")
+
 
     # Reshape scalar field to 2D array using Fortran order
     data = data.reshape((nx, ny), order='F')
