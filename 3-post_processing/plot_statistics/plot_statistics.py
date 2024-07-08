@@ -33,6 +33,9 @@ from plot_settings import set_plot_settings
 # Import function to read 'input.i3d' and 'post.prm' files
 from read_incompact3d_files import read_input_files
 
+# Import function to read friction Reynolds number Re_tau from .xdmf files
+from read_retau import extract_re_tau_value 
+
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
@@ -362,14 +365,14 @@ if itype == 13:
         data_path = f"data"
       
     # Create the file path for snapshots .xdmf files
-    file_path = data_path + f'/snapshot-{i:04d}.xdmf' 
+    file_path = data_path + f'/snapshot-{snap_numb}.xdmf' 
     
     # Call external function to extract Re_tau value
     re_tau = extract_re_tau_value(file_path)
     
     # Print to screen the extracted value
     if re_tau is not None:
-        print(f"Re_tau = {re_tau}")
+        print(f"Friction Reynolds number, Re_tau = {re_tau}")
     else:
         print("Re_tau value could not be extracted.")
     print()
