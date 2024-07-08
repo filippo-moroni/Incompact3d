@@ -187,6 +187,8 @@ var_u   = M1[:,3]
 var_v   = M1[:,4]
 mean_uv = M1[:,12]
 
+
+
 # Valid only for Channel
 if itype == 3:
     
@@ -195,6 +197,13 @@ if itype == 3:
 
 # Valid only for TTBLs
 elif itype == 13:
+    
+    # Initialize the index
+    j = 0
+    
+    # Calculate the index at which the BL thickness delta99 is 
+    while mean_u[j] > mean_u[0]*0.01: 
+        j = j + 1
 
     # Shift due to the translating wall
     mean_u = uwall - mean_u
@@ -245,11 +254,6 @@ print()
 if itype == 3:
     delta_yd_plus = y_plus[ny-1] - y_plus[ny-2]
 elif itype == 13:
-    # Calculate the index at which the BL thickness delta99 is
-    j = 0
-    while mean_u[j] > mean_u[0]*0.01: 
-        j = j + 1
-    
     delta_yd_plus = y_plus[j] - y_plus[j-1] 
 
 #!--------------------------------------------------------------------------------------!
@@ -262,7 +266,7 @@ with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as 
             f"{'delta_y1^+':<{pp.c_w}}, " +
             f"{'delta_z^+':<{pp.c_w}}, "  +
             f"{'Lx^+':<{pp.c_w}}, "       +
-            f"{'Ly^+/2':<{pp.c_w}}, "     +
+            f"{'Ly^+':<{pp.c_w}}, "       +
             f"{'Lz^+':<{pp.c_w}}, "       +
             f"{'delta_yd^+':<{pp.c_w}}\n" )
 
@@ -270,7 +274,7 @@ with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as 
             f"{y_plus[1]:{pp.fs}}, "      +
             f"{delta_z_plus:{pp.fs}}, "   +
             f"{Lx_plus:{pp.fs}}, "        +
-            f"{Ly_plus/2:{pp.fs}}, "      +
+            f"{Ly_plus:{pp.fs}}, "        +
             f"{Lz_plus:{pp.fs}}, "        +
             f"{delta_yd_plus:{pp.fs}}\n"  ) 
 
