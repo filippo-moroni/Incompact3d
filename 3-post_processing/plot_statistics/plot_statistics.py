@@ -252,7 +252,7 @@ elif itype == 13:
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
            
 # Create the file and write  
-with open('data_post/grid_spacings_post.txt', 'w') as f:
+with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'delta_x^+':<{pp.c_w}}, "  +
             f"{'delta_y1^+':<{pp.c_w}}, " +
             f"{'delta_z^+':<{pp.c_w}}, "  +
@@ -337,9 +337,7 @@ print()
 #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
            
 # Create the file and write 
-
-#! to be completed 
-with open('data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
+with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'t_nu':<{pp.c_w}}, "        +
             f"{'min tau_eta':<{pp.c_w}}\n" )  
 
