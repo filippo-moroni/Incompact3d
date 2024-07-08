@@ -372,6 +372,7 @@ if itype == 13:
         print(f"Re_tau = {re_tau}")
     else:
         print("Re_tau value could not be extracted.")
+    print()
 
 #!--- Reference mean profiles ---!
 
