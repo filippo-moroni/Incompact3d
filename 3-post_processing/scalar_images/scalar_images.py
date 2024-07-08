@@ -85,6 +85,8 @@ elif nr == 1:
 i = 0
 while True:
 
+    #!--- Reading of scalar field ---!
+    
     # Create the file path for scalar planes binary files
     file_path = data_path + f'/phiplanez-{i:04d}.bin' 
     
@@ -99,17 +101,24 @@ while True:
     with open(file_path, 'rb') as file:
         data = np.fromfile(file, dtype=np.float64)
         
+    #!-------------------------------!
+    
+    #!--- Reading of Re_tau ---!
       
     # Create the file path for scalar planes .xdmf files
     file_path = data_path + f'/phiplanez-{i:04d}.xdmf' 
     
     # Call external function to extract Re_tau value
     re_tau = extract_re_tau_value(file_path)
+    
+    # Print to screen the extracted value
     if re_tau is not None:
         print(f"Re_tau value: {re_tau}")
     else:
         print("Re_tau value could not be extracted.")
 
+
+    #!--- Plotting ---!
 
     # Reshape scalar field to 2D array using Fortran order
     data = data.reshape((nx, ny), order='F')
