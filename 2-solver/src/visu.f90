@@ -487,7 +487,7 @@ contains
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
     
     ! Locals
-    character(len=20) :: char_value
+    character(len=20) :: char_value1, char_value2
 
     ! Calculate Re_tau for a TTBL to add its value to the end of the snapshot
     if(itype .eq. itype_ttbl) then
@@ -500,11 +500,13 @@ contains
       
         if(nrank .eq. 0) then
         
-            ! Calculate friction Re number for a TBL
+            ! Calculate friction Re number for a TBL, based on longitudinal shear velocity
             re_tau_tbl = delta_99 * sh_velx / xnu
           
-            ! Convert Re_tau from real to character
-            write(char_value, '(F12.6)') re_tau_tbl
+            ! Convert Re_tau and BL thickness from real to character
+            write(char_value1, '(F12.6)') re_tau_tbl
+            write(char_value2, '(F12.6)') delta_99
+            
         end if
     end if  
         
@@ -517,7 +519,8 @@ contains
       ! Add Re_tau to a TTBL .xdmf footer
       if(itype .eq. itype_ttbl) then
           write(ioxdmf,*)'<!-- Additional information -->'
-          write(ioxdmf,*)'<!-- Friction Reynolds number, Re_tau = '// trim(adjustl(char_value)) //' -->'
+          write(ioxdmf,*)'<!-- Friction Reynolds number, Re_tau = '// trim(adjustl(char_value1)) //' -->'
+          write(ioxdmf,*)'<!-- Boundary layer thickness, delta_99 = '// trim(adjustl(char_value2)) //' -->'
           write(ioxdmf,*)'<!--                        -->'
       end if
             
