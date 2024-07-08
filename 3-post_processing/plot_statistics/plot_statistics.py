@@ -369,7 +369,7 @@ if itype == 13:
     
     # Print to screen the extracted value
     if re_tau is not None:
-        print(f"Re_tau value: {re_tau}")
+        print(f"Re_tau = {re_tau}")
     else:
         print("Re_tau value could not be extracted.")
 
