@@ -154,7 +154,9 @@ while True:
     # Axes labels and title
     ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.title(r'$Re_\tau = 're_tau '$', fontsize=pp.fla)
+    
+    #ax.title(fr'$Re_{{\tau}} = {re_tau}$', fontsize=pp.fla)
+    ax.set_title(fr'$Re_\tau = ' + str(re_tau), fontsize=pp.fla)
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
