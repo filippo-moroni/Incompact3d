@@ -344,6 +344,35 @@ with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{t_nu:{pp.fs}}, "            +
             f"{tau_eta:{pp.fs}}\n"         )      
 
+#!--------------------------------------------------------------------------------------!
+
+# Read and display the friction Reynolds number
+if itype == 13:
+
+    #!--- Reading of Re_tau ---!
+    
+    # Use first realization folder to read snapshots .xdmf files if we have more than 1 realization
+    if nr != 1:
+        # /data_ri folders if nr /= 1
+        data_path = f"data_r{nr:01d}"
+
+    # Else use just /data folder       
+    elif nr == 1:
+        # /data folder if nr = 1
+        data_path = f"data"
+      
+    # Create the file path for snapshots .xdmf files
+    file_path = data_path + f'/snapshot-{i:04d}.xdmf' 
+    
+    # Call external function to extract Re_tau value
+    re_tau = extract_re_tau_value(file_path)
+    
+    # Print to screen the extracted value
+    if re_tau is not None:
+        print(f"Re_tau value: {re_tau}")
+    else:
+        print("Re_tau value could not be extracted.")
+
 #!--- Reference mean profiles ---!
 
 # Viscous sub-layer
