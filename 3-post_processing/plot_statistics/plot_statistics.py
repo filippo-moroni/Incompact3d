@@ -247,7 +247,9 @@ if itype == 3:
 elif itype == 13:
     # Calculate the index at which the BL thickness delta99 is
     j = 0
-    while mean_u[j] > mean_u[0]*0.01: j = j + 1
+    while mean_u[j] > mean_u[0]*0.01: 
+        j = j + 1
+    
     delta_yd_plus = y_plus[j] - y_plus[j-1] 
 
 #!--------------------------------------------------------------------------------------!
