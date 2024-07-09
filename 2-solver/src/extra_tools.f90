@@ -650,17 +650,16 @@
   end subroutine write_scalar_plane_z
   
   !---------------------------------------------------------------------------! 
-  ! Write an instantaneous plane with x-dir. normal of helicity density 
-  ! and streamwise vorticity.
+  ! Write an instantaneous plane with x-dir. normal of streamwise vorticity.
   !---------------------------------------------------------------------------!
-  subroutine write_hd_vortx(ux1,uy1,uz1,itime)
+  subroutine write_vortx_plane_x(ux1,uy1,uz1,itime)
  
   use visu
   
   use decomp_2d,    only : mytype, xsize, ysize, zsize, nrank
   use decomp_2d,    only : transpose_x_to_y, transpose_y_to_z, transpose_z_to_y, transpose_y_to_x
   use decomp_2d_io, only : decomp_2d_start_io
-  use param,        only : ioutput_plane, zero, uwall
+  use param,        only : ioutput_plane, zero
   use variables
   
   implicit none
@@ -672,7 +671,6 @@
   ! Locals
   character(len=32) :: num  ! taken from write_snapshot in visu module
   
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: hd1  ! helicity density 
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
@@ -711,27 +709,7 @@
   !du/dx=ta1 du/dy=td1 and du/dz=tg1
   !dv/dx=tb1 dv/dy=te1 and dv/dz=th1
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
-  
-  !--- Helicity density ---!
-  hd1 = zero
-    
-  ! Vorticity along x and u velocity component in the fixed reference frame
-  di1 = tf1 - th1  !dw/dy - dv/dz
-  
-  hd1(:,:,:) = (ux1(:,:,:) - uwall) * di1(:,:,:) 
-      
-  ! Vorticity along y and v velocity component
-  di1 = tg1 - tc1  !du/dz - dw/dx
-  
-  hd1(:,:,:) = hd1(:,:,:) + uy1(:,:,:) * di1(:,:,:)
-     
-  ! Vorticity along z and w velocity component
-  di1 = tb1 - td1  !dv/dx - du/dy
-  
-  hd1(:,:,:) = hd1(:,:,:) + uz1(:,:,:) * di1(:,:,:)
-  
-  !------------------------!
-      
+        
   ! Vorticity along x
   di1 = zero
      
@@ -761,13 +739,10 @@
 #endif
     
   ! Write XDMF header
-  call write_xdmf_header("planes", "hel-vortx-planex", trim(num))
-     
-  ! Write helicity density
-  call write_field(hd1(:,:,:), "planes", "hel", trim(num), flush = .true.)
-  
+  call write_xdmf_header("planes", "vortxplanex", trim(num))
+       
   ! Write streamwise vorticity
-  call write_field(di1(:,:,:), "planes", "vortx", trim(num), flush = .true.)
+  call write_field(di1(:,:,:), "planes", "vortxplanex", trim(num), flush = .true.)
   
 !--- End snapshot part ---!
   
@@ -783,7 +758,7 @@
   ! Switch back to 3D output for default snapshots
   output2D = 0
   
-  end subroutine write_hd_vortx
+  end subroutine write_vortx_plane_x
 
 
 
