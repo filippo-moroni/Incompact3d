@@ -77,8 +77,8 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: epsmeanHT
   
   ! Arrays for correlation functions 
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHt
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT
      
 contains
 
@@ -424,14 +424,16 @@ contains
         allocate(RuuzH1(zsize(2),zsize(3)))
         allocate(RvvzH1(zsize(2),zsize(3)))
         allocate(RwwzH1(zsize(2),zsize(3)))
+        allocate(RuvzH1(zsize(2),zsize(3)))
         
-        RuuzH1=zero;RvvzH1=zero;RwwzH1=zero
+        RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero
         
         allocate(RuuzHT(zsize(2),zsize(3)))
         allocate(RvvzHT(zsize(2),zsize(3)))
         allocate(RwwzHT(zsize(2),zsize(3)))
+        allocate(RuvzHT(zsize(2),zsize(3)))
         
-        RuuzHT=zero;RvvzHT=zero;RwwzHT=zero
+        RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero
         
 #ifndef TTBL_MODE
 
@@ -541,10 +543,10 @@ contains
   if (post_corz) then
   
       ! Subdomains
-      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero
+      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero
   
       ! Total domain
-      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero
+      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero
   
   end if
   
