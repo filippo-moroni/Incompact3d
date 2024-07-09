@@ -64,12 +64,6 @@ if switcher == 0:
     field_ticks = [0.0,1.0]
     xlabel      = r'$x/D$'
     
-    # Limits for axes (not used in reality, but needed to use 'set_plot_settings')
-    xliminf = 0.0
-    xlimsup = 1.0
-    yliminf = 0.0
-    ylimsup = 1.0
-
 # Streamwise vorticity
 elif switcher == 1:
 
@@ -81,14 +75,14 @@ elif switcher == 1:
     field_ticks = [-1.0,1.0]
     xlabel      = r'$z/D$'
     
-    # Limits for axes (not used in reality, but needed to use 'set_plot_settings')
-    xliminf = 0.0
-    xlimsup = 1.0
-    yliminf = -1.0
-    ylimsup = 1.0
-
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
+
+# Limits for axes (used in 'set_plot_settings')
+xliminf = 0.0
+xlimsup = Lxi
+yliminf = 0.0
+ylimsup = Ly
 
 #!--------------------------------------------------------------------------------------!
 
@@ -159,12 +153,16 @@ while True:
 
     # Reshape the plane binary field to 2D array using Fortran order
     data = data.reshape((nxi, ny), order='F')
-
+    
     # Transpose data 
     data = data.T
-
+    
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Functions to locate the colorbar
     divider = make_axes_locatable(ax)
@@ -192,10 +190,6 @@ while True:
     ax.set_xlabel(xlabel,   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_title(fr'$Re_\tau = {re_tau}$', fontsize=pp.fla)
-
-    # Set the plot parameters using the function 'set_plot_settings'
-    # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Specify manually the interval for xticks
     major_ticks_interval = 10.0
