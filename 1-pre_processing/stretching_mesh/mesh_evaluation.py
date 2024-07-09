@@ -47,7 +47,7 @@ re_tau = 0.116*re**0.88
 
 # TTBL inputs
 twd = 1.0                # trip wire diameter D
-bl_thickness = 21.7*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
+bl_thickness = 22.1*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 
 # Reference velocity (TTBL: wall velocity; Channel: bulk velocity)
 if istret == 3:
@@ -239,7 +239,10 @@ if istret == 3:
     sh_vel_ic = np.sqrt(nu * np.abs(mg))
        
     # Shear velocity at Re_tau = 500:
-    sh_vel_500 = 500.0 * nu / bl_thickness
+    #sh_vel_500 = 500.0 * nu / bl_thickness
+    
+    # Value from G. Boga data
+    sh_vel_500 = 0.04468
     
     #!--------------------------------------------------------!
 
