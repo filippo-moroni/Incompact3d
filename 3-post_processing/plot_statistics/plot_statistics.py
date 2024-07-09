@@ -180,6 +180,33 @@ elif itype == 13:
     Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
+    # Read and display the friction Reynolds number
+
+    #!--- Reading of Re_tau ---!
+    
+    # Use first realization folder to read snapshots .xdmf files if we have more than 1 realization
+    if nr != 1:
+        # /data_ri folders if nr /= 1
+        data_path = f"data_r{nr:01d}"
+
+    # Else use just /data folder       
+    elif nr == 1:
+        # /data folder if nr = 1
+        data_path = f"data"
+      
+    # Create the file path for snapshots .xdmf files
+    file_path = data_path + f'/snapshot-{snap_numb}.xdmf' 
+    
+    # Call external function to extract Re_tau value
+    re_tau = extract_re_tau_value(file_path)
+    
+    # Print to screen the extracted value
+    if re_tau is not None:
+        print(f"Friction Reynolds number, Re_tau = {re_tau}")
+    else:
+        print("Re_tau value could not be extracted.")
+    print()
+
 print()
 
 # Extracting quantities from the full matrices
@@ -359,34 +386,6 @@ with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
             f"{tau_eta:{pp.fs}}\n"         )      
 
 #!--------------------------------------------------------------------------------------!
-
-# Read and display the friction Reynolds number
-if itype == 13:
-
-    #!--- Reading of Re_tau ---!
-    
-    # Use first realization folder to read snapshots .xdmf files if we have more than 1 realization
-    if nr != 1:
-        # /data_ri folders if nr /= 1
-        data_path = f"data_r{nr:01d}"
-
-    # Else use just /data folder       
-    elif nr == 1:
-        # /data folder if nr = 1
-        data_path = f"data"
-      
-    # Create the file path for snapshots .xdmf files
-    file_path = data_path + f'/snapshot-{snap_numb}.xdmf' 
-    
-    # Call external function to extract Re_tau value
-    re_tau = extract_re_tau_value(file_path)
-    
-    # Print to screen the extracted value
-    if re_tau is not None:
-        print(f"Friction Reynolds number, Re_tau = {re_tau}")
-    else:
-        print("Re_tau value could not be extracted.")
-    print()
 
 #!--- Reference mean profiles ---!
 
