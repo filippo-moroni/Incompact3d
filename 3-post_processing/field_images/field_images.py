@@ -109,7 +109,7 @@ data_path = 'data'
 if os.path.exists(data_path) and os.path.isdir(data_path):
    
     # Use /data to read planes if /data exists
-    data_path = f"data/planes
+    data_path = f"data/planes"
 
 else:
 
