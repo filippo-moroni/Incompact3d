@@ -4,7 +4,6 @@
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
-from matplotlib.ticker import LinearLocator
 
 def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 

@@ -148,7 +148,7 @@ while True:
 
     #!--- Plotting ---!
 
-    # Reshape scalar field to 2D array using Fortran order
+    # Reshape the plane binary field to 2D array using Fortran order
     data = data.reshape((nxi, ny), order='F')
 
     # Transpose data
