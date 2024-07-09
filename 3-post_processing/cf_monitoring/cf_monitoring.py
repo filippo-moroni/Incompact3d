@@ -48,8 +48,17 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
                          
 #!--- Reading of files section ---!
 
-# Reading of friction coefficient history
-M1 = np.loadtxt('monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+print()
+switcher = int(input("Specify if you have different flow realizations data_ri folders (0: no, 1: yes):"))
+print()
+
+# Reading of friction coefficient history from a specific flow realization  
+if switcher == 1:
+    # nr is read from 'post.prm'
+    M1 = np.loadtxt(f'data_r{nr:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+       
+else:
+    M1 = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
