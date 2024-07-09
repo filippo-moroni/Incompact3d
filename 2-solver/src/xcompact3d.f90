@@ -28,7 +28,7 @@
 !    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
 !    problems with up to 0(10^5) computational cores, Int. J. of Numerical
 !    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!--------------------------------------------------------------------------------
 
 program xcompact3d
 
@@ -143,7 +143,7 @@ program xcompact3d
   call finalise_xcompact3d()
 
 end program xcompact3d
-!########################################################################
+!-------------------------------------------------------------------------------
 subroutine init_xcompact3d()
 
   use MPI
@@ -331,7 +331,7 @@ subroutine finalise_xcompact3d()
   CALL MPI_FINALIZE(ierr)
 
 endsubroutine finalise_xcompact3d
-
+!-------------------------------------------------------------------------------
 subroutine check_transients()
 
   use decomp_2d, only : mytype
