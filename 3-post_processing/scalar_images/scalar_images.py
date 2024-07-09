@@ -48,6 +48,10 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 
 #!--------------------------------------------------------------------------------------!
 
+# Asking the user what he wants to plot (scalar field, streamwise vorticity)
+switcher = int(input("Specify the selector for plotting (0: scalar field, 1: streamwise vorticity):"))
+print()
+
 # Settings
 
 # Limits for axes (not used in reality, but needed to use 'set_plot_settings')
@@ -56,15 +60,30 @@ xlimsup = 1.0
 yliminf = 0.0
 ylimsup = 1.0
 
+
+# Scalar field
+if switcher == 0:
+
+    Lxi = Lx
+    nxi = nx
+    field_name = "/phiplanez"
+
+# Streamwise vorticity
+elif switcher == 1:
+
+    Lxi = Lz
+    nxi = nz
+    field_name = ""
+
 # Extent of the image (dimensions of the domain)
-extent = [0.0, Lx, 0.0, Ly]
+extent = [0.0, Lxi, 0.0, Ly]
 
 #!--------------------------------------------------------------------------------------!
 
 #!--- Mesh section ---!
 
-# Create x-coordinates vector
-x = np.linspace(0.0, Lx, nx)
+# Create xi-coordinates vector (x or z, depending on the chosen field)
+xi = np.linspace(0.0, Lxi, nxi)
 
 # Read y-coordinates vector
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
@@ -85,10 +104,10 @@ elif nr == 1:
 i = 0
 while True:
 
-    #!--- Reading of scalar field ---!
+    #!--- Reading of selected field ---!
     
-    # Create the file path for scalar planes binary files
-    file_path = data_path + f'/phiplanez-{i:04d}.bin' 
+    # Create the file path for the planes binary files
+    file_path = data_path + field_name + f'{i:04d}.bin' 
     
     # Exit the loop if the file does not exist
     if not os.path.exists(file_path):
@@ -97,7 +116,7 @@ while True:
     # Inform on current state
     print(f"We are processing file:", file_path)
     
-    # Read the instantaneous scalar field binary file into a numpy array
+    # Read the instantaneous field binary file into a numpy array
     with open(file_path, 'rb') as file:
         data = np.fromfile(file, dtype=np.float64)
         
@@ -105,8 +124,8 @@ while True:
     
     #!--- Reading of Re_tau ---!
       
-    # Create the file path for scalar planes .xdmf files
-    file_path = data_path + f'/phiplanez-{i:04d}.xdmf' 
+    # Create the file path for the planes .xdmf files
+    file_path = data_path + field_name + f'{i:04d}.bin'
     
     # Call external function to extract Re_tau value
     re_tau = extract_re_tau_value(file_path)
@@ -123,7 +142,7 @@ while True:
     #!--- Plotting ---!
 
     # Reshape scalar field to 2D array using Fortran order
-    data = data.reshape((nx, ny), order='F')
+    data = data.reshape((nxi, ny), order='F')
 
     # Transpose data
     data = data.T
@@ -142,7 +161,7 @@ while True:
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
         
     # Plotting with filled contours    
-    C = ax.contourf(x, y, data, lvls, cmap='Blues')
+    C = ax.contourf(xi, y, data, lvls, cmap='Blues')
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=[0.0,1.0])
