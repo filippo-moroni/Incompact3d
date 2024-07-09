@@ -102,16 +102,20 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 #!--------------------------------------------------------------------------------------!
 
-# Use first realization folder to read planes if we have more than 1 realization
-if nr != 1:
-    # /data_ri folders if nr /= 1
+# Path for generic data
+data_path = 'data'
+
+# Check if the path exists and is a directory
+if os.path.exists(data_path) and os.path.isdir(data_path):
+   
+    # Use /data to read planes if /data exists
+    data_path = f"data/planes
+
+else:
+
+    # Use /data_ri to read planes if /data does not exists (ri specified in 'post.prm')
     data_path = f"data_r{nr:01d}/planes"
-
-# Else use just /data folder       
-elif nr == 1:
-    # /data folder if nr = 1
-    data_path = f"data/planes"
-
+       
 # Cycle on all planes
 i = 0
 while True:
