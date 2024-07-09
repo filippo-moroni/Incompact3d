@@ -49,6 +49,7 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 #!--------------------------------------------------------------------------------------!
 
 # Asking the user what he wants to plot (scalar field, streamwise vorticity)
+print()
 switcher = int(input("Specify the selector for plotting (0: scalar field, 1: streamwise vorticity):"))
 print()
 
