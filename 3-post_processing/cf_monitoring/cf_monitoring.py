@@ -49,18 +49,16 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 #!--- Reading of files section ---!
 
 # Path for generic data
-data_path = "/data"
+data_path = 'data'
 
 # Check if the path exists and is a directory
 if os.path.exists(data_path) and os.path.isdir(data_path):
-    print("The folder exists.")
-    
+   
     # Read cf data from /data folder
     M1 = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
 else:
-    print("The folder does not exist.")
-    
+
     # Read cf data from /data_ri folder, where the ri (realization number) is read from 'post.prm'
     M1 = np.loadtxt(f'data_r{nr:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
