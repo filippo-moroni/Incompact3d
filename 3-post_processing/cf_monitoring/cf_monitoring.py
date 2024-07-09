@@ -48,18 +48,22 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
                          
 #!--- Reading of files section ---!
 
-print()
-switcher = int(input("Specify if you have different flow realizations data_ri folders (0: no, 1: yes):"))
-print()
+# Path for generic data
+data_path = "/data"
 
-# Reading of friction coefficient history from a specific flow realization  
-if switcher == 1:
-    # nr is read from 'post.prm'
-    M1 = np.loadtxt(f'data_r{nr:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
-       
-else:
+# Check if the path exists and is a directory
+if os.path.exists(data_path) and os.path.isdir(data_path):
+    print("The folder exists.")
+    
+    # Read cf data from /data folder
     M1 = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
+else:
+    print("The folder does not exist.")
+    
+    # Read cf data from /data_ri folder, where the ri (realization number) is read from 'post.prm'
+    M1 = np.loadtxt(f'data_r{nr:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+  
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
 time_unit = M1[:,7] 
