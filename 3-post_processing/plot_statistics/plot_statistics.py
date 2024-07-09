@@ -164,6 +164,7 @@ elif itype == 13:
 
     # Asking to the user the specific snapshot to show
     snap_numb = input("Enter the snapshot number to show (4 digits): ")
+    print()
          
     # Reading of mean statistics
     M1 = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -205,7 +206,6 @@ elif itype == 13:
         print(f"Friction Reynolds number, Re_tau = {re_tau}")
     else:
         print("Re_tau value could not be extracted.")
-    print()
 
 print()
 
