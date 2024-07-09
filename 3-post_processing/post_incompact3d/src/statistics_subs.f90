@@ -15,7 +15,7 @@
 ! - total dissipation rate
 
 ! Two-points statistics:
-! - spanwise correlation functions 
+! - spanwise correlation functions (Ruuz, Rvvz, Rwwz, Ruvz) 
 !----------------------------------------------------------!
 
 ! Mean statistics (average, variance, skewness, kurtosis)
@@ -383,8 +383,8 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
 end subroutine stat_dissipation
 
 !********************************************************************
-! Calculate the correlation functions Rii in z-direction
-subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
+! Calculate the (auto) correlation functions Rii and Ruv in z-direction
+subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1)
 
   use decomp_2d
   use decomp_2d_io
@@ -401,7 +401,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
   
   ! Correlation functions (first index: j (rows); second index: r (columns))
-  real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1
+  real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1, RuvzH1
   
   real(mytype) :: den          ! denominator of the divisions
   integer      :: i,j,k,rr,kpr 
@@ -452,6 +452,14 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
                   RwwzH1(j,rr) = RwwzH1(j,rr) + ta3(i,j,k)/den
+                  
+                  !--- Mixed fluctuations correlation (u'v') ---!
+                  
+                  ! Product of fluctuations at distance 'r'
+                  ta3(i,j,k) = ux3(i,j,k)*uy3(i,j,kpr)
+                  
+                  ! Accumulation inside the correlation function variable (at each subdomain)
+                  RuvzH1(j,rr) = RuvzH1(j,rr) + ta3(i,j,k)/den
                   
               enddo
           enddo

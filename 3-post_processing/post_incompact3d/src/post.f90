@@ -276,7 +276,7 @@ end if
    enddo
    
    ! Correlation functions calculation (each subdomain, z-pencils)
-   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1)
+   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1)
       
    end if
    !-----------------------------------------------------------------------------------------------------!
@@ -418,6 +418,7 @@ end if
    call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+   call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    
   end if
 
@@ -594,7 +595,7 @@ end if
      ! Correlation functions along z writing
      if (post_corz) then
      
-!--- Streamwise ---!     
+!--- Streamwise autocorrelation function, Ruuz ---!     
 #ifdef TTBL_MODE
         ! Writing the snapshot index as character
         write(snap_index, ifilenameformat) ifile 
@@ -624,7 +625,7 @@ end if
                                        
         close(iunit)
 
-!--- Vertical ---!
+!--- Vertical autocorrelation function, Rvvz ---!
 #ifdef TTBL_MODE
         ! Writing the snapshot index as character
         write(snap_index, ifilenameformat) ifile 
@@ -654,7 +655,7 @@ end if
                                        
         close(iunit)
 
-!--- Spanwise ---!
+!--- Spanwise autocorrelation function, Rwwz ---!
 #ifdef TTBL_MODE
         ! Writing the snapshot index as character
         write(snap_index, ifilenameformat) ifile 
@@ -682,9 +683,39 @@ end if
                
         end do
                                        
-        close(iunit)     
-     
-     endif
+        close(iunit)
+
+!--- Mixed fluctuations correlation function, Ruvz ---!
+#ifdef TTBL_MODE
+        ! Writing the snapshot index as character
+        write(snap_index, ifilenameformat) ifile 
+        snap_index = adjustl(snap_index) 
+        
+        ! Write the Ruvz filename for TTBL
+        write(filename, '(A,A,A)') 'Ruvz-', trim(snap_index), '.txt'
+        filename = adjustl(filename)
+#else
+        ! Write the Ruvz filename for channel flow
+        write(filename, '(A)') 'Ruvz.txt'
+        filename = adjustl(filename)
+#endif       
+
+        ! Construct the format string
+        write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
+
+        ! Open the file and write      
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        ! Vertical fluctuations correlation function        
+        do j = 1, ysize(2)
+                
+            write(iunit, format_string) (RuvzHT(j, k), ' ', k = 1, zsize(3))
+               
+        end do
+                                       
+        close(iunit)
+         
+     endif ! closing of if-statement for writing correlations
                      
   endif ! closing of the if-statement for processor 0
 
@@ -783,9 +814,9 @@ end if
      print *,'==========================================================='
      print *,''
      print *,'The following statistics have been saved in'
-     print *,'"corr_stats" file(s):'
+     print *,'"Riiz and Ruvz" file(s):'
      print *,''
-     print *,'Ruu(z), Rvv(z), Rww(z)'
+     print *,'Ruu(z), Rvv(z), Rww(z), Ruv(z)'
      print *,''    
      endif
      
