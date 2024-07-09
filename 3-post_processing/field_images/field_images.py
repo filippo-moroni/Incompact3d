@@ -114,7 +114,7 @@ while True:
     #!--- Reading of selected field ---!
     
     # Create the file path for the planes binary files
-    file_path = data_path + field_name + f'{i:04d}.bin' 
+    file_path = data_path + field_name + f'-{i:04d}.bin' 
     
     # Exit the loop if the file does not exist
     if not os.path.exists(file_path):
@@ -132,7 +132,7 @@ while True:
     #!--- Reading of Re_tau ---!
       
     # Create the file path for the planes .xdmf files
-    file_path = data_path + field_name + f'{i:04d}.bin'
+    file_path = data_path + field_name + f'-{i:04d}.xdmf'
     
     # Call external function to extract Re_tau value
     re_tau = extract_re_tau_value(file_path)
@@ -193,7 +193,7 @@ while True:
     ax.xaxis.set_major_locator(MultipleLocator(major_ticks_interval))
 
     # Saving the figure
-    plt.savefig(images + field_name + f'_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
+    plt.savefig("images" + field_name + f'_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
     
     # Clear and close the figure to release memory
     plt.clf()
