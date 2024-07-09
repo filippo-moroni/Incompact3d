@@ -54,11 +54,7 @@ print()
 
 # Settings
 
-# Limits for axes (not used in reality, but needed to use 'set_plot_settings')
-xliminf = 0.0
-xlimsup = 1.0
-yliminf = 0.0
-ylimsup = 1.0
+
 
 # Scalar field
 if switcher == 0:
@@ -70,6 +66,12 @@ if switcher == 0:
     field_label = r"$\varphi/\varphi_w$"
     field_ticks = [0.0,1.0]
     xlabel      = r'$x/D$'
+    
+    # Limits for axes (not used in reality, but needed to use 'set_plot_settings')
+    xliminf = 0.0
+    xlimsup = 1.0
+    yliminf = 0.0
+    ylimsup = 1.0
 
 # Streamwise vorticity
 elif switcher == 1:
@@ -81,19 +83,28 @@ elif switcher == 1:
     field_label = r"$\omega_x$"
     field_ticks = [-1.0,1.0]
     xlabel      = r'$z/D$'
+    
+    # Limits for axes (not used in reality, but needed to use 'set_plot_settings')
+    xliminf = 0.0
+    xlimsup = 1.0
+    yliminf = -1.0
+    ylimsup = 1.0
 
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
 
 #!--------------------------------------------------------------------------------------!
 
-#!--- Mesh section ---!
+#!--- Mesh section and iso-levels ---!
 
 # Create xi-coordinates vector (x or z, depending on the chosen field)
 xi = np.linspace(0.0, Lxi, nxi)
 
 # Read y-coordinates vector
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+
+# Values of iso-levels
+lvls = np.linspace(yliminf, ylimsup, pp.nlvl)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -163,10 +174,7 @@ while True:
     
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
     im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
-    
-    # Values of iso-levels
-    lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
-        
+            
     # Plotting with filled contours    
     C = ax.contourf(xi, y, data, lvls, cmap=cmap_name)
     
