@@ -50,12 +50,8 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_st
 
 # Asking the user what he wants to plot (scalar field, streamwise vorticity)
 print()
-switcher = int(input("Specify the selector for plotting (0: scalar field, 1: streamwise vorticity):"))
+switcher = int(input("Specify the selector for plotting (0: scalar field, 1: streamwise vorticity): "))
 print()
-
-# Settings
-
-
 
 # Scalar field
 if switcher == 0:
@@ -103,9 +99,6 @@ xi = np.linspace(0.0, Lxi, nxi)
 
 # Read y-coordinates vector
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-
-# Values of iso-levels
-lvls = np.linspace(yliminf, ylimsup, pp.nlvl)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -175,7 +168,10 @@ while True:
     
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
     im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
-            
+    
+    # Values of iso-levels
+    lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
+        
     # Plotting with filled contours    
     C = ax.contourf(xi, y, data, lvls, cmap=cmap_name)
     
