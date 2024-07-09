@@ -28,6 +28,9 @@
   integer :: nyh         ! half - 1 points in y direction for a channel (h: half)
   logical :: exists
   character(len=90) :: filename
+  
+  ! Local value of amplitude and period of wall oscillations in wall units
+  real(mytype) :: a_wo_loc,t_wo_loc
       
   ! Write filename
   if (nrank .eq. 0) write(filename,"('monitoring/cf_history.txt')") 
@@ -234,6 +237,37 @@
                          t,           ',', itime
       end if
           close(iunit)
+  end if
+  
+  ! Create or open a file to store wall oscillation parameters in case of a TTBL without feedback control
+  if(nrank .eq. 0 .and. itype .eq. itype_ttbl .and. iswitch_wo .eq. 1 .and. ifeedback_control .eq. 0) then
+   
+      ! Write filename
+      write(filename,"('monitoring/oscill_param.txt')") 
+   
+      ! Calculate amplitude and period of oscillations in wall units
+      a_wo_loc = a_wo / sh_velx
+      t_wo_loc = t_wo / t_viscous
+      
+      ! Write to file   
+      inquire(file=filename, exist=exists)
+      if (exists) then
+          open(newunit=iunit, file=filename, status="old", position="append", action="write")
+              
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.4,A,I12)')        &
+                         a_wo_loc, ',', t_wo_loc, ',', re_tau_tbl, ',', & 
+                         t,        ',', itime
+                             
+      else
+          open(newunit=iunit, file=filename, status="new", action="write")
+          ! Header
+          write(iunit, '(A12,A,A12,A,A12,A, A12,A,A12)')       &
+                        'A^+', ',', 'T^+', ',', 'Re_tau', ',', &                                                        
+                        't',   ',', 'ts'
+                    
+      end if
+          close(iunit)
+          
   end if
                
   end subroutine print_cf
