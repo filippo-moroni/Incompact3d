@@ -1,7 +1,7 @@
 #!---------------------------------------------------------!
-#! With this script, we perform plotting of 2D z-normal    !
-#! planes of instantaneous scalar field, used for visual   !
-#! check of the evolution of a TTBL.                       !
+#! With this script, we perform plotting and saving of     !
+#! instantaneous planes of scalar field or of streamwise   !
+#! vorticity.                                              !
 #!                                                         !
 #! Inspired by 'snap2png.py' by R. Corsini                 !
 #!---------------------------------------------------------!
@@ -59,7 +59,6 @@ xliminf = 0.0
 xlimsup = 1.0
 yliminf = 0.0
 ylimsup = 1.0
-
 
 # Scalar field
 if switcher == 0:
@@ -181,7 +180,7 @@ while True:
     cbar.set_label(field_label, fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
 
     # Axes labels and title
-    ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_xlabel(xlabel,   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_title(fr'$Re_\tau = {re_tau}$', fontsize=pp.fla)
 
