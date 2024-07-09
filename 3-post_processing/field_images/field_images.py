@@ -156,7 +156,7 @@ while True:
     # Reshape the plane binary field to 2D array using Fortran order
     data = data.reshape((nxi, ny), order='F')
 
-    # Transpose data
+    # Transpose data 
     data = data.T
 
     # Subplots environment
@@ -171,7 +171,7 @@ while True:
     
     # Values of iso-levels
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
-        
+            
     # Plotting with filled contours    
     C = ax.contourf(xi, y, data, lvls, cmap=cmap_name)
     
