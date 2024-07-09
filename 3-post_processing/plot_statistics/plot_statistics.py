@@ -155,6 +155,7 @@ if itype == 3:
     Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
 # TTBL
 elif itype == 13:
@@ -177,6 +178,7 @@ elif itype == 13:
     Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+    Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
 print()
 
@@ -312,6 +314,9 @@ Rvvz = Rvvz / temp
 
 temp = Rwwz[c,0]
 Rwwz = Rwwz / temp
+
+temp = Ruvz[c,0]
+Ruvz = Ruvz / temp
 
 # Halve the number of points in z-dir. to avoid periodicity effects
 nz = nz // 2
@@ -685,7 +690,7 @@ xlimsup = Lz_plus / 2.0
 yliminf = min(Ruuz[c,:])*1.2
 ylimsup = max(Ruuz[c,:])*1.2
 
-# Streamwise velocity auto-correlations, Cuuz
+# Auto-correlation coefficient for u'
 ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # Reference data for channel
@@ -725,7 +730,7 @@ xlimsup = Lz_plus / 2.0
 yliminf = min(Rvvz[c,:])*1.2
 ylimsup = max(Rvvz[c,:])*1.2
 
-# Vertical velocity auto-correlations, Cvvz
+# Auto-correlation coefficient for v'
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # Reference data for channel
@@ -765,7 +770,7 @@ xlimsup = Lz_plus / 2.0
 yliminf = min(Rwwz[c,:])*1.2
 ylimsup = max(Rwwz[c,:])*1.2
 
-# Spanwise velocity auto-correlations, Cuuz
+# Auto-correlation coefficient for w'
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
 # Reference data for channel
@@ -790,6 +795,40 @@ if itype == 13:
     plt.savefig(f'plots/Cwwz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
     plt.savefig(f'plots/Cwwz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+
+# Show the figure
+plt.show()
+
+#!--------------------------------------------------------------------------------------!
+
+# Cuvz
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = 0.0
+xlimsup = Lz_plus / 2.0
+yliminf = min(Ruvz[c,:])*1.2
+ylimsup = max(Ruvz[c,:])*1.2
+
+# Correlation coefficient for u' and v'
+ax.scatter(rz, Ruvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+# Plot horizontal line at Cuv = 0
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+                   
+# Axes labels
+ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$C_{uv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/Cuvz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+elif itype == 3:
+    plt.savefig(f'plots/Cuvz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
