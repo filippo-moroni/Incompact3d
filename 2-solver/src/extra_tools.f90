@@ -33,7 +33,7 @@
   real(mytype) :: a_wo_loc,t_wo_loc
       
   ! Write filename
-  if (nrank .eq. 0) write(filename,"('monitoring/cf_history.txt')") 
+  if (nrank .eq. 0) write(filename,"('data/monitoring/cf_history.txt')") 
   
   ! TTBL
   if(itype .eq. itype_ttbl) then
@@ -180,7 +180,7 @@
       close(iunit)
   
       ! Write filename
-      write(filename,"('monitoring/grid_spacings.txt')") 
+      write(filename,"('data/monitoring/grid_spacings.txt')") 
    
       ! Calculate viscous unit
       delta_nu = xnu / sh_vel 
@@ -243,7 +243,7 @@
   if(nrank .eq. 0 .and. itype .eq. itype_ttbl .and. iswitch_wo .eq. 1 .and. ifeedback_control .eq. 0) then
    
       ! Write filename
-      write(filename,"('monitoring/oscill_param.txt')") 
+      write(filename,"('data/monitoring/oscill_param.txt')") 
    
       ! Calculate amplitude and period of oscillations in wall units
       a_wo_loc = a_wo / sh_velx
