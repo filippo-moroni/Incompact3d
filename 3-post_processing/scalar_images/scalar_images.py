@@ -64,16 +64,24 @@ ylimsup = 1.0
 # Scalar field
 if switcher == 0:
 
-    Lxi = Lx
-    nxi = nx
-    field_name = "/phiplanez"
+    Lxi         = Lx
+    nxi         = nx
+    field_name  = "/phiplanez"
+    cmap_name   = "Blues"
+    field_label = r"$\varphi/\varphi_w$"
+    field_ticks = [0.0,1.0]
+    xlabel      = r'$x/D$'
 
 # Streamwise vorticity
 elif switcher == 1:
 
-    Lxi = Lz
-    nxi = nz
-    field_name = ""
+    Lxi         = Lz
+    nxi         = nz
+    field_name  = "/vortxplanex"
+    cmap_name   = "RdBu"
+    field_label = r"$\omega_x$"
+    field_ticks = [-1.0,1.0]
+    xlabel      = r'$z/D$'
 
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
@@ -155,22 +163,22 @@ while True:
     cax = divider.append_axes('right', size='5%', pad=0.05)
     
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
-    im = ax.imshow(data, cmap='Blues', extent=extent, origin='upper')
+    im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
     
     # Values of iso-levels
     lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
         
     # Plotting with filled contours    
-    C = ax.contourf(xi, y, data, lvls, cmap='Blues')
+    C = ax.contourf(xi, y, data, lvls, cmap=cmap_name)
     
     # Colorbar
-    cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=[0.0,1.0])
+    cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
        
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
      
     # Colorbar label
-    cbar.set_label(r'$\varphi/\varphi_w$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
+    cbar.set_label(field_label, fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
 
     # Axes labels and title
     ax.set_xlabel(r'$x/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -186,7 +194,7 @@ while True:
     ax.xaxis.set_major_locator(MultipleLocator(major_ticks_interval))
 
     # Saving the figure
-    plt.savefig(f'images/phiplanez_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
+    plt.savefig(images + field_name + f'_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
     
     # Clear and close the figure to release memory
     plt.clf()
