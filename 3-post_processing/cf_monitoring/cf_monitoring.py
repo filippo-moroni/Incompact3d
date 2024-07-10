@@ -155,9 +155,10 @@ plt.show()
 
 #!--------------------------------------------------------------------------------------!
 
-#!--- Plot friction Reynolds number ---!
-
+# TTBL only
 if itype == 13:
+
+    #!--- Plot friction Reynolds number as function of time ---!
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -182,6 +183,33 @@ if itype == 13:
 
     # Saving the figure and show it
     plt.savefig(f'plots/retau_vs_time_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.show()
+    
+    #!--- Plot friction coefficient as function of friction Reynolds number ---!
+
+    # Subplots environment
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+   
+    # Friction coefficient
+    #ax.scatter(re_tau, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
+    
+    # Axes labels
+    ax.set_xlabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Axes ranges
+    xliminf = np.min(re_tau)
+    xlimsup = np.max(re_tau)
+    yliminf = np.min(cfx) * 0.0
+    ylimsup = np.max(cfx) * 1.2 
+              
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+    # Saving the figure and show it
+    plt.savefig(f'plots/cfx_vs_retau_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     plt.show()
 
 #!--------------------------------------------------------------------------------------!
