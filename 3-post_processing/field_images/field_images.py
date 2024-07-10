@@ -56,24 +56,26 @@ print()
 # Scalar field
 if switcher == 0:
 
-    Lxi         = Lx
-    nxi         = nx
-    field_name  = "/phiplanez"
-    cmap_name   = "Blues"
-    field_label = r"$\varphi/\varphi_w$"
-    field_ticks = [0.0,1.0]
-    xlabel      = r'$x/D$'
+    Lxi          = Lx
+    nxi          = nx
+    field_name   = "/phiplanez"
+    cmap_name    = "Blues"
+    field_label  = r"$\varphi/\varphi_w$"
+    field_ticks  = [0.0,1.0]
+    xlabel       = r'$x/D$'
+    pad_cbar_lab = -8
     
 # Streamwise vorticity
 elif switcher == 1:
 
-    Lxi         = Lz
-    nxi         = nz
-    field_name  = "/vortxplanex"
-    cmap_name   = "RdBu"
-    field_label = r"$\omega_x$"
-    field_ticks = [-1.0,1.0]
-    xlabel      = r'$z/D$'
+    Lxi          = Lz
+    nxi          = nz
+    field_name   = "/vortxplanex"
+    cmap_name    = "RdBu"
+    field_label  = r"$\omega_x$"
+    field_ticks  = [-2.0,2.0]
+    xlabel       = r'$z/D$'
+    pad_cbar_lab = 0
     
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
@@ -152,10 +154,23 @@ while True:
     #!--- Plotting ---!
 
     # Reshape the plane binary field to 2D array using Fortran order
-    data = data.reshape((nxi, ny), order='F')
     
-    # Transpose data 
-    data = data.T
+    # Scalar field
+    if switcher == 0:
+        data = data.reshape((nxi, ny), order='F')
+        
+        # Transpose data 
+        data = data.T
+        
+        # Values of iso-levels
+        lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
+        
+    # Streamwise vorticity
+    elif switcher == 1:
+        data = data.reshape((ny, nxi), order='F')
+    
+        # Values of iso-levels
+        lvls = np.linspace(field_ticks[0], field_ticks[1], pp.nlvl)
     
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -166,14 +181,12 @@ while True:
 
     # Functions to locate the colorbar
     divider = make_axes_locatable(ax)
-    cax = divider.append_axes('right', size='5%', pad=0.05)
     
+    cax = divider.append_axes('right', size='10%', pad=0.05)
+        
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
     im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
-    
-    # Values of iso-levels
-    lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
-            
+                
     # Plotting with filled contours    
     C = ax.contourf(xi, y, data, lvls, cmap=cmap_name)
     
@@ -183,9 +196,9 @@ while True:
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
      
-    # Colorbar label
-    cbar.set_label(field_label, fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
-
+    # Colorbar label (use pp.pad_cbar_lab to use the default value for padding of the cbar label)
+    cbar.set_label(field_label, fontsize=pp.fla, labelpad=pad_cbar_lab)  
+    
     # Axes labels and title
     ax.set_xlabel(xlabel,   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
