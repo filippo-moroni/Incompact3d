@@ -167,16 +167,19 @@ while True:
         
         # Transpose data 
         data = data.T
-        
-        # Values of iso-levels
-        lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
-        
+              
     # Streamwise vorticity
     elif switcher == 1:
         data = data.reshape((ny, nxi), order='F')
-    
-        # Values of iso-levels
-        lvls = np.linspace(field_ticks[0], field_ticks[1], pp.nlvl)
+            
+    # Modify the array of data to limit to the specified range
+    data = np.where((data < field_ticks[0]), field_ticks[0], data)
+    data = np.where((data > field_ticks[1]), field_ticks[1], data)
+               
+    # Values of iso-levels
+    #lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
+        
+    lvls = np.linspace(field_ticks[0], field_ticks[1], pp.nlvl)
     
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -194,7 +197,7 @@ while True:
     im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
                 
     # Plotting with filled contours    
-    C = ax.contourf(xi, y, data, lvls, cmap=cmap_name, extend=extend_cmap)
+    C = ax.contourf(xi, y, data, lvls, cmap=cmap_name, extend='neither')
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
