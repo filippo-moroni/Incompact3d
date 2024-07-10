@@ -26,7 +26,7 @@ def read_input_files(filename1,filename2):
         Ly         = lines[22]
         Lz         = lines[23]
         re         = lines[26]
-        iswitch_wo = lines[87]
+        iswitch_wo = lines[88]
     
         # Removing characters in front of the extracted strings and the comments:
         # 1) split: the string is split when the specified character is encountered; 
