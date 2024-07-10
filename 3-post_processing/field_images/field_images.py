@@ -77,7 +77,7 @@ elif switcher == 1:
     field_label  = r"$\omega_x$"
     field_ticks  = [-0.5,0.5]
     xlabel       = r'$z/D$'
-    pad_cbar_lab = -16
+    pad_cbar_lab = -20
     extend_cmap  = 'both'
     size_cbar    = '20%'
     
