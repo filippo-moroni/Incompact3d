@@ -206,7 +206,7 @@ contains
     T = phi1
 
     ! Writing the snapshot if requested from the user and if we are at the right time step
-    if ((ivisu .ne. 0) .and. ((mod(itime, ioutput) .eq. 0) .or. (itime.eq.ifirst))) then
+    if ((ivisu .ne. 0) .and. ((mod(itime, ioutput) .eq. 0) .or. (itime.eq.ifirst)) .and. (itime .ge. start_output)) then
        call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
 
        ! XXX: Ultimate goal for ADIOS2 is to pass do all postproc online - do we need this?

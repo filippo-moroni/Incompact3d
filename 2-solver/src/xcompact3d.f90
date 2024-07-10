@@ -122,12 +122,12 @@ program xcompact3d
      call postprocessing(rho1,ux1,uy1,uz1,pp3,phi1,ep1)
      
      ! Print of cf for monitoring
-     if ((mod(itime, ioutput_cf) .eq. 0) .or. (itime.eq.ifirst)) then
+     if ((mod(itime, ioutput_cf) .eq. 0) .or. (itime.eq.ifirst) .and. (itime .ge. start_output)) then
          call print_cf(ux1,uz1,phi1)
      end if
      
      ! Save planes of relevant quantities for quick visualization and low memory requirements
-     if (mod(itime, ioutput_plane) .eq. 0 .or. (itime.eq.ifirst)) then
+     if (mod(itime, ioutput_plane) .eq. 0 .or. (itime.eq.ifirst) .and. (itime .ge. start_output)) then
      
      ! Save a streamwise vorticity plane with x-normal
      call write_vortx_plane_x(ux1,uy1,uz1,itime)
