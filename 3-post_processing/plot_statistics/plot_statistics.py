@@ -216,8 +216,6 @@ var_u   = M1[:,3]
 var_v   = M1[:,4]
 mean_uv = M1[:,12]
 
-
-
 # Valid only for Channel
 if itype == 3:
     
