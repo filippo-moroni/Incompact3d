@@ -56,30 +56,32 @@ print()
 # Scalar field
 if switcher == 0:
 
-    Lxi          = Lx
-    nxi          = nx
-    field_name   = "/phiplanez"
-    cmap_name    = "Blues"
-    field_label  = r"$\varphi/\varphi_w$"
-    field_ticks  = [0.0,1.0]
-    xlabel       = r'$x/D$'
-    pad_cbar_lab = -8
-    extend_cmap  = 'neither'
-    size_cbar    = '10%'
+    Lxi           = Lx
+    nxi           = nx
+    field_name    = "/phiplanez"
+    cmap_name     = "Blues"
+    field_label   = r"$\varphi/\varphi_w$"
+    field_ticks   = [0.0,1.0]
+    xlabel        = r'$x/D$'
+    pad_cbar_lab  = -8
+    extend_cmap   = 'neither'
+    size_cbar     = '10%'
+    maj_ticks_int = 10.0
     
 # Streamwise vorticity
 elif switcher == 1:
 
-    Lxi          = Lz
-    nxi          = nz
-    field_name   = "/vortxplanex"
-    cmap_name    = "RdBu"
-    field_label  = r"$\omega_x$"
-    field_ticks  = [-0.5,0.5]
-    xlabel       = r'$z/D$'
-    pad_cbar_lab = -20
-    extend_cmap  = 'both'
-    size_cbar    = '20%'
+    Lxi           = Lz
+    nxi           = nz
+    field_name    = "/vortxplanex"
+    cmap_name     = "RdBu"
+    field_label   = r"$\omega_x$"
+    field_ticks   = [-0.5,0.5]
+    xlabel        = r'$z/D$'
+    pad_cbar_lab  = -20
+    extend_cmap   = 'both'
+    size_cbar     = '20%'
+    maj_ticks_int = 5.0
     
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
@@ -208,9 +210,8 @@ while True:
     ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_title(fr'$Re_\tau = {re_tau}$', fontsize=pp.fla)
 
-    # Specify manually the interval for xticks
-    major_ticks_interval = 10.0
-    ax.xaxis.set_major_locator(MultipleLocator(major_ticks_interval))
+    # Specify manually xticks
+    ax.xaxis.set_major_locator(MultipleLocator(maj_ticks_int))
 
     # Saving the figure
     plt.savefig('images' + field_name + f'_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
