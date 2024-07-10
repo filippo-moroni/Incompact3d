@@ -64,6 +64,7 @@ if switcher == 0:
     field_ticks  = [0.0,1.0]
     xlabel       = r'$x/D$'
     pad_cbar_lab = -8
+    extend_cmap  = 'None'
     
 # Streamwise vorticity
 elif switcher == 1:
@@ -73,9 +74,10 @@ elif switcher == 1:
     field_name   = "/vortxplanex"
     cmap_name    = "RdBu"
     field_label  = r"$\omega_x$"
-    field_ticks  = [-2.0,2.0]
+    field_ticks  = [-0.5,0.5]
     xlabel       = r'$z/D$'
-    pad_cbar_lab = 0
+    pad_cbar_lab = -12
+    extend_cmap  = 'both'
     
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
@@ -188,7 +190,7 @@ while True:
     im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
                 
     # Plotting with filled contours    
-    C = ax.contourf(xi, y, data, lvls, cmap=cmap_name)
+    C = ax.contourf(xi, y, data, lvls, cmap=cmap_name, extend=extend_cmap)
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
