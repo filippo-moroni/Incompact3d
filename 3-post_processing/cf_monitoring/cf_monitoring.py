@@ -100,7 +100,8 @@ print()
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
 # Friction coefficient
-ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+#ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+ax.plot(time_unit, cfx, color='C0', linestyle='-', linewidth=pp.lw)
 
 # y-axis label
 ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -162,8 +163,9 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction Reynolds number
-    ax.scatter(time_unit, re_tau, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-
+    #ax.scatter(time_unit, re_tau, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    ax.plot(time_unit, re_tau, color='C0', linestyle='-', linewidth=pp.lw)
+    
     # Axes labels
     ax.set_xlabel(r'$t U_w/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
