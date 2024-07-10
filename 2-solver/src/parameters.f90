@@ -69,7 +69,7 @@ subroutine parameter(input_i3d)
   NAMELIST /NumOptions/ ifirstder, isecondder, ipinter, itimescheme, iimplicit, &
                         nu0nu, cnu
                         
-  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, ilist, nvisu, output2D, &
+  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, ilist, nvisu, output2D, start_output &
                         iprocessing, ninflows, ntimesteps, inflowpath, ioutflow 
   
   NAMELIST /AdditionalControls/ iswitch_wo
