@@ -64,7 +64,8 @@ if switcher == 0:
     field_ticks  = [0.0,1.0]
     xlabel       = r'$x/D$'
     pad_cbar_lab = -8
-    extend_cmap  = 'None'
+    extend_cmap  = 'neither'
+    size_cbar    = '10%'
     
 # Streamwise vorticity
 elif switcher == 1:
@@ -76,8 +77,9 @@ elif switcher == 1:
     field_label  = r"$\omega_x$"
     field_ticks  = [-0.5,0.5]
     xlabel       = r'$z/D$'
-    pad_cbar_lab = -12
+    pad_cbar_lab = -16
     extend_cmap  = 'both'
+    size_cbar    = '20%'
     
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
@@ -184,7 +186,7 @@ while True:
     # Functions to locate the colorbar
     divider = make_axes_locatable(ax)
     
-    cax = divider.append_axes('right', size='10%', pad=0.05)
+    cax = divider.append_axes('right', size=size_cbar, pad=0.05)
         
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
     im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
