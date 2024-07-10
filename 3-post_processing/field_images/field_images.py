@@ -64,7 +64,6 @@ if switcher == 0:
     field_ticks   = [0.0,1.0]
     xlabel        = r'$x/D$'
     pad_cbar_lab  = -8
-    extend_cmap   = 'neither'
     size_cbar     = '10%'
     maj_ticks_int = 10.0
     
@@ -79,7 +78,6 @@ elif switcher == 1:
     field_ticks   = [-0.5,0.5]
     xlabel        = r'$z/D$'
     pad_cbar_lab  = -20
-    extend_cmap   = 'both'
     size_cbar     = '20%'
     maj_ticks_int = 5.0
     
@@ -101,6 +99,9 @@ xi = np.linspace(0.0, Lxi, nxi)
 
 # Read y-coordinates vector
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+
+# Values of iso-levels        
+lvls = np.linspace(field_ticks[0], field_ticks[1], pp.nlvl)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -175,12 +176,7 @@ while True:
     # Modify the array of data to limit to the specified range
     data = np.where((data < field_ticks[0]), field_ticks[0], data)
     data = np.where((data > field_ticks[1]), field_ticks[1], data)
-               
-    # Values of iso-levels
-    #lvls = np.linspace(np.min(data), np.max(data), pp.nlvl)
-        
-    lvls = np.linspace(field_ticks[0], field_ticks[1], pp.nlvl)
-    
+                   
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
     
