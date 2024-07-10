@@ -27,14 +27,6 @@ from read_incompact3d_files import read_input_files
 
 #!--------------------------------------------------------------------------------------!
 
-# Default value for axes limits
-xliminf     = 0.0              # x axis inferior limit
-xlimsup     = 1500.0           # x axis superior limit
-yliminf     = 0.0              # y axis inferior limit
-ylimsup     = 0.008            # y axis superior limit
-
-#!--------------------------------------------------------------------------------------!
-
 # Create folders to store later results (e.g. cf_mean and plot)
 os.makedirs('data_post', mode=0o777, exist_ok=True)
 os.makedirs('plots',     mode=0o777, exist_ok=True)
@@ -64,13 +56,11 @@ else:
   
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
-time_unit = M1[:,7] 
+time_unit = M1[:,7]
 
-# Axes ranges
-xliminf = time_unit[0]
-xlimsup = time_unit[-1]
-yliminf = np.min(cfx) * 0.0
-ylimsup = np.max(cfx) * 1.2
+# Extracting friction Reynolds number in case of a TTBL
+if itype == 13:
+    re_tau = M1[:,10] 
 
 #!--------------------------------------------------------------------------------------!
 
@@ -142,7 +132,12 @@ if itype == 3:
                 f"{t_tot:{pp.fs}}, "        +
                 f"{delta:{pp.fs}}, "        +
                 f"{n_snap:{pp.fs}}\n"       )
-               
+
+# Axes ranges
+xliminf = time_unit[0]
+xlimsup = time_unit[-1]
+yliminf = np.min(cfx) * 0.0
+ylimsup = np.max(cfx) * 1.2               
                
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
@@ -154,5 +149,34 @@ plt.show()
 
 #!--------------------------------------------------------------------------------------!
 
+#!--- Plot friction Reynolds number ---!
+
+if itype == 13:
+
+    # Subplots environment
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+   
+    # Friction Reynolds number
+    ax.scatter(time_unit, re_tau, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+    # Axes labels
+    ax.set_xlabel(r'$t$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Axes ranges
+    xliminf = time_unit[0]
+    xlimsup = time_unit[-1]
+    yliminf = np.min(re_tau) * 0.0
+    ylimsup = np.max(re_tau) * 1.2 
+              
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+    # Saving the figure and show it
+    plt.savefig(f'plots/retau_vs_time_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    plt.show()
+
+#!--------------------------------------------------------------------------------------!
 
 
