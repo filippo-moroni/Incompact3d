@@ -102,12 +102,17 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Friction coefficient
 ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Axes labels
-ax.set_xlabel(r'$t$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+# y-axis label
 ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
+# TTBL only
+if itype == 13:
+
+    # x-axis label
+    ax.set_xlabel(r'$t U_w/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
 # Channel flow only
-if itype == 3:
+elif itype == 3:
 
     # x-axis label 
     ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -160,7 +165,7 @@ if itype == 13:
     ax.scatter(time_unit, re_tau, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
     # Axes labels
-    ax.set_xlabel(r'$t$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_xlabel(r'$t U_w/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Axes ranges
