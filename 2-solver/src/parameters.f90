@@ -342,8 +342,8 @@ subroutine parameter(input_i3d)
   ! Creating /restart_info folder
   if (nrank==0) call execute_command_line('mkdir -p restart_info')
   
-  ! Creating /monitoring folder
-  if (nrank==0) call execute_command_line('mkdir -p monitoring')
+  ! Creating /monitoring folder inside /data
+  if (nrank==0) call execute_command_line('mkdir -p data/monitoring')
   
   ! Creating /planes folder inside /data
   if (nrank==0) call execute_command_line('mkdir -p data/planes')
