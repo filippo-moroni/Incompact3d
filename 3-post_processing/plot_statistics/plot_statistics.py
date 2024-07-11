@@ -487,8 +487,8 @@ if itype == 13:
     # Limits for axes
     xliminf = 0.1
     xlimsup = Ly_plus
-    yliminf = min(mean_w)*1.2    
-    ylimsup = max(mean_w)*1.2
+    yliminf = min(mean_w_plus)*1.2    
+    ylimsup = max(mean_w_plus)*1.2
     
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
