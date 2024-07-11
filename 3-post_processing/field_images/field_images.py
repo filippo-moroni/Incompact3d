@@ -116,8 +116,8 @@ if os.path.exists(data_path) and os.path.isdir(data_path):
 
 else:
 
-    # Use /data_ri to read planes if /data does not exists (ri specified in 'post.prm')
-    data_path = f"data_r{nr:01d}/planes"
+    # Use /data_r1 to read planes if /data does not exists 
+    data_path = f"data_r1/planes"
        
 # Cycle on all planes
 i = 0
