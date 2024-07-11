@@ -565,7 +565,7 @@ module derivX
   real(mytype) :: cs1x,ds1x,alsa2x,as2x,alsanx,asnx,bsnx,csnx,dsnx,alsamx
   real(mytype) :: asmx,alsa3x,as3x,bs3x,alsatx,astx,bstx
 
-  !O6SVV
+  !O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype) :: alsa4x,as4x,bs4x,cs4x
   real(mytype) :: alsattx,asttx,bsttx,csttx
   real(mytype) :: alsaix,asix,bsix,csix,dsix
@@ -584,7 +584,7 @@ module derivY
   real(mytype) :: cs1y,ds1y,alsa2y,as2y,alsany,asny,bsny,csny,dsny,alsamy
   real(mytype) :: asmy,alsa3y,as3y,bs3y,alsaty,asty,bsty
 
-  !O6SVV
+  !O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype) :: alsa4y,as4y,bs4y,cs4y
   real(mytype) :: alsatty,astty,bstty,cstty
   real(mytype) :: alsajy,asjy,bsjy,csjy,dsjy
@@ -603,7 +603,7 @@ module derivZ
   real(mytype) :: cs1z,ds1z,alsa2z,as2z,alsanz,asnz,bsnz,csnz,dsnz,alsamz
   real(mytype) :: asmz,alsa3z,as3z,bs3z,alsatz,astz,bstz
 
-  !O6SVV
+  !O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype) :: alsa4z,as4z,bs4z,cs4z
   real(mytype) :: alsattz,asttz,bsttz,csttz
   real(mytype) :: alsakz,askz,bskz,cskz,dskz
