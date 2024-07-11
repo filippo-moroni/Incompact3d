@@ -188,7 +188,8 @@ elif itype == 13:
     # Use first realization folder to read snapshots .xdmf files if we have more than 1 realization
     if nr != 1:
         # /data_ri folders if nr /= 1
-        data_path = f"data_r{nr:01d}"
+        #data_path = f"data_r{nr:01d}"
+        data_path = f"data_r1"
 
     # Else use just /data folder       
     elif nr == 1:
