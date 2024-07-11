@@ -15,7 +15,7 @@
 ! - total dissipation rate
 
 ! Two-points statistics:
-! - spanwise correlation functions (Ruuz, Rvvz, Rwwz, Ruvz) 
+! - spanwise correlation functions for velocity (Ruuz, Rvvz, Rwwz, Ruvz) 
 !----------------------------------------------------------!
 
 ! Mean statistics (average, variance, skewness, kurtosis)
@@ -383,7 +383,7 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
 end subroutine stat_dissipation
 
 !********************************************************************
-! Calculate the (auto) correlation functions Rii and Ruv in z-direction
+! Calculate the (auto) correlation functions Rii and Ruv in z-direction for velocity components
 subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1)
 
   use decomp_2d
