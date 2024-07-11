@@ -443,9 +443,9 @@ end if
            vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
            pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2 
            phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
-           uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanH1(j)
-           vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanH1(j)
-           wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanH1(j)         
+           uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
+           vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
+           wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)         
         enddo
      endif
 
