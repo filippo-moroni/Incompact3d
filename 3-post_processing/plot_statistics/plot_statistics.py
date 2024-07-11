@@ -517,7 +517,6 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.1
 yliminf = 0.0
-ylimsup = 8.0
 
 # <u'u'>
 ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -526,11 +525,13 @@ ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize
 if itype == 13:
     
     xlimsup = 520.0
+    ylimsup = 10.0       
            
 # Channel    
 elif itype == 3:
 
     xlimsup = 300.0
+    ylimsup = 8.0
     
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
@@ -566,7 +567,6 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.1
 yliminf = 0.0
-ylimsup = 0.8
 
 # <v'v'>
 ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -575,11 +575,13 @@ ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize
 if itype == 13:
 
     xlimsup = 520.0
+    ylimsup = 1.2
             
 # Channel    
 elif itype == 3:
 
     xlimsup = 300.0
+    ylimsup = 0.8
     
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
@@ -615,7 +617,6 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.1
 yliminf = 0.0
-ylimsup = 0.8
 
 # <u'v'>
 ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -624,6 +625,7 @@ ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersi
 if itype == 13:
 
     xlimsup = 520.0
+    ylimsup = 1.2
         
     # y-axis label
     ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -632,6 +634,7 @@ if itype == 13:
 elif itype == 3:
 
     xlimsup = 300.0
+    ylimsup = 0.8
         
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
