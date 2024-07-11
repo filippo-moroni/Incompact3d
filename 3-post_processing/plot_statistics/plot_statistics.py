@@ -327,7 +327,7 @@ for j in range(0, ny-1, 1):
 print("Actual y+ value selected = ", y_plus[c])
 print()
 
-# Take the Rii value at rz = 0 and rescale to obtain correlation coefficients
+# Take the correlation functions value at rz = 0 and rescale to obtain correlation coefficients
 temp = Ruuz[c,0]
 Ruuz = Ruuz / temp
 
@@ -339,6 +339,9 @@ Rwwz = Rwwz / temp
 
 temp = Ruvz[c,0]
 Ruvz = Ruvz / temp
+
+temp = Rppz[c,0]
+Rppz = Rppz / temp
 
 # Halve the number of points in z-dir. to avoid periodicity effects
 nz = nz // 2
@@ -837,6 +840,40 @@ if itype == 13:
     plt.savefig(f'plots/Cuvz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 elif itype == 3:
     plt.savefig(f'plots/Cuvz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+
+# Show the figure
+plt.show()
+
+#!--------------------------------------------------------------------------------------!
+
+# Cppz
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = 0.0
+xlimsup = Lz_plus / 2.0
+yliminf = min(Rppz[c,:])*1.2
+ylimsup = max(Rppz[c,:])*1.2
+
+# Auto-correlation coefficient for phi'
+ax.scatter(rz, Rppz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+# Plot horizontal line at Cpp = 0
+ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+                   
+# Axes labels
+ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$C_{\varphi \varphi}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+# Saving the figure
+if itype == 13:
+    plt.savefig(f'plots/Cppz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+elif itype == 3:
+    plt.savefig(f'plots/Cppz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
 
 # Show the figure
 plt.show()
