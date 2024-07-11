@@ -51,8 +51,8 @@ if os.path.exists(data_path) and os.path.isdir(data_path):
 
 else:
 
-    # Read cf data from /data_ri folder, where the ri (realization number) is read from 'post.prm'
-    M1 = np.loadtxt(f'data_r{nr:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    # Read cf data from /data_r1 folder
+    M1 = np.loadtxt(f'data_r1/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
 # Extracting quantities from the full matrix
 cfx       = M1[:,4] 
