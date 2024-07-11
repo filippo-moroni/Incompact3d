@@ -384,7 +384,7 @@ end subroutine stat_dissipation
 
 !********************************************************************
 ! Calculate the (auto) correlation functions Rii and Ruv in z-direction for velocity components
-subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1)
+subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
 
   use decomp_2d
   use decomp_2d_io
@@ -392,16 +392,16 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH
   implicit none
  
   ! Velocity fluctuations, y-pencils
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,phi2
   
   ! Number of points in homogeneous directions, number of snapshots and number of realizations
   integer,     intent(in) :: nx,nz,nt,nr
   
   ! Local work arrays
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
+  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,phi3,ta3
   
   ! Correlation functions (first index: j (rows); second index: r (columns))
-  real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1, RuvzH1
+  real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1, RuvzH1, RppzH1
   
   real(mytype) :: den          ! denominator of the divisions
   integer      :: i,j,k,rr,kpr 
@@ -416,6 +416,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH
   call transpose_y_to_z(ux2,ux3)
   call transpose_y_to_z(uy2,uy3)
   call transpose_y_to_z(uz2,uz3)
+  call transpose_y_to_z(phi2,phi3)
 
   ! Correlation function calculation
   do k=1,zsize(3)
@@ -460,6 +461,14 @@ subroutine stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
                   RuvzH1(j,rr) = RuvzH1(j,rr) + ta3(i,j,k)/den
+                  
+                  !--- Scalar fluctuations correlation (phi'phi') ---!
+                  
+                  ! Product of fluctuations at distance 'r'
+                  ta3(i,j,k) = phi3(i,j,k)*phi3(i,j,kpr)
+                  
+                  ! Accumulation inside the correlation function variable (at each subdomain)
+                  RppzH1(j,rr) = RppzH1(j,rr) + ta3(i,j,k)/den
                   
               enddo
           enddo

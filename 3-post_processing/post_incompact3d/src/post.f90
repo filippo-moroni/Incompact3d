@@ -27,6 +27,7 @@ program post
   
   real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0     ! variables to count time spent to post-process data
   real(mytype) :: den                                ! denominator of the divisions
+  real(mytype) :: temp                               ! temporary variable
    
   integer :: iunit		      		     ! unit for the file to open (assigned by the compiler)
     
@@ -142,7 +143,7 @@ program post
   write(filename, '(A)') 'mean_stats.txt'
   filename = adjustl(filename)
   
-  ! Display that we are reading the mean velocity field file
+  ! Display that we are reading the mean velocity field and the mean scalar field
   if (nrank.eq.0) write(*,"(1x,'Reading mean_stats.txt')")
   
       ! Open the file and read
@@ -152,9 +153,24 @@ program post
   
       do j = 1, ysize(2)
   
-          read(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), a, &
-                                            v1meanHT(j), a, &       
-                                            w1meanHT(j), a
+          read(iunit, '(18(F13.9, A1, 1X))') u1meanHT(j),  a, &
+                                             v1meanHT(j),  a, &       
+                                             w1meanHT(j),  a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             temp,         a, &
+                                             phi1meanHT(j)
       end do
                                
       close(iunit)
@@ -261,22 +277,23 @@ end if
 
 #ifndef TTBL_MODE 
    
-   !--- Correlation for channel, mean statistics must be calculated in a previous post-processing run ---!
+   !--- Correlations for channel, mean statistics must be calculated in a previous post-processing run ---!
    if(post_corz) then
    
    ! Fluctuations calculation
    do k=1,ysize(3)
        do i=1,ysize(1)
            do j=1,ysize(2)
-               ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
-               uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
-               uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
+               ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
+               uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
+               uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
+               phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
            enddo
        enddo
    enddo
    
    ! Correlation functions calculation (each subdomain, z-pencils)
-   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1)
+   call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
       
    end if
    !-----------------------------------------------------------------------------------------------------!
@@ -398,19 +415,21 @@ end if
 
 ! Correlations calculation for TTBL
 #ifdef TTBL_MODE  
+   
    ! Fluctuations calculation
    do k=1,ysize(3)
        do i=1,ysize(1)
            do j=1,ysize(2)
-               ux2(i,j,k) = ux2(i,j,k)-u1meanHT(j)
-               uy2(i,j,k) = uy2(i,j,k)-v1meanHT(j)
-               uz2(i,j,k) = uz2(i,j,k)-w1meanHT(j)
+               ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
+               uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
+               uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
+               phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
            enddo
        enddo
    enddo
    
    ! Correlation functions calculation (each subdomain, z-pencils)
-   call stat_correlation_z(ux2,uy2,uz2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1)
+   call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
 
 #endif
    
@@ -419,6 +438,7 @@ end if
    call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+   call MPI_REDUCE(RppzH1,RppzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    
   end if
 
@@ -714,6 +734,36 @@ end if
         end do
                                        
         close(iunit)
+        
+!--- Scalar field correlation function, Rppz ---!
+#ifdef TTBL_MODE
+        ! Writing the snapshot index as character
+        write(snap_index, ifilenameformat) ifile 
+        snap_index = adjustl(snap_index) 
+        
+        ! Write the Rppz filename for TTBL
+        write(filename, '(A,A,A)') 'Rppz-', trim(snap_index), '.txt'
+        filename = adjustl(filename)
+#else
+        ! Write the Rppz filename for channel flow
+        write(filename, '(A)') 'Rppz.txt'
+        filename = adjustl(filename)
+#endif       
+
+        ! Construct the format string
+        write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
+
+        ! Open the file and write      
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        ! Scalar fluctuations correlation function        
+        do j = 1, ysize(2)
+                
+            write(iunit, format_string) (RppzHT(j, k), ' ', k = 1, zsize(3))
+               
+        end do
+                                       
+        close(iunit)
          
      endif ! closing of if-statement for writing correlations
                      
@@ -814,9 +864,9 @@ end if
      print *,'==========================================================='
      print *,''
      print *,'The following statistics have been saved in'
-     print *,'"Riiz and Ruvz" file(s):'
+     print *,'"Riiz", "Ruvz" and "Rppz" file(s):'
      print *,''
-     print *,'Ruu(z), Rvv(z), Rww(z), Ruv(z)'
+     print *,'Ruu(z), Rvv(z), Rww(z), Ruv(z), Rpp(z)'
      print *,''    
      endif
      
