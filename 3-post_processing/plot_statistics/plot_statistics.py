@@ -415,7 +415,6 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.1
 yliminf = 0.0
-ylimsup = 25.0
 
 # Mean velocity profile 
 ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -424,11 +423,13 @@ ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersiz
 if itype == 13:
     
     xlimsup = 520.0
+    ylimsup = 30.0
                     
 # Channel    
 elif itype == 3:
 
     xlimsup = 300.0
+    ylimsup = 25.0
     
     # Lee & Moser (2015)
     ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
