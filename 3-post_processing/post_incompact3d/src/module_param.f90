@@ -304,7 +304,7 @@ module param
   integer :: ifft,istret,iforc_entree,iturb
   integer :: iin,ifirst,ilast,iles
   integer :: ntime ! How many (sub)timestpeps do we need to store?
-  integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,imodulo2,idemarre,icommence,irecord
+  integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
   integer :: ioutflow, ninflows, ntimesteps
   integer :: itime0
   integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
