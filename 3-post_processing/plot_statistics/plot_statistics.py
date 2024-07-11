@@ -181,37 +181,6 @@ elif itype == 13:
     Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
     Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
-    # Read and display the friction Reynolds number
-
-    #!--- Reading of Re_tau ---!
-    
-    # Path for reading Re_tau (first realization folder)
-    data_path = 'data_r1'
-
-    # Check if the path exists and is a directory
-    if os.path.exists(data_path) and os.path.isdir(data_path):
-    
-        # First realization folder
-        data_path = 'data_r1'   
-   
-    # If /data_r1 does not exist, use simply /data
-    else:
-    
-        # Generic folder
-        data_path = 'data' 
-              
-    # Create the file path for snapshots .xdmf files
-    file_path = data_path + f'/snapshot-{snap_numb}.xdmf' 
-    
-    # Call external function to extract Re_tau value
-    re_tau = extract_re_tau_value(file_path)
-    
-    # Print to screen the extracted value
-    if re_tau is not None:
-        print(f"Friction Reynolds number, Re_tau = {re_tau}")
-    else:
-        print("Re_tau value could not be extracted.")
-
 print()
 
 # Extracting quantities from the full matrices
@@ -236,6 +205,9 @@ elif itype == 13:
     # Calculate the index at which the BL thickness delta99 is 
     while mean_u[j] > mean_u[0]*0.01: 
         j = j + 1
+        
+    # Boundary layer thickness delta_99
+    bl_thick = y[j]
 
     # Shift due to the translating wall
     mean_u = uwall - mean_u
@@ -260,6 +232,16 @@ sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise 
 delta_nu = nu / sh_vel                    # viscous length
 t_nu     = nu / (sh_vel ** 2)             # viscous time
 
+# Friction Reynolds number
+if itype == 13:
+    re_tau = sh_vel * bl_thick / nu
+    
+    # Print friction Reynolds number and boundary layer thickness
+    print("Friction Reynolds number, re_tau = ", re_tau)
+    print()
+    print("Boundary layer thickness, delta_99 = ", bl_thick)
+    print()
+    
 # Rescaling variables through wall units
 delta_x_plus = delta_x / delta_nu
 delta_z_plus = delta_z / delta_nu
