@@ -338,27 +338,29 @@ contains
        allocate(pre1meanHT(ysize(2))); pre1meanHT = zero
        allocate(pre2meanHT(ysize(2))); pre2meanHT = zero
 
-       ! With the current version, we can deal only with 1 scalar field (otherwise a rank 4 array cannot be transposed)   
+       !--- With the current version, we can deal only with 1 scalar field (modify to a rank 4 array if needed) ---! 
+       
+       ! Point-value
        allocate(phi1mean(ysize(1),ysize(2),ysize(3))); phi1mean = zero 
        allocate(phi2mean(ysize(1),ysize(2),ysize(3))); phi2mean = zero     
        allocate(uphimean(ysize(1),ysize(2),ysize(3))); uphimean = zero   
        allocate(vphimean(ysize(1),ysize(2),ysize(3))); vphimean = zero   
        allocate(wphimean(ysize(1),ysize(2),ysize(3))); wphimean = zero    
 
-       allocate(phi1meanH1(ysize(2))); allocate(phi2meanH1(ysize(2)))
-       allocate(uphimeanH1(ysize(2))); allocate(vphimeanH1(ysize(2))); allocate(wphimeanH1(ysize(2)))
-       allocate(phi1meanHT(ysize(2))); allocate(phi2meanHT(ysize(2)))
-       allocate(uphimeanHT(ysize(2))); allocate(vphimeanHT(ysize(2))); allocate(wphimeanHT(ysize(2)))
-            
-      
+       ! Sum at each processor
+       allocate(phi1meanH1(ysize(2))); phi1meanH1 = zero
+       allocate(phi2meanH1(ysize(2))); phi2meanH1 = zero
+       allocate(uphimeanH1(ysize(2))); uphimeanH1 = zero
+       allocate(vphimeanH1(ysize(2))); vphimeanH1 = zero
+       allocate(wphimeanH1(ysize(2))); wphimeanH1 = zero
        
-  
-       phi1meanH1=zero;phi2meanH1=zero
-       uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
-  
-       phi1meanHT=zero;phi2meanHT=zero
-       uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero      
-                  
+       ! Total sum
+       allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
+       allocate(phi2meanHT(ysize(2))); phi2meanHT = zero
+       allocate(uphimeanHT(ysize(2))); uphimeanHT = zero
+       allocate(vphimeanHT(ysize(2))); vphimeanHT = zero
+       allocate(wphimeanHT(ysize(2))); wphimeanHT = zero 
+            
     end if
     
     if (post_vort) then
@@ -397,14 +399,9 @@ contains
     if (post_diss) then
     
        ! Total dissipation rate
-       allocate(epsmean(ysize(1),ysize(2),ysize(3)))
-       epsmean=zero
-       
-       allocate(epsmeanH1(ysize(2)))
-       epsmeanH1=zero
-       
-       allocate(epsmeanHT(ysize(2)))
-       epsmeanHT=zero
+       allocate(epsmean  (ysize(1),ysize(2),ysize(3))); epsmean   = zero
+       allocate(epsmeanH1(ysize(2)));                   epsmeanH1 = zero
+       allocate(epsmeanHT(ysize(2)));                   epsmeanHT = zero
     
     end if
     
