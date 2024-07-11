@@ -63,6 +63,21 @@ yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 y0 = yp[0]   # First element of yp vector (y = 0)
 yn = yp[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 
+#!--------------------------------------------------------------------------------------!
+
+# Path for generic data
+data_path = 'data'
+
+# Check if the path exists and is a directory
+if os.path.exists(data_path) and os.path.isdir(data_path):
+    
+    # Confirm /data as path for reading .xdmf files
+        
+else:
+
+    # Use first realization folder for reading .xdmf files
+    data_path = 'data_r1'
+
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
 # spline function that passes through all provided points.
@@ -71,14 +86,8 @@ yn = yp[-1]  # Last  element of yp vector (y = Ly, height of the domain)
 # Do loop over different time units
 for i in range(file1, filen + icrfile, icrfile):
     
-    # Use first realization folder to read time units from snapshots
-    if nr != 1:
-        # /data_ri folders if nr /= 1
-        file_path = f"data_r{nr:01d}/snapshot-{i:04d}.xdmf"
-       
-    elif nr == 1:
-        # /data folder if nr = 1
-        file_path = f"data/snapshot-{i:04d}.xdmf"
+    # Create dynamic file path for .xdmf files
+    file_path = data_path + f"/snapshot-{i:04d}.xdmf"
     
     # Read .xdmf file of snapshots to extract time unit
     tree = ET.parse(file_path)
