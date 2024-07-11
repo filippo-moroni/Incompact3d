@@ -163,9 +163,13 @@ elif itype == 13:
     print("!--- Plotting of statistics for a TTBL ---!")
 
     # Asking to the user the specific snapshot to show
-    snap_numb = input("Enter the snapshot number to show (4 digits): ")
+    snap_numb = input("Enter the snapshot number to show: ")
+    
     print()
-         
+    
+    # Pad with zeros to match snapshots' naming  
+    snap_numb = snap_numb.zfill(4)
+             
     # Reading of mean statistics
     M1 = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
