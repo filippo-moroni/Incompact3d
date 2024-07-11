@@ -185,17 +185,21 @@ elif itype == 13:
 
     #!--- Reading of Re_tau ---!
     
-    # Use first realization folder to read snapshots .xdmf files if we have more than 1 realization
-    if nr != 1:
-        # /data_ri folders if nr /= 1
-        #data_path = f"data_r{nr:01d}"
-        data_path = f"data_r1"
+    # Path for reading Re_tau (first realization folder)
+    data_path = 'data_r1'
 
-    # Else use just /data folder       
-    elif nr == 1:
-        # /data folder if nr = 1
-        data_path = f"data"
-      
+    # Check if the path exists and is a directory
+    if os.path.exists(data_path) and os.path.isdir(data_path):
+    
+        # First realization folder
+        data_path = 'data_r1'   
+   
+    # If /data_r1 does not exist, use simply /data
+    else:
+    
+        # Generic folder
+        data_path = 'data' 
+              
     # Create the file path for snapshots .xdmf files
     file_path = data_path + f'/snapshot-{snap_numb}.xdmf' 
     
