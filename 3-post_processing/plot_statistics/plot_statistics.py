@@ -202,13 +202,15 @@ elif itype == 13:
     # Initialize the index
     j = 0
     
-    # Calculate the index at which the BL thickness delta99 is 
+    # Calculate the index at which the BL thickness delta99 is and delta_99 itself
     while mean_u[j] > mean_u[0]*0.01: 
+        
+        # Boundary layer thickness delta_99
+        bl_thick = y[j]
+        
+        # Increment the index
         j = j + 1
         
-    # Boundary layer thickness delta_99
-    bl_thick = y[j]
-
     # Shift due to the translating wall
     mean_u = uwall - mean_u
 
