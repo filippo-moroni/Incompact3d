@@ -280,6 +280,8 @@ contains
   implicit none
       
     if (post_mean) then
+       
+       ! Point-value
        allocate(u1mean  (ysize(1),ysize(2),ysize(3))); u1mean   = zero    
        allocate(v1mean  (ysize(1),ysize(2),ysize(3))); v1mean   = zero   
        allocate(w1mean  (ysize(1),ysize(2),ysize(3))); w1mean   = zero  
@@ -298,49 +300,58 @@ contains
        allocate(pre1mean(ysize(1),ysize(2),ysize(3))); pre1mean = zero   
        allocate(pre2mean(ysize(1),ysize(2),ysize(3))); pre2mean = zero 
        
-       allocate(u1meanH1(ysize(2)));   allocate(v1meanH1(ysize(2)));  allocate(w1meanH1(ysize(2)))
-       allocate(u2meanH1(ysize(2)));   allocate(v2meanH1(ysize(2)));  allocate(w2meanH1(ysize(2)))
-       allocate(u3meanH1(ysize(2)));   allocate(v3meanH1(ysize(2)));  allocate(w3meanH1(ysize(2)))
-       allocate(u4meanH1(ysize(2)));   allocate(v4meanH1(ysize(2)));  allocate(w4meanH1(ysize(2)))
-       allocate(uvmeanH1(ysize(2)));   allocate(uwmeanH1(ysize(2)));  allocate(vwmeanH1(ysize(2)))
-       allocate(pre1meanH1(ysize(2))); allocate(pre2meanH1(ysize(2)))
+       ! Sum at each processor
+       allocate(u1meanH1  (ysize(2))); u1meanH1   = zero  
+       allocate(v1meanH1  (ysize(2))); v1meanH1   = zero 
+       allocate(w1meanH1  (ysize(2))); w1meanH1   = zero
+       allocate(u2meanH1  (ysize(2))); u2meanH1   = zero
+       allocate(v2meanH1  (ysize(2))); v2meanH1   = zero
+       allocate(w2meanH1  (ysize(2))); w2meanH1   = zero
+       allocate(u3meanH1  (ysize(2))); u3meanH1   = zero  
+       allocate(v3meanH1  (ysize(2))); v3meanH1   = zero 
+       allocate(w3meanH1  (ysize(2))); w3meanH1   = zero
+       allocate(u4meanH1  (ysize(2))); u4meanH1   = zero  
+       allocate(v4meanH1  (ysize(2))); v4meanH1   = zero
+       allocate(w4meanH1  (ysize(2))); w4meanH1   = zero 
+       allocate(uvmeanH1  (ysize(2))); uvmeanH1   = zero 
+       allocate(uwmeanH1  (ysize(2))); uwmeanH1   = zero 
+       allocate(vwmeanH1  (ysize(2))); vwmeanH1   = zero
+       allocate(pre1meanH1(ysize(2))); pre1meanH1 = zero 
+       allocate(pre2meanH1(ysize(2))); pre2meanH1 = zero
    
-       allocate(u1meanHT(ysize(2)));   allocate(v1meanHT(ysize(2)));  allocate(w1meanHT(ysize(2)))
-       allocate(u2meanHT(ysize(2)));   allocate(v2meanHT(ysize(2)));  allocate(w2meanHT(ysize(2)))
-       allocate(u3meanHT(ysize(2)));   allocate(v3meanHT(ysize(2)));  allocate(w3meanHT(ysize(2)))
-       allocate(u4meanHT(ysize(2)));   allocate(v4meanHT(ysize(2)));  allocate(w4meanHT(ysize(2)))
-       allocate(uvmeanHT(ysize(2)));   allocate(uwmeanHT(ysize(2)));  allocate(vwmeanHT(ysize(2)))
-       allocate(pre1meanHT(ysize(2))); allocate(pre2meanHT(ysize(2)))
+       ! Total sum
+       allocate(u1meanHT  (ysize(2))); u1meanHT   = zero 
+       allocate(v1meanHT  (ysize(2))); v1meanHT   = zero
+       allocate(w1meanHT  (ysize(2))); w1meanHT   = zero
+       allocate(u2meanHT  (ysize(2))); u2meanHT   = zero  
+       allocate(v2meanHT  (ysize(2))); v2meanHT   = zero 
+       allocate(w2meanHT  (ysize(2))); w2meanHT   = zero
+       allocate(u3meanHT  (ysize(2))); u3meanHT   = zero  
+       allocate(v3meanHT  (ysize(2))); v3meanHT   = zero
+       allocate(w3meanHT  (ysize(2))); w3meanHT   = zero
+       allocate(u4meanHT  (ysize(2))); u4meanHT   = zero  
+       allocate(v4meanHT  (ysize(2))); v4meanHT   = zero 
+       allocate(w4meanHT  (ysize(2))); w4meanHT   = zero
+       allocate(uvmeanHT  (ysize(2))); uvmeanHT   = zero
+       allocate(uwmeanHT  (ysize(2))); uwmeanHT   = zero
+       allocate(vwmeanHT  (ysize(2))); vwmeanHT   = zero 
+       allocate(pre1meanHT(ysize(2))); pre1meanHT = zero
+       allocate(pre2meanHT(ysize(2))); pre2meanHT = zero
 
- 
-       u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
-       u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
-       u3meanH1=zero;v3meanH1=zero;w3meanH1=zero
-       u4meanH1=zero;v4meanH1=zero;w4meanH1=zero
-       uvmeanH1=zero;uwmeanH1=zero;vwmeanH1=zero
-       pre1meanH1=zero;pre2meanH1=zero
-   
-       u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
-       u2meanHT=zero;v2meanHT=zero;w2meanHT=zero
-       u3meanHT=zero;v3meanHT=zero;w3meanHT=zero
-       u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
-       uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
-       pre1meanHT=zero;pre2meanHT=zero
-      
        ! With the current version, we can deal only with 1 scalar field (otherwise a rank 4 array cannot be transposed)   
-       allocate(phi1mean(ysize(1),ysize(2),ysize(3)))   
-       allocate(phi2mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(uphimean(ysize(1),ysize(2),ysize(3)))    
-       allocate(vphimean(ysize(1),ysize(2),ysize(3)))   
-       allocate(wphimean(ysize(1),ysize(2),ysize(3)))    
+       allocate(phi1mean(ysize(1),ysize(2),ysize(3))); phi1mean = zero 
+       allocate(phi2mean(ysize(1),ysize(2),ysize(3))); phi2mean = zero     
+       allocate(uphimean(ysize(1),ysize(2),ysize(3))); uphimean = zero   
+       allocate(vphimean(ysize(1),ysize(2),ysize(3))); vphimean = zero   
+       allocate(wphimean(ysize(1),ysize(2),ysize(3))); wphimean = zero    
 
        allocate(phi1meanH1(ysize(2))); allocate(phi2meanH1(ysize(2)))
        allocate(uphimeanH1(ysize(2))); allocate(vphimeanH1(ysize(2))); allocate(wphimeanH1(ysize(2)))
        allocate(phi1meanHT(ysize(2))); allocate(phi2meanHT(ysize(2)))
        allocate(uphimeanHT(ysize(2))); allocate(vphimeanHT(ysize(2))); allocate(wphimeanHT(ysize(2)))
             
-       phi1mean=zero;phi2mean=zero
-       uphimean=zero;vphimean=zero;wphimean=zero
+      
+       
   
        phi1meanH1=zero;phi2meanH1=zero
        uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
