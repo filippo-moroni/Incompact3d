@@ -262,6 +262,9 @@ var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
 mean_uv /= sh_vel ** 2
 
+# Spanwise velocity is not overwritten since for a channel it is plotted in external units 
+mean_w_plus  = mean_w / sh_vel
+
 vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
@@ -475,35 +478,45 @@ plt.show()
 # Mean spanwise velocity profile
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Limits for axes
-xliminf = 0.0
-yliminf = min(mean_w)*1.2    
-ylimsup = max(mean_w)*1.2
-
-# Spanwise mean velocity profile
-ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-    
 # TTBL
 if itype == 13:
+
+    # Spanwise mean velocity profile
+    ax.scatter(y_plus, mean_w_plus, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
-    xlimsup = Ly
+    # Limits for axes
+    xliminf = 0.1
+    xlimsup = Ly_plus
+    yliminf = min(mean_w)*1.2    
+    ylimsup = max(mean_w)*1.2
     
     # Axes labels
-    ax.set_xlabel(r'$y/D$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$W/U_w$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$W^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Channel
 elif itype == 3:
+
+    # Spanwise mean velocity profile
+    ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
+    # Limits for axes
+    xliminf = 0.0
     xlimsup = 1.0
+    yliminf = min(mean_w)*1.2    
+    ylimsup = max(mean_w)*1.2
     
     # Axes labels
     ax.set_xlabel(r'$y/h$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$W/U_p$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Saving the figure
 if itype == 13:
