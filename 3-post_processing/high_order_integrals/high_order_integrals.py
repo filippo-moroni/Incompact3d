@@ -72,6 +72,7 @@ data_path = 'data'
 if os.path.exists(data_path) and os.path.isdir(data_path):
     
     # Confirm /data as path for reading .xdmf files
+    data_path = 'data'
         
 else:
 
