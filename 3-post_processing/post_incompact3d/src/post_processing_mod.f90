@@ -76,9 +76,9 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: epsmeanH1
   real(mytype), save, allocatable, dimension(:)     :: epsmeanHT
   
-  ! Arrays for correlation functions 
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT
+  ! Arrays for correlation functions (velocity and scalar (p: phi)) 
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT,RppzHT
      
 contains
 
@@ -280,23 +280,23 @@ contains
   implicit none
       
     if (post_mean) then
-       allocate(u1mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(v1mean(ysize(1),ysize(2),ysize(3)))   
-       allocate(w1mean(ysize(1),ysize(2),ysize(3)))   
-       allocate(u2mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(v2mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(w2mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(u3mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(v3mean(ysize(1),ysize(2),ysize(3)))   
-       allocate(w3mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(u4mean(ysize(1),ysize(2),ysize(3)))  
-       allocate(v4mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(w4mean(ysize(1),ysize(2),ysize(3)))      
-       allocate(uvmean(ysize(1),ysize(2),ysize(3)))      
-       allocate(uwmean(ysize(1),ysize(2),ysize(3)))       
-       allocate(vwmean(ysize(1),ysize(2),ysize(3)))     
-       allocate(pre1mean(ysize(1),ysize(2),ysize(3)))    
-       allocate(pre2mean(ysize(1),ysize(2),ysize(3)))  
+       allocate(u1mean  (ysize(1),ysize(2),ysize(3))); u1mean   = zero    
+       allocate(v1mean  (ysize(1),ysize(2),ysize(3))); v1mean   = zero   
+       allocate(w1mean  (ysize(1),ysize(2),ysize(3))); w1mean   = zero  
+       allocate(u2mean  (ysize(1),ysize(2),ysize(3))); u2mean   = zero   
+       allocate(v2mean  (ysize(1),ysize(2),ysize(3))); v2mean   = zero    
+       allocate(w2mean  (ysize(1),ysize(2),ysize(3))); w2mean   = zero   
+       allocate(u3mean  (ysize(1),ysize(2),ysize(3))); u3mean   = zero    
+       allocate(v3mean  (ysize(1),ysize(2),ysize(3))); v3mean   = zero   
+       allocate(w3mean  (ysize(1),ysize(2),ysize(3))); w3mean   = zero    
+       allocate(u4mean  (ysize(1),ysize(2),ysize(3))); u4mean   = zero 
+       allocate(v4mean  (ysize(1),ysize(2),ysize(3))); v4mean   = zero   
+       allocate(w4mean  (ysize(1),ysize(2),ysize(3))); w4mean   = zero      
+       allocate(uvmean  (ysize(1),ysize(2),ysize(3))); uvmean   = zero      
+       allocate(uwmean  (ysize(1),ysize(2),ysize(3))); uwmean   = zero       
+       allocate(vwmean  (ysize(1),ysize(2),ysize(3))); vwmean   = zero    
+       allocate(pre1mean(ysize(1),ysize(2),ysize(3))); pre1mean = zero   
+       allocate(pre2mean(ysize(1),ysize(2),ysize(3))); pre2mean = zero 
        
        allocate(u1meanH1(ysize(2)));   allocate(v1meanH1(ysize(2)));  allocate(w1meanH1(ysize(2)))
        allocate(u2meanH1(ysize(2)));   allocate(v2meanH1(ysize(2)));  allocate(w2meanH1(ysize(2)))
@@ -312,13 +312,7 @@ contains
        allocate(uvmeanHT(ysize(2)));   allocate(uwmeanHT(ysize(2)));  allocate(vwmeanHT(ysize(2)))
        allocate(pre1meanHT(ysize(2))); allocate(pre2meanHT(ysize(2)))
 
-       u1mean=zero;v1mean=zero;w1mean=zero
-       u2mean=zero;v2mean=zero;w2mean=zero
-       u3mean=zero;v3mean=zero;w3mean=zero
-       u4mean=zero;v4mean=zero;w4mean=zero
-       uvmean=zero;uwmean=zero;vwmean=zero
-       pre1mean=zero;pre2mean=zero
-   
+ 
        u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
        u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
        u3meanH1=zero;v3meanH1=zero;w3meanH1=zero
@@ -359,48 +353,33 @@ contains
     if (post_vort) then
        
        ! Vorticity
-       allocate(vortxmean(ysize(1),ysize(2),ysize(3))) 
-       allocate(vortymean(ysize(1),ysize(2),ysize(3)))  
-       allocate(vortzmean(ysize(1),ysize(2),ysize(3)))
-       vortxmean=zero; vortymean=zero; vortzmean=zero  
+       allocate(vortxmean(ysize(1),ysize(2),ysize(3))); vortxmean = zero
+       allocate(vortymean(ysize(1),ysize(2),ysize(3))); vortymean = zero 
+       allocate(vortzmean(ysize(1),ysize(2),ysize(3))); vortzmean = zero           
        
-       allocate(vortxmeanH1(ysize(2)));
-       allocate(vortymeanH1(ysize(2)));
-       allocate(vortzmeanH1(ysize(2)));
-       vortxmeanH1=zero;vortymeanH1=zero;vortzmeanH1=zero
-       
-       allocate(vortxmeanHT(ysize(2)));
-       allocate(vortymeanHT(ysize(2)));
-       allocate(vortzmeanHT(ysize(2)));
-       vortxmeanHT=zero;vortymeanHT=zero;vortzmeanHT=zero
-       
+       allocate(vortxmeanH1(ysize(2))); vortxmeanH1 = zero
+       allocate(vortymeanH1(ysize(2))); vortymeanH1 = zero
+       allocate(vortzmeanH1(ysize(2))); vortzmeanH1 = zero
+             
+       allocate(vortxmeanHT(ysize(2))); vortxmeanHT = zero
+       allocate(vortymeanHT(ysize(2))); vortymeanHT = zero
+       allocate(vortzmeanHT(ysize(2))); vortzmeanHT = zero
+      
        ! Mean gradients (velocity and scalar)
-       allocate(mean_gradientp(ysize(1),ysize(2),ysize(3)))
-       mean_gradientp=zero
-       allocate(mean_gradientx(ysize(1),ysize(2),ysize(3)))
-       mean_gradientx=zero
-       allocate(mean_gradientz(ysize(1),ysize(2),ysize(3)))
-       mean_gradientz=zero
-       allocate(mean_gradphi(ysize(1),ysize(2),ysize(3)))
-       mean_gradphi=zero
+       allocate(mean_gradientp(ysize(1),ysize(2),ysize(3))); mean_gradientp = zero       
+       allocate(mean_gradientx(ysize(1),ysize(2),ysize(3))); mean_gradientx = zero
+       allocate(mean_gradientz(ysize(1),ysize(2),ysize(3))); mean_gradientz = zero
+       allocate(mean_gradphi  (ysize(1),ysize(2),ysize(3))); mean_gradphi   = zero
        
-       allocate(mean_gradientpH1(ysize(2)))
-       mean_gradientpH1=zero
-       allocate(mean_gradientxH1(ysize(2)))
-       mean_gradientxH1=zero
-       allocate(mean_gradientzH1(ysize(2)))
-       mean_gradientzH1=zero
-       allocate(mean_gradphiH1(ysize(2)))
-       mean_gradphiH1=zero
+       allocate(mean_gradientpH1(ysize(2))); mean_gradientpH1 = zero
+       allocate(mean_gradientxH1(ysize(2))); mean_gradientxH1 = zero
+       allocate(mean_gradientzH1(ysize(2))); mean_gradientzH1 = zero
+       allocate(mean_gradphiH1  (ysize(2))); mean_gradphiH1   = zero
        
-       allocate(mean_gradientpHT(ysize(2)))
-       mean_gradientpHT=zero
-       allocate(mean_gradientxHT(ysize(2)))
-       mean_gradientxHT=zero
-       allocate(mean_gradientzHT(ysize(2)))
-       mean_gradientzHT=zero
-       allocate(mean_gradphiHT(ysize(2)))
-       mean_gradphiHT=zero
+       allocate(mean_gradientpHT(ysize(2))); mean_gradientpHT = zero
+       allocate(mean_gradientxHT(ysize(2))); mean_gradientxHT = zero
+       allocate(mean_gradientzHT(ysize(2))); mean_gradientzHT = zero
+       allocate(mean_gradphiHT  (ysize(2))); mean_gradphiHT   = zero
                                                                                                                                                                       
     endif
     
@@ -421,28 +400,26 @@ contains
     if (post_corz) then
     
         ! Correlation functions in z-direction
-        allocate(RuuzH1(zsize(2),zsize(3)))
-        allocate(RvvzH1(zsize(2),zsize(3)))
-        allocate(RwwzH1(zsize(2),zsize(3)))
-        allocate(RuvzH1(zsize(2),zsize(3)))
-        
-        RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero
-        
-        allocate(RuuzHT(zsize(2),zsize(3)))
-        allocate(RvvzHT(zsize(2),zsize(3)))
-        allocate(RwwzHT(zsize(2),zsize(3)))
-        allocate(RuvzHT(zsize(2),zsize(3)))
-        
-        RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero
+        allocate(RuuzH1(zsize(2),zsize(3))); RuuzH1 = zero
+        allocate(RvvzH1(zsize(2),zsize(3))); RvvzH1 = zero
+        allocate(RwwzH1(zsize(2),zsize(3))); RwwzH1 = zero
+        allocate(RuvzH1(zsize(2),zsize(3))); RuvzH1 = zero      
+        allocate(RppzH1(zsize(2),zsize(3))); RppzH1 = zero 
+               
+        allocate(RuuzHT(zsize(2),zsize(3))); RuuzHT = zero
+        allocate(RvvzHT(zsize(2),zsize(3))); RvvzHT = zero
+        allocate(RwwzHT(zsize(2),zsize(3))); RwwzHT = zero
+        allocate(RuvzHT(zsize(2),zsize(3))); RuvzHT = zero
+        allocate(RppzHT(zsize(2),zsize(3))); RppzHT = zero
         
 #ifndef TTBL_MODE
 
-        ! If we are in Channel mode, allocate memory for reading of mean velocity field         
-        allocate(u1meanHT(ysize(2)))   
-        allocate(v1meanHT(ysize(2)))  
-        allocate(w1meanHT(ysize(2)))
+        ! If we are in Channel mode, allocate memory to read mean velocity field and mean scalar field        
+        allocate(u1meanHT  (ysize(2))); u1meanHT   = zero   
+        allocate(v1meanHT  (ysize(2))); v1meanHT   = zero  
+        allocate(w1meanHT  (ysize(2))); w1meanHT   = zero
+        allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
 
-        u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
 #endif   
         
     end if
@@ -543,10 +520,10 @@ contains
   if (post_corz) then
   
       ! Subdomains
-      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero
+      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero;RppzH1=zero
   
       ! Total domain
-      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero
+      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero;RppzHT=zero
   
   end if
   
