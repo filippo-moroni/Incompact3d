@@ -13,4 +13,4 @@ flowcasename    ! Name of the flow case for suffix in filenames of plots
 1    # post_mean          ! Compute mean statistics
 0    # post_vort          ! Compute mean vorticity and mean gradient
 0    # post_diss          ! Compute mean total dissipation rate
-0    # post_corz          ! Compute correlation functions along z
+0    # post_corz          ! Compute correlation functions along z (in Channel mode, a previous run with post_mean = 1 must be performed)
