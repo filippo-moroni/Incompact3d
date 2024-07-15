@@ -221,7 +221,7 @@ nz = nz // 2
 Lz = Lz / 2.0
 
 # Create the separation variable array
-rz = np.linspace(0, Lz, nz)
+rz = np.linspace(0.0, Lz, nz)
 
 # Calculate the index at which the correlation coefficient goes to zero
 k = 0
