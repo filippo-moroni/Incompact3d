@@ -28,13 +28,13 @@ sys.path.append(config_path)
 import plot_params as pp
 
 # Import function to set plots
-from plot_settings import set_plot_settings
+from plot_subs import set_plot_settings, save_and_show_plot
 
 # Import function to read 'input.i3d' and 'post.prm' files
 from read_incompact3d_files import read_input_files
 
 # Import function to read friction Reynolds number Re_tau from .xdmf files
-from read_retau import extract_re_tau_value 
+from read_retau import extract_re_tau_value
 
 #!--------------------------------------------------------------------------------------!
 
@@ -467,13 +467,16 @@ ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/umean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/umean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+#if itype == 13:
+#    plt.savefig(f'plots/umean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+#elif itype == 3:
+#    plt.savefig(f'plots/umean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     
 # Show the figure
-plt.show()
+#plt.show()
+
+save_and_show_plot('umean', itype=itype, snap_numb=snap_numb, add_string=add_string)
+
 
 #!--------------------------------------------------------------------------------------!
 

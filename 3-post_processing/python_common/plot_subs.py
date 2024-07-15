@@ -1,9 +1,4 @@
 #!-----------------------------------------------!
-#! In this file, we store useful subroutines     !
-#! for plotting with Python matplotlib.          !
-#!-----------------------------------------------!
-
-#!-----------------------------------------------!
 #! This is a small function to setting up plots. !
 #!-----------------------------------------------!
 
