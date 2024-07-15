@@ -141,6 +141,9 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 if itype == 3:
     
     print("!--- Plotting of statistics for a channel ---!")
+    
+    # No snapshot number for Channel
+    snap_numb = ''
 
     # Reading of mean statistics
     M1 = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -283,7 +286,7 @@ elif itype == 13:
 #!--------------------------------------------------------------------------------------!
     
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
-           
+          
 # Create the file and write  
 with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'delta_x^+':<{pp.c_w}}, "  +
@@ -301,7 +304,7 @@ with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as 
             f"{Ly_plus:{pp.fs}}, "        +
             f"{Lz_plus:{pp.fs}}, "        +
             f"{delta_yd_plus:{pp.fs}}\n"  ) 
-
+            
 #!--------------------------------------------------------------------------------------!
 
 # Find the maximum of mean total dissipation
@@ -376,6 +379,7 @@ print()
 #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
            
 # Create the file and write 
+
 with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'t_nu':<{pp.c_w}}, "        +
             f"{'min tau_eta':<{pp.c_w}}\n" )  
@@ -517,7 +521,7 @@ elif itype == 3:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Save and show the figure
-save_and_show_plot('wmean', itype=itype, add_string=add_string, snap_numb=snap_numb)
+save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -561,7 +565,7 @@ ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Save and show the figure
-save_and_show_plot('uvar', itype=itype, add_string=add_string, snap_numb=snap_numb)
+save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -605,7 +609,7 @@ ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Save and show the figure
-save_and_show_plot('vvar', itype=itype, add_string=add_string, snap_numb=snap_numb)
+save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -654,7 +658,7 @@ ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Save and show the figure
-save_and_show_plot('uvmean', itype=itype, add_string=add_string, snap_numb=snap_numb)
+save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -692,7 +696,7 @@ ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Save and show the figure
-save_and_show_plot('Cuuz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
+save_and_show_plot('Cuuz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -726,7 +730,7 @@ ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Save and show the figure
-save_and_show_plot('Cvvz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
+save_and_show_plot('Cvvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -760,7 +764,7 @@ ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Save and show the figure
-save_and_show_plot('Cwwz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
+save_and_show_plot('Cwwz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -788,7 +792,7 @@ ax.set_ylabel(r'$C_{uv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Save and show the figure
-save_and_show_plot('Cuvz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
+save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -818,7 +822,7 @@ if numscalar == 1:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('Cppz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
+    save_and_show_plot('Cppz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
