@@ -1,0 +1,134 @@
+#!--------------------------------------------------------!
+#! With this script, we perform calculations and plotting !
+#! 1D pre-multiplied spectra.of statistics                !
+#!--------------------------------------------------------!
+
+import sys
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.fft import fft
+
+# Get the current directory
+current_dir = os.path.dirname(__file__)
+
+# Add the path to the 'python_common' directory relative to the current directory 
+config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
+sys.path.append(config_path)
+
+# Import the plotting_params module
+import plot_params as pp
+
+# Import function to setting up, save and show plots 
+from plot_subs import set_plot_settings, save_and_show_plot
+
+# Import functions to read 'input.i3d', 'post.prm' files and statistics data
+from read_files import read_input_files, read_data
+
+# Import function to setup flow parameters (kinematic viscosity only at the moment)
+from set_flow_parameters import set_flow_parameters
+
+#!--------------------------------------------------------------------------------------!
+
+# Create folders to store later results (e.g. grid spacings and time scales files, plots)
+os.makedirs('data_post', mode=0o777, exist_ok=True)
+os.makedirs('plots',     mode=0o777, exist_ok=True)
+
+#!--------------------------------------------------------------------------------------!
+
+# Read useful flow parameters from 'input.i3d' and 'post.prm' files
+itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
+
+#!--------------------------------------------------------------------------------------!
+    
+#!--- Parameters ---!
+uwall, nu = set_flow_parameters(itype, re)
+ 
+# Reading of grid points
+y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+
+# Read statistics data
+(mean_u, mean_w, var_u, var_v, mean_uv, 
+ vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
+ eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
+ snap_numb) = read_data(itype, numscalar)
+ 
+# Calculate y+
+sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
+delta_nu = nu / sh_vel                    # viscous length 
+y_plus   = y  / delta_nu                                                                                     
+
+# Create wavenumber array in z-dir.
+kz = np.zeros(nz)
+for k in range(len(kz)):
+    kz[k] = (k+1)*(2.0*np.pi/Lz)
+
+# Multiply correlation functions by the wavenumber and perform FFT 
+for j in range(0, ny-1, 1):
+    for k in range(0, nz-1, 1)
+        Ruuz[j,k] = Ruuz[j,k] * kz[k]
+    kzEuuz[j,:] = fft(Ruuz[j,:]) 
+
+
+#!--- Plot 1D section ---!
+
+# Extent of the image (dimensions of the domain)
+extent = [kz[0], kz[-1], 0.0, y_plus[-1]]
+
+# Limits for axes (used in 'set_plot_settings')
+xliminf = kz[0]
+xlimsup = kz[-1]
+yliminf = 0.0
+ylimsup = y_plus[-1]
+
+#!--------------------------------------------------------------------------------------!
+
+#!--- Mesh section and iso-levels ---!
+
+# Create xi-coordinates vector (x or z, depending on the chosen field)
+xi = np.linspace(0.0, Lxi, nxi)
+
+# Read y-coordinates vector
+y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+
+# Values of iso-levels        
+lvls = np.linspace(np.min(kzEuuz), np.max(kzEuuz), pp.nlvl)
+
+#!--------------------------------------------------------------------------------------!
+
+# 1D pre-multiplied spectrum of longitudinal velocity correlations in spanwise direction
+
+# Subplots environment
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+# Functions to locate the colorbar
+divider = make_axes_locatable(ax)
+    
+cax = divider.append_axes('right', size=size_cbar, pad=0.05)
+        
+# Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
+im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
+                
+# Plotting with filled contours    
+C = ax.contourf(kz, y_plus, kzEuuz, lvls, cmap='Greys', extend='neither')
+    
+# Colorbar
+cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
+       
+# Colorbar ticks 
+cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
+     
+# Colorbar label (use pp.pad_cbar_lab to use the default value for padding of the cbar label)
+cbar.set_label(r'$k_z E_{uu}$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
+    
+# Axes labels 
+ax.set_xlabel(r'$k_z$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+
+
+
