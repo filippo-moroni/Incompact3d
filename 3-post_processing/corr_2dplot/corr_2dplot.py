@@ -63,17 +63,18 @@ y = y[:ny]
  snap_numb) = read_data(itype, numscalar)
 
 # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
+# Restriction is imposed also in y if we are dealing with a Channel.
 Lz       = Lz / 2.0                       
 nz       = nz // 2 
-Ruuz     = Ruuz[:,:nz]                       
+Ruuz     = Ruuz[:ny,:nz]                       
  
 # Calculate friction quantities and adimensionalize
 sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
 delta_nu = nu / sh_vel                    # viscous length 
 y_plus   = y / delta_nu                   
 Lz_plus  = Lz / delta_nu
-Ruuz     = Ruuz / sh_vel                                                                                      
-
+Ruuz     = Ruuz / sh_vel
+                                                                                    
 # Create the separation variable array
 rz = np.linspace(0.0, Lz, nz)
 rz = rz / delta_nu
