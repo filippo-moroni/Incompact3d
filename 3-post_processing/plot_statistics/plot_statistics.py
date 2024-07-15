@@ -45,7 +45,7 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
-itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
+itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
     
@@ -792,31 +792,33 @@ save_and_show_plot('Cuvz', itype=itype, add_string=add_string, snap_numb=snap_nu
 
 #!--------------------------------------------------------------------------------------!
 
-# Cppz
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+if numscalar == 1:
 
-# Limits for axes
-xliminf = 0.0
-xlimsup = Lz_plus / 2.0
-yliminf = min(Rppz[c,:])*1.2
-ylimsup = max(Rppz[c,:])*1.2
+    # Cppz
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Auto-correlation coefficient for phi'
-ax.scatter(rz, Rppz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    # Limits for axes
+    xliminf = 0.0
+    xlimsup = Lz_plus / 2.0
+    yliminf = min(Rppz[c,:])*1.2
+    ylimsup = max(Rppz[c,:])*1.2
 
-# Plot horizontal line at Cpp = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+    # Auto-correlation coefficient for phi'
+    ax.scatter(rz, Rppz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+    # Plot horizontal line at Cpp = 0
+    ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
                    
-# Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$C_{\varphi \varphi}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    # Axes labels
+    ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$C_{\varphi \varphi}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Save and show the figure
-save_and_show_plot('Cppz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
+    # Save and show the figure
+    save_and_show_plot('Cppz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
