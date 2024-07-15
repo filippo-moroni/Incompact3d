@@ -43,6 +43,14 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
+
+# Settings for contourf and colormap
+
+cmap_name     = "Greys"
+field_label   = r'$k_z^+ E_{uu}^+$'
+xlabel        = r'$k_z$'
+pad_cbar_lab  = -8
+size_cbar     = '10%'
     
 #!--- Parameters ---!
 uwall, nu = set_flow_parameters(itype, re)
@@ -59,23 +67,23 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 # Calculate y+
 sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
 delta_nu = nu / sh_vel                    # viscous length 
-y_plus   = y  / delta_nu                                                                                     
+y_plus   = y / delta_nu                                                                                     
 
 # Define variables
 kz     = np.zeros(nz)
 kzEuuz = np.zeros((ny,nz))
 
 # Create wavenumber array in z-dir.
-
 for k in range(len(kz)):
     kz[k] = (k+1)*(2.0*np.pi/Lz)
+    kz[k] = kz[k] / delta_nu
 
 # Multiply correlation functions by the wavenumber and perform FFT 
 for j in range(0, ny-1, 1):
     for k in range(0, nz-1, 1):
+        Ruuz[j,k] = Ruuz[j,k] / sh_vel
         Ruuz[j,k] = Ruuz[j,k] * kz[k]
-    kzEuuz[j,:] = fft(Ruuz[j,:]) 
-
+    kzEuuz[j,:] = np.float64(fft(Ruuz[j,:]))
 
 #!--- Plot 1D section ---!
 
@@ -83,8 +91,8 @@ for j in range(0, ny-1, 1):
 extent = [kz[0], kz[-1], 0.0, y_plus[-1]]
 
 # Limits for axes (used in 'set_plot_settings')
-xliminf = kz[0]
-xlimsup = kz[-1]
+xliminf = kz[1]
+xlimsup = kz[-2]
 yliminf = 0.0
 ylimsup = y_plus[-1]
 
@@ -95,6 +103,10 @@ ylimsup = y_plus[-1]
 # Values of iso-levels        
 lvls = np.linspace(np.min(kzEuuz), np.max(kzEuuz), pp.nlvl)
 
+field_ticks = [np.min(kzEuuz),np.max(kzEuuz)]
+
+X, Y = np.meshgrid(kz, y_plus)
+
 #!--------------------------------------------------------------------------------------!
 
 # 1D pre-multiplied spectrum of longitudinal velocity correlations in spanwise direction
@@ -104,7 +116,7 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
     
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Functions to locate the colorbar
 divider = make_axes_locatable(ax)
@@ -112,10 +124,10 @@ divider = make_axes_locatable(ax)
 cax = divider.append_axes('right', size=size_cbar, pad=0.05)
         
 # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
-im = ax.imshow(data, cmap=cmap_name, extent=extent, origin='upper')
+im = ax.imshow(kzEuuz, cmap=cmap_name, extent=extent, origin='upper')
                 
 # Plotting with filled contours    
-C = ax.contourf(kz, y_plus, kzEuuz, lvls, cmap='Greys', extend='neither')
+C = ax.contourf(X, Y, kzEuuz, lvls, cmap=cmap_name, extend='neither')
     
 # Colorbar
 cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
@@ -124,12 +136,12 @@ cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
 cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
      
 # Colorbar label (use pp.pad_cbar_lab to use the default value for padding of the cbar label)
-cbar.set_label(r'$k_z E_{uu}$', fontsize=pp.fla, labelpad=pp.pad_cbar_lab)  
+cbar.set_label(field_label, fontsize=pp.fla, labelpad=pad_cbar_lab)  
     
 # Axes labels 
-ax.set_xlabel(r'$k_z$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_xlabel(r'$k_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-
+plt.show()
 
 
