@@ -1,4 +1,9 @@
 #!-----------------------------------------------!
+#! In this file, we store useful subroutines     !
+#! for plotting with Python matplotlib.          !
+#!-----------------------------------------------!
+
+#!-----------------------------------------------!
 #! This is a small function to setting up plots. !
 #!-----------------------------------------------!
 
@@ -86,7 +91,9 @@ def save_and_show_plot(variable_name, snap_numb=snap_numb, add_string=add_string
     plt.show()
 
 # Example usage:
-# save_and_show_figure('Cppz', itype=13, snap_numb=123, add_string='example', y_plus_in=10)
-# save_and_show_figure('Cppz', itype=3, add_string='example')
+# save_and_show_plot('umean', itype=itype, snap_numb=snap_numb, add_string=add_string)
+# save_and_show_plot('Cuuz', itype=itype, add_string=add_string, y_plus_in=y_plus_in)
     
+
+
 
