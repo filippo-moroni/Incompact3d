@@ -49,7 +49,7 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
 import matplotlib.pyplot as plt
 
-def save_and_show_plot(variable_name, snap_numb=snap_numb, add_string=add_string, itype=itype, y_plus_in=None):
+def save_and_show_plot(variable_name, snap_numb=snap_numb, add_string=None, itype=itype, y_plus_in=None):
     
     """
     Saves and shows a plot with a given variable name and optional parameters.
