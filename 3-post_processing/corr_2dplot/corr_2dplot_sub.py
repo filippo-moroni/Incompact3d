@@ -24,7 +24,7 @@ import plot_params as pp
 from plot_subs import set_plot_settings
   
 #! General subroutine to plot correlation functions
-def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny):
+def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string):
     
     # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
     # Restriction is imposed also in y if we are dealing with a Channel. 
