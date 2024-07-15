@@ -76,14 +76,15 @@ def read_reference_data(itype, iswitch_wo):
             mean_uv_yao = mean_uv_yao  * (sh_vel_0_yao / sh_vel_c_yao)**2
     
     # Return to main program with extracted reference data
-    return y_plus_lm, mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm,
-           rz_plus_cuuz_kim,  cuuz_kim, 
-           rz_plus_cvvz_kim,  cvvz_kim,
-           rz_plus_cwwz_kim,  cwwz_kim,
-           y_plus_touber,     mean_u_touber,
-           y_plus_umean_yao,  mean_u_yao,
-           y_plus_uvar_yao,   var_u_yao,
-           y_plus_vvar_yao,   var_v_yao,
-           y_plus_uvmean_yao, mean_uv_yao         
+    return 
+    y_plus_lm,         mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm,
+    rz_plus_cuuz_kim,  cuuz_kim, 
+    rz_plus_cvvz_kim,  cvvz_kim,
+    rz_plus_cwwz_kim,  cwwz_kim,
+    y_plus_touber,     mean_u_touber,
+    y_plus_umean_yao,  mean_u_yao,
+    y_plus_uvar_yao,   var_u_yao,
+    y_plus_vvar_yao,   var_v_yao,
+    y_plus_uvmean_yao, mean_uv_yao         
         
         

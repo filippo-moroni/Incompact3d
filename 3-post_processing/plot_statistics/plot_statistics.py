@@ -59,7 +59,7 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile,
 uwall, nu = set_flow_parameters(itype, re)
 
 #!--- Reference data ---!
-y_plus_lm, mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm,
+y_plus_lm,         mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm,
 rz_plus_cuuz_kim,  cuuz_kim, 
 rz_plus_cvvz_kim,  cvvz_kim,
 rz_plus_cwwz_kim,  cwwz_kim,
