@@ -102,11 +102,8 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     # Show the plot
     plt.show()
     
-    # Saving the figure
-    plt.savefig('plots' + field_name + f'_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-    
-    # Clear and close the figure to release memory
-    plt.clf()
+    # Saving the figure and close
+    plt.savefig('plots/' + field_name + f'_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     plt.close()
     
     
