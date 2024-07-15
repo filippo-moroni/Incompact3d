@@ -8,11 +8,13 @@ import numpy as np
 
 def set_flow_parameters(itype, re):
 
+    # Default parameters
+    twd   = np.float64(1.0)                  # Trip wire diameter, D
+    uwall = np.float64(1.0)                  # Wall velocity, Uwall 
+
     # TTBL
     if itype == 13:
-
-        twd   = np.float64(1.0)              # Trip wire diameter, D
-        uwall = np.float64(1.0)              # Wall velocity, Uwall
+    
         re    = np.float64(re)               # Trip Reynolds number
         nu    = 1.0/re                       # Kinematic viscosity
 
