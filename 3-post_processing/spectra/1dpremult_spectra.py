@@ -47,7 +47,6 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile,
 #!--------------------------------------------------------------------------------------!
 
 # Settings for contourf and colormap
-
 cmap_name     = "Greys"
 field_label   = r'$k_z^+ E_{uu}^+$'
 xlabel        = r'$k_z$'
