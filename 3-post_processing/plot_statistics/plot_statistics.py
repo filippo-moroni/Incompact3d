@@ -73,7 +73,7 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 (mean_u, mean_w, var_u, var_v, mean_uv, 
  vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
- snap_numb) = read_data(itype)
+ snap_numb) = read_data(itype, numscalar)
                                                                                      
 # Valid only for Channel
 if itype == 3:

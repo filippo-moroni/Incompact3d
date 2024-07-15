@@ -126,7 +126,7 @@ def read_input_files(filename1,filename2):
 
 import numpy as np
 
-def read_data(itype):
+def read_data(itype, numscalar):
 
     # Initialize variables
     snap_numb = ''
@@ -142,6 +142,12 @@ def read_data(itype):
     mg_tot    = 0.0
     mg_x      = 0.0
     mg_z      = 0.0
+    
+    Ruuz      = 0.0
+    Rvvz      = 0.0
+    Rwwz      = 0.0
+    Ruvz      = 0.0
+    Rppz      = 0.0
     
     print()
 
@@ -164,7 +170,11 @@ def read_data(itype):
         Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Rppz = np.loadtxt('data_post/Rppz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        
+        # Read scalar field statistics
+        if numscalar == 1:
+                
+            Rppz = np.loadtxt('data_post/Rppz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
     # TTBL
     elif itype == 13:
@@ -192,7 +202,11 @@ def read_data(itype):
         Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Rppz = np.loadtxt(f'data_post/Rppz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        
+        # Read scalar field statistics
+        if numscalar == 1:
+            
+            Rppz = np.loadtxt(f'data_post/Rppz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
 
     print()
 
@@ -329,5 +343,8 @@ def read_ref_data():
     y_plus_vvar_yao,   var_v_yao,
     y_plus_uvmean_yao, mean_uv_yao 
     ) 
+
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
+  
     
     
