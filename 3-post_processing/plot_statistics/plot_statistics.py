@@ -27,7 +27,7 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plot_params as pp
 
-# Import function to set plots
+# Import function to setting up, save and show plots 
 from plot_subs import set_plot_settings, save_and_show_plot
 
 # Import function to read 'input.i3d' and 'post.prm' files
