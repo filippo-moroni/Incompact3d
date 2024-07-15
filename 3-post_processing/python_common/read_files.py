@@ -169,7 +169,11 @@ def read_data(itype, numscalar):
         Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        
+        try:
+            Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        except:
+            print("Mixed correlations not found.")  
         
         # Read scalar field statistics
         if numscalar == 1:
@@ -201,7 +205,11 @@ def read_data(itype, numscalar):
         Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        
+        try:
+            Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        except:
+            print("Mixed correlations not found.")
         
         # Read scalar field statistics
         if numscalar == 1:
@@ -265,51 +273,54 @@ def read_ref_data():
     mean_uv_yao       = 0.0  
     
     #!--- Reading of fixed walls channels data ---!
+    
+    # Directory where reference data are stored
+    dirname = '/home/n286654/Desktop/Incompact3d/3-post_processing/reference_data'
               
     # Reading of Lee & Moser (2015) data
-    M = np.loadtxt('reference_data/lee&moser2015/mean_stats_lee&moser2015.txt', skiprows=72, dtype=np.float64)
+    M = np.loadtxt(dirname + '/lee&moser2015/mean_stats_lee&moser2015.txt', skiprows=72, dtype=np.float64)
     y_plus_lm = M[:,1]
     mean_u_lm = M[:,2]
     
-    M = np.loadtxt('reference_data/lee&moser2015/var_stats_lee&moser2015.txt', skiprows=75, dtype=np.float64)
+    M = np.loadtxt(dirname + '/lee&moser2015/var_stats_lee&moser2015.txt', skiprows=75, dtype=np.float64)
     var_u_lm   =   M[:,2]
     var_v_lm   =   M[:,3]
     mean_uv_lm = - M[:,5]
     
     # Velocity auto-correlations, Kim et al. (1987) data, y+ = 10.52
-    M = np.loadtxt('reference_data/kim1987/cuuz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/kim1987/cuuz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
     rz_plus_cuuz_kim = M[:,0]
     cuuz_kim         = M[:,1]
     
-    M = np.loadtxt('reference_data/kim1987/cvvz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/kim1987/cvvz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
     rz_plus_cvvz_kim = M[:,0]
     cvvz_kim         = M[:,1]
     
-    M = np.loadtxt('reference_data/kim1987/cwwz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/kim1987/cwwz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
     rz_plus_cwwz_kim = M[:,0]
     cwwz_kim         = M[:,1]
         
     #!--- Reading of oscillating walls channels data (A^+ = 12, T^+ = 100) ---! 
       
     # Mean velocity profile (Touber & Leschziner (2012))
-    M = np.loadtxt('reference_data/touber2012/umean_touber2012.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/touber2012/umean_touber2012.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_touber = M[:,0]
     mean_u_touber = M[:,1]
         
     # Mean velocity profile, Reynolds stress and RMSs (Yao et al. (2019))
-    M = np.loadtxt('reference_data/yao2019/umean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/yao2019/umean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_umean_yao = M[:,0]
     mean_u_yao       = M[:,1]
         
-    M = np.loadtxt('reference_data/yao2019/uvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/yao2019/uvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_uvar_yao = M[:,0]
     var_u_yao       = M[:,1]
         
-    M = np.loadtxt('reference_data/yao2019/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/yao2019/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_vvar_yao = M[:,0]
     var_v_yao       = M[:,1]
         
-    M = np.loadtxt('reference_data/yao2019/uvmean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/yao2019/uvmean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_uvmean_yao = M[:,0]
     mean_uv_yao       = M[:,1]
         
