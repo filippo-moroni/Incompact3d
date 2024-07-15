@@ -16,7 +16,7 @@ def read_input_files(filename1,filename2):
         # Read all lines into a list
         lines = file.readlines()
     
-        # Extract itype, nx, ny, nz, Lx, Ly, Lz, Re, iswitch_wo 
+        # Extract itype, nx, ny, nz, Lx, Ly, Lz, Re, numscalar, iswitch_wo 
         # As always, index is 1 less of the line number (Python convention)
         itype      = lines[7]  
         nx         = lines[14]
@@ -26,6 +26,7 @@ def read_input_files(filename1,filename2):
         Ly         = lines[22]
         Lz         = lines[23]
         re         = lines[26]
+        numscalar  = lines[34]
         iswitch_wo = lines[88]
     
         # Removing characters in front of the extracted strings and the comments:
@@ -55,6 +56,9 @@ def read_input_files(filename1,filename2):
     
         re         = re.split('!')[0]
         re         = re.split('=')[-1].strip()
+        
+        numscalar  = numscalar.split('!')[0]
+        numscalar  = numscalar.split('=')[-1].strip()
     
         iswitch_wo = iswitch_wo.split('!')[0]
         iswitch_wo = iswitch_wo.split('=')[-1].strip()
@@ -68,6 +72,7 @@ def read_input_files(filename1,filename2):
         Ly         = np.float64(Ly)
         Lz         = np.float64(Lz)
         re         = np.float64(re)
+        numscalar  = int(numscalar)
         iswitch_wo = int(iswitch_wo)
     
     # Opening of 'post.prm' file
@@ -103,7 +108,7 @@ def read_input_files(filename1,filename2):
         ny = (ny - 1) // 2 + 1
         
     # Return to main program with extracted parameters
-    return itype, nx, ny, nz, Lx, Ly, Lz, re, iswitch_wo, file1, filen, icrfile, nr, add_string
+    return itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string
     
 
     
