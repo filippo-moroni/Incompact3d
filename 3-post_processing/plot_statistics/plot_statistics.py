@@ -467,7 +467,7 @@ ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Save and show the figure
-save_and_show_plot('umean', itype=itype, add_string=add_string, snap_numb=snap_numb)
+save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string)
 
 #!--------------------------------------------------------------------------------------!
 

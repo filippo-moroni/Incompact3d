@@ -49,40 +49,33 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
 import matplotlib.pyplot as plt
 
-def save_and_show_plot(variable_name, itype=None, add_string=None, snap_numb=None, y_plus_in=None):
+def save_and_show_plot(variable_name, snap_numb=None, add_string=None, y_plus_in=None):
     
     """
     Saves and shows a plot with a given variable name and optional parameters.
     
     Parameters:
     - variable_name (str):           The name of the variable to be saved in the filename.
-    - itype (int):                   The flow case type (TTBL or Channel). It determines the filename format.
-    - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name.
     - snap_numb (str, optional):     Snapshot number to be included in the filename. Added if itype is 13 (TTBL).
+    - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name.
     - y_plus_in (float64, optional): The additional parameter to be included in the filename if we are plotting and saving correlation functions.
     """
     
-    # TTBL
-    if itype == 13:
-        
-        # Snapshot number must be included for TTBL
-        if snap_numb is None:
-            raise ValueError("snap_numb must be provided if itype == 13 (TTBL)")
-        filename = f'plots/{variable_name}-{snap_numb}_{add_string}'
-       
-    # Channel
-    elif itype == 3:
+    # Initialize the filename
+    filename = f'plots/{variable_name}'
     
-        # No snapshot number for Channel
-        filename = f'plots/{variable_name}_{add_string}'
-        
-    else:
-        raise ValueError("Unsupported itype value. Please use itype=13 or itype=3")
+    # Add snap_numb if it is provided
+    if snap_numb is not None:
+        filename += f'-{snap_numb}'
     
-    # Add y+ location of correlations
+    # Add add_string if it is provided
+    if add_string is not None:
+        filename += f'_{add_string}'
+    
+    # Add y+ location of correlations if provided
     if y_plus_in is not None:
         filename += f'_y+={y_plus_in}'
-    
+        
     # Add .pdf extension to filename
     filename += '.pdf'
     
@@ -91,9 +84,8 @@ def save_and_show_plot(variable_name, itype=None, add_string=None, snap_numb=Non
     plt.show()
 
 # Example usage:
-# save_and_show_plot('umean', itype=itype, add_string=add_string, snap_numb=snap_numb)
-# save_and_show_plot('Cuuz',  itype=itype, add_string=add_string, y_plus_in=y_plus_in)
+# save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string)
+# save_and_show_plot('Cuuz', add_string=add_string, y_plus_in=y_plus_in)
     
-
 
 
