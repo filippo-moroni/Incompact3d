@@ -30,17 +30,14 @@ import plot_params as pp
 # Import function to setting up, save and show plots 
 from plot_subs import set_plot_settings, save_and_show_plot
 
-# Import function to read 'input.i3d' and 'post.prm' files
-from read_incompact3d_files import read_input_files
+# Import functions to read 'input.i3d', 'post.prm' files, statistics data and reference data
+from read_files import read_input_files, read_data, read_ref_data
 
 # Import function to read friction Reynolds number Re_tau from .xdmf files
 from read_retau import extract_re_tau_value
 
 # Import function to setup flow parameters (kinematic viscosity only at the moment)
 from set_flow_parameters import set_flow_parameters
-
-# Import function to read reference data
-from read_reference_data import read_reference_data
 
 #!--------------------------------------------------------------------------------------!
 
@@ -67,75 +64,17 @@ uwall, nu = set_flow_parameters(itype, re)
  y_plus_umean_yao,  mean_u_yao,                        
  y_plus_uvar_yao,   var_u_yao,                         
  y_plus_vvar_yao,   var_v_yao,                         
- y_plus_uvmean_yao, mean_uv_yao) = read_reference_data() 
-                                                                                      
-#!--- Reading of files section ---!
-print()
-
+ y_plus_uvmean_yao, mean_uv_yao) = read_ref_data() 
+ 
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
-# Channel
-if itype == 3:
-    
-    print("!--- Plotting of statistics for a channel ---!")
-    
-    # No snapshot number for Channel
-    snap_numb = ''
-
-    # Reading of mean statistics
-    M1 = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
-    
-    # Reading of vorticity components and mean gradient
-    M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
-    
-    # Reading of the mean total dissipation
-    eps = np.loadtxt('data_post/diss_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
-    
-    # Reading of correlations
-    Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Rppz = np.loadtxt('data_post/Rppz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        
-# TTBL
-elif itype == 13:
-
-    print("!--- Plotting of statistics for a TTBL ---!")
-    print()
-    
-    # Asking to the user the specific snapshot to show
-    snap_numb = input("Enter the snapshot number to show: ")
-    
-    # Pad with zeros to match snapshots' naming  
-    snap_numb = snap_numb.zfill(4)
-             
-    # Reading of mean statistics
-    M1 = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-    
-    # Reading of vorticity components and mean gradient
-    M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-    
-    # Reading of the mean total dissipation
-    eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-        
-    # Reading of correlations
-    Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-    Rppz = np.loadtxt(f'data_post/Rppz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-
-print()
-
-# Extracting quantities from the full matrices
-mean_u  = M1[:,0]
-mean_w  = M1[:,2]   
-var_u   = M1[:,3]
-var_v   = M1[:,4]
-mean_uv = M1[:,12]
-
+# Read statistics data
+(mean_u, mean_w, var_u, var_v, mean_uv, 
+ vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
+ eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
+ snap_numb) = read_data(itype)
+                                                                                     
 # Valid only for Channel
 if itype == 3:
     
@@ -159,13 +98,6 @@ elif itype == 13:
         
     # Shift due to the translating wall
     mean_u = uwall - mean_u
-
-vort_x = M2[:,0]
-vort_y = M2[:,1]
-vort_z = M2[:,2]
-mg_tot = M2[:,3]
-mg_x   = M2[:,4]
-mg_z   = M2[:,5]
 
 #!--------------------------------------------------------------------------------------!
 
