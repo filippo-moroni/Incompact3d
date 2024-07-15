@@ -7,7 +7,7 @@
 import numpy as np
 
 def set_flow_parameters(itype, re):
-
+ 
     # Default parameters
     twd   = np.float64(1.0)                  # Trip wire diameter, D
     uwall = np.float64(1.0)                  # Wall velocity, Uwall 

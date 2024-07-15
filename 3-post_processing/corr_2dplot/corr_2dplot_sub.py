@@ -22,12 +22,12 @@ import plot_params as pp
 
 # Import function to setting up plots 
 from plot_subs import set_plot_settings
-
+  
 #! General subroutine to plot correlation functions
-def corr_2dplot(variable,field_name,field_label,add_string,Lz):
-
+def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny):
+    
     # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
-    # Restriction is imposed also in y if we are dealing with a Channel.
+    # Restriction is imposed also in y if we are dealing with a Channel. 
     Lz       = Lz / 2.0                       
     nz       = nz // 2 
     var      = var[:ny,:nz]                       

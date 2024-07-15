@@ -17,7 +17,7 @@ import numpy as np
 # from 'input.i3d' and 'post.prm' files.
 
 def read_input_files(filename1,filename2):
-    
+      
     # Opening of 'input.i3d' file
     with open(filename1, 'r') as file:
         
