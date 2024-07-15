@@ -36,6 +36,9 @@ from read_incompact3d_files import read_input_files
 # Import function to read friction Reynolds number Re_tau from .xdmf files
 from read_retau import extract_re_tau_value
 
+# Import function to setup flow parameters (kinematic viscosity only at the moment)
+from set_flow_parameters import set_flow_parameters
+
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
@@ -50,19 +53,7 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile,
 #!--------------------------------------------------------------------------------------!
     
 #!--- Parameters & reference data ---!
-if itype == 13:
-
-    # TTBL
-    uwall = np.float64(1.0)              # wall velocity
-    re    = np.float64(re)               # Reynolds number
-    nu    = 1.0/re                       # kinematic viscosity
-
-elif itype == 3:
-    
-    # Channel (valid only for CFR at the moment)
-    re_cent = np.float64(re)             # centerline Reynolds number of a laminar Poiseuille flow
-    re_tau  = 0.123*(re_cent**0.875)     # corresponding estimated friction Reynolds number 
-    nu      = 1.0/re_cent                # kinematic viscosity
+set_flow_parameters()
                
     # Reading of Lee & Moser (2015) data
     M = np.loadtxt('reference_data/lee&moser2015/mean_stats_lee&moser2015.txt', skiprows=72, dtype=np.float64)
@@ -379,7 +370,6 @@ print()
 #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
            
 # Create the file and write 
-
 with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'t_nu':<{pp.c_w}}, "        +
             f"{'min tau_eta':<{pp.c_w}}\n" )  
