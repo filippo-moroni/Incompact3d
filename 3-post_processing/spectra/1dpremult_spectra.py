@@ -1,6 +1,8 @@
 #!--------------------------------------------------------!
 #! With this script, we perform calculations and plotting !
 #! 1D pre-multiplied spectra.of statistics                !
+#!                                                        !
+#! Inspired by 'spectra.py' by G. Boga                    !
 #!--------------------------------------------------------!
 
 import sys
@@ -8,6 +10,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import fft
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
