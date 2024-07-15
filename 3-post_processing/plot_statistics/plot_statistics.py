@@ -466,17 +466,8 @@ ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Saving the figure
-#if itype == 13:
-#    plt.savefig(f'plots/umean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-#elif itype == 3:
-#    plt.savefig(f'plots/umean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-    
-# Show the figure
-#plt.show()
-
-save_and_show_plot('umean', itype=itype, snap_numb=snap_numb, add_string=add_string)
-
+# Save and show the figure
+save_and_show_plot('umean', itype=itype, add_string=add_string, snap_numb=snap_numb)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -525,14 +516,8 @@ elif itype == 3:
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/wmean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/wmean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-    
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('wmean', itype=itype, add_string=add_string, snap_numb=snap_numb)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -575,14 +560,8 @@ ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/uvar-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/uvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('uvar', itype=itype, add_string=add_string, snap_numb=snap_numb)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -625,14 +604,8 @@ ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/vvar-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/vvar_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('vvar', itype=itype, add_string=add_string, snap_numb=snap_numb)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -680,14 +653,8 @@ ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/uvmean-{snap_numb}_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/uvmean_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('uvmean', itype=itype, add_string=add_string, snap_numb=snap_numb)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -724,14 +691,8 @@ ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/Cuuz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/Cuuz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('Cuuz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -764,14 +725,8 @@ ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/Cvvz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/Cvvz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('Cvvz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -804,14 +759,8 @@ ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/Cwwz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/Cwwz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('Cwwz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -838,14 +787,8 @@ ax.set_ylabel(r'$C_{uv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/Cuvz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/Cuvz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('Cuvz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -872,14 +815,8 @@ ax.set_ylabel(r'$C_{\varphi \varphi}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Saving the figure
-if itype == 13:
-    plt.savefig(f'plots/Cppz-{snap_numb}_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-elif itype == 3:
-    plt.savefig(f'plots/Cppz_{add_string}_y+={y_plus_in}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-
-# Show the figure
-plt.show()
+# Save and show the figure
+save_and_show_plot('Cppz', itype=itype, add_string=add_string, snap_numb=snap_numb, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
