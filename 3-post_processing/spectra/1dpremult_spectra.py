@@ -57,6 +57,7 @@ uwall, nu = set_flow_parameters(itype, re)
  
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+y = y[:ny]
 
 # Read statistics data
 (mean_u, mean_w, var_u, var_v, mean_uv, 
@@ -67,7 +68,7 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 # Calculate y+
 sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
 delta_nu = nu / sh_vel                    # viscous length 
-y_plus   = y / delta_nu                                                                                     
+y_plus   = y / delta_nu                                                                                   
 
 # Define variables
 kz     = np.zeros(nz)
@@ -79,7 +80,7 @@ for k in range(len(kz)):
     kz[k] = kz[k] / delta_nu
 
 # Multiply correlation functions by the wavenumber and perform FFT 
-for j in range(0, ny-1, 1):
+for j in range(0, ny, 1):
     for k in range(0, nz-1, 1):
         Ruuz[j,k] = Ruuz[j,k] / sh_vel
         Ruuz[j,k] = Ruuz[j,k] * kz[k]
@@ -87,14 +88,14 @@ for j in range(0, ny-1, 1):
 
 #!--- Plot 1D section ---!
 
-# Extent of the image (dimensions of the domain)
-extent = [kz[0], kz[-1], 0.0, y_plus[-1]]
-
 # Limits for axes (used in 'set_plot_settings')
-xliminf = kz[1]
-xlimsup = kz[-2]
+xliminf = 0.1
+xlimsup = 1000.0
 yliminf = 0.0
 ylimsup = y_plus[-1]
+
+# Extent of the image (dimensions of the domain)
+extent = [xliminf, xlimsup, yliminf, ylimsup]
 
 #!--------------------------------------------------------------------------------------!
 
@@ -116,7 +117,7 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
     
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
 # Functions to locate the colorbar
 divider = make_axes_locatable(ax)
@@ -124,7 +125,7 @@ divider = make_axes_locatable(ax)
 cax = divider.append_axes('right', size=size_cbar, pad=0.05)
         
 # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
-im = ax.imshow(kzEuuz, cmap=cmap_name, extent=extent, origin='upper')
+#im = ax.imshow(kzEuuz, cmap=cmap_name, extent=extent, origin='upper')
                 
 # Plotting with filled contours    
 C = ax.contourf(X, Y, kzEuuz, lvls, cmap=cmap_name, extend='neither')
