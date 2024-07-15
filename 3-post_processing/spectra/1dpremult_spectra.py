@@ -58,14 +58,18 @@ sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise 
 delta_nu = nu / sh_vel                    # viscous length 
 y_plus   = y  / delta_nu                                                                                     
 
+# Define variables
+kz     = np.zeros(nz)
+kzEuuz = np.zeros((ny,nz))
+
 # Create wavenumber array in z-dir.
-kz = np.zeros(nz)
+
 for k in range(len(kz)):
     kz[k] = (k+1)*(2.0*np.pi/Lz)
 
 # Multiply correlation functions by the wavenumber and perform FFT 
 for j in range(0, ny-1, 1):
-    for k in range(0, nz-1, 1)
+    for k in range(0, nz-1, 1):
         Ruuz[j,k] = Ruuz[j,k] * kz[k]
     kzEuuz[j,:] = fft(Ruuz[j,:]) 
 
@@ -84,12 +88,6 @@ ylimsup = y_plus[-1]
 #!--------------------------------------------------------------------------------------!
 
 #!--- Mesh section and iso-levels ---!
-
-# Create xi-coordinates vector (x or z, depending on the chosen field)
-xi = np.linspace(0.0, Lxi, nxi)
-
-# Read y-coordinates vector
-y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Values of iso-levels        
 lvls = np.linspace(np.min(kzEuuz), np.max(kzEuuz), pp.nlvl)
