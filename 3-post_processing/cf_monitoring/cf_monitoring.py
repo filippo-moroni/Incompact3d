@@ -1,7 +1,11 @@
-#!---------------------------------------------------------!
-#! With this script, we perform plotting of friction       !
-#! coefficient and its mean value calculation.             !
-#!---------------------------------------------------------!
+#!------------------------------------------------------------!
+#! With this script, we perform:                              !
+#! - plotting of streamwise friction coefficient vs time      ! 
+#!   and its mean value calculation (Channel).                !
+#! - plotting of streamwise friction coefficient vs time,     !
+#!   friction Reynolds number vs time and streamwise          !
+#!   friction coefficient vs friction Reynolds number (TTBL). !
+#!------------------------------------------------------------!
 
 import sys
 import os
@@ -91,9 +95,9 @@ if itype == 3:
     n_snap = last_index - lower_index
     t_tot = (n_snap - 1)*delta
 
-#!--- Plot section, friction coefficient ---!
+#!--- Plot section, streamwise friction coefficient ---!
 print()
-print("!--- Plotting of friction coefficient ---!")
+print("!--- Plotting of streamwise friction coefficient ---!")
 print()
 
 # Subplots environment
@@ -185,12 +189,12 @@ if itype == 13:
     plt.savefig(f'plots/retau_vs_time_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
     plt.show()
     
-    #!--- Plot friction coefficient as function of friction Reynolds number ---!
+    #!--- Plot streamwise friction coefficient as function of friction Reynolds number ---!
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
-    # Friction coefficient
+    # Streamwise friction coefficient
     #ax.scatter(re_tau, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
     
