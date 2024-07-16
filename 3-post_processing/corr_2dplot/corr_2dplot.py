@@ -67,7 +67,7 @@ y = y[:ny]
  snap_numb) = read_data(itype, numscalar)
 
 # Plot 2-dimensional plots for correlation functions
-corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string)
+corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string,snap_numb)
  
 
     

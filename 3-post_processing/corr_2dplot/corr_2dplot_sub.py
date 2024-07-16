@@ -20,11 +20,11 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plot_params as pp
 
-# Import function to setting up plots 
-from plot_subs import set_plot_settings
+# Import function to setting up, save and show plots 
+from plot_subs import set_plot_settings, save_and_show_plot
   
 # General subroutine to plot correlation functions
-def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string):
+def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string,snap_numb):
     
     # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
     # Restriction is imposed also in y if we are dealing with a Channel. 
@@ -100,10 +100,15 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     ax.set_ylabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Show the plot
-    plt.show()
+    #plt.show()
     
     # Saving the figure and close
-    plt.savefig('plots/' + field_name + f'_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-    plt.close()
+    #plt.savefig('plots/' + field_name + f'_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
+    #plt.close()
+    
+    # Save and show the figure
+    save_and_show_plot(field_name, snap_numb=snap_numb, add_string=add_string)
+    
+    
     
     
