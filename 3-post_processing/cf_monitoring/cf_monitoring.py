@@ -41,30 +41,51 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
+
+#!--- Parameters ---!
+uwall, nu = set_flow_parameters(itype, re)
                          
 #!--- Reading of files section ---!
 
-# Path for generic data
-data_path = 'data'
-
-# Check if the path exists and is a directory
-if os.path.exists(data_path) and os.path.isdir(data_path):
+# Channel (only 1 realization generally)
+if itype == 3:
    
     # Read cf data from /data folder
     M1 = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
-else:
+    # Extracting quantities from the full matrix
+    cfx       = M1[:,4] 
+    time_unit = M1[:,7]
 
-    # Read cf data from /data_r1 folder
-    M1 = np.loadtxt(f'data_r1/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+# TTBL
+elif itype == 13:
+
+    # Do loop over different realizations
+    for i in range(1, nr, 1):
+
+        # Read cf data from /data_ri folder
+        M1 = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
-# Extracting quantities from the full matrix
-cfx       = M1[:,4] 
-time_unit = M1[:,7]
+        # Extracting quantities from the full matrix
+        sh_velx   = M1[:,1]
+        time_unit = M1[:,7]
+        delta_99  = M1[:,9]
+    
+        # Average the square of the longitudinal shear velocity over the realizations (streamwise gradient multiplied by kinematic viscosity)
+        mg_x_sum  = mg_x_sum + (sh_velx**2 / nr)
+        
+        # Average the BL thickness delta_99 over the realizations
+        delta_99_sum = delta_99_sum + delta_99 / nr 
 
-# Extracting friction Reynolds number in case of a TTBL
-if itype == 13:
-    re_tau = M1[:,10] 
+    # Finalize longitudinal shear velocity and BL thickness averages
+    sh_velx  = np.sqrt(mg_x_sum)
+    delta_99 = delta_99_sum
+
+    # Calculate friction Reynolds number (averaged over the realizations)
+    re_tau   = sh_velx * delta_99 / nu
+    
+    # Calculate longitudinal friction coefficient
+    cfx = 2.0 * (sh_velx / uwall)**2 
 
 #!--------------------------------------------------------------------------------------!
 
@@ -217,5 +238,7 @@ if itype == 13:
     plt.show()
 
 #!--------------------------------------------------------------------------------------!
+
+
 
 
