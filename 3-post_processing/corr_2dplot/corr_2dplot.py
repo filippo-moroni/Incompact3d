@@ -50,7 +50,7 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile,
 # Settings for contourf and colormap
 cmap_name     = "Greys"
 xlabel        = r'$r_z^+$' 
-pad_cbar_lab  = -28
+pad_cbar_lab  = -20
 size_cbar     = '10%'
     
 #!--- Parameters ---!
@@ -67,10 +67,10 @@ y = y[:ny]
  snap_numb) = read_data(itype, numscalar)
 
 # Plot 2-dimensional plots for correlation functions
-corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Rvvz,'Rvvz',r'$R_{vv}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Rvvz,'Rvvz',r'$R_{vv}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
 
 
 

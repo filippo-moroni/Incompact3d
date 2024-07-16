@@ -24,7 +24,7 @@ import plot_params as pp
 from plot_subs import set_plot_settings, save_and_show_plot
   
 # General subroutine to plot correlation functions
-def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string,snap_numb):
+def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb):
     
     # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
     # Restriction is imposed also in y if we are dealing with a Channel. 
@@ -60,9 +60,16 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     # Values of iso-levels        
     lvls = np.linspace(np.min(var), np.max(var), 20)
 
-    # Max and min values to display in the colorbar
-    field_ticks = [np.min(var),np.max(var)]
+    # Calculate min and max of the array
+    min_val = np.min(var)
+    max_val = np.max(var)
+    
+    # Generate colorbar ticks as floats
+    field_ticks = [min_val, max_val]
 
+    # Format the tick labels to two decimal places
+    field_tick_labels = [f"{min_val:.2f}", f"{max_val:.2f}"]
+    
     # Mesh grid for contourf
     X, Y = np.meshgrid(rz, y_plus)
 
@@ -88,6 +95,9 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
+    
+    # Set colobar tick labels
+    cbar.set_ticklabels(field_tick_labels)
        
     # Colorbar ticks 
     cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
