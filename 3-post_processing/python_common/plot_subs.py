@@ -66,7 +66,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, y_plus_in
     
     # Add snap_numb if it is provided
     if snap_numb is not None:
-        filename += f'{snap_numb}'
+        filename += f'-{snap_numb}'
     
     # Add add_string if it is provided
     if add_string is not None:
