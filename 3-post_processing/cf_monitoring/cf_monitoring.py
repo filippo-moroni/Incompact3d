@@ -24,10 +24,13 @@ sys.path.append(config_path)
 import plot_params as pp
 
 # Import function to set plots
-from plot_settings import set_plot_settings
+from plot_subs import set_plot_settings
 
 # Import function to read 'input.i3d' and 'post.prm' files
-from read_incompact3d_files import read_input_files
+from read_files import read_input_files
+
+# Import function to setup flow parameters (kinematic viscosity only at the moment)
+from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!
 
@@ -70,15 +73,21 @@ elif itype == 13:
         sh_velx   = M1[:,1]
         time_unit = M1[:,7]
         delta_99  = M1[:,9]
+        
+        # Initialize sum_shsq array (sum of the square of the longitudinal shear velocity) 
+        # (streamwise gradient multiplied by kinematic viscosity)
+        if i == 1:        
+            sum_shsq     = np.zeros(len(time_unit))
+            delta_99_sum = np.zeros(len(time_unit))
     
-        # Average the square of the longitudinal shear velocity over the realizations (streamwise gradient multiplied by kinematic viscosity)
-        mg_x_sum  = mg_x_sum + (sh_velx**2 / nr)
+        # Average the square of the longitudinal shear velocity over the realizations 
+        sum_shsq = sum_shsq + (sh_velx**2 / nr)
         
         # Average the BL thickness delta_99 over the realizations
         delta_99_sum = delta_99_sum + delta_99 / nr 
 
     # Finalize longitudinal shear velocity and BL thickness averages
-    sh_velx  = np.sqrt(mg_x_sum)
+    sh_velx  = np.sqrt(sum_shsq)
     delta_99 = delta_99_sum
 
     # Calculate friction Reynolds number (averaged over the realizations)
