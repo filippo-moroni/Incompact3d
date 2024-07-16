@@ -64,7 +64,7 @@ if itype == 3:
 elif itype == 13:
 
     # Do loop over different realizations
-    for i in range(1, nr, 1):
+    for i in range(1, nr + 1, 1):
 
         # Read cf data from /data_ri folder
         M1 = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
