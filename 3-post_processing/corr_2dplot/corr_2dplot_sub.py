@@ -37,7 +37,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     delta_nu = nu / sh_vel                    # viscous length 
     y_plus   = y / delta_nu                   
     Lz_plus  = Lz / delta_nu
-    var      = var / sh_vel
+    var      = var / (sh_vel**2)
                                                                                     
     # Create the separation variable array (in viscous units)
     rz = np.linspace(0.0, Lz_plus, nz)
@@ -98,13 +98,6 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     # Axes labels 
     ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-    # Show the plot
-    #plt.show()
-    
-    # Saving the figure and close
-    #plt.savefig('plots/' + field_name + f'_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-    #plt.close()
     
     # Save and show the figure
     save_and_show_plot(field_name, snap_numb=snap_numb, add_string=add_string)
