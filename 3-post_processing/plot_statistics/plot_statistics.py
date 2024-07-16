@@ -541,8 +541,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-yliminf = min(Ruuz[c,:])*1.2
-ylimsup = max(Ruuz[c,:])*1.2
+yliminf = np.min(Ruuz[c,:])*1.2
+ylimsup = np.max(Ruuz[c,:])*1.2
 
 # Auto-correlation coefficient for u'
 ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -575,8 +575,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-yliminf = min(Rvvz[c,:])*1.2
-ylimsup = max(Rvvz[c,:])*1.2
+yliminf = np.min(Rvvz[c,:])*1.2
+ylimsup = np.max(Rvvz[c,:])*1.2
 
 # Auto-correlation coefficient for v'
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -609,8 +609,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-yliminf = min(Rwwz[c,:])*1.2
-ylimsup = max(Rwwz[c,:])*1.2
+yliminf = np.min(Rwwz[c,:])*1.2
+ylimsup = np.max(Rwwz[c,:])*1.2
 
 # Auto-correlation coefficient for w'
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -643,8 +643,8 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 # Limits for axes
 xliminf = 0.0
 xlimsup = Lz_plus / 2.0
-yliminf = min(Ruvz[c,:])*1.2
-ylimsup = max(Ruvz[c,:])*1.2
+yliminf = np.min(Ruvz[c,:])*1.2
+ylimsup = np.max(Ruvz[c,:])*1.2
 
 # Correlation coefficient for u' and v'
 ax.scatter(rz, Ruvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -673,8 +673,8 @@ if numscalar == 1:
     # Limits for axes
     xliminf = 0.0
     xlimsup = Lz_plus / 2.0
-    yliminf = min(Rppz[c,:])*1.2
-    ylimsup = max(Rppz[c,:])*1.2
+    yliminf = np.min(Rppz[c,:])*1.2
+    ylimsup = np.max(Rppz[c,:])*1.2
 
     # Auto-correlation coefficient for phi'
     ax.scatter(rz, Rppz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')

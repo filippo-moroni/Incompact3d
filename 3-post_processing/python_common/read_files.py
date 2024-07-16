@@ -129,7 +129,7 @@ import numpy as np
 def read_data(itype, numscalar):
 
     # Initialize variables
-    snap_numb = ''
+    snap_numb = None
     mean_u    = 0.0
     mean_w    = 0.0
     var_u     = 0.0
