@@ -29,7 +29,10 @@ sys.path.append(config_path)
 import plot_params as pp
 
 # Import function to read 'input.i3d' and 'post.prm' files
-from read_incompact3d_files import read_input_files
+from read_files import read_input_files
+
+# Import function to setup flow parameters (kinematic viscosity only at the moment)
+from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!
 
@@ -43,9 +46,10 @@ os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
+#!--- Parameters ---!
+uwall, nu = set_flow_parameters(itype, re)
+
 # Local variables
-uwall = np.float64(1.0)               # Wall velocity for TTBL
-nu    = np.float64(1.0/re)            # Kinematic viscosity
 ii    = 0                             # Index for BL thickness parameters vectors 
 ns    = (filen - file1)//icrfile + 1  # Number of snapshots
 
