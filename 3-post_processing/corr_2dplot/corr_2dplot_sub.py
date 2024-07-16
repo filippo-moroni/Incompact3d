@@ -23,7 +23,7 @@ import plot_params as pp
 # Import function to setting up plots 
 from plot_subs import set_plot_settings
   
-#! General subroutine to plot correlation functions
+# General subroutine to plot correlation functions
 def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,pad_cbar_lab,size_cbar,add_string):
     
     # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
@@ -39,9 +39,8 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     Lz_plus  = Lz / delta_nu
     var      = var / sh_vel
                                                                                     
-    # Create the separation variable array
-    rz = np.linspace(0.0, Lz, nz)
-    rz = rz / delta_nu
+    # Create the separation variable array (in viscous units)
+    rz = np.linspace(0.0, Lz_plus, nz)
 
     #!--- Plot 1D section ---!
 
@@ -64,6 +63,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,xlabel,p
     # Max and min values to display in the colorbar
     field_ticks = [np.min(var),np.max(var)]
 
+    # Mesh grid for contourf
     X, Y = np.meshgrid(rz, y_plus)
 
     #!--------------------------------------------------------------------------------------!
