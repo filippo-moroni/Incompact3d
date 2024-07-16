@@ -50,7 +50,7 @@ itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile,
 # Settings for contourf and colormap
 cmap_name     = "Greys"
 xlabel        = r'$r_z^+$' 
-pad_cbar_lab  = -20
+pad_cbar_lab  = -18
 size_cbar     = '10%'
     
 #!--- Parameters ---!
