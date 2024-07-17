@@ -281,17 +281,17 @@ end if
    if(post_corz) then
    
    ! Fluctuations calculation
-   do k=1,ysize(3)
-       do i=1,ysize(1)
-           do j=1,ysize(2)
-               ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
-               uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
-               uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
-               pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
-               phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
+       do k=1,ysize(3)
+           do i=1,ysize(1)
+               do j=1,ysize(2)
+                   ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
+                   uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
+                   uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
+                   pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
+                   phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
+               enddo
            enddo
-       enddo
-   enddo
+       enddo  
    
    ! Correlation functions calculation (each subdomain, z-pencils)
    call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
@@ -562,18 +562,18 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Header
-        write(iunit, '(22(A13, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
+        write(iunit, '(23(A13, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
                                           'var[u]'   , ',', 'var[v]'   , ',', 'var[w]' , ',', &
                                           'skew[u]'  , ',', 'skew[v]'  , ',', 'skew[w]', ',', &
                                           'kurt[u]'  , ',', 'kurt[v]'  , ',', 'kurt[w]', ',', &
                                           "<u'v'>"   , ',', "<u'w'>"   , ',', "<v'w'>" , ',', &
-                                          'mean[p]'  , ',', 'var[p]'   , ',',                 &
+                                          'mean[p]'  , ',', 'var[p]'   , ',', "<v'p'>" , ',', &                                         
                                           'mean[phi]', ',', 'var[phi]' , ',',                 &
                                           "<u'phi'>" , ',', "<v'phi'>" , ',', "<w'phi'>" 
                
         do j = 1, ysize(2) 
        
-            write(iunit, '(22(F13.9, A1, 1X))') u1meanHT(j),   ',', &
+            write(iunit, '(23(F13.9, A1, 1X))') u1meanHT(j),   ',', &
                                                 v1meanHT(j),   ',', &       
                                                 w1meanHT(j),   ',', &
                                                 u2meanHT(j),   ',', &
@@ -590,6 +590,7 @@ end if
                                                 vwmeanHT(j),   ',', &                                              
                                                 pre1meanHT(j), ',', &
                                                 pre2meanHT(j), ',', &                     
+                                                vpremeanHT(j), ',', &
                                                 phi1meanHT(j), ',', &
                                                 phi2meanHT(j), ',', &                        
                                                 uphimeanHT(j), ',', &
@@ -889,9 +890,9 @@ end if
      print *,'skew[u], skew[v], skew[w]'
      print *,'kurt[u], kurt[v], kurt[w]'
      print *,''
-     print *,'mean[uv], mean[uw], mean[vw]'
+     print *,"mean[u'v'], mean[u'w'], mean[v'w']"
      print *,''
-     print *,'mean[p],   var[p]'
+     print *,"mean[p],   var[p],      mean[v'p']"
      print *,'mean[phi], var[phi]'
      print *,''
      print *,"mean[u'phi'], mean[v'phi'], mean[w'phi']"
