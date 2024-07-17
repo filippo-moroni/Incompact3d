@@ -18,12 +18,12 @@
 ! - spanwise correlation functions for velocity (Ruuz, Rvvz, Rwwz, Ruvz) 
 !----------------------------------------------------------!
 
-! Mean statistics (average, variance, skewness, kurtosis)
-subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
-                     u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
-                     u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
-                     uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
-                     phi2mean,uphimean,vphimean,wphimean)
+! Mean statistics (average, variance, skewness, kurtosis, Reynolds stresses and mixed fluctuations)
+subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
+                     u1mean,v1mean,w1mean,u2mean,v2mean,w2mean,       &
+                     u3mean,v3mean,w3mean,u4mean,v4mean,w4mean,       &
+                     uvmean,uwmean,vwmean,pre1mean,pre2mean,vpremean, &
+                     phi1mean,phi2mean,uphimean,vphimean,wphimean)
 
   use param
   use variables
@@ -33,22 +33,24 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
   implicit none
   
   ! Variables definition
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2     ! velocity components and pressure
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: phi2                 ! scalar field
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2,phi2          ! velocity components, pressure and scalar field
   
   ! Number of flow realizations and number of snapshots
   integer,     intent(in) :: nr, nt 
   
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                             ! temporary array (local)
+  ! Local 
+  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                                       ! temporary array (local)
   
+  ! Output
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: u1mean,v1mean,w1mean        ! 1st order moment (average)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: u2mean,v2mean,w2mean        ! 2nd order moment (variance)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: u3mean,v3mean,w3mean        ! 3rd order moment (skewness)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: u4mean,v4mean,w4mean        ! 4th order moment (kurtosis)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: uvmean,uwmean,vwmean        ! Reynolds stresses
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: pre1mean,pre2mean           ! average and variance of pressure
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vpremean                    ! average of pressure-strain term in y-direction
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean           ! average and variance of scalar field
-  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations for scalar field
   
   real(mytype) :: den  ! denominator of the divisions
   
@@ -108,23 +110,29 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
 
 
   !---Reynolds stresses---!
-  !<uv>
+  ! <uv>
   ta2=ux2*uy2
   uvmean=uvmean+ta2/den
 
-  !<uw>
+  ! <uw>
   ta2=ux2*uz2
   uwmean=uwmean+ta2/den
 
-  !<vw>
+  ! <vw>
   ta2=uy2*uz2
   vwmean=vwmean+ta2/den
 
   !---pressure---!
+  ! average
   pre1mean=pre1mean+pre2/den
-
+  
+  ! variance 
   ta2=pre2*pre2
   pre2mean=pre2mean+ta2/den
+  
+  ! pressure-strain in y-direction
+  ta2=uy2*pre2
+  vpremean=vpremean+ta2/den 
 
   !---scalar---!
   if (iscalar==1) then
@@ -152,9 +160,9 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
 
 end subroutine stat_mean
 !********************************************************************
-! Vorticity and mean gradient sqrt[ (du/dy)**2 + (dw/dy)**2 ]
-subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt, &
-                          vortxmean2,vortymean2,vortzmean2, &
+! Mean vorticity components and mean gradients (x, z, parallel and scalar field)
+subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
+                          vortxmean2,vortymean2,vortzmean2,                &
                           mean_gradientp2,mean_gradientx2,mean_gradientz2, &
                           mean_gradphi2)   
 

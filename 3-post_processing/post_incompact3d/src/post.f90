@@ -263,11 +263,11 @@ end if
      call transpose_x_to_y(phi1,phi2)
 
      ! Statistics computation through external subroutines
-     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt, &
-                                   u1mean,v1mean,w1mean,u2mean,v2mean,w2mean, &
-                                   u3mean,v3mean,w3mean,u4mean,v4mean,w4mean, &
-                                   uvmean,uwmean,vwmean,pre1mean,pre2mean,phi1mean, &
-                                   phi2mean,uphimean,vphimean,wphimean)
+     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
+                                   u1mean,v1mean,w1mean,u2mean,v2mean,w2mean,       &
+                                   u3mean,v3mean,w3mean,u4mean,v4mean,w4mean,       &
+                                   uvmean,uwmean,vwmean,pre1mean,pre2mean,vpremean, &
+                                   phi1mean,phi2mean,uphimean,vphimean,wphimean)
                                                                           
      if (post_vort) call stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz,mean_gradphi)
      
@@ -312,7 +312,9 @@ end if
   if (post_mean) then
      do k=1,ysize(3)
         do i=1,ysize(1)
-           do j=1,ysize(2)          
+           do j=1,ysize(2)
+              
+              ! Velocity statistics          
               u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)/den
               v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)/den
               w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)/den
@@ -325,13 +327,24 @@ end if
               u4meanH1(j)=u4meanH1(j)+u4mean(i,j,k)/den
               v4meanH1(j)=v4meanH1(j)+v4mean(i,j,k)/den
               w4meanH1(j)=w4meanH1(j)+w4mean(i,j,k)/den
+              
+              ! Reynolds stresses
               uvmeanH1(j)=uvmeanH1(j)+uvmean(i,j,k)/den
               uwmeanH1(j)=uwmeanH1(j)+uwmean(i,j,k)/den
               vwmeanH1(j)=vwmeanH1(j)+vwmean(i,j,k)/den
+              
+              ! Pressure statistics
               pre1meanH1(j)=pre1meanH1(j)+pre1mean(i,j,k)/den
               pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/den                                                   
+              
+              ! Pressure strain in y-direction
+              vpremeanH1(j)=vpremeanH1(j)+vpremean(i,j,k)/den
+              
+              ! Scalar statistics
               phi1meanH1(j)=phi1meanH1(j)+phi1mean(i,j,k)/den
               phi2meanH1(j)=phi2meanH1(j)+phi2mean(i,j,k)/den
+              
+              ! Mixed fluctuations scalar and velocity fields
               uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/den
               vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/den
               wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/den                                  
@@ -343,14 +356,18 @@ end if
   if (post_vort) then
      do k=1,ysize(3)
         do i=1,ysize(1)
-           do j=1,ysize(2)          
+           do j=1,ysize(2)
+           
+              ! Vorticity averages          
               vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/den
               vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/den
               vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/den 
+              
+              ! Mean gradients
               mean_gradientpH1(j)=mean_gradientpH1(j)+mean_gradientp(i,j,k)/den
               mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/den 
               mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den 
-              mean_gradphiH1(j)=mean_gradphiH1(j)+mean_gradphi(i,j,k)/den                   
+              mean_gradphiH1  (j)=mean_gradphiH1  (j)+mean_gradphi  (i,j,k)/den                   
            enddo
         enddo
      enddo
@@ -359,7 +376,9 @@ end if
   if (post_diss) then
      do k=1,ysize(3)
         do i=1,ysize(1)
-           do j=1,ysize(2)          
+           do j=1,ysize(2)
+           
+              ! Total dissipation          
               epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/den                  
            enddo
         enddo
@@ -374,6 +393,8 @@ end if
 !-------- Mean over all MPI processes (T = Total) ---------!
 
   if (post_mean) then
+  
+     ! Velocity statistics
      call MPI_ALLREDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(v1meanH1,v1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(w1meanH1,w1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -386,11 +407,19 @@ end if
      call MPI_ALLREDUCE(u4meanH1,u4meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(v4meanH1,v4meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(w4meanH1,w4meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     
+     ! Reynolds stresses
      call MPI_ALLREDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(uvmeanH1,uvmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(vwmeanH1,vwmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     
+     ! Pressure statistics
      call MPI_ALLREDUCE(pre1meanH1,pre1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(pre2meanH1,pre2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)   
+     
+     ! Pressure strain in y-direction
+     call MPI_ALLREDUCE(vpremeanH1,vpremeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     
      call MPI_ALLREDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -476,7 +505,8 @@ end if
            phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
            uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
            vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
-           wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)         
+           wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
+                    
         enddo
      endif
 
