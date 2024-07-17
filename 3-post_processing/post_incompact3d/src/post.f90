@@ -520,16 +520,22 @@ end if
            
            ! Pressure strain in y-direction
            vpremeanHT(j)=vpremeanHT(j)-v1meanHT(j)*pre1meanHT(j)
-           
-           ! Scalar variance
-           phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
-           
-           ! Mixed fluctuations scalar and velocity fields
-           uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
-           vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
-           wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
-                    
         enddo
+        
+        ! Scalar field
+        if (iscalar==1) then
+           do j=1,ysize(2)   
+              
+              ! Scalar variance
+              phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
+           
+              ! Mixed fluctuations scalar and velocity fields
+              uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
+              vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
+              wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
+           enddo
+        end if
+        
      endif
 
 !------------------Write formatted data--------------------!
@@ -570,6 +576,9 @@ end if
                                           'kurt[u]'  , ',', 'kurt[v]'  , ',', 'kurt[w]', ',', &
                                           "<u'v'>"   , ',', "<u'w'>"   , ',', "<v'w'>" , ',', &
                                           'mean[p]'  , ',', 'var[p]'   , ',',                 &
+                                          
+                                          
+                                          
                                           'mean[phi]', ',', 'var[phi]' , ',',                 &
                                           "<u'phi'>" , ',', "<v'phi'>" , ',', "<w'phi'>" 
                
@@ -602,6 +611,8 @@ end if
                                
         close(iunit)
      endif
+     
+     
      
      ! Vorticity mean statistics and mean gradients writing
      if (post_vort) then
