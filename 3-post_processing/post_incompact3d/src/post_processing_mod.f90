@@ -512,6 +512,10 @@ contains
   if (post_diss) then
       epsmean=zero
   end if
+  
+  if(post_tke_eq) then
+      kvprime_mean=zero;pprimevprime_mean=zero;pseudo_eps_tke_mean=zero
+  end if
      
   end subroutine reset_averages
 
@@ -588,6 +592,16 @@ contains
   
       ! Total domain
       RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero;RppzHT=zero
+  
+  end if
+  
+  if(post_tke_eq) then
+  
+      ! Subdomains
+      kvprime_meanH1=zero;pprimevprime_meanH1=zero;pseudo_eps_tke_meanH1=zero
+  
+      ! Total domain
+      kvprime_meanHT=zero;pprimevprime_meanHT=zero;pseudo_eps_tke_meanHT=zero
   
   end if
   
