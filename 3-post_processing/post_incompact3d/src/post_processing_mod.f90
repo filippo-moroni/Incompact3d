@@ -422,10 +422,13 @@ contains
         
 #ifndef TTBL_MODE
 
-        ! If we are in Channel mode, allocate memory to read mean velocity field and mean scalar field        
+        ! If we are in Channel mode, allocate memory to read:
+        ! mean velocity field, mean pressure field and mean scalar field
+                
         allocate(u1meanHT  (ysize(2))); u1meanHT   = zero   
         allocate(v1meanHT  (ysize(2))); v1meanHT   = zero  
         allocate(w1meanHT  (ysize(2))); w1meanHT   = zero
+        allocate(pre1meanHT(ysize(2))); pre1meanHT = zero
         allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
 
 #endif   

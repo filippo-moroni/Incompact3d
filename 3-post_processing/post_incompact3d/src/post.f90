@@ -153,23 +153,23 @@ program post
   
       do j = 1, ysize(2)
   
-          read(iunit, '(18(F13.9, A1, 1X))') u1meanHT(j),  a, &
-                                             v1meanHT(j),  a, &       
-                                             w1meanHT(j),  a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
-                                             temp,         a, &
+          read(iunit, '(18(F13.9, A1, 1X))') u1meanHT(j),   a, &
+                                             v1meanHT(j),   a, &       
+                                             w1meanHT(j),   a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             temp,          a, &
+                                             pre1meanHT(j), a, &
+                                             temp,          a, &
                                              phi1meanHT(j)
       end do
                                
@@ -287,6 +287,7 @@ end if
                ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
                uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
                uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
+               pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
                phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
            enddo
        enddo
@@ -411,25 +412,37 @@ end if
      call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
 
-  if(post_corz) then
-
-! Correlations calculation for TTBL
+! Statistics involving fluctuations for TTBL  
 #ifdef TTBL_MODE  
    
    ! Fluctuations calculation
+   if(post_corz) then
+   
    do k=1,ysize(3)
        do i=1,ysize(1)
            do j=1,ysize(2)
                ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
                uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
                uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
+               pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
                phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
            enddo
        enddo
    enddo
    
-   ! Correlation functions calculation (each subdomain, z-pencils)
-   call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
+   end if
+   
+   ! Correlations calculation for TTBL
+   if(post_corz) then
+   
+       ! Correlation functions calculation (each subdomain, z-pencils)
+       call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
+
+   end if
+
+   ! Add the call to the subroutines for calculation of: turbulent transport of TKE, pressure-velocity coupling and pseudo-dissipation
+   
+   
 
 #endif
    
@@ -439,8 +452,6 @@ end if
    call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
    call MPI_REDUCE(RppzH1,RppzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-   
-  end if
 
 !------------- MPI process nrank = 0 at work --------------!
 
