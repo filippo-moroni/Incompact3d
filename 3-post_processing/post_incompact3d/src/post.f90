@@ -305,10 +305,9 @@ end if
       
      end if
      
-     ! Add the call to the subroutines for calculation of: turbulent transport of TKE, pressure-velocity coupling and pseudo-dissipation
      if(post_tke_eq) then
        
-         ! Calculate turbulent transport term in y-direction for TKE equation
+         ! Fluctuating terms for TKE equation
          call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)
      
      end if
@@ -316,10 +315,12 @@ end if
 
    ! Closing of the do-loop on the different flow realizations (ii index)
    enddo 
-     
+
+#ifndef TTBL_MODE    
   ! Closing of the do-loop for the different time units (or snapshots) (ie index)
   enddo 
-  
+#endif  
+
 !--- Mean over homogeneous directions (H = Homogeneous) ---!
 
   ! Denominator of the divisions
@@ -545,6 +546,9 @@ end if
               wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
          enddo      
      endif
+     
+     ! add the further manipulation for TKE equation terms
+     ! nrank = 0 and call to derivative subroutines
 
 !------------------Write formatted data--------------------!
      
