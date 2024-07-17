@@ -355,31 +355,28 @@ contains
 
        !--- With the current version, we can deal only with 1 scalar field (modify to a rank 4 array if needed) ---! 
        
-       ! Scalar field
-       if (iscalar==1) then
+       ! Scalar field      
        
-           ! Point-value
-           allocate(phi1mean(ysize(1),ysize(2),ysize(3))); phi1mean = zero 
-           allocate(phi2mean(ysize(1),ysize(2),ysize(3))); phi2mean = zero     
-           allocate(uphimean(ysize(1),ysize(2),ysize(3))); uphimean = zero   
-           allocate(vphimean(ysize(1),ysize(2),ysize(3))); vphimean = zero   
-           allocate(wphimean(ysize(1),ysize(2),ysize(3))); wphimean = zero    
+       ! Point-value
+       allocate(phi1mean(ysize(1),ysize(2),ysize(3))); phi1mean = zero 
+       allocate(phi2mean(ysize(1),ysize(2),ysize(3))); phi2mean = zero     
+       allocate(uphimean(ysize(1),ysize(2),ysize(3))); uphimean = zero   
+       allocate(vphimean(ysize(1),ysize(2),ysize(3))); vphimean = zero   
+       allocate(wphimean(ysize(1),ysize(2),ysize(3))); wphimean = zero    
 
-           ! Sum at each processor
-           allocate(phi1meanH1(ysize(2))); phi1meanH1 = zero
-           allocate(phi2meanH1(ysize(2))); phi2meanH1 = zero
-           allocate(uphimeanH1(ysize(2))); uphimeanH1 = zero
-           allocate(vphimeanH1(ysize(2))); vphimeanH1 = zero
-           allocate(wphimeanH1(ysize(2))); wphimeanH1 = zero
+       ! Sum at each processor
+       allocate(phi1meanH1(ysize(2))); phi1meanH1 = zero
+       allocate(phi2meanH1(ysize(2))); phi2meanH1 = zero
+       allocate(uphimeanH1(ysize(2))); uphimeanH1 = zero
+       allocate(vphimeanH1(ysize(2))); vphimeanH1 = zero
+       allocate(wphimeanH1(ysize(2))); wphimeanH1 = zero
        
-           ! Total sum
-           allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
-           allocate(phi2meanHT(ysize(2))); phi2meanHT = zero
-           allocate(uphimeanHT(ysize(2))); uphimeanHT = zero
-           allocate(vphimeanHT(ysize(2))); vphimeanHT = zero
-           allocate(wphimeanHT(ysize(2))); wphimeanHT = zero 
-       
-        end if
+       ! Total sum
+       allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
+       allocate(phi2meanHT(ysize(2))); phi2meanHT = zero
+       allocate(uphimeanHT(ysize(2))); uphimeanHT = zero
+       allocate(vphimeanHT(ysize(2))); vphimeanHT = zero
+       allocate(wphimeanHT(ysize(2))); wphimeanHT = zero 
             
     end if
     
@@ -398,7 +395,7 @@ contains
        allocate(vortymeanHT(ysize(2))); vortymeanHT = zero
        allocate(vortzmeanHT(ysize(2))); vortzmeanHT = zero
       
-       ! Mean gradients (velocity and scalar)
+       ! Mean gradients (velocity)
        allocate(mean_gradientp(ysize(1),ysize(2),ysize(3))); mean_gradientp = zero       
        allocate(mean_gradientx(ysize(1),ysize(2),ysize(3))); mean_gradientx = zero
        allocate(mean_gradientz(ysize(1),ysize(2),ysize(3))); mean_gradientz = zero
@@ -411,15 +408,11 @@ contains
        allocate(mean_gradientxHT(ysize(2))); mean_gradientxHT = zero
        allocate(mean_gradientzHT(ysize(2))); mean_gradientzHT = zero
        
-       ! Scalar field
-       if (iscalar==1) then      
-       
-           allocate(mean_gradphi    (ysize(1),ysize(2),ysize(3))); mean_gradphi   = zero
-           allocate(mean_gradphiH1  (ysize(2)));                   mean_gradphiH1 = zero
-           allocate(mean_gradphiHT  (ysize(2)));                   mean_gradphiHT = zero
-       
-       end if
-                                                                                                                                                          
+       ! Scalar mean gradient
+       allocate(mean_gradphi    (ysize(1),ysize(2),ysize(3))); mean_gradphi   = zero
+       allocate(mean_gradphiH1  (ysize(2)));                   mean_gradphiH1 = zero
+       allocate(mean_gradphiHT  (ysize(2)));                   mean_gradphiHT = zero
+                                                                                                                                                                 
     endif
     
     if (post_diss) then
@@ -433,7 +426,7 @@ contains
     
     if (post_corz) then
     
-        ! Correlation functions in z-direction
+        ! Correlation functions in z-direction (velocity and scalar)
         allocate(RuuzH1(zsize(2),zsize(3))); RuuzH1 = zero
         allocate(RvvzH1(zsize(2),zsize(3))); RvvzH1 = zero
         allocate(RwwzH1(zsize(2),zsize(3))); RwwzH1 = zero
@@ -447,7 +440,6 @@ contains
         allocate(RppzHT(zsize(2),zsize(3))); RppzHT = zero
         
 #ifndef TTBL_MODE
-
         ! If we are in Channel mode, allocate memory to read:
         ! mean velocity field, mean pressure field and mean scalar field
                 
@@ -456,13 +448,8 @@ contains
         allocate(w1meanHT  (ysize(2))); w1meanHT   = zero
         allocate(pre1meanHT(ysize(2))); pre1meanHT = zero
         
-        ! Scalar field
-        if (iscalar==1) then
-        
-            allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
-        
-        end if
-
+        ! Scalar field              
+        allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
 #endif   
         
     end if
@@ -488,11 +475,9 @@ contains
       vpremean=zero
   
       ! Scalar field
-      if (iscalar==1) then
-          phi1mean=zero;phi2mean=zero
-          uphimean=zero;vphimean=zero;wphimean=zero
-      end if
-  
+      phi1mean=zero;phi2mean=zero
+      uphimean=zero;vphimean=zero;wphimean=zero
+      
   end if
   
   if (post_vort) then
@@ -538,18 +523,15 @@ contains
       vpremeanHT=zero
             
       ! Scalar field
-      if (iscalar==1) then
+            
+      ! Subdomains   
+      phi1meanH1=zero;phi2meanH1=zero
+      uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
       
-          ! Subdomains   
-          phi1meanH1=zero;phi2meanH1=zero
-          uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
-      
-          ! Total domain
-          phi1meanHT=zero;phi2meanHT=zero
-          uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
-      
-      end if
-     
+      ! Total domain
+      phi1meanHT=zero;phi2meanHT=zero
+      uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
+           
   end if
   
   if (post_vort) then
