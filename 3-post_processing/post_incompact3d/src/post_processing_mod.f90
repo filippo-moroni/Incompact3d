@@ -91,6 +91,11 @@ module post_processing
   ! Arrays for correlation functions (velocity and scalar (p: phi)) 
   real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1
   real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT,RppzHT
+  
+  ! Arrays for fluctuating terms for TKE equation
+  real(mytype), save, allocatable, dimension(:,:,:) :: kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean
+  real(mytype), save, allocatable, dimension(:)     :: kvprime_meanH1,pprimevprime_meanH1,pseudo_eps_tke_meanH1
+  real(mytype), save, allocatable, dimension(:)     :: kvprime_meanHT,pprimevprime_meanHT,pseudo_eps_tke_meanHT
      
 contains
 
@@ -382,45 +387,45 @@ contains
     
     if (post_vort) then
        
-       ! Vorticity
-       allocate(vortxmean(ysize(1),ysize(2),ysize(3))); vortxmean = zero
-       allocate(vortymean(ysize(1),ysize(2),ysize(3))); vortymean = zero 
-       allocate(vortzmean(ysize(1),ysize(2),ysize(3))); vortzmean = zero           
+        ! Vorticity
+        allocate(vortxmean(ysize(1),ysize(2),ysize(3))); vortxmean = zero
+        allocate(vortymean(ysize(1),ysize(2),ysize(3))); vortymean = zero 
+        allocate(vortzmean(ysize(1),ysize(2),ysize(3))); vortzmean = zero           
        
-       allocate(vortxmeanH1(ysize(2))); vortxmeanH1 = zero
-       allocate(vortymeanH1(ysize(2))); vortymeanH1 = zero
-       allocate(vortzmeanH1(ysize(2))); vortzmeanH1 = zero
+        allocate(vortxmeanH1(ysize(2))); vortxmeanH1 = zero
+        allocate(vortymeanH1(ysize(2))); vortymeanH1 = zero
+        allocate(vortzmeanH1(ysize(2))); vortzmeanH1 = zero
              
-       allocate(vortxmeanHT(ysize(2))); vortxmeanHT = zero
-       allocate(vortymeanHT(ysize(2))); vortymeanHT = zero
-       allocate(vortzmeanHT(ysize(2))); vortzmeanHT = zero
+        allocate(vortxmeanHT(ysize(2))); vortxmeanHT = zero
+        allocate(vortymeanHT(ysize(2))); vortymeanHT = zero
+        allocate(vortzmeanHT(ysize(2))); vortzmeanHT = zero
       
-       ! Mean gradients (velocity)
-       allocate(mean_gradientp(ysize(1),ysize(2),ysize(3))); mean_gradientp = zero       
-       allocate(mean_gradientx(ysize(1),ysize(2),ysize(3))); mean_gradientx = zero
-       allocate(mean_gradientz(ysize(1),ysize(2),ysize(3))); mean_gradientz = zero
+        ! Mean gradients (velocity)
+        allocate(mean_gradientp(ysize(1),ysize(2),ysize(3))); mean_gradientp = zero       
+        allocate(mean_gradientx(ysize(1),ysize(2),ysize(3))); mean_gradientx = zero
+        allocate(mean_gradientz(ysize(1),ysize(2),ysize(3))); mean_gradientz = zero
        
-       allocate(mean_gradientpH1(ysize(2))); mean_gradientpH1 = zero
-       allocate(mean_gradientxH1(ysize(2))); mean_gradientxH1 = zero
-       allocate(mean_gradientzH1(ysize(2))); mean_gradientzH1 = zero
+        allocate(mean_gradientpH1(ysize(2))); mean_gradientpH1 = zero
+        allocate(mean_gradientxH1(ysize(2))); mean_gradientxH1 = zero
+        allocate(mean_gradientzH1(ysize(2))); mean_gradientzH1 = zero
        
-       allocate(mean_gradientpHT(ysize(2))); mean_gradientpHT = zero
-       allocate(mean_gradientxHT(ysize(2))); mean_gradientxHT = zero
-       allocate(mean_gradientzHT(ysize(2))); mean_gradientzHT = zero
+        allocate(mean_gradientpHT(ysize(2))); mean_gradientpHT = zero
+        allocate(mean_gradientxHT(ysize(2))); mean_gradientxHT = zero
+        allocate(mean_gradientzHT(ysize(2))); mean_gradientzHT = zero
        
-       ! Scalar mean gradient
-       allocate(mean_gradphi    (ysize(1),ysize(2),ysize(3))); mean_gradphi   = zero
-       allocate(mean_gradphiH1  (ysize(2)));                   mean_gradphiH1 = zero
-       allocate(mean_gradphiHT  (ysize(2)));                   mean_gradphiHT = zero
+        ! Scalar mean gradient
+        allocate(mean_gradphi    (ysize(1),ysize(2),ysize(3))); mean_gradphi   = zero
+        allocate(mean_gradphiH1  (ysize(2)));                   mean_gradphiH1 = zero
+        allocate(mean_gradphiHT  (ysize(2)));                   mean_gradphiHT = zero
                                                                                                                                                                  
     endif
     
     if (post_diss) then
     
-       ! Total dissipation rate
-       allocate(epsmean  (ysize(1),ysize(2),ysize(3))); epsmean   = zero
-       allocate(epsmeanH1(ysize(2)));                   epsmeanH1 = zero
-       allocate(epsmeanHT(ysize(2)));                   epsmeanHT = zero
+        ! Total dissipation rate
+        allocate(epsmean  (ysize(1),ysize(2),ysize(3))); epsmean   = zero
+        allocate(epsmeanH1(ysize(2)));                   epsmeanH1 = zero
+        allocate(epsmeanHT(ysize(2)));                   epsmeanHT = zero
     
     end if
     
@@ -438,20 +443,38 @@ contains
         allocate(RwwzHT(zsize(2),zsize(3))); RwwzHT = zero
         allocate(RuvzHT(zsize(2),zsize(3))); RuvzHT = zero
         allocate(RppzHT(zsize(2),zsize(3))); RppzHT = zero
+    
+    end if
+    
+    if (post_tke_eq) then
+       
+        ! Fluctuating terms for TKE equation
+        allocate(kvprime_mean       (ysize(1),ysize(2),ysize(3))); kvprime_mean        = zero
+        allocate(pprimevprime_mean  (ysize(1),ysize(2),ysize(3))); pprimevprime_mean   = zero 
+        allocate(pseudo_eps_tke_mean(ysize(1),ysize(2),ysize(3))); pseudo_eps_tke_mean = zero
         
-#ifndef TTBL_MODE
-        ! If we are in Channel mode, allocate memory to read:
-        ! mean velocity field, mean pressure field and mean scalar field
-                
+        allocate(kvprime_meanH1       (ysize(2))); kvprime_meanH1        = zero
+        allocate(pprimevprime_meanH1  (ysize(2))); pprimevprime_meanH1   = zero
+        allocate(pseudo_eps_tke_meanH1(ysize(2))); pseudo_eps_tke_meanH1 = zero
+        
+        allocate(kvprime_meanHT       (ysize(2))); kvprime_meanHT        = zero
+        allocate(pprimevprime_meanHT  (ysize(2))); pprimevprime_meanHT   = zero
+        allocate(pseudo_eps_tke_meanHT(ysize(2))); pseudo_eps_tke_meanHT = zero
+        
+    end if
+    
+    ! If we need to calculate fluctuations, allocate memory to read mean statistics    
+    if (post_corz .or. post_tke_eq) then
+    
+        ! Mean velocity and mean pressure       
         allocate(u1meanHT  (ysize(2))); u1meanHT   = zero   
         allocate(v1meanHT  (ysize(2))); v1meanHT   = zero  
         allocate(w1meanHT  (ysize(2))); w1meanHT   = zero
         allocate(pre1meanHT(ysize(2))); pre1meanHT = zero
         
-        ! Scalar field              
+        ! Mean scalar field              
         allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
-#endif   
-        
+     
     end if
 
   end subroutine init_statistics
