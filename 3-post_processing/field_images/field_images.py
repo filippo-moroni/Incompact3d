@@ -79,7 +79,7 @@ elif switcher == 1:
     xlabel        = r'$z/D$'
     pad_cbar_lab  = -20
     size_cbar     = '5%'
-    maj_ticks_int = 5.0
+    maj_ticks_int = 10.0
     
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
