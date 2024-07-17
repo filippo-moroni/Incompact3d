@@ -152,7 +152,7 @@ module variables
   real(mytype), allocatable, target, dimension(:,:) :: aam211t,bbm211t,ccm211t,ddm211t,eem211t,ggm211t,hhm211t,wwm211t,zzm211t
   real(mytype), allocatable, target, dimension(:,:) :: rrm211t,qqm211t,vvm211t,ssm211t
 
-
+  ! Interface for derivatives subroutines
   ABSTRACT INTERFACE
      SUBROUTINE DERIVATIVE_X(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
        use decomp_2d, only : mytype
@@ -186,6 +186,23 @@ module variables
        real(mytype), dimension(nz):: ff,fs,fw
        real(mytype) :: lind
      END SUBROUTINE DERIVATIVE_Z
+     
+     ! Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini)
+     SUBROUTINE DERIVATIVE_Y_1D(t,u,r,s,ff,fs,fw,pp,ny,npaire)
+       use decomp_2d, only : mytype
+       integer :: ny,npaire
+       real(mytype), dimension(ny) :: t,u,r
+       real(mytype) :: s
+       real(mytype), dimension(ny):: ff,fs,fw,pp
+     END SUBROUTINE DERIVATIVE_Y_1D
+     SUBROUTINE DERIVATIVE_YY_1D(t,u,r,s,ff,fs,fw,ny,npaire)
+       use decomp_2d, only : mytype
+       integer :: ny,npaire
+       real(mytype), dimension(ny) :: t,u,r
+       real(mytype) :: s
+       real(mytype), dimension(ny):: ff,fs,fw
+     END SUBROUTINE DERIVATIVE_YY_1D
+     
   END INTERFACE
 
   PROCEDURE (DERIVATIVE_X) derx_00,derx_11,derx_12,derx_21,derx_22,&
@@ -199,10 +216,17 @@ module variables
   PROCEDURE (DERIVATIVE_Z) derz_00,derz_11,derz_12,derz_21,derz_22,&
        derzz_00,derzz_11,derzz_12,derzz_21,derzz_22
   PROCEDURE (DERIVATIVE_Z), POINTER :: derz,derzz,derzS,derzzS
+  
+  ! Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini)
+  PROCEDURE (DERIVATIVE_Y_1D) &
+       dery1D_00,dery1D_11,dery1D_12,dery1D_21,dery1D_22
+  PROCEDURE (DERIVATIVE_Y_1D), POINTER :: dery1D,deryS1D
+  PROCEDURE (DERIVATIVE_YY_1D) &
+       deryy1D_00,deryy1D_11,deryy1D_12,deryy1D_21,deryy1D_22
+  PROCEDURE (DERIVATIVE_YY_1D), POINTER :: deryy1D,deryyS1D
 
-  !O6SVV
+  !O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype),allocatable,dimension(:) :: newsm,newtm,newsmt,newtmt
-  !real(mytype),allocatable,dimension(:) :: newrm,ttm,newrmt,ttmt
   real(mytype),allocatable,dimension(:) :: newrm,newrmt
 
   ABSTRACT INTERFACE
@@ -295,10 +319,10 @@ module param
   logical :: nclx,ncly,nclz
 
   integer :: itype
-  integer, parameter :: itype_user = 0,    &
+  integer, parameter :: itype_user    = 0, &
                         itype_channel = 3, &
-                        itype_dbg = 6,     &
-                        itype_ttbl = 13
+                        itype_dbg     = 6, &
+                        itype_ttbl    = 13
 
   integer :: cont_phi,itr,itime,itest,iprocessing
   integer :: ifft,istret,iforc_entree,iturb
