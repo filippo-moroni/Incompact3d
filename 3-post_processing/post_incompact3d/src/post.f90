@@ -420,24 +420,33 @@ end if
      ! Pressure strain in y-direction
      call MPI_ALLREDUCE(vpremeanH1,vpremeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      
+     ! Scalar statistics
      call MPI_ALLREDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     
+     ! Mixed fluctuations scalar and velocity fields
      call MPI_ALLREDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)    
   endif
   
   if (post_vort) then
+  
+     ! Vorticity averages 
      call MPI_ALLREDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)  
+     
+     ! Mean gradients
      call MPI_ALLREDUCE(mean_gradientpH1,mean_gradientpHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code) 
      call MPI_ALLREDUCE(mean_gradientxH1,mean_gradientxHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      call MPI_ALLREDUCE(mean_gradientzH1,mean_gradientzHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-     call MPI_ALLREDUCE(mean_gradphiH1,mean_gradphiHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+     call MPI_ALLREDUCE(mean_gradphiH1,  mean_gradphiHT,  ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   endif
   
   if (post_diss) then
+  
+     ! Total dissipation
      call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
 
@@ -489,6 +498,8 @@ end if
      
      if (post_mean) then
         do j=1,ysize(2)
+        
+           ! Velocity statistics
            u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
            v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
            w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
@@ -498,11 +509,22 @@ end if
            u4meanHT(j)=u4meanHT(j)-u1meanHT(j)**4-6*(u1meanHT(j)**2)*u2meanHT(j)-4*u1meanHT(j)*u3meanHT(j)
            v4meanHT(j)=v4meanHT(j)-v1meanHT(j)**4-6*(v1meanHT(j)**2)*v2meanHT(j)-4*v1meanHT(j)*v3meanHT(j)
            w4meanHT(j)=w4meanHT(j)-w1meanHT(j)**4-6*(w1meanHT(j)**2)*w2meanHT(j)-4*w1meanHT(j)*w3meanHT(j)
+           
+           ! Reynolds stresses
            uvmeanHT(j)=uvmeanHT(j)-u1meanHT(j)*v1meanHT(j)
            uwmeanHT(j)=uwmeanHT(j)-u1meanHT(j)*w1meanHT(j)
            vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
+           
+           ! Pressure variance
            pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2 
+           
+           ! Pressure strain in y-direction
+           vpremeanHT(j)=vpremeanHT(j)-v1meanHT(j)*pre1meanHT(j)
+           
+           ! Scalar variance
            phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
+           
+           ! Mixed fluctuations scalar and velocity fields
            uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
            vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
            wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
