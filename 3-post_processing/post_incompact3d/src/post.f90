@@ -156,27 +156,28 @@ program post
           read(iunit, '(18(F13.9, A1, 1X))') u1meanHT(j),   a, &
                                              v1meanHT(j),   a, &       
                                              w1meanHT(j),   a, &
+                                             u2meanHT(j),   a, &
+                                             v2meanHT(j),   a, &
+                                             w2meanHT(j),   a, &
                                              temp,          a, &
                                              temp,          a, &
                                              temp,          a, &
                                              temp,          a, &
                                              temp,          a, &
                                              temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
+                                             uvmeanHT(j),   a, &
+                                             uwmeanHT(j),   a, &
+                                             vwmeanHT(j),   a, &
                                              pre1meanHT(j), a, &
                                              temp,          a, &
+                                             vpremeanHT(j), a, &
                                              phi1meanHT(j)
       end do
                                
       close(iunit)
   
   end if
-
+  
 #endif
   
 !-----------------------------!
