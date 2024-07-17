@@ -420,18 +420,14 @@ end if
       ! Pressure strain in y-direction
       call MPI_ALLREDUCE(vpremeanH1,vpremeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      
-      ! Scalar field
-      if (iscalar==1) then
+      ! Scalar statistics
+      call MPI_ALLREDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+      call MPI_ALLREDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
      
-          ! Scalar statistics
-          call MPI_ALLREDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-          call MPI_ALLREDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-     
-          ! Mixed fluctuations scalar and velocity fields
-          call MPI_ALLREDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-          call MPI_ALLREDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-          call MPI_ALLREDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)    
-      end if
+      ! Mixed fluctuations scalar and velocity fields
+      call MPI_ALLREDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+      call MPI_ALLREDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+      call MPI_ALLREDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)    
       
   endif
   
@@ -467,21 +463,10 @@ end if
                    uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
                    uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
                    pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
+                   phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
                enddo
            enddo
-       enddo
-       
-       ! Scalar field
-       if (iscalar==1) then
-           do k=1,ysize(3)
-               do i=1,ysize(1)
-                   do j=1,ysize(2)
-                       phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
-                   enddo
-               enddo
-           enddo
-       end if
-   
+       enddo  
    end if
    
    ! Correlations calculation for TTBL
@@ -509,37 +494,32 @@ end if
 
   ! High-order moments (variance, skewness, kurtosis)
   if(nrank.eq.0) then  
-     
-     if (post_mean) then
-        do j=1,ysize(2)
+  
+      if (post_mean) then
+          do j=1,ysize(2)
         
-           ! Velocity statistics
-           u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
-           v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
-           w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
-           u3meanHT(j)=u3meanHT(j)-u1meanHT(j)**3-3*u1meanHT(j)*u2meanHT(j)
-           v3meanHT(j)=v3meanHT(j)-v1meanHT(j)**3-3*v1meanHT(j)*v2meanHT(j)
-           w3meanHT(j)=w3meanHT(j)-w1meanHT(j)**3-3*w1meanHT(j)*w2meanHT(j)
-           u4meanHT(j)=u4meanHT(j)-u1meanHT(j)**4-6*(u1meanHT(j)**2)*u2meanHT(j)-4*u1meanHT(j)*u3meanHT(j)
-           v4meanHT(j)=v4meanHT(j)-v1meanHT(j)**4-6*(v1meanHT(j)**2)*v2meanHT(j)-4*v1meanHT(j)*v3meanHT(j)
-           w4meanHT(j)=w4meanHT(j)-w1meanHT(j)**4-6*(w1meanHT(j)**2)*w2meanHT(j)-4*w1meanHT(j)*w3meanHT(j)
+              ! Velocity statistics
+              u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
+              v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
+              w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
+              u3meanHT(j)=u3meanHT(j)-u1meanHT(j)**3-3*u1meanHT(j)*u2meanHT(j)
+              v3meanHT(j)=v3meanHT(j)-v1meanHT(j)**3-3*v1meanHT(j)*v2meanHT(j)
+              w3meanHT(j)=w3meanHT(j)-w1meanHT(j)**3-3*w1meanHT(j)*w2meanHT(j)
+              u4meanHT(j)=u4meanHT(j)-u1meanHT(j)**4-6*(u1meanHT(j)**2)*u2meanHT(j)-4*u1meanHT(j)*u3meanHT(j)
+              v4meanHT(j)=v4meanHT(j)-v1meanHT(j)**4-6*(v1meanHT(j)**2)*v2meanHT(j)-4*v1meanHT(j)*v3meanHT(j)
+              w4meanHT(j)=w4meanHT(j)-w1meanHT(j)**4-6*(w1meanHT(j)**2)*w2meanHT(j)-4*w1meanHT(j)*w3meanHT(j)
            
-           ! Reynolds stresses
-           uvmeanHT(j)=uvmeanHT(j)-u1meanHT(j)*v1meanHT(j)
-           uwmeanHT(j)=uwmeanHT(j)-u1meanHT(j)*w1meanHT(j)
-           vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
+              ! Reynolds stresses
+              uvmeanHT(j)=uvmeanHT(j)-u1meanHT(j)*v1meanHT(j)
+              uwmeanHT(j)=uwmeanHT(j)-u1meanHT(j)*w1meanHT(j)
+              vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
            
-           ! Pressure variance
-           pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2 
+              ! Pressure variance
+              pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2 
            
-           ! Pressure strain in y-direction
-           vpremeanHT(j)=vpremeanHT(j)-v1meanHT(j)*pre1meanHT(j)
-        enddo
+              ! Pressure strain in y-direction
+              vpremeanHT(j)=vpremeanHT(j)-v1meanHT(j)*pre1meanHT(j)
         
-        ! Scalar field
-        if (iscalar==1) then
-           do j=1,ysize(2)   
-              
               ! Scalar variance
               phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
            
@@ -547,9 +527,7 @@ end if
               uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
               vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
               wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
-           enddo
-        end if
-        
+         enddo      
      endif
 
 !------------------Write formatted data--------------------!
@@ -590,9 +568,6 @@ end if
                                           'kurt[u]'  , ',', 'kurt[v]'  , ',', 'kurt[w]', ',', &
                                           "<u'v'>"   , ',', "<u'w'>"   , ',', "<v'w'>" , ',', &
                                           'mean[p]'  , ',', 'var[p]'   , ',',                 &
-                                          
-                                          
-                                          
                                           'mean[phi]', ',', 'var[phi]' , ',',                 &
                                           "<u'phi'>" , ',', "<v'phi'>" , ',', "<w'phi'>" 
                
