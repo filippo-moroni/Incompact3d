@@ -7,6 +7,7 @@ message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
 add_executable(post_incompact3d
                     BC-dbg-schemes.f90
                     derive.f90
+                    derive_y1d.f90
                     filters.f90
                     ibm.f90
                     module_param.f90
