@@ -187,8 +187,8 @@ end if
          ! Open the file and read
          open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
   
-         ! Display that we are reading the mean velocity field and the mean scalar field
-         if (nrank.eq.0) write(*,"(1x,'Reading mean_stats.txt')")
+         ! Display that we are reading the mean statistics
+         if (nrank.eq.0) print *, 'Reading: ', filename
          
          read(iunit, *)
   
@@ -309,7 +309,7 @@ end if
      if(post_tke_eq) then
        
          ! Calculate turbulent transport term in y-direction for TKE equation
-         call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean)
+         call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)
      
      end if
      !-----------------------------------------------------------------------------------------------------!
@@ -407,9 +407,16 @@ end if
       do k=1,ysize(3)
           do i=1,ysize(1)
               do j=1,ysize(2)
-                     
+                  
+                  ! Turbulent transport of TKE by v'  
                   kvprime_meanH1(j)=kvprime_meanH1(j)+kvprime_mean(i,j,k)/den
            
+                  ! Pressure-strain (or coupling) term, y-direction
+                  pprimevprime_meanH1(j)=pprimevprime_meanH1(j)+pprimevprime_mean(i,j,k)/den
+                  
+                  ! Pseudo-dissipation for TKE
+                  pseudo_eps_tke_meanH1(j)=pseudo_eps_tke_meanH1(j)+pseudo_eps_tke_mean(i,j,k)/den
+                  
               end do
           end do
       end do
@@ -481,12 +488,15 @@ end if
       call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
    
-   ! Summation over all MPI processes (valid for both TTBL and Channel)   
-   call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-   call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-   call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-   call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-   call MPI_REDUCE(RppzH1,RppzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  if(post_corz) then
+  
+      ! Correlation functions
+      call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+      call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+      call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+      call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+      call MPI_REDUCE(RppzH1,RppzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  end if
 
 !------------- MPI process nrank = 0 at work --------------!
 

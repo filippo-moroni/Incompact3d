@@ -8,7 +8,7 @@
 ! All results obtained here are in y-pencils.
 ! Results must be later derived.
 
-subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,)   
+subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)   
 
   use param
   use variables
@@ -79,7 +79,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,)
   call transpose_y_to_z(tf2,tf3)
   call derz (ta3,td3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tb3,te3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
-  call derz (tc3,tf3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0,lind)
+  call derz (tc3,tf3,di3,sz,ffz, fsz, fwz, zsize(1),zsize(2),zsize(3),0,lind)
   
   ! all back to x-pencils
   call transpose_z_to_y(ta3,td2)
@@ -104,10 +104,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,)
   
   ! Transpose array along y and sum
   call transpose_x_to_y(di1,di2)
-  vortxmean2 = vortxmean2 + di2/den
-  
-  
-  pseudo_eps_tke_mean 
+  pseudo_eps_tke_mean = pseudo_eps_tke_mean + di2/den
     
 end subroutine extra_terms_tke
 
