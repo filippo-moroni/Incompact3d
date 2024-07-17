@@ -188,7 +188,7 @@ end if
          open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
   
          ! Display that we are reading the mean statistics
-         if (nrank.eq.0) print *, 'Reading: ', filename
+         if (nrank.eq.0) print *, 'Reading file: ', filename
          
          read(iunit, *)
   
