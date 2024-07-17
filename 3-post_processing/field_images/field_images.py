@@ -28,10 +28,10 @@ sys.path.append(config_path)
 import plot_params as pp
 
 # Import function to set plots
-from plot_settings import set_plot_settings
+from plot_subs import set_plot_settings
 
 # Import function to read 'input.i3d' and 'post.prm' files
-from read_incompact3d_files import read_input_files
+from read_files import read_input_files
 
 # Import function to read friction Reynolds number Re_tau from .xdmf files
 from read_retau import extract_re_tau_value 
