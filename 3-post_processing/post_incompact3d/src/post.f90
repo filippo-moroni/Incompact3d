@@ -278,8 +278,6 @@ end if
      
      if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
 
-  enddo ! closing of the do-loop on the different flow realizations
-
 #ifndef TTBL_MODE 
    
    !--- Correlations for channel, mean statistics must be calculated in a previous post-processing run ---!
@@ -306,7 +304,10 @@ end if
       
    end if
    !-----------------------------------------------------------------------------------------------------!
-   
+
+   ! Closing of the do-loop on the different flow realizations (ii index)
+   enddo 
+     
   ! Closing of the do-loop for the different time units (or snapshots) (ie index)
   enddo 
 #endif
@@ -486,10 +487,31 @@ end if
    end if
 
    ! Add the call to the subroutines for calculation of: turbulent transport of TKE, pressure-velocity coupling and pseudo-dissipation
+   if(post_tke_eq) then
    
+       ! Calculate turbulent transport term in y-direction for TKE equation
+       call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean)
+       
+         
+       do k=1,ysize(3)
+           do i=1,ysize(1)
+               do j=1,ysize(2)
+                     
+                   kvprime_meanH1(j)=kvprime_meanH1(j)+kvprime_mean(i,j,k)/den
+           
+               end do
+           end do
+       end do   
    
+   end if
 
+   
+   ! Closing of the do-loop on the different flow realizations (ii index)
+   enddo
+   
 #endif
+
+ 
    
    ! Summation over all MPI processes (valid for both TTBL and Channel)   
    call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
