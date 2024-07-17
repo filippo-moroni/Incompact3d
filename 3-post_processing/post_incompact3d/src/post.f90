@@ -284,7 +284,7 @@ end if
      !--- Correlations or fluctuating terms of TKE equation, mean statistics must be calculated in a previous post-processing run ---!
      if(post_corz .or. post_tke_eq) then
    
-     ! Fluctuations calculation
+         ! Fluctuations calculation
          do k=1,ysize(3)
              do i=1,ysize(1)
                  do j=1,ysize(2)
@@ -402,7 +402,7 @@ end if
      enddo
   endif
   
-  ! To be completed
+  ! Fluctuating terms for TKE equation
   if(post_tke_eq) then
       do k=1,ysize(3)
           do i=1,ysize(1)
@@ -496,6 +496,14 @@ end if
       call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RppzH1,RppzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  end if
+  
+  if(post_tke_eq) then
+      
+      ! Fluctuating terms for TKE equation
+      call MPI_ALLREDUCE(kvprime_meanH1,       kvprime_meanHT,       ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+      call MPI_ALLREDUCE(pprimevprime_meanH1,  pprimevprime_meanHT,  ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+      call MPI_ALLREDUCE(pseudo_eps_tke_meanH1,pseudo_eps_tke_meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
 
 !------------- MPI process nrank = 0 at work --------------!
