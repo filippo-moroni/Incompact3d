@@ -296,10 +296,13 @@ end if
                    phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
                enddo
            enddo
-       enddo  
+       enddo
+   end if  
    
-   ! Correlation functions calculation (each subdomain, z-pencils)
-   call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
+   if(post_corz) then
+   
+       ! Correlation functions calculation (each subdomain, z-pencils)
+       call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
       
    end if
    !-----------------------------------------------------------------------------------------------------!
