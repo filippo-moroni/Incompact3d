@@ -254,16 +254,20 @@
       if (exists) then
           open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.4,A,I12)')        &
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,F12.4,A,I12)')  &
                          a_wo_loc, ',', t_wo_loc, ',', re_tau_tbl, ',', & 
-                         t,        ',', itime
+                         span_vel, ',', t,        ',', itime
                              
       else
           open(newunit=iunit, file=filename, status="new", action="write")
           ! Header
-          write(iunit, '(A12,A,A12,A,A12,A, A12,A,A12)')       &
+          write(iunit, '(A12,A,A12,A,A12,A, A12,A,A12,A,A12)') &
                         'A^+', ',', 'T^+', ',', 'Re_tau', ',', &                                                        
-                        't',   ',', 'ts'
+                        'Ww',  ',', 't',   ',', 'ts'
+          
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,F12.4,A,I12)')  &
+                         a_wo_loc, ',', t_wo_loc, ',', re_tau_tbl, ',', & 
+                         span_vel, ',', t,        ',', itime
                     
       end if
           close(iunit)
