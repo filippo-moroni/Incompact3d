@@ -283,7 +283,7 @@ end if
 #ifndef TTBL_MODE 
    
    !--- Correlations for channel, mean statistics must be calculated in a previous post-processing run ---!
-   if(post_corz) then
+   if(post_corz .or. post_tke_eq) then
    
    ! Fluctuations calculation
        do k=1,ysize(3)
@@ -460,7 +460,7 @@ end if
 #ifdef TTBL_MODE  
    
    ! Fluctuations calculation
-   if(post_corz) then
+   if(post_corz .or. post_tke_eq) then
        do k=1,ysize(3)
            do i=1,ysize(1)
                do j=1,ysize(2)
