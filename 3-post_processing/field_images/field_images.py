@@ -64,7 +64,7 @@ if switcher == 0:
     field_ticks   = [0.0,1.0]
     xlabel        = r'$x/D$'
     pad_cbar_lab  = -8
-    size_cbar     = '10%'
+    size_cbar     = '5%'
     maj_ticks_int = 10.0
     
 # Streamwise vorticity
@@ -78,7 +78,7 @@ elif switcher == 1:
     field_ticks   = [-0.5,0.5]
     xlabel        = r'$z/D$'
     pad_cbar_lab  = -20
-    size_cbar     = '20%'
+    size_cbar     = '5%'
     maj_ticks_int = 5.0
     
 # Extent of the image (dimensions of the domain)
