@@ -292,7 +292,7 @@ def read_ref_data():
     rz_plus_cwwz_kim = M[:,0]
     cwwz_kim         = M[:,1]
         
-    #!--- Reading of oscillating walls channels data (A^+ = 12, T^+ = 100) ---! 
+    #!--- Reading of oscillating walls channels data (A^+ = 12, T^+ = 100, Re_tau = 200) ---! 
       
     # Mean velocity profile (Touber & Leschziner (2012))
     M = np.loadtxt(dirname + '/touber2012/umean_touber2012.txt', skiprows=8, delimiter=',', dtype=np.float64)

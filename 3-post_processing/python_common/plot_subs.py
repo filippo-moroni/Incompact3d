@@ -12,6 +12,13 @@ from matplotlib.ticker import LogLocator
 
 def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
+    """
+    Parameters:
+    
+    iswitch_slp: Switcher to enable semilog plot for x-axis (0: no, 1: yes).
+        
+    """
+
     # Axes limits
     plt.xlim([xliminf, xlimsup])
     plt.ylim([yliminf, ylimsup])
@@ -59,6 +66,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, y_plus_in
     - snap_numb (str, optional):     Snapshot number to be included in the filename. Added if itype is 13 (TTBL).
     - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name.
     - y_plus_in (float64, optional): The additional parameter to be included in the filename if we are plotting and saving correlation functions.
+    
     """
     
     # Initialize the filename
