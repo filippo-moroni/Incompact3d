@@ -132,58 +132,7 @@ program post
   
   ! Initialize statistics
   call init_statistics()
-  
-#ifndef TTBL_MODE
-
-  ! Reading of previously calculated mean velocity field for a channel,
-  ! if correlation needs to be calculated.
-
-  if (post_corz .or. post_tke_eq) then
- 
-  ! Write directory name
-  write(dirname,"('data_post/')")
-  
-  ! Write the mean_stats filename for channel flow
-  write(filename, '(A)') 'mean_stats.txt'
-  filename = adjustl(filename)
-  
-  ! Display that we are reading the mean velocity field and the mean scalar field
-  if (nrank.eq.0) write(*,"(1x,'Reading mean_stats.txt')")
-  
-      ! Open the file and read
-      open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
-  
-      read(iunit, *)
-  
-      do j = 1, ysize(2)
-  
-          read(iunit, '(18(F13.9, A1, 1X))') u1meanHT(j),   a, &
-                                             v1meanHT(j),   a, &       
-                                             w1meanHT(j),   a, &
-                                             u2meanHT(j),   a, &
-                                             v2meanHT(j),   a, &
-                                             w2meanHT(j),   a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             temp,          a, &
-                                             uvmeanHT(j),   a, &
-                                             uwmeanHT(j),   a, &
-                                             vwmeanHT(j),   a, &
-                                             pre1meanHT(j), a, &
-                                             temp,          a, &
-                                             vpremeanHT(j), a, &
-                                             phi1meanHT(j)
-      end do
-                               
-      close(iunit)
-  
-  end if
-  
-#endif
-  
+    
 !-----------------------------!
 ! Post-processing starts here !
 !-----------------------------!
@@ -215,7 +164,61 @@ end if
         write(*,*) printing
                  
      endif
- 
+                
+     !-----------------------------------------------------------------!
+     ! Reading of previously calculated mean statistics,
+     ! if correlations or TKE fluctuating terms need to be calculated. 
+     !-----------------------------------------------------------------!
+     if (post_corz .or. post_tke_eq) then
+     
+         ! Write directory name
+         write(dirname,"('data_post/')")
+        
+#ifdef TTBL_MODE          
+         ! Write the mean_stats filename for TTBL
+         write(filename, '(A,A,A)') 'mean_stats-', trim(snap_index), '.txt'
+         filename = adjustl(filename)
+#else
+         ! Write the mean_stats filename for channel flow
+         write(filename, '(A)') 'mean_stats.txt'
+         filename = adjustl(filename)
+#endif
+     
+         ! Open the file and read
+         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
+  
+         ! Display that we are reading the mean velocity field and the mean scalar field
+         if (nrank.eq.0) write(*,"(1x,'Reading mean_stats.txt')")
+         
+         read(iunit, *)
+  
+         do j = 1, ysize(2)
+  
+         read(iunit, '(19(F13.9, A1, 1X))') u1meanHT(j),   a, &
+                                            v1meanHT(j),   a, &       
+                                            w1meanHT(j),   a, &
+                                            u2meanHT(j),   a, &
+                                            v2meanHT(j),   a, &
+                                            w2meanHT(j),   a, &
+                                            temp,          a, &
+                                            temp,          a, &
+                                            temp,          a, &
+                                            temp,          a, &
+                                            temp,          a, &
+                                            temp,          a, &
+                                            uvmeanHT(j),   a, &
+                                            uwmeanHT(j),   a, &
+                                            vwmeanHT(j),   a, &
+                                            pre1meanHT(j), a, &
+                                            temp,          a, &
+                                            vpremeanHT(j), a, &
+                                            phi1meanHT(j)
+         end do
+                               
+         close(iunit)
+     
+     end if
+      
 !---------Start of the ensemble average cycle--------------!
 
   do ii=1,nr 
@@ -277,40 +280,45 @@ end if
      if (post_vort) call stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz,mean_gradphi)
      
      if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
-
-#ifndef TTBL_MODE 
    
-   !--- Correlations for channel, mean statistics must be calculated in a previous post-processing run ---!
-   if(post_corz .or. post_tke_eq) then
+     !--- Correlations or fluctuating terms of TKE equation, mean statistics must be calculated in a previous post-processing run ---!
+     if(post_corz .or. post_tke_eq) then
    
-   ! Fluctuations calculation
-       do k=1,ysize(3)
-           do i=1,ysize(1)
-               do j=1,ysize(2)
-                   ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
-                   uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
-                   uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
-                   pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
-                   phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
-               enddo
-           enddo
-       enddo
-   end if  
+     ! Fluctuations calculation
+         do k=1,ysize(3)
+             do i=1,ysize(1)
+                 do j=1,ysize(2)
+                     ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
+                     uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
+                     uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
+                     pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
+                     phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
+                 enddo
+             enddo
+         enddo
+     end if  
    
-   if(post_corz) then
+     if(post_corz) then
    
-       ! Correlation functions calculation (each subdomain, z-pencils)
-       call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
+         ! Correlation functions calculation (each subdomain, z-pencils)
+         call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
       
-   end if
-   !-----------------------------------------------------------------------------------------------------!
+     end if
+     
+     ! Add the call to the subroutines for calculation of: turbulent transport of TKE, pressure-velocity coupling and pseudo-dissipation
+     if(post_tke_eq) then
+       
+         ! Calculate turbulent transport term in y-direction for TKE equation
+         call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean)
+     
+     end if
+     !-----------------------------------------------------------------------------------------------------!
 
    ! Closing of the do-loop on the different flow realizations (ii index)
    enddo 
      
   ! Closing of the do-loop for the different time units (or snapshots) (ie index)
   enddo 
-#endif
   
 !--- Mean over homogeneous directions (H = Homogeneous) ---!
 
@@ -393,7 +401,20 @@ end if
         enddo
      enddo
   endif
-
+  
+  ! To be completed
+  if(post_tke_eq) then
+      do k=1,ysize(3)
+          do i=1,ysize(1)
+              do j=1,ysize(2)
+                     
+                  kvprime_meanH1(j)=kvprime_meanH1(j)+kvprime_mean(i,j,k)/den
+           
+              end do
+          end do
+      end do
+  end if  
+  
 #ifdef TTBL_MODE
    ! Reset to zero the arrays used to collect the averages locally
    call reset_averages()  
@@ -459,59 +480,6 @@ end if
       ! Total dissipation
       call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
-
-! Statistics involving fluctuations for TTBL  
-#ifdef TTBL_MODE  
-   
-   ! Fluctuations calculation
-   if(post_corz .or. post_tke_eq) then
-       do k=1,ysize(3)
-           do i=1,ysize(1)
-               do j=1,ysize(2)
-                   ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
-                   uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
-                   uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
-                   pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
-                   phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
-               enddo
-           enddo
-       enddo  
-   end if
-   
-   ! Correlations calculation for TTBL
-   if(post_corz) then
-   
-       ! Correlation functions calculation (each subdomain, z-pencils)
-       call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
-
-   end if
-
-   ! Add the call to the subroutines for calculation of: turbulent transport of TKE, pressure-velocity coupling and pseudo-dissipation
-   if(post_tke_eq) then
-   
-       ! Calculate turbulent transport term in y-direction for TKE equation
-       call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean)
-       
-         
-       do k=1,ysize(3)
-           do i=1,ysize(1)
-               do j=1,ysize(2)
-                     
-                   kvprime_meanH1(j)=kvprime_meanH1(j)+kvprime_mean(i,j,k)/den
-           
-               end do
-           end do
-       end do   
-   
-   end if
-
-   
-   ! Closing of the do-loop on the different flow realizations (ii index)
-   enddo
-   
-#endif
-
- 
    
    ! Summation over all MPI processes (valid for both TTBL and Channel)   
    call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
