@@ -491,7 +491,7 @@ end subroutine stat_correlation_z
 ! All results obtained here are in y-pencils.
 ! Results must be later derived.
 
-subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)   
+subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)   
 
   use param
   use variables

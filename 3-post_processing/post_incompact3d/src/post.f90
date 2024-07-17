@@ -308,7 +308,7 @@ end if
      if(post_tke_eq) then
        
          ! Fluctuating terms for TKE equation
-         call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)
+         call extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)
      
      end if
      !-----------------------------------------------------------------------------------------------------!

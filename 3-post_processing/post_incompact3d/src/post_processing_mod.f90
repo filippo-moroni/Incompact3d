@@ -13,7 +13,7 @@ module post_processing
   character(len=100) :: fileformat
   character(len=1), parameter :: NL=char(10) !new line character
 
-  logical, save :: post_mean,post_vort,post_diss,post_corz,read_mean
+  logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
 
   !--- Arrays for statistic collection ---!
   
