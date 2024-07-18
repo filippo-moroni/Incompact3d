@@ -111,7 +111,11 @@ program post
   if (sel(5)==1) post_tke_eq = .true.
 
   if (nrank==0) then
-     if ((.not.post_mean).and.(.not.post_vort).and.(.not.post_diss).and.(.not.post_corz)) &
+     if ((.not.post_mean   ) .and. &
+         (.not.post_vort   ) .and. &
+         (.not.post_diss   ) .and. &
+         (.not.post_corz   ) .and. &
+         (.not.post_tke_eq))       &
         call decomp_2d_abort(10,'Invalid post-processing switchers specified, no work to be done here!')
   endif
   
