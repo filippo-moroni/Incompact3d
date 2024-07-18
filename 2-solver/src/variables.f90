@@ -56,10 +56,6 @@ module var
   !arrays for post processing
   real(mytype), save, allocatable, dimension(:,:,:) :: f1,fm1
 
-  !arrays for statistic collection
-  real(mytype), save, allocatable, dimension(:,:,:)   :: umean,vmean,wmean,pmean,uumean,vvmean,wwmean,uvmean,uwmean,vwmean,tmean
-  real(mytype), save, allocatable, dimension(:,:,:,:) :: phimean,phiphimean,uphimean,vphimean,wphimean
-
   !arrays for visualization
   real(mytype), save, allocatable, dimension(:,:,:) :: uvisu
 
@@ -262,37 +258,6 @@ contains
     !arrays for visualization!pay attention to the size!
     allocate(uvisu(xstV(1):xenV(1),xstV(2):xenV(2),xstV(3):xenV(3)))
     uvisu=zero
-
-    !arrays statistics
-    allocate (umean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    umean=zero
-    allocate (vmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    vmean=zero
-    allocate (wmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    wmean=zero
-    allocate (pmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    pmean=zero
-
-    allocate (uumean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    uumean=zero
-    allocate (vvmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    vvmean=zero
-    allocate (wwmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    wwmean=zero
-    allocate (uvmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    uvmean=zero
-    allocate (uwmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    uwmean=zero
-    allocate (vwmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    vwmean=zero
-
-    allocate (phimean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3),numscalar))
-    phimean=zero
-    allocate (phiphimean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3),numscalar))
-    phiphimean=zero
-
-    allocate (tmean(xstS(1):xenS(1),xstS(2):xenS(2),xstS(3):xenS(3)))
-    tmean=zero
 
     !Y PENCILS
     call alloc_y(ux2)
