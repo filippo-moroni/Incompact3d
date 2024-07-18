@@ -35,14 +35,14 @@ program xcompact3d
   use var
   use case
 
-  use transeq, only : calculate_transeq_rhs
+  use transeq,          only : calculate_transeq_rhs
   use time_integrators, only : int_time
-  use navier, only : velocity_to_momentum, momentum_to_velocity, pre_correc, &
-       calc_divu_constraint, solve_poisson, cor_vel
-  use tools, only : restart, simu_stats, apply_spatial_filter
+  use navier,           only : velocity_to_momentum, momentum_to_velocity, pre_correc, &
+                               calc_divu_constraint, solve_poisson, cor_vel
+  use tools,            only : restart, simu_stats, apply_spatial_filter
   use ibm_param
-  use ibm,         only : body
-  use genepsi,     only : genepsi3d
+  use ibm,              only : body
+  use genepsi,          only : genepsi3d
     
   implicit none
   
@@ -245,8 +245,7 @@ subroutine init_xcompact3d()
      call visu_case_init() !! XXX: If you get error about uninitialised IO, look here.
                            !! Ensures additional case-specific variables declared for IO
      call visu_ready()
-  end if
-    
+  end if    
   !####################################################################
   if (irestart==0) then
      call init(rho1,ux1,uy1,uz1,ep1,phi1,drho1,dux1,duy1,duz1,dphi1,pp3,px1,py1,pz1)
