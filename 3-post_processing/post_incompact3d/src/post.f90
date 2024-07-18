@@ -183,39 +183,44 @@ end if
          write(filename, '(A)') 'mean_stats.txt'
          filename = adjustl(filename)
 #endif
+
+         ! Read mean stats just the first time for Channel mode
+         if((itype .eq. itype_channel .and. ie .eq. 1) .or. (itype .eq. itype_ttbl)) then 
      
-         ! Open the file and read
-         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
+             ! Open the file and read
+             open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted',status='old')
   
-         ! Display that we are reading the mean statistics
-         if (nrank.eq.0) print *, 'Reading file: ', filename
+             ! Display that we are reading the mean statistics
+             if (nrank.eq.0) print *, 'Reading file: ', filename
          
-         read(iunit, *)
+             ! Skip the header
+             read(iunit, *)
   
-         do j = 1, ysize(2)
-  
-         read(iunit, '(19(F13.9, A1, 1X))') u1meanHT(j),   a, &
-                                            v1meanHT(j),   a, &       
-                                            w1meanHT(j),   a, &
-                                            u2meanHT(j),   a, &
-                                            v2meanHT(j),   a, &
-                                            w2meanHT(j),   a, &
-                                            temp,          a, &
-                                            temp,          a, &
-                                            temp,          a, &
-                                            temp,          a, &
-                                            temp,          a, &
-                                            temp,          a, &
-                                            uvmeanHT(j),   a, &
-                                            uwmeanHT(j),   a, &
-                                            vwmeanHT(j),   a, &
-                                            pre1meanHT(j), a, &
-                                            temp,          a, &
-                                            vpremeanHT(j), a, &
-                                            phi1meanHT(j)
-         end do
-                               
-         close(iunit)
+             do j = 1, ysize(2)
+             
+             read(iunit, '(19(F13.9, A1, 1X))') u1meanHT(j),   a, &
+                                                v1meanHT(j),   a, &       
+                                                w1meanHT(j),   a, &
+                                                u2meanHT(j),   a, &
+                                                v2meanHT(j),   a, &
+                                                w2meanHT(j),   a, &
+                                                temp,          a, &
+                                                temp,          a, &
+                                                temp,          a, &
+                                                temp,          a, &
+                                                temp,          a, &
+                                                temp,          a, &
+                                                uvmeanHT(j),   a, &
+                                                uwmeanHT(j),   a, &
+                                                vwmeanHT(j),   a, &
+                                                pre1meanHT(j), a, &
+                                                temp,          a, &
+                                                vpremeanHT(j), a, &
+                                                phi1meanHT(j)
+             end do                  
+             close(iunit)
+         
+         end if
      
      end if
       
@@ -308,7 +313,7 @@ end if
      if(post_tke_eq) then
        
          ! Fluctuating terms for TKE equation
-         call extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)
+         call extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
      
      end if
      !-----------------------------------------------------------------------------------------------------!
@@ -416,8 +421,7 @@ end if
                   pprimevprime_meanH1(j)=pprimevprime_meanH1(j)+pprimevprime_mean(i,j,k)/den
                   
                   ! Pseudo-dissipation for TKE
-                  pseudo_eps_tke_meanH1(j)=pseudo_eps_tke_meanH1(j)+pseudo_eps_tke_mean(i,j,k)/den
-                  
+                  pseudo_eps_tke_meanH1(j)=pseudo_eps_tke_meanH1(j)+pseudo_eps_tke_mean(i,j,k)/den    
               end do
           end do
       end do
@@ -431,7 +435,6 @@ end if
 !-------- Mean over all MPI processes (T = Total) ---------!
 
   if (post_mean) then
-  
       ! Velocity statistics
       call MPI_ALLREDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(v1meanH1,v1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -465,12 +468,10 @@ end if
       ! Mixed fluctuations scalar and velocity fields
       call MPI_ALLREDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-      call MPI_ALLREDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)    
-      
+      call MPI_ALLREDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)        
   endif
   
   if (post_vort) then
-  
       ! Vorticity averages 
       call MPI_ALLREDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -484,13 +485,11 @@ end if
   endif
   
   if (post_diss) then
-      
       ! Total dissipation
       call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
    
   if(post_corz) then
-  
       ! Correlation functions
       call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
@@ -500,7 +499,6 @@ end if
   end if
   
   if(post_tke_eq) then
-      
       ! Fluctuating terms for TKE equation
       call MPI_ALLREDUCE(kvprime_meanH1,       kvprime_meanHT,       ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(pprimevprime_meanH1,  pprimevprime_meanHT,  ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -544,12 +542,47 @@ end if
               uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
               vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
               wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
-         enddo      
-     endif
+          enddo      
+      endif
+      
+      ! add the further manipulation for TKE equation terms
+      ! nrank = 0 and call to derivative subroutines
+      
+      if(post_tke_eq) then
+          do j=1,ysize(2)
+        
+              ! Velocity statistics
+              u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
+              v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
+              w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
+              u3meanHT(j)=u3meanHT(j)-u1meanHT(j)**3-3*u1meanHT(j)*u2meanHT(j)
+              v3meanHT(j)=v3meanHT(j)-v1meanHT(j)**3-3*v1meanHT(j)*v2meanHT(j)
+              w3meanHT(j)=w3meanHT(j)-w1meanHT(j)**3-3*w1meanHT(j)*w2meanHT(j)
+              u4meanHT(j)=u4meanHT(j)-u1meanHT(j)**4-6*(u1meanHT(j)**2)*u2meanHT(j)-4*u1meanHT(j)*u3meanHT(j)
+              v4meanHT(j)=v4meanHT(j)-v1meanHT(j)**4-6*(v1meanHT(j)**2)*v2meanHT(j)-4*v1meanHT(j)*v3meanHT(j)
+              w4meanHT(j)=w4meanHT(j)-w1meanHT(j)**4-6*(w1meanHT(j)**2)*w2meanHT(j)-4*w1meanHT(j)*w3meanHT(j)
+           
+              ! Reynolds stresses
+              uvmeanHT(j)=uvmeanHT(j)-u1meanHT(j)*v1meanHT(j)
+              uwmeanHT(j)=uwmeanHT(j)-u1meanHT(j)*w1meanHT(j)
+              vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
+           
+              ! Pressure variance
+              pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2 
+           
+              ! Pressure strain in y-direction
+              vpremeanHT(j)=vpremeanHT(j)-v1meanHT(j)*pre1meanHT(j)
+        
+              ! Scalar variance
+              phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
+           
+              ! Mixed fluctuations scalar and velocity fields
+              uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
+              vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
+              wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
+          enddo      
+      endif
      
-     ! add the further manipulation for TKE equation terms
-     ! nrank = 0 and call to derivative subroutines
-
 !------------------Write formatted data--------------------!
      
      ! New directory for the statistics

@@ -491,7 +491,7 @@ end subroutine stat_correlation_z
 ! All results obtained here are in y-pencils.
 ! Results must be later derived.
 
-subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean)   
+subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)   
 
   use param
   use variables
@@ -518,10 +518,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pprimevprime_mean
   
   ! Turbulent transport of TKE by v'
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: kvprime_mean
-  
-  ! Pressure-strain (or coupling) term, y-direction
-  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: pprimevprime_mean
-  
+    
   ! Pseudo-dissipation for TKE
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: pseudo_eps_tke_mean   
           
@@ -534,10 +531,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pprimevprime_mean
   
   ! Turbulent transport of TKE by v' [ 0.5 * (u'^2 + v'^2 + w'^2) * v']
   kvprime_mean = kvprime_mean + zpfive*(ux2**2 + uy2**2 + uz2**2)*uy2 / den
-    
-  ! Pressure-strain (or coupling) term, y-direction
-  pprimevprime_mean = pprimevprime_mean + pre2*uy2 / den
-  
+      
   ! Transpose fluctuations in x-direction
   call transpose_y_to_x(ux2,ux1)
   call transpose_y_to_x(uy2,uy1)
@@ -581,10 +575,10 @@ subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pprimevprime_mean
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
   
   ! Pseudo-dissipation for TKE 
-  di1 = xnu * (ta1**2 + td1**2 + tg1**2 + &
-               tb1**2 + te1**2 + th1**2 + &
-               tc1**2 + tf1**2 + ti1**2 )
-  
+  di1 = - xnu * (ta1**2 + td1**2 + tg1**2 + &
+                 tb1**2 + te1**2 + th1**2 + &
+                 tc1**2 + tf1**2 + ti1**2 )
+   
   ! Transpose array along y and sum
   call transpose_x_to_y(di1,di2)
   pseudo_eps_tke_mean = pseudo_eps_tke_mean + di2/den

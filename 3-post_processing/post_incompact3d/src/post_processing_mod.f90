@@ -93,9 +93,9 @@ module post_processing
   real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT,RppzHT
   
   ! Arrays for fluctuating terms for TKE equation
-  real(mytype), save, allocatable, dimension(:,:,:) :: kvprime_mean,pprimevprime_mean,pseudo_eps_tke_mean
-  real(mytype), save, allocatable, dimension(:)     :: kvprime_meanH1,pprimevprime_meanH1,pseudo_eps_tke_meanH1
-  real(mytype), save, allocatable, dimension(:)     :: kvprime_meanHT,pprimevprime_meanHT,pseudo_eps_tke_meanHT
+  real(mytype), save, allocatable, dimension(:,:,:) :: kvprime_mean,  pseudo_eps_tke_mean
+  real(mytype), save, allocatable, dimension(:)     :: kvprime_meanH1,pseudo_eps_tke_meanH1
+  real(mytype), save, allocatable, dimension(:)     :: kvprime_meanHT,pseudo_eps_tke_meanHT
      
 contains
 
@@ -450,15 +450,12 @@ contains
        
         ! Fluctuating terms for TKE equation
         allocate(kvprime_mean       (ysize(1),ysize(2),ysize(3))); kvprime_mean        = zero
-        allocate(pprimevprime_mean  (ysize(1),ysize(2),ysize(3))); pprimevprime_mean   = zero 
         allocate(pseudo_eps_tke_mean(ysize(1),ysize(2),ysize(3))); pseudo_eps_tke_mean = zero
         
         allocate(kvprime_meanH1       (ysize(2))); kvprime_meanH1        = zero
-        allocate(pprimevprime_meanH1  (ysize(2))); pprimevprime_meanH1   = zero
         allocate(pseudo_eps_tke_meanH1(ysize(2))); pseudo_eps_tke_meanH1 = zero
         
         allocate(kvprime_meanHT       (ysize(2))); kvprime_meanHT        = zero
-        allocate(pprimevprime_meanHT  (ysize(2))); pprimevprime_meanHT   = zero
         allocate(pseudo_eps_tke_meanHT(ysize(2))); pseudo_eps_tke_meanHT = zero
         
     end if
@@ -514,7 +511,7 @@ contains
   end if
   
   if(post_tke_eq) then
-      kvprime_mean=zero;pprimevprime_mean=zero;pseudo_eps_tke_mean=zero
+      kvprime_mean=zero;pseudo_eps_tke_mean=zero
   end if
      
   end subroutine reset_averages
@@ -598,10 +595,10 @@ contains
   if(post_tke_eq) then
   
       ! Subdomains
-      kvprime_meanH1=zero;pprimevprime_meanH1=zero;pseudo_eps_tke_meanH1=zero
+      kvprime_meanH1=zero;pseudo_eps_tke_meanH1=zero
   
       ! Total domain
-      kvprime_meanHT=zero;pprimevprime_meanHT=zero;pseudo_eps_tke_meanHT=zero
+      kvprime_meanHT=zero;pseudo_eps_tke_meanHT=zero
   
   end if
   
