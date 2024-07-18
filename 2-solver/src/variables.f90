@@ -47,27 +47,29 @@ module var
   real(mytype), save, allocatable, dimension(:,:,:)     :: divu3
   real(mytype), save, allocatable, dimension(:,:,:,:)   :: phi1, phi2, phi3
   real(mytype), save, allocatable, dimension(:,:,:)     :: px1, py1, pz1
-  real(mytype), save, allocatable, dimension(:,:,:)     :: ep1, diss1, pre1
-  real(mytype), save, allocatable, dimension(:,:,:,:)   :: dux1,duy1,duz1  ! Output of convdiff
+  real(mytype), save, allocatable, dimension(:,:,:)     :: ep1, diss1
+  
+  ! Pressure arrays (x and y pencils)
+  real(mytype), save, allocatable, dimension(:,:,:)     :: pre1, pre2
+  
+  ! Output of momentum_rhs_eq (convective and diffusion terms of momentum equation)
+  real(mytype), save, allocatable, dimension(:,:,:,:)   :: dux1,duy1,duz1  
   real(mytype), save, allocatable, dimension(:,:,:,:,:) :: dphi1
   real(mytype), save, allocatable, dimension(:,:,:)     :: mu1,mu2,mu3
   real(mytype), save, allocatable, dimension(:,:,:)     :: uxf1, uxf2, uxf3, uyf1, uyf2, uyf3, uzf1, uzf2, uzf3, phif1, phif2, phif3
 
-  !arrays for post processing
+  ! Arrays for post processing
   real(mytype), save, allocatable, dimension(:,:,:) :: f1,fm1
 
-  !arrays for visualization
+  ! Arrays for visualization
   real(mytype), save, allocatable, dimension(:,:,:) :: uvisu
 
   ! define all work arrays here
-  real(mytype), save, allocatable, dimension(:,:,:) :: ta1,tb1,tc1,td1,&
-       te1,tf1,tg1,th1,ti1,di1
+  real(mytype), save, allocatable, dimension(:,:,:) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
   real(mytype), save, allocatable, dimension(:,:,:) :: pp1,pgy1,pgz1
-  real(mytype), save, allocatable, dimension(:,:,:) :: ta2,tb2,tc2,td2,&
-       te2,tf2,tg2,th2,ti2,tj2,di2
+  real(mytype), save, allocatable, dimension(:,:,:) :: ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
   real(mytype), save, allocatable, dimension(:,:,:) :: pp2,ppi2,pgy2,pgz2,pgzi2,dip2,dipp2,duxdxp2,uyp2,uzp2,upi2,duydypi2
-  real(mytype), save, allocatable, dimension(:,:,:) :: ta3,tb3,tc3,td3,&
-       te3,tf3,tg3,th3,ti3,di3
+  real(mytype), save, allocatable, dimension(:,:,:) :: ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
   real(mytype), save, allocatable, dimension(:,:,:) :: pgz3,ppi3,dip3,dipp3,duxydxyp3,uzp3
 
   integer, save :: nxmsize, nymsize, nzmsize
