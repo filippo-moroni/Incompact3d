@@ -103,6 +103,7 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: tke_pstrainHT   ! pressure-velocity coupling (pressure-strain): (1/rho)* d(<p'v') / dy
   real(mytype), save, allocatable, dimension(:)     :: tke_diffHT      ! diffusive transport term: -nu * d^2 (<k>) / dy^2
   real(mytype), save, allocatable, dimension(:)     :: tke_prodHT      ! production term: - <u'v'> dU/dy
+  real(mytype), save, allocatable, dimension(:)     :: temp_dery       ! temporary variable to store the derivative in y of a generic quantity 
      
 contains
 
@@ -471,21 +472,33 @@ contains
         allocate(tke_pstrainHT(ysize(2))); tke_pstrainHT = zero
         allocate(tke_diffHT   (ysize(2))); tke_diffHT    = zero     
         allocate(tke_prodHT   (ysize(2))); tke_prodHT    = zero
-        
+        allocate(temp_dery    (ysize(2))); temp_dery     = zero
+                
     end if
     
     ! If we need to calculate fluctuations, allocate memory to read mean statistics    
     if (post_corz .or. post_tke_eq) then
     
-        ! Mean velocity and mean pressure       
+        ! Velocity statistics       
         allocate(u1meanHT  (ysize(2))); u1meanHT   = zero   
         allocate(v1meanHT  (ysize(2))); v1meanHT   = zero  
         allocate(w1meanHT  (ysize(2))); w1meanHT   = zero
+        allocate(u2meanHT  (ysize(2))); u2meanHT   = zero   
+        allocate(v2meanHT  (ysize(2))); v2meanHT   = zero  
+        allocate(w2meanHT  (ysize(2))); w2meanHT   = zero
+        
+        ! Reynolds stresses
+        allocate(uvmeanHT  (ysize(2))); uvmeanHT   = zero   
+        allocate(uwmeanHT  (ysize(2))); uwmeanHT   = zero  
+        allocate(vwmeanHT  (ysize(2))); vwmeanHT   = zero
+        
+        ! Pressure statistics
         allocate(pre1meanHT(ysize(2))); pre1meanHT = zero
+        allocate(vpremeanHT(ysize(2))); vpremeanHT = zero
         
         ! Mean scalar field              
         allocate(phi1meanHT(ysize(2))); phi1meanHT = zero
-     
+           
     end if
 
   end subroutine init_statistics
@@ -620,6 +633,7 @@ contains
       tke_pstrainHT = zero
       tke_diffHT    = zero     
       tke_prodHT    = zero
+      temp_dery     = zero
   
   end if
   

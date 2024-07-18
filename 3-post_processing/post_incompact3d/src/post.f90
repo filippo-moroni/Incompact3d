@@ -552,6 +552,10 @@ end if
           
               tke_convHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)*u1meanHT(j)
 
+              call dery1D(dudy,stat_ruavgT(:, 1),di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
+             
+              stat_ruderT(:,1) = dudy                      ! dU/dy
+    
           enddo      
       endif
      
