@@ -33,8 +33,8 @@
 !********************************************************************
 !
 subroutine schemes()
-  !
-  !********************************************************************
+!
+!********************************************************************
 
   USE param
   USE derivX
@@ -220,10 +220,10 @@ subroutine schemes()
        cwi6z,cifi6z,cici6z,cibi6z,cifip6z,&
        cisip6z,ciwip6z,cisi6z,ciwi6z)
 
-  !if (iimplicit.ne.0) then
-  !   call init_implicit()
-  !   call implicit_schemes()
-  !endif
+  if (iimplicit.ne.0) then
+     call init_implicit()
+     call implicit_schemes()
+  endif
 
 #ifdef DEBG
   if (nrank  ==  0) write(*,*)'# schemes end'
@@ -235,8 +235,8 @@ end subroutine schemes
 !*******************************************************************
 !
 subroutine prepare (b,c,f,s,w,n)
-  !
-  !*******************************************************************
+!
+!*******************************************************************
 
   use decomp_2d, only : mytype
   use param, only : one
@@ -267,8 +267,8 @@ end subroutine prepare
 subroutine first_derivative(alfa1,af1,bf1,cf1,df1,alfa2,af2,alfan,afn,bfn,&
      cfn,dfn,alfam,afm,alfai,afi,bfi,&
      ff,fs,fw,ffp,fsp,fwp,d,n,ncl1,ncln)
-  !
-  !*******************************************************************
+!
+!*******************************************************************
 
   use decomp_2d, only : mytype, nrank
   use param
@@ -427,7 +427,7 @@ subroutine second_derivative(alsa1,as1,bs1,&
      alsatt,astt,bstt,cstt,&
      alsai,asi,bsi,csi,dsi,&
      sf,ss,sw,sfp,ssp,swp,d2,n,ncl1,ncln)
-  !*******************************************************************
+!*******************************************************************
 
   use decomp_2d, only : mytype, nrank
   use param
@@ -684,8 +684,8 @@ subroutine interpolation(dx,nxm,nx,nclx1,nclxn,&
      cfi6,cci6,cbi6,cfip6,csip6,cwip6,csi6,&
      cwi6,cifi6,cici6,cibi6,cifip6,&
      cisip6,ciwip6,cisi6,ciwi6)
-  !
-  !*******************************************************************
+!
+!*******************************************************************
 
   use decomp_2d, only : mytype
   use param, only : zero, half, one, two, three, four, nine, ten

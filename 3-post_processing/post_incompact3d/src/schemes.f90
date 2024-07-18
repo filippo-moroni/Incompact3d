@@ -220,6 +220,8 @@ subroutine schemes()
        cwi6z,cifi6z,cici6z,cibi6z,cifip6z,&
        cisip6z,ciwip6z,cisi6z,ciwi6z)
 
+  ! Commented since in post_processing we do not have the implicit module
+  
   !if (iimplicit.ne.0) then
   !   call init_implicit()
   !   call implicit_schemes()

@@ -327,8 +327,6 @@ module param
   ! Time step, first and last
   integer :: itime,ifirst,ilast
   
-  
-  
   integer :: ntime ! How many (sub)timestpeps do we need to store?
   integer :: icheckpoint,irestart,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
   integer :: itime0
@@ -354,8 +352,6 @@ module param
   real(mytype) :: C_filter
   integer      :: ifilter
   
-
-
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.
   logical, save :: sync_scal_needed = .true.
