@@ -42,8 +42,7 @@ subroutine schemes()
   USE derivZ
   USE variables
   USE var
-  
-  !USE ydiff_implicit, only : init_implicit, implicit_schemes
+  USE ydiff_implicit, only : init_implicit, implicit_schemes
 
   implicit none
 
