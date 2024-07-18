@@ -154,7 +154,7 @@ subroutine init_xcompact3d()
 
   use variables, only : nx, ny, nz, nxm, nym, nzm
   use variables, only : p_row, p_col
-  use variables, only : nstat, nvisu, nprobe, ilist
+  use variables, only : nstat, nvisu, ilist, nprobe
 
   use les, only: init_explicit_les
 
