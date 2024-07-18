@@ -888,6 +888,43 @@ end if
         close(iunit)
          
      endif ! closing of if-statement for writing correlations
+     
+     ! TKE terms (or budget) writing
+     if (post_tke_eq) then
+
+#ifdef TTBL_MODE  
+        ! Writing the snapshot index as character
+        write(snap_index, ifilenameformat) ifile 
+        snap_index = adjustl(snap_index) 
+        
+        ! Write the tke_stats filename for TTBL
+        write(filename, '(A,A,A)') 'tke_stats-', trim(snap_index), '.txt'
+        filename = adjustl(filename)
+#else
+        ! Write the tke_stats filename for channel flow
+        write(filename, '(A)') 'tke_stats.txt'
+        filename = adjustl(filename)
+#endif
+        
+        ! Open the file and write
+        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        ! Header 
+        write(iunit, '(6(A13, A1, 1X))') 'tke_conv' , ',', 'tke_turbt' , ',', 'tke_pstrain', ',', &
+                                         'tke_difft', ',', 'tke_prod'  , ',', 'tke_pseps' 
+               
+        do j = 1, ysize(2) 
+       
+            write(iunit, '(6(F13.9, A1, 1X))') tke_convHT(j),           ',', &
+                                               kvprime_meanHT(j),       ',', &       
+                                               vpremeanHT(j),           ',', &
+                                               tke_diffHT(j),           ',', &
+                                               tke_prodHT(j),           ',', &
+                                               pseudo_eps_tke_meanHT(j)
+        end do
+                               
+        close(iunit)
+     endif
                      
   endif ! closing of the if-statement for processor 0
 
