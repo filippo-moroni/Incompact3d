@@ -92,10 +92,17 @@ module post_processing
   real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1
   real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT,RppzHT
   
-  ! Arrays for fluctuating terms for TKE equation
+  !--- Arrays for fluctuating terms for TKE equation ---!
   real(mytype), save, allocatable, dimension(:,:,:) :: kvprime_mean,  pseudo_eps_tke_mean
   real(mytype), save, allocatable, dimension(:)     :: kvprime_meanH1,pseudo_eps_tke_meanH1
   real(mytype), save, allocatable, dimension(:)     :: kvprime_meanHT,pseudo_eps_tke_meanHT
+  
+  !--- Arrays for TKE equation ---!
+  real(mytype), save, allocatable, dimension(:)     :: tke_convHT      ! convective term: d(<k> U) / dy
+  real(mytype), save, allocatable, dimension(:)     :: tke_turbtHT     ! turbulent transport term: d(<k v'>) / dy
+  real(mytype), save, allocatable, dimension(:)     :: tke_pstrainHT   ! pressure-velocity coupling (pressure-strain): (1/rho)* d(<p'v') / dy
+  real(mytype), save, allocatable, dimension(:)     :: tke_diffHT      ! diffusive transport term: -nu * d^2 (<k>) / dy^2
+  real(mytype), save, allocatable, dimension(:)     :: tke_prodHT      ! production term: - <u'v'> dU/dy
      
 contains
 

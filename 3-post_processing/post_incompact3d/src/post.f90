@@ -501,7 +501,6 @@ end if
   if(post_tke_eq) then
       ! Fluctuating terms for TKE equation
       call MPI_ALLREDUCE(kvprime_meanH1,       kvprime_meanHT,       ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-      call MPI_ALLREDUCE(pprimevprime_meanH1,  pprimevprime_meanHT,  ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(pseudo_eps_tke_meanH1,pseudo_eps_tke_meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
   end if
 
@@ -551,35 +550,7 @@ end if
       if(post_tke_eq) then
           do j=1,ysize(2)
         
-              ! Velocity statistics
-              u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
-              v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
-              w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
-              u3meanHT(j)=u3meanHT(j)-u1meanHT(j)**3-3*u1meanHT(j)*u2meanHT(j)
-              v3meanHT(j)=v3meanHT(j)-v1meanHT(j)**3-3*v1meanHT(j)*v2meanHT(j)
-              w3meanHT(j)=w3meanHT(j)-w1meanHT(j)**3-3*w1meanHT(j)*w2meanHT(j)
-              u4meanHT(j)=u4meanHT(j)-u1meanHT(j)**4-6*(u1meanHT(j)**2)*u2meanHT(j)-4*u1meanHT(j)*u3meanHT(j)
-              v4meanHT(j)=v4meanHT(j)-v1meanHT(j)**4-6*(v1meanHT(j)**2)*v2meanHT(j)-4*v1meanHT(j)*v3meanHT(j)
-              w4meanHT(j)=w4meanHT(j)-w1meanHT(j)**4-6*(w1meanHT(j)**2)*w2meanHT(j)-4*w1meanHT(j)*w3meanHT(j)
-           
-              ! Reynolds stresses
-              uvmeanHT(j)=uvmeanHT(j)-u1meanHT(j)*v1meanHT(j)
-              uwmeanHT(j)=uwmeanHT(j)-u1meanHT(j)*w1meanHT(j)
-              vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
-           
-              ! Pressure variance
-              pre2meanHT(j)=pre2meanHT(j)-pre1meanHT(j)**2 
-           
-              ! Pressure strain in y-direction
-              vpremeanHT(j)=vpremeanHT(j)-v1meanHT(j)*pre1meanHT(j)
-        
-              ! Scalar variance
-              phi2meanHT(j)=phi2meanHT(j)-phi1meanHT(j)**2
-           
-              ! Mixed fluctuations scalar and velocity fields
-              uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
-              vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
-              wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
+
           enddo      
       endif
      
