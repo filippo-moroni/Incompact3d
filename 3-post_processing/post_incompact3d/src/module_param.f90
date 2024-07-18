@@ -47,12 +47,11 @@ module variables
   !2-->every 2 mesh nodes
   !4-->every 4 mesh nodes
   !nvisu = size for visualization collection
-  !nprobe = size for probe collection (energy spectra)
 
   !Possible n points: 3 5 7 9 11 13 17 19 21 25 31 33 37 41 49 51 55 61 65 73 81 91 97 101 109 121 129 145 151 161 163 181 193 201 217 241 251 257 271 289 301 321 325 361 385 401 433 451 481 487 501 513 541 577 601 641 649 721 751 769 801 811 865 901 961 973 1001 1025 1081 1153 1201 1251 1281 1297 1351 1441 1459 1501 1537 1601 1621 1729 1801 1921 1945 2001 2049 2161 2251 2305 2401 2431 2501 2561 2593 2701 2881 2917 3001 3073 3201 3241 3457 3601 3751 3841 3889 4001 4051 4097 4321 4375 4501 4609 4801 4861 5001 5121 5185 5401 5761 5833 6001 6145 6251 6401 6481 6751 6913 7201 7291 7501 7681 7777 8001 8101 8193 8641 8749 9001 9217 9601 9721 enough
 
   integer :: nx,ny,nz,numscalar,p_row,p_col,nxm,nym,nzm
-  integer :: nstat=1,nvisu=1,nprobe=1,nlength=1,ilist=25
+  integer :: nstat=1,nvisu=1,nprobe=1;nlength=1,ilist=25
 
   real(mytype),allocatable,dimension(:) :: sc,uset,cp,ri,group
   
@@ -268,7 +267,7 @@ module variables
   real(mytype), save, allocatable, dimension(:,:) :: dpdxy1,dpdxyn,dpdzy1,dpdzyn
   real(mytype), save, allocatable, dimension(:,:) :: dpdxz1,dpdxzn,dpdyz1,dpdyzn
 
-  !module inflow
+  ! module inflow (BCs)
   real(mytype), save, allocatable, dimension(:,:) :: bxx1,bxy1,bxz1,bxxn,bxyn,bxzn,bxo,byo,bzo
   real(mytype), save, allocatable, dimension(:,:) :: byx1,byy1,byz1,byxn,byyn,byzn
   real(mytype), save, allocatable, dimension(:,:) :: bzx1,bzy1,bzz1,bzxn,bzyn,bzzn
@@ -318,29 +317,44 @@ module param
   !and false otherwise
   logical :: nclx,ncly,nclz
 
+  ! Flow cases
   integer :: itype
-  integer, parameter :: itype_user    = 0, &
-                        itype_channel = 3, &
-                        itype_dbg     = 6, &
+  integer, parameter :: itype_user    = 0,  &
+                        itype_channel = 3,  &
+                        itype_dbg     = 6,  &
                         itype_ttbl    = 13
 
-  integer :: cont_phi,itr,itime,itest,iprocessing
-  integer :: ifft,istret,iforc_entree,iturb
-  integer :: iin,ifirst,ilast,iles
+  ! Time step, first and last
+  integer :: itime,ifirst,ilast
+  
+  
+  
   integer :: ntime ! How many (sub)timestpeps do we need to store?
-  integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
-  integer :: ioutflow, ninflows, ntimesteps
+  integer :: icheckpoint,irestart,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
   integer :: itime0
-  integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
-  integer :: npif,izap,ianal
+  integer :: iscalar,istat,iread,iadvance_time,irotation,iibm
   integer :: ivisu, ipost, initstat
-  integer :: ifilter
+  
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
   real(mytype) :: dt,re,xnu,init_noise
   
+  ! Mesh and domain
+  integer :: istret
+  
+  ! Type of initialization (it depends on the specific flowcase)
+  integer :: iin
+  
+  ! Iterations of sub-time steps for RK schemes
+  integer :: itr
+  
+  ! Low-Mach Number
   real(mytype) :: dens1, dens2
+  
+  ! Compact filter
   real(mytype) :: C_filter
-  character(len=100) :: inflowpath
+  integer      :: ifilter
+  
+
 
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.
@@ -370,12 +384,15 @@ module param
   logical, allocatable, dimension(:) :: sc_even, sc_skew
   real(mytype), allocatable, dimension(:) :: scalar_lbound, scalar_ubound
   real(mytype) :: Tref
+  
+  ! IBM
+  integer :: npif,izap,ianal
 
-  !! LES modelling flag
-  integer :: ilesmod, iwall
-
-  !LES
-  integer :: jles
+  ! LES
+  integer :: itest           ! frequency to print to screen LES constants 
+  integer :: iles            ! to enable LES modelling (0: no, 1: yes)
+  integer :: ilesmod, iwall  ! modelling options for LES
+  integer :: jles            ! LES model
   integer :: smagwalldamp
   real(mytype) :: smagcst,nSmag,walecst,FSGS,pr_t,maxdsmagcst
 
