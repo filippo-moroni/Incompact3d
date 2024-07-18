@@ -354,6 +354,8 @@ module param
   real(mytype) :: C_filter
   integer      :: ifilter
   
+
+
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.
   logical, save :: sync_scal_needed = .true.

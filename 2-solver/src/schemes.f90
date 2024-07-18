@@ -42,7 +42,8 @@ subroutine schemes()
   USE derivZ
   USE variables
   USE var
-  USE ydiff_implicit, only : init_implicit, implicit_schemes
+  
+  !USE ydiff_implicit, only : init_implicit, implicit_schemes
 
   implicit none
 
@@ -52,19 +53,19 @@ subroutine schemes()
   if (nrank  ==  0) write(*,*)'# schemes start'
 #endif
 
-  !Velocity
+  ! Velocity 
   ! First derivative
   if (nclx1.eq.0.and.nclxn.eq.0) derx => derx_00
   if (nclx1.eq.1.and.nclxn.eq.1) derx => derx_11
   if (nclx1.eq.1.and.nclxn.eq.2) derx => derx_12
   if (nclx1.eq.2.and.nclxn.eq.1) derx => derx_21
   if (nclx1.eq.2.and.nclxn.eq.2) derx => derx_22
-  !
-  if (ncly1.eq.0.and.nclyn.eq.0) dery => dery_00
-  if (ncly1.eq.1.and.nclyn.eq.1) dery => dery_11
-  if (ncly1.eq.1.and.nclyn.eq.2) dery => dery_12
-  if (ncly1.eq.2.and.nclyn.eq.1) dery => dery_21
-  if (ncly1.eq.2.and.nclyn.eq.2) dery => dery_22
+  ! 
+  if (ncly1.eq.0.and.nclyn.eq.0) dery => dery_00; dery1D => dery1D_00 ! Added by R. Corsini
+  if (ncly1.eq.1.and.nclyn.eq.1) dery => dery_11; dery1D => dery1D_11 
+  if (ncly1.eq.1.and.nclyn.eq.2) dery => dery_12; dery1D => dery1D_12 
+  if (ncly1.eq.2.and.nclyn.eq.1) dery => dery_21; dery1D => dery1D_21 
+  if (ncly1.eq.2.and.nclyn.eq.2) dery => dery_22; dery1D => dery1D_22 
   !
   if (nclz1.eq.0.and.nclzn.eq.0) derz => derz_00
   if (nclz1.eq.1.and.nclzn.eq.1) derz => derz_11
@@ -79,11 +80,11 @@ subroutine schemes()
   if (nclx1.eq.2.and.nclxn.eq.1) derxx => derxx_21
   if (nclx1.eq.2.and.nclxn.eq.2) derxx => derxx_22
   !y
-  if (ncly1.eq.0.and.nclyn.eq.0) deryy => deryy_00
-  if (ncly1.eq.1.and.nclyn.eq.1) deryy => deryy_11
-  if (ncly1.eq.1.and.nclyn.eq.2) deryy => deryy_12
-  if (ncly1.eq.2.and.nclyn.eq.1) deryy => deryy_21
-  if (ncly1.eq.2.and.nclyn.eq.2) deryy => deryy_22
+  if (ncly1.eq.0.and.nclyn.eq.0) deryy => deryy_00; deryy1D => deryy1D_00 ! Added by R. Corsini  
+  if (ncly1.eq.1.and.nclyn.eq.1) deryy => deryy_11; deryy1D => deryy1D_11 
+  if (ncly1.eq.1.and.nclyn.eq.2) deryy => deryy_12; deryy1D => deryy1D_12 
+  if (ncly1.eq.2.and.nclyn.eq.1) deryy => deryy_21; deryy1D => deryy1D_21 
+  if (ncly1.eq.2.and.nclyn.eq.2) deryy => deryy_22; deryy1D => deryy1D_22 
   !z
   if (nclz1.eq.0.and.nclzn.eq.0) derzz => derzz_00
   if (nclz1.eq.1.and.nclzn.eq.1) derzz => derzz_11
@@ -131,11 +132,11 @@ subroutine schemes()
      if (nclxS1.eq.2.and.nclxSn.eq.1) derxS => derx_21
      if (nclxS1.eq.2.and.nclxSn.eq.2) derxS => derx_22
      !
-     if (nclyS1.eq.0.and.nclySn.eq.0) deryS => dery_00
-     if (nclyS1.eq.1.and.nclySn.eq.1) deryS => dery_11
-     if (nclyS1.eq.1.and.nclySn.eq.2) deryS => dery_12
-     if (nclyS1.eq.2.and.nclySn.eq.1) deryS => dery_21
-     if (nclyS1.eq.2.and.nclySn.eq.2) deryS => dery_22
+     if (nclyS1.eq.0.and.nclySn.eq.0) deryS => dery_00; deryS1D => dery1D_00 ! Added by R. Corsini 
+     if (nclyS1.eq.1.and.nclySn.eq.1) deryS => dery_11; deryS1D => dery1D_11 
+     if (nclyS1.eq.1.and.nclySn.eq.2) deryS => dery_12; deryS1D => dery1D_12 
+     if (nclyS1.eq.2.and.nclySn.eq.1) deryS => dery_21; deryS1D => dery1D_21 
+     if (nclyS1.eq.2.and.nclySn.eq.2) deryS => dery_22; deryS1D => dery1D_22 
      !
      if (nclzS1.eq.0.and.nclzSn.eq.0) derzS => derz_00
      if (nclzS1.eq.1.and.nclzSn.eq.1) derzS => derz_11
@@ -149,11 +150,11 @@ subroutine schemes()
      if (nclxS1.eq.2.and.nclxSn.eq.1) derxxS => derxx_21
      if (nclxS1.eq.2.and.nclxSn.eq.2) derxxS => derxx_22
      !y
-     if (nclyS1.eq.0.and.nclySn.eq.0) deryyS => deryy_00
-     if (nclyS1.eq.1.and.nclySn.eq.1) deryyS => deryy_11
-     if (nclyS1.eq.1.and.nclySn.eq.2) deryyS => deryy_12
-     if (nclyS1.eq.2.and.nclySn.eq.1) deryyS => deryy_21
-     if (nclyS1.eq.2.and.nclySn.eq.2) deryyS => deryy_22
+     if (nclyS1.eq.0.and.nclySn.eq.0) deryyS => deryy_00; deryyS1D => deryy1D_00 ! Added by R. Corsini
+     if (nclyS1.eq.1.and.nclySn.eq.1) deryyS => deryy_11; deryyS1D => deryy1D_11 
+     if (nclyS1.eq.1.and.nclySn.eq.2) deryyS => deryy_12; deryyS1D => deryy1D_12 
+     if (nclyS1.eq.2.and.nclySn.eq.1) deryyS => deryy_21; deryyS1D => deryy1D_21 
+     if (nclyS1.eq.2.and.nclySn.eq.2) deryyS => deryy_22; deryyS1D => deryy1D_22 
      !z
      if (nclzS1.eq.0.and.nclzSn.eq.0) derzzS => derzz_00
      if (nclzS1.eq.1.and.nclzSn.eq.1) derzzS => derzz_11
@@ -219,10 +220,10 @@ subroutine schemes()
        cwi6z,cifi6z,cici6z,cibi6z,cifip6z,&
        cisip6z,ciwip6z,cisi6z,ciwi6z)
 
-  if (iimplicit.ne.0) then
-     call init_implicit()
-     call implicit_schemes()
-  endif
+  !if (iimplicit.ne.0) then
+  !   call init_implicit()
+  !   call implicit_schemes()
+  !endif
 
 #ifdef DEBG
   if (nrank  ==  0) write(*,*)'# schemes end'
@@ -431,6 +432,7 @@ subroutine second_derivative(alsa1,as1,bs1,&
   use decomp_2d, only : mytype, nrank
   use param
   use MPI
+  use param,     only : nu0nu,cnu
 
   implicit none
 
@@ -447,9 +449,6 @@ subroutine second_derivative(alsa1,as1,bs1,&
   integer :: i
   real(mytype),dimension(n) :: sb,sc
   real(mytype) :: xxnu,dpis3,kppkc,kppkm,xnpi2,xmpi2,den
-  
-  ! Added, it was a parameter in Incompact3d v2.0 for numerical dissipation
-  real(mytype) :: fpi2 = four
 
   sf=zero;ss=zero;sw=zero;sfp=zero;ssp=zero;swp=zero
 
@@ -457,8 +456,8 @@ subroutine second_derivative(alsa1,as1,bs1,&
   if (isecondder==1) then    ! Second-order central
      alsai=zero
      asi  =one/d2  !((six-nine*alsai)/four)/d2
-     bsi  =zero    !((-three+twentyfour*alsai)/five)/(four*d2)
-     csi  =zero    !((two-eleven*alsai)/twenty)/(nine*d2)
+     bsi  =zero !((-three+twentyfour*alsai)/five)/(four*d2)
+     csi  =zero !((two-eleven*alsai)/twenty)/(nine*d2)
      dsi  =zero
 
      alsa4= alsai
@@ -493,7 +492,7 @@ subroutine second_derivative(alsa1,as1,bs1,&
      bstt = bsi
      cstt = csi
   elseif(isecondder==5) then ! Sixth-order Hyperviscous operator
-     !if(nrank==0) write(*,*) 'Using the hyperviscous operator with (nu_0/nu,c_nu) = ', '(', nu0nu,',', cnu,')'
+
      dpis3=two*pi/three
      kppkc=pi*pi*(one+nu0nu)
      kppkm=dpis3*dpis3*(one+cnu*nu0nu) !exp(-((pi-dpis3)/(zpthree*pi-dpis3))**two)/xxnu+dpis3*dpis3
@@ -507,30 +506,13 @@ subroutine second_derivative(alsa1,as1,bs1,&
      bsi = (2115._mytype * xnpi2 - 1792._mytype * xmpi2 - 280._mytype * xnpi2 * xmpi2 + 1328._mytype) / den / (four * d2)
      csi = -(7695._mytype * xnpi2 / eight + 288._mytype * xmpi2 - 180._mytype * xnpi2 * xmpi2 - 2574._mytype) / den / (nine * d2)
      dsi = (198._mytype * xnpi2 + 128._mytype * xmpi2 - 40._mytype * xnpi2 * xmpi2 - 736._mytype) / den / (four**2 * d2)
-
-  elseif(isecondder==6) then  ! base option for second order derivative from Incompact3d v2.0
-     alsai=(45._mytype*fpi2*pi*pi-272._mytype)/(two*(45._mytype*fpi2*pi*pi-208._mytype))
-     asi  =((six-nine*alsai)/four)/d2
-     bsi  =((-three+twentyfour*alsai)/five)/(four*d2)
-     csi  =((two-eleven*alsai)/twenty)/(nine*d2)
-     dsi = zero
-
-     alsa4= alsai
-     as4  = asi
-     bs4  = bsi
-     cs4  = csi
-
-     alsatt = alsai
-     astt = asi
-     bstt = bsi
-     cstt = csi
   else
      if (nrank==0) then
         write(*,*) 'This is not an option.'
      endif
   endif
 
-  ! Defined for the boundaries when Dirichlet conditions are used
+  ! Defined for the bounadies when dirichlet conditions are used
   alsa1= eleven
   as1  = (thirteen)/d2
   bs1  =-(twentyseven)/d2

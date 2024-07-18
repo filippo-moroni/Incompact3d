@@ -53,19 +53,19 @@ subroutine schemes()
   if (nrank  ==  0) write(*,*)'# schemes start'
 #endif
 
-  !Velocity
+  ! Velocity 
   ! First derivative
   if (nclx1.eq.0.and.nclxn.eq.0) derx => derx_00
   if (nclx1.eq.1.and.nclxn.eq.1) derx => derx_11
   if (nclx1.eq.1.and.nclxn.eq.2) derx => derx_12
   if (nclx1.eq.2.and.nclxn.eq.1) derx => derx_21
   if (nclx1.eq.2.and.nclxn.eq.2) derx => derx_22
-  !
-  if (ncly1.eq.0.and.nclyn.eq.0) dery => dery_00
-  if (ncly1.eq.1.and.nclyn.eq.1) dery => dery_11
-  if (ncly1.eq.1.and.nclyn.eq.2) dery => dery_12
-  if (ncly1.eq.2.and.nclyn.eq.1) dery => dery_21
-  if (ncly1.eq.2.and.nclyn.eq.2) dery => dery_22
+  ! 
+  if (ncly1.eq.0.and.nclyn.eq.0) dery => dery_00; dery1D => dery1D_00 ! Added by R. Corsini
+  if (ncly1.eq.1.and.nclyn.eq.1) dery => dery_11; dery1D => dery1D_11 
+  if (ncly1.eq.1.and.nclyn.eq.2) dery => dery_12; dery1D => dery1D_12 
+  if (ncly1.eq.2.and.nclyn.eq.1) dery => dery_21; dery1D => dery1D_21 
+  if (ncly1.eq.2.and.nclyn.eq.2) dery => dery_22; dery1D => dery1D_22 
   !
   if (nclz1.eq.0.and.nclzn.eq.0) derz => derz_00
   if (nclz1.eq.1.and.nclzn.eq.1) derz => derz_11
@@ -80,11 +80,11 @@ subroutine schemes()
   if (nclx1.eq.2.and.nclxn.eq.1) derxx => derxx_21
   if (nclx1.eq.2.and.nclxn.eq.2) derxx => derxx_22
   !y
-  if (ncly1.eq.0.and.nclyn.eq.0) deryy => deryy_00
-  if (ncly1.eq.1.and.nclyn.eq.1) deryy => deryy_11
-  if (ncly1.eq.1.and.nclyn.eq.2) deryy => deryy_12
-  if (ncly1.eq.2.and.nclyn.eq.1) deryy => deryy_21
-  if (ncly1.eq.2.and.nclyn.eq.2) deryy => deryy_22
+  if (ncly1.eq.0.and.nclyn.eq.0) deryy => deryy_00; deryy1D => deryy1D_00 ! Added by R. Corsini  
+  if (ncly1.eq.1.and.nclyn.eq.1) deryy => deryy_11; deryy1D => deryy1D_11 
+  if (ncly1.eq.1.and.nclyn.eq.2) deryy => deryy_12; deryy1D => deryy1D_12 
+  if (ncly1.eq.2.and.nclyn.eq.1) deryy => deryy_21; deryy1D => deryy1D_21 
+  if (ncly1.eq.2.and.nclyn.eq.2) deryy => deryy_22; deryy1D => deryy1D_22 
   !z
   if (nclz1.eq.0.and.nclzn.eq.0) derzz => derzz_00
   if (nclz1.eq.1.and.nclzn.eq.1) derzz => derzz_11
@@ -132,11 +132,11 @@ subroutine schemes()
      if (nclxS1.eq.2.and.nclxSn.eq.1) derxS => derx_21
      if (nclxS1.eq.2.and.nclxSn.eq.2) derxS => derx_22
      !
-     if (nclyS1.eq.0.and.nclySn.eq.0) deryS => dery_00
-     if (nclyS1.eq.1.and.nclySn.eq.1) deryS => dery_11
-     if (nclyS1.eq.1.and.nclySn.eq.2) deryS => dery_12
-     if (nclyS1.eq.2.and.nclySn.eq.1) deryS => dery_21
-     if (nclyS1.eq.2.and.nclySn.eq.2) deryS => dery_22
+     if (nclyS1.eq.0.and.nclySn.eq.0) deryS => dery_00; deryS1D => dery1D_00 ! Added by R. Corsini 
+     if (nclyS1.eq.1.and.nclySn.eq.1) deryS => dery_11; deryS1D => dery1D_11 
+     if (nclyS1.eq.1.and.nclySn.eq.2) deryS => dery_12; deryS1D => dery1D_12 
+     if (nclyS1.eq.2.and.nclySn.eq.1) deryS => dery_21; deryS1D => dery1D_21 
+     if (nclyS1.eq.2.and.nclySn.eq.2) deryS => dery_22; deryS1D => dery1D_22 
      !
      if (nclzS1.eq.0.and.nclzSn.eq.0) derzS => derz_00
      if (nclzS1.eq.1.and.nclzSn.eq.1) derzS => derz_11
@@ -150,11 +150,11 @@ subroutine schemes()
      if (nclxS1.eq.2.and.nclxSn.eq.1) derxxS => derxx_21
      if (nclxS1.eq.2.and.nclxSn.eq.2) derxxS => derxx_22
      !y
-     if (nclyS1.eq.0.and.nclySn.eq.0) deryyS => deryy_00
-     if (nclyS1.eq.1.and.nclySn.eq.1) deryyS => deryy_11
-     if (nclyS1.eq.1.and.nclySn.eq.2) deryyS => deryy_12
-     if (nclyS1.eq.2.and.nclySn.eq.1) deryyS => deryy_21
-     if (nclyS1.eq.2.and.nclySn.eq.2) deryyS => deryy_22
+     if (nclyS1.eq.0.and.nclySn.eq.0) deryyS => deryy_00; deryyS1D => deryy1D_00 ! Added by R. Corsini
+     if (nclyS1.eq.1.and.nclySn.eq.1) deryyS => deryy_11; deryyS1D => deryy1D_11 
+     if (nclyS1.eq.1.and.nclySn.eq.2) deryyS => deryy_12; deryyS1D => deryy1D_12 
+     if (nclyS1.eq.2.and.nclySn.eq.1) deryyS => deryy_21; deryyS1D => deryy1D_21 
+     if (nclyS1.eq.2.and.nclySn.eq.2) deryyS => deryy_22; deryyS1D => deryy1D_22 
      !z
      if (nclzS1.eq.0.and.nclzSn.eq.0) derzzS => derzz_00
      if (nclzS1.eq.1.and.nclzSn.eq.1) derzzS => derzz_11
