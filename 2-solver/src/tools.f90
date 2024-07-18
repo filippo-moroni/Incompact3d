@@ -37,15 +37,12 @@ module tools
 
   character(len=*), parameter :: io_restart = "restart-io"
   character(len=*), parameter :: resfile = "checkpoint"
-  character(len=*), parameter :: io_ioflow = "in-outflow-io"
   
   private
 
   public :: program_header, &
             test_speed_min_max, test_scalar_min_max, &
-            restart, &
-            simu_stats, &
-            apply_spatial_filter, read_inflow, append_outflow, write_outflow, init_inflow_outflow, &
+            restart, simu_stats, apply_spatial_filter, &
             compute_cfldiff, compute_cfl, compute_reynolds_cell, compute_stab_param, update_time_int_coeff, &
             rescale_pressure, mean_plane_x, mean_plane_y, mean_plane_z, &
             avg3d
@@ -131,7 +128,6 @@ contains
     return
   end subroutine test_scalar_min_max
   !##################################################################
-  !##################################################################
   subroutine test_speed_min_max(ux,uy,uz)
 
     use decomp_2d
@@ -156,7 +152,7 @@ contains
     endif
 
     uxmax=-1609.;uymax=-1609.;uzmax=-1609.;uxmin=1609.;uymin=1609.;uzmin=1609.
-    !
+    
     ! More efficient version
     uxmax=maxval(ux)
     uymax=maxval(uy)
@@ -191,7 +187,6 @@ contains
 
     return
   end subroutine test_speed_min_max
-  !##################################################################
   !##################################################################
   subroutine simu_stats(iwhen)
 
@@ -532,7 +527,7 @@ contains
     end if
 
   end subroutine restart
-  
+!------------------------------------------------------------------------------- 
   subroutine init_restart_adios2()
 
     use decomp_2d, only : mytype, phG
@@ -679,143 +674,6 @@ contains
 
   end subroutine apply_spatial_filter
   
-  !############################################################################
-  !!  SUBROUTINE: init_inflow_outflow
-  !############################################################################
-  subroutine init_inflow_outflow()
-
-    use decomp_2d, only : mytype
-    use decomp_2d_io, only : decomp_2d_init_io, decomp_2d_register_variable
-
-    use param, only : ntimesteps
-     
-    integer :: nplanes
-    
-    call decomp_2d_init_io(io_ioflow)
-
-    nplanes = ntimesteps
-    
-    call decomp_2d_register_variable(io_ioflow, "ux", 1, 0, 1, mytype, opt_nplanes=nplanes)
-    call decomp_2d_register_variable(io_ioflow, "uy", 1, 0, 1, mytype, opt_nplanes=nplanes)
-    call decomp_2d_register_variable(io_ioflow, "uz", 1, 0, 1, mytype, opt_nplanes=nplanes)
-    
-  end subroutine init_inflow_outflow
-  !############################################################################
-  !!  SUBROUTINE: read_inflow
-  !############################################################################
-  subroutine read_inflow(ux1,uy1,uz1,ifileinflow)
-
-    use decomp_2d
-    use decomp_2d_io
-    use var, only: ux_inflow, uy_inflow, uz_inflow
-    use param
-    use MPI
-
-    implicit none
-
-    integer :: ifileinflow
-    real(mytype), dimension(NTimeSteps,xsize(2),xsize(3)) :: ux1,uy1,uz1
-    character(20) :: fninflow
-
-    character(80) :: inflow_file
-    
-    ! Recirculate inflows 
-    if (ifileinflow>=ninflows) then 
-      ifileinflow=mod(ifileinflow,ninflows)
-    endif
-
-    ! Read inflow
-    write(fninflow,'(i20)') ifileinflow+1
-#ifndef ADIOS2
-    write(inflow_file, "(A)") trim(inflowpath)//'inflow'//trim(adjustl(fninflow))
-#else
-    write(inflow_file, "(A)") trim(inflowpath)//'inflow'
-#endif
-    if (nrank==0) print *,'READING INFLOW FROM ',inflow_file
-    
-    call decomp_2d_open_io(io_ioflow, inflow_file, decomp_2d_read_mode)
-    call decomp_2d_start_io(io_ioflow, inflow_file)
-
-    call decomp_2d_read_inflow(inflow_file,"ux",ntimesteps,ux_inflow,io_ioflow)
-    call decomp_2d_read_inflow(inflow_file,"uy",ntimesteps,uy_inflow,io_ioflow)
-    call decomp_2d_read_inflow(inflow_file,"uz",ntimesteps,uz_inflow,io_ioflow)
-
-    call decomp_2d_end_io(io_ioflow, inflow_file)
-    call decomp_2d_close_io(io_ioflow, inflow_file)
-
-  end subroutine read_inflow
-  !############################################################################
-  !!  SUBROUTINE: append_outflow
-  !############################################################################
-  subroutine append_outflow(ux,uy,uz,timestep)
- 
-    use decomp_2d
-    use decomp_2d_io
-    use var, only: ux_recoutflow, uy_recoutflow, uz_recoutflow
-    use param
-
-    implicit none
-
-    real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
-    integer, intent(in) :: timestep
-    integer :: j,k
-
-    if (nrank==0) print *, 'Appending outflow', timestep 
-    do k=1,xsize(3)
-    do j=1,xsize(2)
-      ux_recoutflow(timestep,j,k)=ux(xend(1),j,k)
-      uy_recoutflow(timestep,j,k)=uy(xend(1),j,k)
-      uz_recoutflow(timestep,j,k)=uz(xend(1),j,k)
-    enddo
-    enddo
-
-    return
-  end subroutine append_outflow
-  !############################################################################
-  !!  SUBROUTINE: write_outflow
-  !############################################################################
-  subroutine write_outflow(ifileoutflow)
-
-    use decomp_2d
-    use decomp_2d_io
-    use param
-    use var, only: ux_recoutflow, uy_recoutflow, uz_recoutflow
-    use MPI
-
-    implicit none
-
-    integer,intent(in) :: ifileoutflow
-    character(20) :: fnoutflow
-    character(80) :: outflow_file
-    logical, save :: clean = .true.
-    integer :: iomode
-
-    if (clean .and. (irestart .eq. 0)) then
-       iomode = decomp_2d_write_mode
-       clean = .false.
-    else
-       iomode = decomp_2d_append_mode
-    end if
-    
-    write(fnoutflow,'(i20)') ifileoutflow
-#ifndef ADIOS2
-    write(outflow_file, "(A)") './out/inflow'//trim(adjustl(fnoutflow))
-#else
-    write(outflow_file, "(A)") './out/inflow'
-#endif
-    if (nrank==0) print *,'WRITING OUTFLOW TO ', outflow_file
-    
-    call decomp_2d_open_io(io_ioflow, outflow_file, iomode)
-    call decomp_2d_start_io(io_ioflow, outflow_file)
-
-    call decomp_2d_write_outflow(outflow_file,"ux",ntimesteps,ux_recoutflow,io_ioflow)
-    call decomp_2d_write_outflow(outflow_file,"uy",ntimesteps,uy_recoutflow,io_ioflow)
-    call decomp_2d_write_outflow(outflow_file,"uz",ntimesteps,uz_recoutflow,io_ioflow)
-
-    call decomp_2d_end_io(io_ioflow, outflow_file)
-    call decomp_2d_close_io(io_ioflow, outflow_file)
-    
-  end subroutine write_outflow
   !##################################################################
   !!  SUBROUTINE: compute_cfldiff
   !! DESCRIPTION: Computes Diffusion/Fourier number

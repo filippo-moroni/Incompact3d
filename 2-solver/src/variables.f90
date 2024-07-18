@@ -93,10 +93,6 @@ module var
   real(mytype), save, allocatable, dimension(:,:,:)   :: srt_smag, srt_smag2
   real(mytype), save, allocatable, dimension(:,:,:)   :: srt_wale, srt_wale2, srt_wale3, srt_wale4
 
-  ! arrays for inflow/outflow - precursor simulations
-  real(mytype), save, allocatable, dimension(:,:,:)   :: ux_inflow, uy_inflow, uz_inflow
-  real(mytype), save, allocatable, dimension(:,:,:)   :: ux_recoutflow, uy_recoutflow, uz_recoutflow
-
 contains
 
   subroutine init_variables
@@ -243,25 +239,6 @@ contains
     allocate(bzo(xsize(2),xsize(3)))
     bzo=zero
     
-    !inflow/outflow arrays (precursor simulations)
-    if (iin.eq.3) then
-       allocate(ux_inflow(ntimesteps,xsize(2),xsize(3)))
-       ux_inflow=zero
-       allocate(uy_inflow(ntimesteps,xsize(2),xsize(3)))
-       uy_inflow=zero
-       allocate(uz_inflow(ntimesteps,xsize(2),xsize(3)))
-       uz_inflow=zero
-    endif
-
-    if (ioutflow.eq.1) then
-       allocate(ux_recoutflow(ntimesteps,xsize(2),xsize(3)))
-       ux_recoutflow=zero
-       allocate(uy_recoutflow(ntimesteps,xsize(2),xsize(3)))
-       uy_recoutflow=zero
-       allocate(uz_recoutflow(ntimesteps,xsize(2),xsize(3)))
-       uz_recoutflow=zero
-    endif
-
     !pre_correc 2d array
     allocate(dpdyx1(xsize(2),xsize(3)),dpdyxn(xsize(2),xsize(3)))
     dpdyx1=zero

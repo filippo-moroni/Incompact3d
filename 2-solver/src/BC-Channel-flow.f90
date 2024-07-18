@@ -177,7 +177,9 @@ contains
              enddo
           enddo
        enddo
+    
     ! iin = 3 is for inlet-outlet files
+    
     elseif (iin == 4) then ! Simplified version of SEM 
        dim_min(1) = zero
        dim_min(2) = zero

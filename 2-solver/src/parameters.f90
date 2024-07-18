@@ -69,8 +69,7 @@ subroutine parameter(input_i3d)
   NAMELIST /NumOptions/ ifirstder, isecondder, ipinter, itimescheme, iimplicit, &
                         nu0nu, cnu
                         
-  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, ilist, nvisu, output2D, start_output, &
-                        iprocessing, ninflows, ntimesteps, inflowpath, ioutflow 
+  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, ilist, nvisu, output2D, start_output
   
   NAMELIST /AdditionalControls/ iswitch_wo
   NAMELIST /WallOscillations/ ifeedback_control, a_wo, t_wo, in_phase
@@ -625,12 +624,7 @@ subroutine parameter_defaults()
   
   ! InOutParam          
   irestart    = 0                      
-  output2D    = 0                  
-  iprocessing = huge(i)                     
-  ninflows    = 1
-  ntimesteps  = 1
-  inflowpath  = './'
-  ioutflow    = 0
+  output2D    = 0                                     
 
   ! AdditionalControls
   iswitch_wo  = 0  ! wall oscillations (0: no, 1: yes)

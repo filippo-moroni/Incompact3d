@@ -319,17 +319,16 @@ module param
   logical :: nclx,ncly,nclz
 
   integer :: itype
-  integer, parameter :: itype_user    = 0, &
-                        itype_channel = 3, &
-                        itype_dbg     = 6, &
+  integer, parameter :: itype_user    = 0,  &
+                        itype_channel = 3,  &
+                        itype_dbg     = 6,  &
                         itype_ttbl    = 13
 
-  integer :: cont_phi,itr,itime,itest,iprocessing
+  integer :: cont_phi,itr,itime,itest
   integer :: ifft,istret,iforc_entree,iturb
   integer :: iin,ifirst,ilast,iles
   integer :: ntime ! How many (sub)timestpeps do we need to store?
   integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
-  integer :: ioutflow, ninflows, ntimesteps
   integer :: itime0
   integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
   integer :: npif,izap,ianal
@@ -340,7 +339,6 @@ module param
   
   real(mytype) :: dens1, dens2
   real(mytype) :: C_filter
-  character(len=100) :: inflowpath
 
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.
