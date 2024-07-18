@@ -416,10 +416,7 @@ end if
                   
                   ! Turbulent transport of TKE by v'  
                   kvprime_meanH1(j)=kvprime_meanH1(j)+kvprime_mean(i,j,k)/den
-           
-                  ! Pressure-strain (or coupling) term, y-direction
-                  pprimevprime_meanH1(j)=pprimevprime_meanH1(j)+pprimevprime_mean(i,j,k)/den
-                  
+                             
                   ! Pseudo-dissipation for TKE
                   pseudo_eps_tke_meanH1(j)=pseudo_eps_tke_meanH1(j)+pseudo_eps_tke_mean(i,j,k)/den    
               end do
