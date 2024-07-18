@@ -463,7 +463,7 @@ contains
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ep1
     character(len=32), intent(in) :: num
 
-    ! Write vorticity as an example of post processing
+    ! Write Q-criterion as an example of post processing
 
     ! Perform communications if needed
     if (sync_vel_needed) then
