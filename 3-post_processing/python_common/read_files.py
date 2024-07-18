@@ -126,7 +126,7 @@ def read_input_files(filename1,filename2):
 
 import numpy as np
 
-def read_data(itype, numscalar):
+def read_data(itype, numscalar,snap_numb=None):
 
     # Initialize variables
     snap_numb = None
