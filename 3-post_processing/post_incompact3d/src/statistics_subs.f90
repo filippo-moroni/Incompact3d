@@ -395,7 +395,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
 
   use decomp_2d
   use decomp_2d_io
-  use variables, only :: numscalar
+  use variables, only : numscalar
 
   implicit none
    
