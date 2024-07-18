@@ -562,36 +562,36 @@ end if
           
           !--- Convective term ---!
           
-          ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
-          call dery1D(temp_dery,tke_convHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
+          ! 1D derivative in y          
+          call dery1D(temp_dery,tke_convHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
               
           tke_convHT = temp_dery
           
           !--- Turbulent transport term ---!
               
-          ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
+          ! 1D derivative in y          
           call dery1D(temp_dery,kvprime_meanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
-              
+                        
           kvprime_meanHT = temp_dery
           
           !--- Pressure-velocity coupling term (pressure-strain) (assuming unitary density) ---!
-              
-          ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
+          
+          ! 1D derivative in y          
           call dery1D(temp_dery,vpremeanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
                             
           vpremeanHT = temp_dery
           
           !--- Diffusive transport of TKE ---!
-                         
-          ! 1D derivative in y (2 times): npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
-          call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfy,ssy,swy,ysize(2),0)
+                                   
+          ! 1D derivative in y          
+          call dery1D(temp_dery,tke_diffHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
                
           tke_diffHT = - xnu * temp_dery
           
           !--- Production term ---!
-              
-          ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
-          call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
+                        
+          ! 1D derivative in y          
+          call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
               
           ! Reynolds stress <u'v'> time mean streamwise velocity gradient dU/dy
           tke_prodHT = - uvmeanHT * temp_dery 
