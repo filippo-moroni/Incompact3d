@@ -44,7 +44,7 @@ module post_processing
   real(mytype), save, allocatable, dimension(:) :: pre1meanHT,pre2meanHT
   real(mytype), save, allocatable, dimension(:) :: vpremeanHT
   
-  !--- Scalar field ---!
+  !--- Scalar field (only 1 supported at the moment) ---!
   
   ! Point-value     
   real(mytype), save, allocatable, dimension(:,:,:) :: phi1mean,phi2mean

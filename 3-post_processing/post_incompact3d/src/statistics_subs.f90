@@ -32,8 +32,9 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
   
   implicit none
   
-  ! Variables definition
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2,phi2          ! velocity components, pressure and scalar field
+  ! Variables definition (velocity components, pressure and scalar field)
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3))             :: ux2,uy2,uz2,pre2          
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),1:numscalar) :: phi2 
   
   ! Number of flow realizations and number of snapshots
   integer,     intent(in) :: nr, nt 
@@ -138,22 +139,22 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
   if (iscalar==1) then
 
         ! average: phi
-        phi1mean=phi1mean+phi2/den
+        phi1mean=phi1mean+phi2(:,:,:,1)/den
 
         ! variance: phi
-        ta2=phi2*phi2
+        ta2=phi2(:,:,:,1)*phi2(:,:,:,1)
         phi2mean=phi2mean+ta2/den
 
         ! mixed fluctuations: u',phi'
-        ta2=ux2*phi2
+        ta2=ux2*phi2(:,:,:,1)
         uphimean=uphimean+ta2/den
 
         ! mixed fluctuations: v',phi'
-        ta2=uy2*phi2
+        ta2=uy2*phi2(:,:,:,1)
         vphimean=vphimean+ta2/den
 
         ! mixed fluctuations: w',phi'
-        ta2=uz2*phi2
+        ta2=uz2*phi2(:,:,:,1)
         wphimean=wphimean+ta2/den
 
   endif
@@ -175,11 +176,12 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   
   implicit none
   
-  ! In post_incompact3d, phi1 variable is rank 3 array and not 4 (only 1 scalar field allowed)
-  real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1
-  
+  ! Variables definition (velocity components and scalar field)
+  real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3))             :: ux1,uy1,uz1
+  real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3),1:numscalar) :: phi1
+            
   ! Number of flow realizations and number of snapshots
-  integer,     intent(in) :: nr, nt                                                                                                  
+  integer,     intent(in) :: nr,nt                                                                                                  
   integer                 :: i,j,k
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
@@ -296,7 +298,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   !--- Scalar gradient ---!
   
   ! Transpose to y-pencils
-  call transpose_x_to_y(phi1,td2)
+  call transpose_x_to_y(phi1(:,:,:,1),td2)
   
   ! y-derivative
   call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
@@ -398,15 +400,17 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
   use decomp_2d_io
 
   implicit none
- 
-  ! Velocity fluctuations, y-pencils
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,phi2
+   
+  ! Variables definition (velocity and scalar field fluctuations, y-pencils)
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3))             :: ux2,uy2,uz2          
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),1:numscalar) :: phi2 
   
   ! Number of points in homogeneous directions, number of snapshots and number of realizations
   integer,     intent(in) :: nx,nz,nt,nr
   
   ! Local work arrays
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,phi3,ta3
+  real(mytype),dimension(zsize(1),zsize(2),zsize(3))             :: ux3,uy3,uz3,ta3
+  real(mytype),dimension(zsize(1),zsize(2),zsize(3),1:numscalar) :: phi3
   
   ! Correlation functions (first index: j (rows); second index: r (columns))
   real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1, RuvzH1, RppzH1
@@ -424,7 +428,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
   call transpose_y_to_z(ux2,ux3)
   call transpose_y_to_z(uy2,uy3)
   call transpose_y_to_z(uz2,uz3)
-  call transpose_y_to_z(phi2,phi3)
+  call transpose_y_to_z(phi2(:,:,:,1),phi3(:,:,:,1))
 
   ! Correlation function calculation
   do k=1,zsize(3)
@@ -473,7 +477,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
                   !--- Scalar fluctuations correlation (phi'phi') ---!
                   
                   ! Product of fluctuations at distance 'r'
-                  ta3(i,j,k) = phi3(i,j,k)*phi3(i,j,kpr)
+                  ta3(i,j,k) = phi3(i,j,k,1)*phi3(i,j,kpr,1)
                   
                   ! Accumulation inside the correlation function variable (at each subdomain)
                   RppzH1(j,rr) = RppzH1(j,rr) + ta3(i,j,k)/den
@@ -503,7 +507,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pseudo_eps_tke_me
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2
   
   ! Number of flow realizations and number of snapshots
-  integer,     intent(in) :: nr, nt                                                                                                  
+  integer,     intent(in) :: nr,nt                                                                                                  
   integer                 :: i,j,k
   
   ! Arrays for derivative calculations
@@ -533,27 +537,24 @@ subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pseudo_eps_tke_me
   kvprime_mean = kvprime_mean + zpfive*(ux2**2 + uy2**2 + uz2**2)*uy2 / den
       
   ! Transpose fluctuations in x-direction
-  call transpose_y_to_x(ux2,ux1)
-  call transpose_y_to_x(uy2,uy1)
-  call transpose_y_to_x(uz2,uz1)
+  call transpose_y_to_x(ux2,td1)
+  call transpose_y_to_x(uy2,te1)
+  call transpose_y_to_x(uz2,tf1)
         
   ! x-derivatives
-  call derx (ta1,ux1,di1,sx,ffx, fsx, fwx, xsize(1),xsize(2),xsize(3),0,lind)
-  call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
-  call derx (tc1,uz1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
+  call derx (ta1,td1,di1,sx,ffx, fsx, fwx, xsize(1),xsize(2),xsize(3),0,lind)
+  call derx (tb1,te1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
+  call derx (tc1,tf1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   
   ! y-derivatives
-  call transpose_x_to_y(ux1,td2)
-  call transpose_x_to_y(uy1,te2)
-  call transpose_x_to_y(uz1,tf2)
-  call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
-  call dery (tb2,te2,di2,sy,ffy, fsy, fwy, ppy,ysize(1),ysize(2),ysize(3),0,lind)
-  call dery (tc2,tf2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
+  call dery (ta2,ux2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
+  call dery (tb2,uy2,di2,sy,ffy, fsy, fwy, ppy,ysize(1),ysize(2),ysize(3),0,lind)
+  call dery (tc2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
   
   ! z-derivatives
-  call transpose_y_to_z(td2,td3)
-  call transpose_y_to_z(te2,te3)
-  call transpose_y_to_z(tf2,tf3)
+  call transpose_y_to_z(ux2,td3)
+  call transpose_y_to_z(uy2,te3)
+  call transpose_y_to_z(uz2,tf3)
   call derz (ta3,td3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tb3,te3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tc3,tf3,di3,sz,ffz, fsz, fwz, zsize(1),zsize(2),zsize(3),0,lind)

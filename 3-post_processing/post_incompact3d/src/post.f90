@@ -265,7 +265,7 @@ end if
      if (read_phi) then   
          write(filename, '(A,A,A)') 'phi01-', trim(snap_index), '.bin' 
          filename = adjustl(filename)         
-         call decomp_2d_read_one(1,phi1,dirname,filename,a)       
+         call decomp_2d_read_one(1,phi1(:,:,:,1),dirname,filename,a)       
      endif
         
      ! Transpose data to y-pencils 
@@ -273,7 +273,7 @@ end if
      call transpose_x_to_y(uy1,uy2)
      call transpose_x_to_y(uz1,uz2)
      call transpose_x_to_y(pre1,pre2)
-     call transpose_x_to_y(phi1,phi2)
+     call transpose_x_to_y(phi1(:,:,:,1),phi2(:,:,:,1))
 
      ! Statistics computation through external subroutines
      if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
