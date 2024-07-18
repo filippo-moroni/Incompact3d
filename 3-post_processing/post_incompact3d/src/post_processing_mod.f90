@@ -465,6 +465,13 @@ contains
         allocate(kvprime_meanHT       (ysize(2))); kvprime_meanHT        = zero
         allocate(pseudo_eps_tke_meanHT(ysize(2))); pseudo_eps_tke_meanHT = zero
         
+        ! All other terms
+        allocate(tke_convHT   (ysize(2))); tke_convHT    = zero
+        allocate(tke_turbtHT  (ysize(2))); tke_turbtHT   = zero
+        allocate(tke_pstrainHT(ysize(2))); tke_pstrainHT = zero
+        allocate(tke_diffHT   (ysize(2))); tke_diffHT    = zero     
+        allocate(tke_prodHT   (ysize(2))); tke_prodHT    = zero
+        
     end if
     
     ! If we need to calculate fluctuations, allocate memory to read mean statistics    
@@ -606,6 +613,13 @@ contains
   
       ! Total domain
       kvprime_meanHT=zero;pseudo_eps_tke_meanHT=zero
+      
+      ! All the other terms are only in total domain
+      tke_convHT    = zero
+      tke_turbtHT   = zero
+      tke_pstrainHT = zero
+      tke_diffHT    = zero     
+      tke_prodHT    = zero
   
   end if
   
