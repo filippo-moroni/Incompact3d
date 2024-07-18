@@ -549,7 +549,8 @@ end if
       
       if(post_tke_eq) then
           do j=1,ysize(2)
-        
+          
+              tke_convHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)*u1meanHT(j)
 
           enddo      
       endif
