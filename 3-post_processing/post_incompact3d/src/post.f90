@@ -573,7 +573,20 @@ end if
               vpremeanHT = temp_dery
               
               ! Diffusive transport of TKE
+              tke_diffHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)
               
+              ! 1D derivative in y (2 times): npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
+              call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfy,ssy,swy,ysize(2),0)
+               
+              tke_diffHT = - xnu * temp_dery
+              
+              ! Production term
+              
+              ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
+              call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
+              
+              ! Reynolds stress <u'v'> time mean streamwise velocity gradient dU/dy
+              tke_prodHT = - uvmeanHT * temp_dery 
                                  
           enddo      
       endif
