@@ -12,7 +12,7 @@ add_executable(xcompact3d
                     case.f90
                     constants.f90
                     derive.f90
-                    derive_y1d.90
+                    derive_y1d.f90
                     extra_tools.f90
                     filters.f90
                     genepsi3d.f90
