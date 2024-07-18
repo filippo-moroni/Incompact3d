@@ -555,9 +555,7 @@ end if
               tke_diffHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)
                                                              
           enddo
-          
-          print *, 'we are here'
-          
+                    
           !--- Perform derivatives ---!
           
           !--- Convective term ---!
@@ -1037,6 +1035,17 @@ end if
      print *,''
      print *,'Ruu(z), Rvv(z), Rww(z), Ruv(z), Rpp(z)'
      print *,''    
+     endif
+     
+     ! Turbulent Kinetic Energy equation
+     if (post_tke_eq) then
+     print *,'==========================================================='
+     print *,''
+     print *,'The following statistics have been saved in'
+     print *,'"tke_stats" file(s):'
+     print *,''
+     print *,'tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps'
+     print *,''  
      endif
      
      print *,'==========================================================='
