@@ -324,7 +324,7 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
   
   ! Number of flow realizations and number of snapshots
-  integer,     intent(in) :: nr, nt 
+  integer,     intent(in) :: nr,nt 
   integer                 :: i,j,k
   
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
@@ -495,7 +495,7 @@ end subroutine stat_correlation_z
 ! All results obtained here are in y-pencils.
 ! Results must be later derived.
 
-subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)   
+subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)   
 
   use param
   use variables
@@ -504,7 +504,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pseudo_eps_tke_me
   implicit none
   
   ! Fluctuations
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2,pre2
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2
   
   ! Number of flow realizations and number of snapshots
   integer,     intent(in) :: nr,nt                                                                                                  

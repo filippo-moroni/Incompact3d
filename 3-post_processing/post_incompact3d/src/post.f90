@@ -313,7 +313,7 @@ end if
      if(post_tke_eq) then
        
          ! Fluctuating terms for TKE equation
-         call extra_terms_tke(ux2,uy2,uz2,pre2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
+         call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
      
      end if
      !-----------------------------------------------------------------------------------------------------!
@@ -543,6 +543,8 @@ end if
             
       if(post_tke_eq) then
           do j=1,ysize(2)
+          
+              print *, 'we are here'
           
               !--- Convective term ---!
               tke_convHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)*u1meanHT(j)

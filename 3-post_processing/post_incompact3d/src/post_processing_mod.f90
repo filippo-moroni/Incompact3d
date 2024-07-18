@@ -151,7 +151,7 @@ contains
     uz1 = zero
     call alloc_x(pre1, opt_global=.true.) !global indices
     pre1 = zero    
-    allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3))) !global indices
+    allocate(phi1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),1:numscalar)) !global indices
     phi1 = zero
     
     ! Allocate y-pencils arrays
@@ -163,7 +163,7 @@ contains
     uz2=zero
     call alloc_y(pre2)
     pre2=zero      
-    allocate(phi2(ysize(1),ysize(2),ysize(3)))
+    allocate(phi2(ysize(1),ysize(2),ysize(3),1:numscalar))
     phi2=zero   
     call alloc_y(ta2)
     ta2 = zero
