@@ -101,7 +101,11 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: tke_convHT      ! convective term: d(<k> U) / dy
   real(mytype), save, allocatable, dimension(:)     :: tke_diffHT      ! diffusive transport term: -nu * d^2 (<k>) / dy^2
   real(mytype), save, allocatable, dimension(:)     :: tke_prodHT      ! production term: - <u'v'> dU/dy
+  
+  ! Work arrays for TKE
   real(mytype), save, allocatable, dimension(:)     :: temp_dery       ! temporary variable to store the derivative in y of a generic quantity 
+  real(mytype), save, allocatable, dimension(:)     :: di1d
+  real(mytype) :: sy1d
      
 contains
 
@@ -465,10 +469,11 @@ contains
         allocate(pseudo_eps_tke_meanHT(ysize(2))); pseudo_eps_tke_meanHT = zero
         
         ! All other terms
-        allocate(tke_convHT   (ysize(2))); tke_convHT    = zero
-        allocate(tke_diffHT   (ysize(2))); tke_diffHT    = zero     
-        allocate(tke_prodHT   (ysize(2))); tke_prodHT    = zero
-        allocate(temp_dery    (ysize(2))); temp_dery     = zero
+        allocate(tke_convHT   (ysize(2))); tke_convHT = zero
+        allocate(tke_diffHT   (ysize(2))); tke_diffHT = zero     
+        allocate(tke_prodHT   (ysize(2))); tke_prodHT = zero
+        allocate(temp_dery    (ysize(2))); temp_dery  = zero
+        allocate(di1d         (ysize(2))); di1d       = zero
                 
     end if
     
@@ -624,10 +629,11 @@ contains
       kvprime_meanHT=zero;pseudo_eps_tke_meanHT=zero
       
       ! All the other terms are only in total domain
-      tke_convHT    = zero
-      tke_diffHT    = zero     
-      tke_prodHT    = zero
-      temp_dery     = zero
+      tke_convHT = zero
+      tke_diffHT = zero     
+      tke_prodHT = zero
+      temp_dery  = zero
+      di1d       = zero
   
   end if
   
