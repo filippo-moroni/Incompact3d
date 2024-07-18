@@ -547,8 +547,8 @@ ylimsup = np.max(Ruuz[c,:])*1.2
 # Auto-correlation coefficient for u'
 ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Reference data for channel
-if itype == 3:
+# Reference data at y+ = 10 
+if y_plus_in == 10.0:
 
     # Kim et al. (1987) data
     ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
@@ -581,8 +581,8 @@ ylimsup = np.max(Rvvz[c,:])*1.2
 # Auto-correlation coefficient for v'
 ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Reference data for channel
-if itype == 3:
+# Reference data at y+ = 10 
+if y_plus_in == 10.0:
 
     # Kim et al. (1987) data
     ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
@@ -615,8 +615,8 @@ ylimsup = np.max(Rwwz[c,:])*1.2
 # Auto-correlation coefficient for w'
 ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# Reference data for channel
-if itype == 3:
+# Reference data at y+ = 10 
+if y_plus_in == 10.0:
 
     # Kim et al. (1987) data
     ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
