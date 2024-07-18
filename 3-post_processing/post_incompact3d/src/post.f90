@@ -293,11 +293,11 @@ end if
          do k=1,ysize(3)
              do i=1,ysize(1)
                  do j=1,ysize(2)
-                     ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
-                     uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
-                     uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
-                     pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
-                     phi2(i,j,k) = phi2(i,j,k) - phi1meanHT(j)
+                     ux2 (i,j,k)   = ux2 (i,j,k)   - u1meanHT(j)
+                     uy2 (i,j,k)   = uy2 (i,j,k)   - v1meanHT(j)
+                     uz2 (i,j,k)   = uz2 (i,j,k)   - w1meanHT(j)
+                     pre2(i,j,k)   = pre2(i,j,k)   - pre1meanHT(j)
+                     phi2(i,j,k,1) = phi2(i,j,k,1) - phi1meanHT(j)
                  enddo
              enddo
          enddo
