@@ -553,21 +553,27 @@ end if
               ! Convective term
               tke_convHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)*u1meanHT(j)
               
-              call dery1D(temp_dery,tke_convHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
+              ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
+              call dery1D(temp_dery,tke_convHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
               
               tke_convHT = temp_dery
               
               ! Turbulent transport term
-              call dery1D(temp_dery,kvprime_meanHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1) 
+              
+              ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
+              call dery1D(temp_dery,kvprime_meanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
               
               kvprime_meanHT = temp_dery
               
               ! Pressure-velocity coupling term (pressure-strain) (assuming unitary density)
-              call dery1D(temp_dery,vpremeanHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1) 
               
+              ! 1D derivative in y: npaire is zero since ncly1 = nlcyn = 2 (npaire is used only for Neumann BCs)
+              call dery1D(temp_dery,vpremeanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
+                            
               vpremeanHT = temp_dery
               
-              !
+              ! Diffusive transport of TKE
+              
                                  
           enddo      
       endif
