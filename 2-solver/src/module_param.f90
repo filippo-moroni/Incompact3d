@@ -268,7 +268,7 @@ module variables
   real(mytype), save, allocatable, dimension(:,:) :: dpdxy1,dpdxyn,dpdzy1,dpdzyn
   real(mytype), save, allocatable, dimension(:,:) :: dpdxz1,dpdxzn,dpdyz1,dpdyzn
 
-  !module inflow
+  ! module inflow (BCs)
   real(mytype), save, allocatable, dimension(:,:) :: bxx1,bxy1,bxz1,bxxn,bxyn,bxzn,bxo,byo,bzo
   real(mytype), save, allocatable, dimension(:,:) :: byx1,byy1,byz1,byxn,byyn,byzn
   real(mytype), save, allocatable, dimension(:,:) :: bzx1,bzy1,bzz1,bzxn,bzyn,bzzn
@@ -318,27 +318,47 @@ module param
   !and false otherwise
   logical :: nclx,ncly,nclz
 
+  ! Flow cases
   integer :: itype
   integer, parameter :: itype_user    = 0,  &
                         itype_channel = 3,  &
                         itype_dbg     = 6,  &
                         itype_ttbl    = 13
 
-  integer :: cont_phi,itr,itime,itest
-  integer :: ifft,istret,iforc_entree,iturb
-  integer :: iin,ifirst,ilast,iles
+  ! Time step, first and last
+  integer :: itime,ifirst,ilast
+  
+  
+  
   integer :: ntime ! How many (sub)timestpeps do we need to store?
   integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
   integer :: itime0
   integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
   integer :: npif,izap,ianal
   integer :: ivisu, ipost, initstat
-  integer :: ifilter
+  
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
   real(mytype) :: dt,re,xnu,init_noise
   
+  ! Mesh and domain
+  integer :: istret
+  
+  ! Type of initialization (it depends on the specific flowcase)
+  integer :: iin
+  
+  ! Iterations of sub-time steps for RK schemes
+  integer :: itr
+  
+  ! Low-Mach Number
   real(mytype) :: dens1, dens2
+  
+  ! Compact filter
   real(mytype) :: C_filter
+  integer      :: ifilter
+  
+  ! LES
+  integer :: itest  ! frequency to print to screen LES constants 
+  integer :: iles   ! to enable LES modelling (0: no, 1: yes)
 
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.

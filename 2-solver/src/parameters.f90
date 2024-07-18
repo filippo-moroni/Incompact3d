@@ -681,7 +681,6 @@ subroutine parameter_defaults()
   
   !-- Additional parameters not present in namelists --!                  
   imodulo2  = 1
-  cont_phi  = 0
   filepath  = './data/'
   datapath  = './data/'
   itime0    = 0

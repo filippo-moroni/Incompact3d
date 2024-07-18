@@ -189,7 +189,7 @@ contains
     allocate(pgz1(nxmsize,xsize(2),xsize(3)))
     pgz1 = zero
 
-    !inflow/ouflow 2d arrays
+    !inflow/ouflow 2d arrays (Boundary Conditions)
     allocate(bxx1(xsize(2),xsize(3)))
     bxx1=zero
     allocate(bxy1(xsize(2),xsize(3)))

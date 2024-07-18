@@ -39,7 +39,7 @@ program xcompact3d
   use time_integrators, only : int_time
   use navier, only : velocity_to_momentum, momentum_to_velocity, pre_correc, &
        calc_divu_constraint, solve_poisson, cor_vel
-  use tools, only : restart, simu_stats, apply_spatial_filter, read_inflow
+  use tools, only : restart, simu_stats, apply_spatial_filter
   use ibm_param
   use ibm,         only : body
   use genepsi,     only : genepsi3d
@@ -58,15 +58,6 @@ program xcompact3d
      t = t + dt
      
      call simu_stats(2)
-
-     !if (iin.eq.3.and.mod(itime,ntimesteps)==1) then
-     !   call read_inflow(ux_inflow,uy_inflow,uz_inflow,itime/ntimesteps)
-     !endif
-
-     !if ((itype.eq.itype_abl.or.iturbine.ne.0).and.(ifilter.ne.0).and.(ilesmod.ne.0)) then
-     !   call filter(C_filter)
-     !   call apply_spatial_filter(ux1,uy1,uz1,phi1)
-     !endif
  
      ! Sub-time steps cycle (for RK schemes)
      do itr=1,iadvance_time
