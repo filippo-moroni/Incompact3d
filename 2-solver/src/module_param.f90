@@ -330,10 +330,9 @@ module param
   
   
   integer :: ntime ! How many (sub)timestpeps do we need to store?
-  integer :: icheckpoint,irestart,idebmod,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
+  integer :: icheckpoint,irestart,ioutput,ioutput_cf,ioutput_plane,start_output,imodulo2,idemarre,icommence,irecord
   integer :: itime0
-  integer :: iscalar,nxboite,istat,iread,iadvance_time,irotation,iibm
-  integer :: npif,izap,ianal
+  integer :: iscalar,istat,iread,iadvance_time,irotation,iibm
   integer :: ivisu, ipost, initstat
   
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
@@ -355,9 +354,7 @@ module param
   real(mytype) :: C_filter
   integer      :: ifilter
   
-  ! LES
-  integer :: itest  ! frequency to print to screen LES constants 
-  integer :: iles   ! to enable LES modelling (0: no, 1: yes)
+
 
   ! Logical, true when synchronization is needed
   logical, save :: sync_vel_needed = .true.
@@ -387,12 +384,15 @@ module param
   logical, allocatable, dimension(:) :: sc_even, sc_skew
   real(mytype), allocatable, dimension(:) :: scalar_lbound, scalar_ubound
   real(mytype) :: Tref
+  
+  ! IBM
+  integer :: npif,izap,ianal
 
-  !! LES modelling flag
-  integer :: ilesmod, iwall
-
-  !LES
-  integer :: jles
+  ! LES
+  integer :: itest           ! frequency to print to screen LES constants 
+  integer :: iles            ! to enable LES modelling (0: no, 1: yes)
+  integer :: ilesmod, iwall  ! modelling options for LES
+  integer :: jles            ! LES model
   integer :: smagwalldamp
   real(mytype) :: smagcst,nSmag,walecst,FSGS,pr_t,maxdsmagcst
 
