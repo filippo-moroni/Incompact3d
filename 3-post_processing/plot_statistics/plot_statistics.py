@@ -201,6 +201,10 @@ for j in range(0, ny-1, 1):
 print("Actual y+ value selected = ", y_plus[c])
 print()
 
+# Print the corresponding j-th index
+print("Corresponding j-th index = ", c)
+print()
+
 # Take the correlation functions value at rz = 0 and rescale to obtain correlation coefficients
 temp = Ruuz[c,0]
 Ruuz = Ruuz / temp
