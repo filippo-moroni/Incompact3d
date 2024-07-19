@@ -52,42 +52,44 @@ itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, file
 #!--- Parameters ---!
 uwall, nu, twd = set_flow_parameters(itype, re)
 
-# Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
-re_tau = 0.116*re**0.88
+#!--- Distinguish between flow cases ---!
 
-# TTBL inputs
-twd = 1.0                # trip wire diameter D
-bl_thickness = 22.1*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
-
-# Reference velocity (TTBL: wall velocity; Channel: bulk velocity)
+# TTBL
 if itype == 13:
-    uref = 1.0
-    uwall = uref
-elif itype == 3:
-    uref = 0.667              
-
-# Selection of friction coefficient at peak or at steady state conditions
-# for grid spacings evaluation in wall units 
-if itype == 13:
-    cf = 0.007           # maximum cf estimated at peak for TTBL (Cimarelli et al. (2024))
-elif itype == 3:
-    cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
-
-nx = 320                 # number of points in x direction
-ny = 649                 # number of points in y direction
-nz = 320                 # number of points in z direction
-
-if itype == 13:
+    
+    # Reference velocity (TTBL: wall velocity)
+    uref = uwall
+    
+    # Displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))  
+    bl_thickness = 22.1*twd  
+    
+    # Maximum cf estimated at peak for TTBL (Cimarelli et al. (2024))
+    cf = 0.007
+    
+    # Domain dimensions
     xlx = 4.0*bl_thickness   # domain dimension in x direction
     yly = 3.0*bl_thickness   # domain dimension in y direction
-    zlz = 2.0*bl_thickness   # domain dimension in z direction
-    
+    zlz = 2.0*bl_thickness   # domain dimension in z direction           
+
+# Channel    
 elif itype == 3:
+    
+    # Reference velocity (Channel: bulk velocity)
+    uref = 0.667  
+    
+    # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
+    re_tau = 0.116*re**0.88
+    
+    # Steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004))
+    cf = 0.00793
+    
+    # Domain dimensions
     xlx = 21.0               # domain dimension in x direction
     yly = 2.0                # domain dimension in y direction
-    zlz = 4.2                # domain dimension in z direction
+    zlz = 4.2                # domain dimension in z direction           
 
-nym = ny - 1             # if periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
+# If periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
+nym = ny - 1            
 
 # Number of points in the channel half (h: half)
 nyh = ((ny - 1) // 2) + 1
