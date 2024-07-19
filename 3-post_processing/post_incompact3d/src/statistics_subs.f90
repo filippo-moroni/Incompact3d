@@ -426,7 +426,8 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
   call transpose_y_to_z(ux2,ux3)
   call transpose_y_to_z(uy2,uy3)
   call transpose_y_to_z(uz2,uz3)
-  call transpose_y_to_z(phi2(:,:,:,1),phi3(:,:,:,1))
+  
+  if(read_phi) call transpose_y_to_z(phi2(:,:,:,1),phi3(:,:,:,1))
 
   ! Correlation function calculation
   do k=1,zsize(3)
