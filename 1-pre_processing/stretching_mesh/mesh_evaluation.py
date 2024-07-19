@@ -461,16 +461,20 @@ print()
     
 #!-------------------------------------------------!
 
-# Writing the results to files
+#!--- Writing the results to .txt files ---!
   
-# Column width for writing to .txt file
-c_w = 24  
-
 # Write yp, delta_y and GR_y in a .txt file
 with open('mesh_y.txt', 'w') as f:
-    f.write(f"{'yp':<{c_w}}, {'delta_y':<{c_w}}, {'gr_y':<{c_w}}, {'AR_xy':<{c_w}}\n")
+    f.write(f"{'yp':<{pp.c_w}}, "      +
+            f"{'delta_y':<{pp.c_w}}, " +
+            f"{'gr_y':<{pp.c_w}}, "    +
+            f"{'AR_xy':<{pp.c_w}}\n"   )
+            
     for j in range(0,ny):
-        f.write(f"{yp[j]:<{c_w}}, {delta_y[j]:<{c_w}}, {gr_y[j]:<{c_w}}, {AR_xy[j]:<{c_w}}\n")
+        f.write(f"{yp[j]:<{pp.c_w}}, "      +
+                f"{delta_y[j]:<{pp.c_w}}, " + 
+                f"{gr_y[j]:<{pp.c_w}}, "    +
+                f"{AR_xy[j]:<{pp.c_w}}\n"   )
     
 # Create data arrays with inputs
 if itype == 13:
