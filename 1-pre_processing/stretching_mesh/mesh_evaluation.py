@@ -86,9 +86,12 @@ elif itype == 3:
     cf = 0.00793
     
     # Domain dimensions
-    xlx = 21.0               # domain dimension in x direction
-    yly = 2.0                # domain dimension in y direction
-    zlz = 4.2                # domain dimension in z direction           
+    xlx = Lx #xlx = 21.0               # domain dimension in x direction
+    yly = Ly #yly = 2.0                # domain dimension in y direction
+    zlz = Lz #zlz = 4.2                # domain dimension in z direction
+    
+    # Revert to total number of ny points for channel (they are halved in read_input_files)
+    ny = (ny - 1) * 2 + 1          
 
 # If periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
 nym = ny - 1            
@@ -381,7 +384,6 @@ if itype == 3:
     print('Skin friction coefficient at steady state, cf = ', cf)
     print()
     print('Estimated friction Reynolds number, Re_tau ~ ', re_tau)
-    print()
     
 elif itype == 13:
     print('Wall velocity, Uwall = ', uwall)
@@ -392,7 +394,6 @@ elif itype == 13:
     print('Boundary layer thickness at Re_tau = 500, bl_thickness = ', bl_thickness)
     print('Skin friction coefficient at peak, cf = ', cf)
     
-print()
 print()
 print('!----- Outputs: -----!')
 print()
