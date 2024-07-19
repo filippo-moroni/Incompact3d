@@ -74,8 +74,9 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 (mean_u, mean_w, var_u, var_v, mean_uv, 
  vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
+ tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
  snap_numb) = read_data(itype, numscalar)
-                                                                                     
+                                                                                                                                   
 # Valid only for Channel
 if itype == 3:
     
@@ -265,6 +266,9 @@ with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
 
     f.write(f"{t_nu:{pp.fs}}, "            +
             f"{tau_eta:{pp.fs}}\n"         )      
+
+# Ratio between turbulent production and dissipation
+p_eps_ratio_tke = tke_prod / tke_pseps
 
 #!--------------------------------------------------------------------------------------!
 
@@ -702,6 +706,43 @@ if numscalar == 1:
 
     # Save and show the figure
     save_and_show_plot('Cppz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+#!--------------------------------------------------------------------------------------!
+
+# Ratio of production over dissipation of TKE
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = 0.1
+yliminf = 0.0
+ylimsup = 2.0
+
+# P/eps of TKE
+ax.scatter(y_plus[:ny], p_eps_ratio_tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+# TTBL
+if itype == 13:
+
+    xlimsup = 520.0
+                
+# Channel    
+elif itype == 3:
+
+    xlimsup = 300.0
+        
+    # Lee & Moser (2015)
+    ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+# Axes labels
+ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+# Save and show the figure
+save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
 
 #!--------------------------------------------------------------------------------------!
 

@@ -174,10 +174,13 @@ def read_data(itype, numscalar,snap_numb=None):
         Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
       
-        # Read scalar field statistics
+        # Read scalar field correlations
         if numscalar == 1:
                 
             Rppz = np.loadtxt('data_post/Rppz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        
+        # Read of TKE 
+        M3 = np.loadtxt('data_post/tke_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
         
     # TTBL
     elif itype == 13:
@@ -206,31 +209,42 @@ def read_data(itype, numscalar,snap_numb=None):
         Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
-        # Read scalar field statistics
+        # Read scalar field correlations
         if numscalar == 1:
             
             Rppz = np.loadtxt(f'data_post/Rppz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        
+        # Read of TKE 
+        M3 = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
     print()
 
     # Extracting quantities from the full matrices
-    mean_u  = M1[:,0]
-    mean_w  = M1[:,2]   
-    var_u   = M1[:,3]
-    var_v   = M1[:,4]
-    mean_uv = M1[:,12]
+    mean_u      = M1[:,0]
+    mean_w      = M1[:,2]   
+    var_u       = M1[:,3]
+    var_v       = M1[:,4]
+    mean_uv     = M1[:,12]
 
-    vort_x = M2[:,0]
-    vort_y = M2[:,1]
-    vort_z = M2[:,2]
-    mg_tot = M2[:,3]
-    mg_x   = M2[:,4]
-    mg_z   = M2[:,5]
+    vort_x      = M2[:,0]
+    vort_y      = M2[:,1]
+    vort_z      = M2[:,2]
+    mg_tot      = M2[:,3]
+    mg_x        = M2[:,4]
+    mg_z        = M2[:,5]
+    
+    tke_conv    = M3[:,0]
+    tke_turbt   = M3[:,1]   
+    tke_pstrain = M3[:,2]     
+    tke_difft   = M3[:,3]
+    tke_prod    = M3[:,4]
+    tke_pseps   = M3[:,5]
     
     return (
     mean_u, mean_w, var_u, var_v, mean_uv, 
     vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
+    tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
     snap_numb
     )
 
