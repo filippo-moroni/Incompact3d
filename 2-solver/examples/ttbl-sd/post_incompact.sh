@@ -15,5 +15,8 @@
 module load gcc-12.1.1/gcc
 module load gcc-12.1.1/ompi-4.1.5_nccl
 
+# Calculate total number of tasks
+TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
+
 # Launching
-mpirun -np $SLURM_NTASKS ../../../3-post_processing/post_incompact3d/build/bin/post_incompact3d
+mpirun -np $TOTAL_TASKS ../../../3-post_processing/post_incompact3d/build/bin/post_incompact3d

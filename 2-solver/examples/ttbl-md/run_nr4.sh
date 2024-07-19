@@ -15,26 +15,29 @@
 module load gcc-12.1.1/gcc
 module load gcc-12.1.1/ompi-4.1.5_nccl
 
+# Calculate total number of tasks
+TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
+
 # Launching
-mpirun -np 104 ../../build/bin/xcompact3d > out_r1
+mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r1
 
 # Renaming /data folder
 mv data data_r1
 
 # Launching
-mpirun -np 104 ../../build/bin/xcompact3d > out_r2
+mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r2
 
 # Renaming /data folder
 mv data data_r2
 
 # Launching
-mpirun -np 104 ../../build/bin/xcompact3d > out_r3
+mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r3
 
 # Renaming /data folder
 mv data data_r3
 
 # Launching
-mpirun -np 104 ../../build/bin/xcompact3d > out_r4
+mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r4
 
 # Renaming /data folder
 mv data data_r4
