@@ -241,8 +241,12 @@ rz = rz / delta_nu
     
 #!--- Calculate the integral length scale lambda z ---!
 
+# Use the minimum between the number of points in the interval Cuu(z) [max, 0]
+# and the maximum spline order (5) in order to avoid problem with the spline interpolation itself.
+order_spline = min(k-1, 5)
+
 # Interpolation at the 6th order of accuracy with a spline of 5th order
-spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=5)
+spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=order_spline)
 lambda_z = spl.integral(rz0, rzstar)
 
 # Rescale in wall units
