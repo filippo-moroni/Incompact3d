@@ -156,6 +156,9 @@ def read_data(itype, numscalar,snap_numb=None):
     
         print("!--- Plotting of statistics for a channel ---!")
 
+        # Setting 'snap_numb' to an empty string
+        snap_numb = ''
+
         # Reading of mean statistics
         M1 = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
