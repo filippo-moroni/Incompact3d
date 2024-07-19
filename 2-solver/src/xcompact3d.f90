@@ -294,7 +294,7 @@ subroutine finalise_xcompact3d()
   if(nrank.eq.0) then
  
       ! Write filename
-      write(filename,"('monitoring/dt_history.txt')") 
+      write(filename,"('data/monitoring/dt_history.txt')") 
       
       inquire(file=filename, exist=exists)
       if (exists) then
