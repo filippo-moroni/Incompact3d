@@ -66,29 +66,29 @@ twd = 1.0                # trip wire diameter D
 bl_thickness = 22.1*twd  # displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))
 
 # Reference velocity (TTBL: wall velocity; Channel: bulk velocity)
-if istret == 3:
+if itype == 13:
     uref = 1.0
     uwall = uref
-elif istret == 2:
+elif itype == 3:
     uref = 0.667              
 
 # Selection of friction coefficient at peak or at steady state conditions
 # for grid spacings evaluation in wall units 
-if istret == 3:
+if itype == 13:
     cf = 0.007           # maximum cf estimated at peak for TTBL (Cimarelli et al. (2024))
-elif istret == 2:
+elif itype == 3:
     cf = 0.00793         # steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004)) 
 
 nx = 320                 # number of points in x direction
 ny = 649                 # number of points in y direction
 nz = 320                 # number of points in z direction
 
-if istret == 3:
+if itype == 13:
     xlx = 4.0*bl_thickness   # domain dimension in x direction
     yly = 3.0*bl_thickness   # domain dimension in y direction
     zlz = 2.0*bl_thickness   # domain dimension in z direction
     
-elif istret == 2:
+elif itype == 3:
     xlx = 21.0               # domain dimension in x direction
     yly = 2.0                # domain dimension in y direction
     zlz = 4.2                # domain dimension in z direction
@@ -240,8 +240,8 @@ for j in range(1,ny):
 
 #!--------------------------------------------------!
 
-# This part is valid for meshes with refinement at the bottom boundary and for temporal TBL cases 
-if istret == 3:
+# This part is valid for TTBLs 
+if itype == 13:
    
     # Calculating the initial thickness of the shear layer (see Kozul et al. (2016))
     theta_sl = 54.0 * nu / uwall
@@ -351,8 +351,8 @@ if istret == 3:
     
     #!---------------------------------------------!
 
-# This part is valid for meshes with refinement at both walls and for channels 
-elif istret == 2:
+# This part is valid for Channels 
+elif itype == 3:
 
     # Delta y+ at the channel center
     delta_yc = yp[nyh] - yp[nyh-1]
@@ -377,7 +377,7 @@ print('Kinematic viscosity, nu = ', nu)
 print('Time step, delta_t = ', delta_t)
 print('Reynolds number (Re = 1/nu) = ', re)
 
-if istret != 3:
+if itype == 3:
     print('Reference velocity U_ref = ', uref)
     print()
     print('Skin friction coefficient at steady state, cf = ', cf)
@@ -385,7 +385,7 @@ if istret != 3:
     print('Estimated friction Reynolds number, Re_tau ~ ', re_tau)
     print()
     
-elif istret == 3:
+elif itype == 13:
     print('Wall velocity, Uwall = ', uwall)
     print('Tripping wire diameter, twd = ', twd)
     print()
@@ -401,7 +401,7 @@ print()
 print('!--- Non-dimensional domain dimensions: ---!')
 print()
 
-if istret == 3:
+if itype == 13:
     print('Length of the domain (Lx+) at IC:', xlx_nd_ic)
     print('Height of the domain (Ly+) at IC:', yly_nd_ic)
     print('Width  of the domain (Lz+) at IC:', zlz_nd_ic)
@@ -415,7 +415,7 @@ if istret == 3:
     print('Width  of the domain (Lz+) at Re_tau = 500:', zlz_nd_500)
     print()
 
-if istret == 2:
+if itype == 3:
     print('Length of the domain (Lx+) at steady state:', xlx_nd_peak)
     print('Height of the domain (Ly+) at steady state:', yly_nd_peak)
     print('Width  of the domain (Lz+) at steady state:', zlz_nd_peak)
@@ -435,7 +435,7 @@ print('Mesh size y-direction at the first element near the wall: delta_y1+ =', d
 print('Mesh size z-direction: delta_z+ =', delta_z_nd_peak)
 print()
 
-if istret == 3:
+if itype == 13:
     print('!--- Mesh sizes at Re_tau = 500 (Cimarelli et al. (2024)) ---!')
     print()
     print('Mesh size x-direction: delta_x+ =', delta_x_nd_500)
@@ -453,7 +453,7 @@ if istret == 3:
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
 
-elif istret == 2:
+elif itype == 3:
     print('Mesh size y-direction at the channel center: delta_yc+ =', delta_yc_nd)
     
 print('Total number of points: ntot =', n_tot)
@@ -461,7 +461,7 @@ print()
     
 #!-------------------------------------------------!
 
-# Writing the results also into files
+# Writing the results to files
   
 # Column width for writing to .txt file
 c_w = 24  
@@ -473,7 +473,7 @@ with open('mesh_y.txt', 'w') as f:
         f.write(f"{yp[j]:<{c_w}}, {delta_y[j]:<{c_w}}, {gr_y[j]:<{c_w}}, {AR_xy[j]:<{c_w}}\n")
     
 # Create data arrays with inputs
-if istret == 3:
+if itype == 13:
     data = [
             ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
             [ nx,         xlx,        xlx/bl_thickness               ],
@@ -486,7 +486,7 @@ if istret == 3:
              [ beta,   nu,   uref,    delta_t,   re,   cf ],
             ]
             
-elif istret == 2:
+elif itype == 3:
     data = [
             ["nx/ny/nz", "Lx/Ly/Lz" ],
             [ nx,         xlx,      ],
@@ -501,7 +501,7 @@ elif istret == 2:
 
 
 # File creation and saving for TTBL
-if istret == 3:    
+if itype == 13:    
     data2 = [
              ["beta", "nu", "uwall", "delta_t", "twd", "Re"],
              [ beta,   nu,   uwall,   delta_t,   twd,   re ],
