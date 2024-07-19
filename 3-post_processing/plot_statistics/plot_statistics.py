@@ -64,7 +64,8 @@ uwall, nu = set_flow_parameters(itype, re)
  y_plus_umean_yao,  mean_u_yao,                        
  y_plus_uvar_yao,   var_u_yao,                         
  y_plus_vvar_yao,   var_v_yao,                         
- y_plus_uvmean_yao, mean_uv_yao) = read_ref_data() 
+ y_plus_uvmean_yao, mean_uv_yao,
+ y_plus_moser_1999, p_eps_ratio_moser_1999) = read_ref_data() 
  
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)

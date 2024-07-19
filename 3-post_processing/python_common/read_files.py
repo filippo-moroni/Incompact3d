@@ -241,28 +241,40 @@ import numpy as np
 
 def read_ref_data():
 
-    # Initialize reference data
-    y_plus_lm         = 0.0
-    mean_u_lm         = 0.0
-    var_u_lm          = 0.0
-    var_v_lm          = 0.0
-    mean_uv_lm        = 0.0
-    rz_plus_cuuz_kim  = 0.0
-    cuuz_kim          = 0.0
-    rz_plus_cvvz_kim  = 0.0
-    cvvz_kim          = 0.0
-    rz_plus_cwwz_kim  = 0.0
-    cwwz_kim          = 0.0
-    y_plus_touber     = 0.0
-    mean_u_touber     = 0.0
-    y_plus_umean_yao  = 0.0
-    mean_u_yao        = 0.0
-    y_plus_uvar_yao   = 0.0
-    var_u_yao         = 0.0
-    y_plus_vvar_yao   = 0.0
-    var_v_yao         = 0.0
-    y_plus_uvmean_yao = 0.0
-    mean_uv_yao       = 0.0  
+    #!--- Initialize reference data ---!
+    
+    # Lee & Moser (2015), Channel Re_tau = 180
+    y_plus_lm              = 0.0
+    mean_u_lm              = 0.0
+    var_u_lm               = 0.0
+    var_v_lm               = 0.0
+    mean_uv_lm             = 0.0
+    
+    # Kim et al. (1987), Channel Re_tau = 180
+    rz_plus_cuuz_kim       = 0.0
+    cuuz_kim               = 0.0
+    rz_plus_cvvz_kim       = 0.0
+    cvvz_kim               = 0.0
+    rz_plus_cwwz_kim       = 0.0
+    cwwz_kim               = 0.0
+    
+    # Touber & Leschziner (2012)
+    y_plus_touber          = 0.0
+    mean_u_touber          = 0.0
+    
+    # Yao et al. (2019)
+    y_plus_umean_yao       = 0.0
+    mean_u_yao             = 0.0
+    y_plus_uvar_yao        = 0.0
+    var_u_yao              = 0.0
+    y_plus_vvar_yao        = 0.0
+    var_v_yao              = 0.0
+    y_plus_uvmean_yao      = 0.0
+    mean_uv_yao            = 0.0
+    
+    # Moser et al. (1999)
+    y_plus_moser_1999      = 0.0
+    p_eps_ratio_moser_1999 = 0.0  # ratio of production and dissipation of TKE  
     
     #!--- Reading of fixed walls channels data ---!
     
@@ -334,6 +346,11 @@ def read_ref_data():
     var_v_yao   = (var_v_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
     mean_uv_yao = mean_uv_yao  * (sh_vel_0_yao / sh_vel_c_yao)**2
     
+    # Moser et al. (1999)
+    M = np.loadtxt(dirname + '/moser1999/p_eps_ratio_moser1999.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_moser_1999      = M[:,0]
+    p_eps_ratio_moser_1999 = M[:,1] 
+    
     # Return to main program with extracted reference data
     return (
     y_plus_lm,         mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm,
@@ -344,7 +361,8 @@ def read_ref_data():
     y_plus_umean_yao,  mean_u_yao,
     y_plus_uvar_yao,   var_u_yao,
     y_plus_vvar_yao,   var_v_yao,
-    y_plus_uvmean_yao, mean_uv_yao 
+    y_plus_uvmean_yao, mean_uv_yao, 
+    y_plus_moser_1999, p_eps_ratio_moser_1999 
     ) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
