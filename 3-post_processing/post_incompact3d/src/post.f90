@@ -31,8 +31,7 @@ program post
    
   integer :: iunit		      		     ! unit for the file to open (assigned by the compiler)
     
-  integer,dimension(5) :: sel                        ! index for the number of post-processing subroutines employed (selector index)
-  logical :: read_vel,read_pre,read_phi  
+  integer,dimension(5) :: sel                        ! index for the number of post-processing subroutines employed (selector index) 
  
   character(99) :: filename,dirname
   character(99) :: snap_index,snap_n_index,printing  ! characters to print to screen and to read snapshots' indexes

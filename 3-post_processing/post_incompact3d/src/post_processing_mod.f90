@@ -14,6 +14,7 @@ module post_processing
   character(len=1), parameter :: NL=char(10) !new line character
 
   logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
+  logical, save :: read_vel,read_pre,read_phi 
 
   !--- Arrays for statistic collection ---!
   
