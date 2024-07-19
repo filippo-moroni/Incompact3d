@@ -124,6 +124,12 @@ if itype == 3:
     last_index = len(time_unit) 
     n_snap = last_index - lower_index
     t_tot = (n_snap - 1)*delta
+    
+# Axes ranges
+xliminf = time_unit[0]
+xlimsup = time_unit[-1]
+yliminf = np.min(cfx) * 0.0
+ylimsup = np.max(cfx) * 1.2 
 
 #!--- Plot section, streamwise friction coefficient ---!
 print()
@@ -133,21 +139,20 @@ print()
 # Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
-# Friction coefficient
-#ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-ax.plot(time_unit, cfx, color='C0', linestyle='-', linewidth=pp.lw)
-
-# y-axis label
-ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
 # TTBL only
 if itype == 13:
+
+    # Friction coefficient
+    ax.plot(time_unit, cfx, color='C0', linestyle='-', linewidth=pp.lw)
 
     # x-axis label
     ax.set_xlabel(r'$t U_w/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Channel flow only
 elif itype == 3:
+
+    # Friction coefficient
+    ax.scatter(time_unit, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
     # x-axis label 
     ax.set_xlabel(r'$t\frac{U_p}{h}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -173,11 +178,8 @@ elif itype == 3:
                 f"{delta:{pp.fs}}, "        +
                 f"{n_snap:{pp.fs}}\n"       )
 
-# Axes ranges
-xliminf = time_unit[0]
-xlimsup = time_unit[-1]
-yliminf = np.min(cfx) * 0.0
-ylimsup = np.max(cfx) * 1.2               
+# y-axis label
+ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)            
                
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
