@@ -214,8 +214,9 @@ Rwwz = Rwwz / temp
 temp = Ruvz[c,0]
 Ruvz = Ruvz / temp
 
-temp = Rppz[c,0]
-Rppz = Rppz / temp
+if numscalar == 1:
+    temp = Rppz[c,0]
+    Rppz = Rppz / temp
 
 # Halve the number of points in z-dir. to avoid periodicity effects
 nz = nz // 2
