@@ -53,7 +53,7 @@ itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, file
 #!--------------------------------------------------------------------------------------!
     
 #!--- Parameters ---!
-uwall, nu = set_flow_parameters(itype, re)
+uwall, nu, twd = set_flow_parameters(itype, re)
 
 #!--- Reference data ---!
 (y_plus_lm,         mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm, 

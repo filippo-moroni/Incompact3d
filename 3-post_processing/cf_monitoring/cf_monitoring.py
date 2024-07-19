@@ -46,7 +46,7 @@ itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, file
 #!--------------------------------------------------------------------------------------!
 
 #!--- Parameters ---!
-uwall, nu = set_flow_parameters(itype, re)
+uwall, nu, twd = set_flow_parameters(itype, re)
                          
 #!--- Reading of files section ---!
 

@@ -26,4 +26,4 @@ def set_flow_parameters(itype, re):
         nu      = 1.0/re_cent                # Kinematic viscosity
     
     # Return to main program with parameters
-    return uwall, nu
+    return uwall, nu, twd

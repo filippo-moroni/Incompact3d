@@ -49,14 +49,8 @@ itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, file
 
 #!--------------------------------------------------------------------------------------!
 
-# Inputs
-
-
-delta_t = 0.01           # time-step
-
-# Reynolds number
-re = 500.0               # TTBL: if D = 1 and U_wall = 1, re = Re_D = 500; Channel: re = Re_0 of a laminar Poiseuille flow
-nu = 1.0/re              # kinematic viscosity as defined in Incompact3d
+#!--- Parameters ---!
+uwall, nu, twd = set_flow_parameters(itype, re)
 
 # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
 re_tau = 0.116*re**0.88

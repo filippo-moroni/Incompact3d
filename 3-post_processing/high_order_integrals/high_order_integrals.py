@@ -47,7 +47,7 @@ os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 #!--- Parameters ---!
-uwall, nu = set_flow_parameters(itype, re)
+uwall, nu, twd = set_flow_parameters(itype, re)
 
 # Local variables
 ii    = 0                             # Index for BL thickness parameters vectors 

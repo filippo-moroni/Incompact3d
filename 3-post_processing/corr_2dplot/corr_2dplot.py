@@ -54,7 +54,7 @@ pad_cbar_lab  = -18
 size_cbar     = '10%'
     
 #!--- Parameters ---!
-uwall, nu = set_flow_parameters(itype, re)
+uwall, nu, twd = set_flow_parameters(itype, re)
  
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)

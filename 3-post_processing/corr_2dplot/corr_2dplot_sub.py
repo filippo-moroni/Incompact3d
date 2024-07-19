@@ -22,6 +22,8 @@ import plot_params as pp
 
 # Import function to setting up, save and show plots 
 from plot_subs import set_plot_settings, save_and_show_plot
+
+#!--------------------------------------------------------------------------------------!
   
 # General subroutine to plot correlation functions
 def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb):
