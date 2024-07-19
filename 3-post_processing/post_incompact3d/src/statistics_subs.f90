@@ -576,9 +576,9 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
   
   ! Pseudo-dissipation for TKE 
-  di1 = - xnu * (ta1**2 + td1**2 + tg1**2 + &
-                 tb1**2 + te1**2 + th1**2 + &
-                 tc1**2 + tf1**2 + ti1**2 )
+  di1 = xnu * (ta1**2 + td1**2 + tg1**2 + &
+               tb1**2 + te1**2 + th1**2 + &
+               tc1**2 + tf1**2 + ti1**2 )
    
   ! Transpose array along y and sum
   call transpose_x_to_y(di1,di2)

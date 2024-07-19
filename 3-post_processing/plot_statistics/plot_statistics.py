@@ -270,7 +270,11 @@ with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
 #!--------------------------------------------------------------------------------------!
 
 # Ratio between turbulent production and dissipation
-p_eps_ratio_tke = tke_prod / tke_pseps
+p_eps_ratio_tke = np.zeros(ny)
+
+tke_prod  = tke_prod  [:ny]
+tke_pseps = tke_pseps [:ny]
+p_eps_ratio_tke = np.divide(tke_prod,tke_pseps)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -737,11 +741,11 @@ elif itype == 3:
             
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$P/\varepsilon$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
 # Save and show the figure
 save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
