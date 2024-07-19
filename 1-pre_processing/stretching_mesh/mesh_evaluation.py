@@ -17,6 +17,8 @@
 #!---------------------------------------------------------!
 
 # Libraries
+import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import math
@@ -213,12 +215,12 @@ zlz_nd_peak = zlz / delta_nu_peak
 
 #!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC or at steady state ---!
    
-CFL = uref * delta_t / delta_x      
-D =   nu * delta_t / (delta_y1**2)    
+CFL = uref * dt / delta_x      
+D =   nu * dt / (delta_y1**2)    
 Pe =  uref * delta_x / nu
         
 # Stability parameter (S < 1) (see Thompson et al. (1985)) 
-S = ((uref**2)*delta_t)/(2.0*nu)
+S = ((uref**2)*dt)/(2.0*nu)
 
 #!--- Calculation of y-dir. geometric quantities ---!
 
@@ -370,7 +372,7 @@ print()
 print('Stretching index =', istret)
 print('Beta parameter = ', beta)
 print('Kinematic viscosity, nu = ', nu)
-print('Time step, delta_t = ', delta_t)
+print('Time step, dt = ', dt)
 print('Reynolds number (Re = 1/nu) = ', re)
 
 if itype == 3:
@@ -458,7 +460,8 @@ print()
 #!-------------------------------------------------!
 
 #!--- Writing the results to .txt files ---!
-  
+
+"""  
 # Write yp, delta_y and GR_y in a .txt file
 with open('mesh_y.txt', 'w') as f:
     f.write(f"{'yp':<{pp.c_w}}, "      +
@@ -471,6 +474,7 @@ with open('mesh_y.txt', 'w') as f:
                 f"{delta_y[j]:<{pp.c_w}}, " + 
                 f"{gr_y[j]:<{pp.c_w}}, "    +
                 f"{AR_xy[j]:<{pp.c_w}}\n"   )
+"""
     
 # Create data arrays with inputs
 if itype == 13:
@@ -482,8 +486,8 @@ if itype == 13:
            ] 
 
     data2 = [
-             ["beta", "nu", "U_ref", "delta_t", "Re", "cf"],
-             [ beta,   nu,   uref,    delta_t,   re,   cf ],
+             ["beta", "nu", "U_ref", "dt", "Re", "cf"],
+             [ beta,   nu,   uref,    dt,   re,   cf ],
             ]
             
 elif itype == 3:
@@ -495,16 +499,16 @@ elif itype == 3:
            ] 
 
     data2 = [
-             ["beta", "nu", "U_ref", "delta_t", "Re", "Re_tau", "cf"],
-             [ beta,   nu,   uref,    delta_t,   re,   re_tau,   cf ],
+             ["beta", "nu", "U_ref", "dt", "Re", "Re_tau", "cf"],
+             [ beta,   nu,   uref,    dt,   re,   re_tau,   cf ],
             ]
 
 
 # File creation and saving for TTBL
 if itype == 13:    
     data2 = [
-             ["beta", "nu", "uwall", "delta_t", "twd", "Re"],
-             [ beta,   nu,   uwall,   delta_t,   twd,   re ],
+             ["beta", "nu", "uwall", "dt", "twd", "Re"],
+             [ beta,   nu,   uwall,   dt,   twd,   re ],
             ]
     data3 = [
              ["bl_thickness", "cf_max"],
