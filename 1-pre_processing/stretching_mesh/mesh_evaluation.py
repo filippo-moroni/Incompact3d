@@ -42,6 +42,13 @@ from read_files import read_input_files
 # Import function to setup flow parameters (kinematic viscosity only at the moment)
 from set_flow_parameters import set_flow_parameters
 
+#!--------------------------------------------------------------------------------------!
+
+# Read useful flow parameters from 'input.i3d' and 'post.prm' files
+itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string = read_input_files('input.i3d','post.prm')
+
+#!--------------------------------------------------------------------------------------!
+
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 2.0               # beta parameter for mesh stretching
