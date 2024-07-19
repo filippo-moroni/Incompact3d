@@ -24,12 +24,14 @@ def read_input_files(filename1,filename2):
         # Read all lines into a list
         lines = file.readlines()
     
-        # Extract itype, nx, ny, nz, Lx, Ly, Lz, Re, numscalar, iswitch_wo 
+        # Extract itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, Re, numscalar, iswitch_wo 
         # As always, index is 1 less of the line number (Python convention)
         itype      = lines[7]  
         nx         = lines[14]
         ny         = lines[15]
         nz         = lines[16]
+        istret     = lines[17]
+        beta       = lines[18]
         Lx         = lines[21]
         Ly         = lines[22]
         Lz         = lines[23]
@@ -52,6 +54,12 @@ def read_input_files(filename1,filename2):
     
         nz         = nz.split('!')[0]
         nz         = nz.split('=')[-1].strip()
+        
+        istret     = istret.split('!')[0]
+        istret     = istret.split('=')[-1].strip()
+        
+        beta       = beta.split('!')[0]
+        beta       = beta.split('=')[-1].strip()
     
         Lx         = Lx.split('!')[0]
         Lx         = Lx.split('=')[-1].strip()
@@ -76,6 +84,8 @@ def read_input_files(filename1,filename2):
         nx         = int(nx)
         ny         = int(ny)
         nz         = int(nz)
+        istret     = int(istret)
+        beta       = np.float64(beta)
         Lx         = np.float64(Lx)
         Ly         = np.float64(Ly)
         Lz         = np.float64(Lz)
@@ -116,7 +126,7 @@ def read_input_files(filename1,filename2):
         ny = (ny - 1) // 2 + 1
         
     # Return to main program with extracted parameters
-    return itype, nx, ny, nz, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string
+    return itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     

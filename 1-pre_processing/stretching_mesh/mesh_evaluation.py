@@ -23,15 +23,24 @@ import math
 import csv
 from tabulate import tabulate
 
-# Filter warnings
-import warnings
-warnings.filterwarnings("error")
+# Get the current directory
+current_dir = os.path.dirname(__file__)
 
-# Font settings
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "Helvetica"
-})
+# Add the path to the 'python_common' directory relative to the current directory 
+config_path = os.path.abspath(os.path.join(current_dir, '../../', '3-post_processing/python_common'))
+sys.path.append(config_path)
+
+# Import the plotting_params module
+import plot_params as pp
+
+# Import function to setting up, save and show plots 
+from plot_subs import set_plot_settings, save_and_show_plot
+
+# Import functions to read 'input.i3d', 'post.prm' files
+from read_files import read_input_files
+
+# Import function to setup flow parameters (kinematic viscosity only at the moment)
+from set_flow_parameters import set_flow_parameters
 
 # Inputs
 istret = 3               # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)

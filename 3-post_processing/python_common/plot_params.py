@@ -18,6 +18,10 @@ plt.rcParams.update({
     "figure.autolayout": True,
 })
 
+# Filter warnings
+import warnings
+warnings.filterwarnings("error")
+
 #!--------------------------------------------------------------------------------------!
 
 # Parameters for plotting
