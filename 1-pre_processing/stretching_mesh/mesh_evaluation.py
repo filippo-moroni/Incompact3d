@@ -494,9 +494,9 @@ if itype == 13:
 elif itype == 3:
     data = [
             ["nx/ny/nz", "Lx/Ly/Lz" ],
-            [ nx,         xlx,      ],
-            [ ny,         yly,      ],
-            [ nz,         zlz,      ],
+            [ nx,       f"{xlx}h"   ],
+            [ ny,       f"{yly}h"   ],
+            [ nz,       f"{zlz}h"   ],
            ] 
 
     data2 = [
@@ -626,11 +626,11 @@ else:
     
     # Create data arrays with outputs
     data = [
-            ["Lx+/Ly+/Lz+", "dx+/dy+/dz+/dyc+" ],
-            [ xlx_nd_peak,   delta_x_nd_peak   ],
-            [ yly_nd_peak,   delta_y1_nd_peak  ],
-            [ zlz_nd_peak,   delta_z_nd_peak   ],
-            ["/",            delta_yc_nd       ],
+            ["Lx+/Ly+/Lz+", "dx+/dyw+/dz+/dyc+" ],
+            [ xlx_nd_peak,   delta_x_nd_peak    ],
+            [ yly_nd_peak,   delta_y1_nd_peak   ],
+            [ zlz_nd_peak,   delta_z_nd_peak    ],
+            ["/",            delta_yc_nd        ],
            ]
            
     data2 = [
