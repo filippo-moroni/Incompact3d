@@ -242,43 +242,41 @@ end if
         write(dirname,"('./data_r',I1.1)") ii
      end if
      
-     ! Reading of velocity, pressure and scalar fields if required     
+     ! Reading of velocity, pressure and scalar fields if required and transpose to y-pencils    
      if (read_vel) then  
           
          ! Reading the x-pencils (snapshots have metadata of the default saving along x)    
          write(filename, '(A,A,A)') 'ux-', trim(snap_index), '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,ux1,dirname,filename,a)
+         call transpose_x_to_y(ux1,ux2)
         
          write(filename, '(A,A,A)') 'uy-', trim(snap_index), '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,uy1,dirname,filename,a)
+         call transpose_x_to_y(uy1,uy2)
   
          write(filename, '(A,A,A)') 'uz-', trim(snap_index), '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,uz1,dirname,filename,a)
+         call transpose_x_to_y(uz1,uz2)
         
      endif
      
      if (read_pre) then
          write(filename, '(A,A,A)') 'pp-', trim(snap_index), '.bin' 
          filename = adjustl(filename)         
-         call decomp_2d_read_one(1,pre1,dirname,filename,a)     
+         call decomp_2d_read_one(1,pre1,dirname,filename,a)
+         call transpose_x_to_y(pre1,pre2)     
      endif
      
      if (read_phi) then   
          write(filename, '(A,A,A)') 'phi01-', trim(snap_index), '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,phi1(:,:,:,1),dirname,filename,a)       
+         call transpose_x_to_y(phi1(:,:,:,1),phi2(:,:,:,1))
      endif
         
-     ! Transpose data to y-pencils 
-     call transpose_x_to_y(ux1,ux2)
-     call transpose_x_to_y(uy1,uy2)
-     call transpose_x_to_y(uz1,uz2)
-     call transpose_x_to_y(pre1,pre2)
-     call transpose_x_to_y(phi1(:,:,:,1),phi2(:,:,:,1))
-
      ! Statistics computation through external subroutines
      if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
                                    u1mean,v1mean,w1mean,u2mean,v2mean,w2mean,       &
