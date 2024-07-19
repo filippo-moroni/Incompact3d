@@ -267,6 +267,8 @@ with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{t_nu:{pp.fs}}, "            +
             f"{tau_eta:{pp.fs}}\n"         )      
 
+#!--------------------------------------------------------------------------------------!
+
 # Ratio between turbulent production and dissipation
 p_eps_ratio_tke = tke_prod / tke_pseps
 
@@ -730,9 +732,9 @@ elif itype == 3:
 
     xlimsup = 300.0
         
-    # Lee & Moser (2015)
-    ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
-        
+    # Moser et al. (1999)
+    ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
+            
 # Axes labels
 ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
