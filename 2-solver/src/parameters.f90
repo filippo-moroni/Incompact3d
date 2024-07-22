@@ -338,8 +338,8 @@ subroutine parameter(input_i3d)
   ! Creating /data folder
   if (nrank==0) call execute_command_line('mkdir -p data')
   
-  ! Creating /restart_info folder
-  if (nrank==0) call execute_command_line('mkdir -p restart_info')
+  ! Creating /restart_info folder inside /data
+  if (nrank==0) call execute_command_line('mkdir -p data/restart_info')
   
   ! Creating /monitoring folder inside /data
   if (nrank==0) call execute_command_line('mkdir -p data/monitoring')
@@ -347,8 +347,8 @@ subroutine parameter(input_i3d)
   ! Creating /planes folder inside /data
   if (nrank==0) call execute_command_line('mkdir -p data/planes')
   
-  ! Creating /checkpoints folder
-  if (nrank==0) call execute_command_line('mkdir -p checkpoints')
+  ! Creating /checkpoints folder inside /data
+  if (nrank==0) call execute_command_line('mkdir -p data/checkpoints')
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'

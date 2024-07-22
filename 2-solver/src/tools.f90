@@ -380,13 +380,13 @@ contains
            call execute_command_line('cp ' // 'checkpoint' // ' ' // filename)
       
            ! Move the created file inside /checkpoints folder
-           call execute_command_line('mv ' // filename // ' ' // 'checkpoints')
+           call execute_command_line('mv ' // filename // ' ' // 'data/checkpoints')
       
        end if
        
        ! Write info file for restart - Kay Schäfer
        if (nrank == 0) then
-         write(filename,"('restart_info/restart',I7.7,'.info')") itime
+         write(filename,"('data/restart_info/restart',I7.7,'.info')") itime
          write(fmt2,'("(A,I16)")')
          write(fmt3,'("(A,F16.4)")')
          write(fmt4,'("(A,F16.12)")')
@@ -481,7 +481,7 @@ contains
        call decomp_2d_close_io(io_restart, resfile)
 
        ! Read time of restart file
-       write(filename,"('restart_info/restart',I7.7,'.info')") ifirst-1
+       write(filename,"('data/restart_info/restart',I7.7,'.info')") ifirst-1
        inquire(file=filename, exist=fexists)
        if (nrank==0) write(*,*) filename
        ! file exists???
