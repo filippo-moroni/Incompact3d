@@ -485,6 +485,9 @@ def read_ref_data_temp_evol():
     disp_t_gboga        = 0.0
     cf_gboga            = 0.0
     
+    # Directory where reference data are stored
+    dirname = '/home/n286654/Desktop/Incompact3d/3-post_processing/reference_data'
+    
     # Reading of G. Boga data
     M = np.loadtxt(dirname + '/gboga/retau500/Re_tau500_time_largettblnr4_boga.dat', skiprows=1, dtype=np.float64)
     t_gboga             = M[:,0]

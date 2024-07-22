@@ -249,6 +249,9 @@ if itype == 13:
     #ax.scatter(re_tau, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
     
+    # G. Boga 
+    ax.plot(cf_gboga, retau_gboga, color='C1', linestyle='-', linewidth=pp.lw)
+    
     # Axes labels
     ax.set_xlabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
