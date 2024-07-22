@@ -56,6 +56,13 @@ print()
 switcher = int(input("Specify the selector for plotting (0: scalar field, 1: streamwise vorticity): "))
 print()
 
+# Asking the user the realization folder to use (if TTBL)
+if itype == 13:
+
+    print()
+    realiz = int(input("Specify the realization folder to use: "))
+    print()
+
 # Scalar field
 if switcher == 0:
 
@@ -120,7 +127,7 @@ if os.path.exists(data_path) and os.path.isdir(data_path):
 else:
 
     # Use /data_r1 to read planes if /data does not exists 
-    data_path = f"data_r1/planes"
+    data_path = f"data_r{realiz}/planes"
        
 # Cycle on all planes
 i = 0
@@ -233,7 +240,7 @@ print(f"Reached file index {i:04d} which does not exist. Stopping.")
 #os.system("cd images")
 
 # Create the video
-#os.system("ffmpeg -y -framerate 30 -start_number 0 -i phiplanez_ttbl_small_%04d.png phiplanez_ttbl_small.mp4")
+#os.system("ffmpeg -y -framerate 30 -start_number 0 -i field_flowcasename_%04d.png field_flowcasename.mp4")
 
 
 
