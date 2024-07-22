@@ -29,7 +29,7 @@ re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference sc
 ! Time stepping
 dt = 0.005            ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 280000        ! Last iteration
+ilast = 320000        ! Last iteration
 
 ! Enable modelling tools
 numscalar = 1         ! Number of scalars 
