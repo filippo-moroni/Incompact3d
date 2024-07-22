@@ -55,7 +55,7 @@ c_w = 16
 
 # Format for numbers when written as strings (f: format, s: string)
 fs  = f"<{c_w}.3f"   # 3 decimal digits
-fs6 = f"<{c_w}.3f"   # 6 decimal digits
+fs6 = f"<{c_w}.6f"   # 6 decimal digits
 fs8 = f"<{c_w}.8f"   # 8 decimal digits (used mainly for cf)
 
 #!--------------------------------------------------------------------------------------!
