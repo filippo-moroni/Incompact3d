@@ -755,7 +755,7 @@ if post_tke_eq:
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
     save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
