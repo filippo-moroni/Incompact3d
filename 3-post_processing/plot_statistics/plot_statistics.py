@@ -320,11 +320,11 @@ if post_mean:
     elif itype == 3:
 
         # Spanwise mean velocity profile
-        ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        ax.scatter(y, mean_w, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
         # Limits for axes
         xliminf = 0.0
-        xlimsup = 1.0
+        xlimsup = 2.0
         yliminf = min(mean_w)*1.2    
         ylimsup = max(mean_w)*1.2
     
@@ -755,7 +755,7 @@ if post_tke_eq:
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
     save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
