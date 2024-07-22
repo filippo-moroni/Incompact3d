@@ -117,19 +117,7 @@ delta_z = Lz / nz
 sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
 delta_nu = nu / sh_vel                    # viscous length
 t_nu     = nu / (sh_vel ** 2)             # viscous time
-
-# Friction Reynolds number
-if itype == 13:
-    re_tau = sh_vel * bl_thick / nu
-    
-    # Print friction Reynolds number and boundary layer thickness
-    print("Friction Reynolds number, re_tau = ", re_tau)
-    print()
-    print("Boundary layer thickness, delta_99 = ", bl_thick)
-    print()
-    print("Domain height in wall units, Ly+ = ", Ly_plus)
-    print()
-    
+  
 # Rescaling variables through wall units
 delta_x_plus = delta_x / delta_nu
 delta_z_plus = delta_z / delta_nu
@@ -151,6 +139,18 @@ mean_w_plus  = mean_w / sh_vel
 vort_x *= t_nu
 vort_y *= t_nu
 vort_z *= t_nu
+
+# Friction Reynolds number
+if itype == 13:
+    re_tau = sh_vel * bl_thick / nu
+    
+    # Print friction Reynolds number and boundary layer thickness
+    print("Friction Reynolds number, re_tau = ", re_tau)
+    print()
+    print("Boundary layer thickness, delta_99 = ", bl_thick)
+    print()
+    print("Domain height in wall units, Ly+ = ", Ly_plus)
+    print()
 
 # Print viscous time unit
 print("Viscous time unit, t_nu = ", t_nu)
