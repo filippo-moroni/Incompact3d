@@ -253,7 +253,7 @@ if post_mean:
     # TTBL
     if itype == 13:
     
-        xlimsup = 520.0
+        xlimsup = Ly_plus
         ylimsup = 30.0
                     
     # Channel    
@@ -399,7 +399,7 @@ if post_mean:
     if itype == 13:
 
         xlimsup = 520.0
-        ylimsup = 1.2
+        ylimsup = 2.5
             
     # Channel    
     elif itype == 3:
