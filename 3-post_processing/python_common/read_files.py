@@ -159,7 +159,7 @@ def read_input_files(filename1,filename2):
 
 import numpy as np
 
-def read_data(itype, numscalar,snap_numb=None):
+def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq, snap_numb=None):
 
     # Initialize variables
     snap_numb = None
@@ -193,27 +193,49 @@ def read_data(itype, numscalar,snap_numb=None):
         snap_numb = ''
 
         # Reading of mean statistics
-        M1 = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        if post_mean:
+            M = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            mean_u  = M[:,0]
+            mean_w  = M[:,2]   
+            var_u   = M[:,3]
+            var_v   = M[:,4]
+            mean_uv = M[:,12]
     
         # Reading of vorticity components and mean gradient
-        M2 = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        if post_vort:
+            M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            vort_x = M[:,0]
+            vort_y = M[:,1]
+            vort_z = M[:,2]
+            mg_tot = M[:,3]
+            mg_x   = M[:,4]
+            mg_z   = M[:,5]
     
         # Reading of the mean total dissipation
-        eps = np.loadtxt('data_post/diss_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        if post_diss:
+            eps = np.loadtxt('data_post/diss_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
     
         # Reading of correlations
-        Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        if post_corz:
+            Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
       
-        # Read scalar field correlations
-        if numscalar == 1:
+            # Read scalar field correlations
+            if numscalar == 1:
                 
-            Rppz = np.loadtxt('data_post/Rppz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Rppz = np.loadtxt('data_post/Rppz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
         # Read of TKE 
-        M3 = np.loadtxt('data_post/tke_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        if post_tke_eq:
+            M = np.loadtxt('data_post/tke_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            tke_conv    = M[:,0]
+            tke_turbt   = M[:,1]   
+            tke_pstrain = M[:,2]     
+            tke_difft   = M[:,3]
+            tke_prod    = M[:,4]
+            tke_pseps   = M[:,5]
         
     # TTBL
     elif itype == 13:
@@ -228,51 +250,52 @@ def read_data(itype, numscalar,snap_numb=None):
         snap_numb = snap_numb.zfill(4)
              
         # Reading of mean statistics
-        M1 = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        if post_mean:
+            M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            mean_u  = M[:,0]
+            mean_w  = M[:,2]   
+            var_u   = M[:,3]
+            var_v   = M[:,4]
+            mean_uv = M[:,12]
     
         # Reading of vorticity components and mean gradient
-        M2 = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        if post_vort:
+            M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            vort_x = M[:,0]
+            vort_y = M[:,1]
+            vort_z = M[:,2]
+            mg_tot = M[:,3]
+            mg_x   = M[:,4]
+            mg_z   = M[:,5]
     
         # Reading of the mean total dissipation
-        eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        if post_diss:
+            eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
         
         # Reading of correlations
-        Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-        Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+        if post_corz:
+            Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
-        # Read scalar field correlations
-        if numscalar == 1:
+            # Read scalar field correlations
+            if numscalar == 1:
             
-            Rppz = np.loadtxt(f'data_post/Rppz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Rppz = np.loadtxt(f'data_post/Rppz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
-        # Read of TKE 
-        M3 = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        # Read of TKE
+        if post_tke_eq: 
+            M = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            tke_conv    = M[:,0]
+            tke_turbt   = M[:,1]   
+            tke_pstrain = M[:,2]     
+            tke_difft   = M[:,3]
+            tke_prod    = M[:,4]
+            tke_pseps   = M[:,5]
 
     print()
-
-    # Extracting quantities from the full matrices
-    mean_u      = M1[:,0]
-    mean_w      = M1[:,2]   
-    var_u       = M1[:,3]
-    var_v       = M1[:,4]
-    mean_uv     = M1[:,12]
-
-    vort_x      = M2[:,0]
-    vort_y      = M2[:,1]
-    vort_z      = M2[:,2]
-    mg_tot      = M2[:,3]
-    mg_x        = M2[:,4]
-    mg_z        = M2[:,5]
-    
-    tke_conv    = M3[:,0]
-    tke_turbt   = M3[:,1]   
-    tke_pstrain = M3[:,2]     
-    tke_difft   = M3[:,3]
-    tke_prod    = M3[:,4]
-    tke_pseps   = M3[:,5]
-    
+ 
     return (
     mean_u, mean_w, var_u, var_v, mean_uv, 
     vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
