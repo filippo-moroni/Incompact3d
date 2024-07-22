@@ -75,7 +75,7 @@ if switcher == 0:
     pad_cbar_lab  = -8
     size_cbar     = '5%'
     maj_ticks_int = 10.0
-    
+        
 # Streamwise vorticity
 elif switcher == 1:
 
@@ -89,6 +89,9 @@ elif switcher == 1:
     pad_cbar_lab  = -20
     size_cbar     = '5%'
     maj_ticks_int = 10.0
+    
+# Create subfolder of the selected field 
+os.makedirs('images' + field_name, mode=0o777, exist_ok=True)
     
 # Extent of the image (dimensions of the domain)
 extent = [0.0, Lxi, 0.0, Ly]
@@ -222,7 +225,7 @@ while True:
     ax.xaxis.set_major_locator(MultipleLocator(maj_ticks_int))
 
     # Saving the figure
-    plt.savefig('images' + field_name + f'_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
+    plt.savefig('images' + field_name + field_name + f'_{add_string}_{i:04d}.png', format='png', bbox_inches='tight', dpi=600)
     
     # Clear and close the figure to release memory
     plt.clf()
