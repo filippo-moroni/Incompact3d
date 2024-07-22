@@ -84,7 +84,7 @@ if os.path.exists(data_path) and os.path.isdir(data_path):
 else:
 
     # Asking the user the realization folder to use (if TTBL)
-    realiz = int(input("Specify the realization folder to use: "))
+    realiz = int(input("Specify the realization folder to read time units 't': "))
     data_path = f'data_r{realiz}'
     print()
 
@@ -188,7 +188,6 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{time_unit[j]:{pp.fs}}\n"      )
             
 # Print that calculations have been completed
-print()
 print("Done!")
 print()
 print("Results saved in: integral_statistics/integral_statistics.txt.")
