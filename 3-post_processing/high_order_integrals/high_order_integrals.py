@@ -83,8 +83,10 @@ if os.path.exists(data_path) and os.path.isdir(data_path):
         
 else:
 
-    # Use first realization folder for reading .xdmf files
-    data_path = 'data_r1'
+    # Asking the user the realization folder to use (if TTBL)
+    realiz = int(input("Specify the realization folder to use: "))
+    data_path = f'data_r{realiz}'
+    print()
 
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
