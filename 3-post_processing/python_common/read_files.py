@@ -444,7 +444,7 @@ def read_ref_data():
     # Moser et al. (1999)
     M = np.loadtxt(dirname + '/moser1999/p_eps_ratio_moser1999.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_moser_1999      = M[:,0]
-    p_eps_ratio_moser_1999 = M[:,1] 
+    p_eps_ratio_moser_1999 = M[:,1]      
     
     # Return to main program with extracted reference data
     return (
@@ -464,5 +464,52 @@ def read_ref_data():
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
   
+#!------------------------------------------------------------------!
+#! Python function to read reference evolution quantities for TTBL. !
+#!------------------------------------------------------------------!
+
+import numpy as np
+
+def read_ref_data_temp_evol():
+
+    #!--- Initialize reference data ---!
     
+    # G. Boga
+    t_gboga             = 0.0
+    retau_vs_time_gboga = 0.0
+    
+    retau_gboga         = 0.0
+    retheta_gboga       = 0.0
+    utau_gboga          = 0.0
+    delta_99_gboga      = 0.0
+    disp_t_gboga        = 0.0
+    cf_gboga            = 0.0
+    
+    # Reading of G. Boga data
+    M = np.loadtxt(dirname + '/gboga/retau500/Re_tau500_time_largettblnr4_boga.dat', skiprows=1, dtype=np.float64)
+    t_gboga             = M[:,0]
+    retau_vs_time_gboga = M[:,1]
+    
+    M = np.loadtxt(dirname + '/gboga/retau500/temp_evolution500_largettblnr4_boga.dat', skiprows=1, dtype=np.float64)
+    retau_gboga    = M[:,0]
+    retheta_gboga  = M[:,1]  
+    utau_gboga     = M[:,2]
+    delta_99_gboga = M[:,3]
+    disp_t_gboga   = M[:,4]
+    cf_gboga       = M[:,6]
+        
+    # Return to main program with extracted reference data
+    return (
+    t_gboga, 
+    retau_vs_time_gboga,
+    retau_gboga,
+    retheta_gboga,
+    utau_gboga,
+    delta_99_gboga,
+    disp_t_gboga,
+    cf_gboga    
+    ) 
+
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
+      
     
