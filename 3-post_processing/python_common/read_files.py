@@ -177,6 +177,8 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     mg_x        = 0.0
     mg_z        = 0.0
     
+    eps         = 0.0
+    
     Ruuz        = 0.0
     Rvvz        = 0.0
     Rwwz        = 0.0

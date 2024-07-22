@@ -186,23 +186,26 @@ with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as 
             
 #!--------------------------------------------------------------------------------------!
 
-# Find the maximum of mean total dissipation
-eps_max = max(eps)
+#!--- Total dissipation section ---!
+if post_diss:
 
-# Minimum Kolmogorov time scale and print it
-tau_eta = np.sqrt(nu/eps_max)
-print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
-print()
+    # Find the maximum of mean total dissipation
+    eps_max = max(eps)
 
-#!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
-           
-# Create the file and write 
-with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
-    f.write(f"{'t_nu':<{pp.c_w}}, "        +
-            f"{'min tau_eta':<{pp.c_w}}\n" )  
+    # Minimum Kolmogorov time scale and print it
+    tau_eta = np.sqrt(nu/eps_max)
+    print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
+    print()
 
-    f.write(f"{t_nu:{pp.fs}}, "            +
-            f"{tau_eta:{pp.fs}}\n"         )      
+    #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
+            
+    # Create the file and write 
+    with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
+        f.write(f"{'t_nu':<{pp.c_w}}, "        +
+                f"{'min tau_eta':<{pp.c_w}}\n" )  
+
+        f.write(f"{t_nu:{pp.fs}}, "            +
+                f"{tau_eta:{pp.fs}}\n"         )      
 
 #!--------------------------------------------------------------------------------------!
 
