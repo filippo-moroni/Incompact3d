@@ -265,6 +265,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             mean_w  = M[:,2]   
             var_u   = M[:,3]
             var_v   = M[:,4]
+            var_w   = M[:,5]
             mean_uv = M[:,12]
     
         # Reading of vorticity components and mean gradient
