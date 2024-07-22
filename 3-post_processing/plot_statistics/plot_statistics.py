@@ -188,76 +188,6 @@ tau_eta = np.sqrt(nu/eps_max)
 print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
 print()
 
-#!--- Calculations for correlations ---!
-
-# Select the height at which correlations are plotted
-y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
-print()
-
-# Search for the index corresponding to the target y+ for correlations
-c = 0 
-for j in range(0, ny-1, 1):   
-    if y_plus[j] < y_plus_in: c = c + 1
-
-# Print the actual y+ value selected
-print("Actual y+ value selected = ", y_plus[c])
-print()
-
-# Print the corresponding j-th index
-print("Corresponding j-th index = ", c)
-print()
-
-# Take the correlation functions value at rz = 0 and rescale to obtain correlation coefficients
-temp = Ruuz[c,0]
-Ruuz = Ruuz / temp
-
-temp = Rvvz[c,0]
-Rvvz = Rvvz / temp
-
-temp = Rwwz[c,0]
-Rwwz = Rwwz / temp
-
-temp = Ruvz[c,0]
-Ruvz = Ruvz / temp
-
-if numscalar == 1:
-    temp = Rppz[c,0]
-    Rppz = Rppz / temp
-
-# Halve the number of points in z-dir. to avoid periodicity effects
-nz = nz // 2
-Lz = Lz / 2.0
-
-# Create the separation variable array
-rz = np.linspace(0.0, Lz, nz)
-
-# Calculate the index at which the correlation coefficient goes to zero
-k = 0
-while Ruuz[c,k] > 0.0: k = k + 1
-
-rz0    = rz[0]    # First element of rz vector (rz = 0)
-rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
-
-# Rescale separation variable by viscous unit
-rz = rz / delta_nu
-    
-#!--- Calculate the integral length scale lambda z ---!
-
-# Use the minimum between the number of points in the interval Cuu(z) [max, 0]
-# and the maximum spline order (5) in order to avoid problem with the spline interpolation itself.
-order_spline = min(k-1, 5)
-
-# Interpolation at the 6th order of accuracy with a spline of 5th order
-spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=order_spline)
-lambda_z = spl.integral(rz0, rzstar)
-
-# Rescale in wall units
-lambda_z = lambda_z / delta_nu
-
-# Print the integral length scale value
-print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
-print()
-
 #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
            
 # Create the file and write 
@@ -267,15 +197,6 @@ with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
 
     f.write(f"{t_nu:{pp.fs}}, "            +
             f"{tau_eta:{pp.fs}}\n"         )      
-
-#!--------------------------------------------------------------------------------------!
-
-# Ratio between turbulent production and dissipation
-p_eps_ratio_tke = np.zeros(ny)
-
-tke_prod  = tke_prod  [:ny]
-tke_pseps = tke_pseps [:ny]
-p_eps_ratio_tke = np.divide(tke_prod,tke_pseps)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -311,447 +232,533 @@ y_plus_k = np.linspace(5, 180, 175)
 u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
 #!--------------------------------------------------------------------------------------!
-    
-#!--- Plot section, mean velocity profile, with selection dipending on the flow case ---!
 
-# Mean velocity profile
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-# Limits for axes
-xliminf = 0.1
-yliminf = 0.0
-
-# Mean velocity profile 
-ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-    
-# TTBL
-if itype == 13:
-    
-    xlimsup = 520.0
-    ylimsup = 30.0
-                    
-# Channel    
-elif itype == 3:
-
-    xlimsup = 300.0
-    ylimsup = 25.0
-    
-    # Lee & Moser (2015)
-    ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
-    
-    # If wall oscillations are present
-    if iswitch_wo == 1:
-    
-        # Touber & Leschziner (2012)
-        #ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle='-.', linewidth=pp.lw)
+#!--- Plotting mean statistics ---!
+if post_mean:
         
-        # Yao et al. (2019)
-        ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
-    
-# Viscous sublayer and log law
-ax.plot(y_plus_vsl, u_plus_vsl, color=pp.grey, linestyle='--', linewidth=pp.lw)
-ax.plot(y_plus_k, u_plus_k, color=pp.grey, linestyle='--', linewidth=pp.lw)
-    
-# Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    #!--- Mean streamwise velocity profile ---!
 
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    # Mean velocity profile
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Save and show the figure
-save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string)
-
-#!--------------------------------------------------------------------------------------!
-
-#!--- Mean spanwise velocity profile ---!
-
-# Mean spanwise velocity profile
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-# TTBL
-if itype == 13:
-
-    # Spanwise mean velocity profile
-    ax.scatter(y_plus, mean_w_plus, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-    
     # Limits for axes
     xliminf = 0.1
-    xlimsup = Ly_plus
-    yliminf = min(mean_w_plus)*1.2    
-    ylimsup = max(mean_w_plus)*1.2
+    yliminf = 0.0
+
+    # Mean velocity profile 
+    ax.scatter(y_plus[:ny], mean_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # TTBL
+    if itype == 13:
+    
+        xlimsup = 520.0
+        ylimsup = 30.0
+                    
+    # Channel    
+    elif itype == 3:
+
+        xlimsup = 300.0
+        ylimsup = 25.0
+    
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+    
+        # If wall oscillations are present
+        if iswitch_wo == 1:
+    
+            # Touber & Leschziner (2012)
+            #ax.plot(y_plus_touber, mean_u_touber, color='C2', linestyle='-.', linewidth=pp.lw)
+        
+            # Yao et al. (2019)
+            ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+    
+    # Viscous sublayer and log law
+    ax.plot(y_plus_vsl, u_plus_vsl, color=pp.grey, linestyle='--', linewidth=pp.lw)
+    ax.plot(y_plus_k, u_plus_k, color=pp.grey, linestyle='--', linewidth=pp.lw)
     
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$W^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    
+    ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Channel
-elif itype == 3:
+    # Save and show the figure
+    save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string)
 
-    # Spanwise mean velocity profile
-    ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    #!--------------------------------------------------------------------------------------!
+
+    #!--- Mean spanwise velocity profile ---!
+
+    # Mean spanwise velocity profile
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # TTBL
+    if itype == 13:
+
+        # Spanwise mean velocity profile
+        ax.scatter(y_plus, mean_w_plus, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
+        # Limits for axes
+        xliminf = 0.1
+        xlimsup = Ly_plus
+        yliminf = min(mean_w_plus)*1.2    
+        ylimsup = max(mean_w_plus)*1.2
+    
+        # Axes labels
+        ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        ax.set_ylabel(r'$W^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+        # Set the plot parameters using the function 'set_plot_settings'
+        # Last argument is the switcher for semilog plot (1: yes, 0: no)
+        set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+    # Channel
+    elif itype == 3:
+
+        # Spanwise mean velocity profile
+        ax.scatter(y[:ny], mean_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+        # Limits for axes
+        xliminf = 0.0
+        xlimsup = 1.0
+        yliminf = min(mean_w)*1.2    
+        ylimsup = max(mean_w)*1.2
+    
+        # Axes labels
+        ax.set_xlabel(r'$y/h$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        ax.set_ylabel(r'$W/U_p$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+        # Set the plot parameters using the function 'set_plot_settings'
+        # Last argument is the switcher for semilog plot (1: yes, 0: no)
+        set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+    # Save and show the figure
+    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string)
+    
+    #!--------------------------------------------------------------------------------------!
+
+    # <u'u'>
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
     # Limits for axes
-    xliminf = 0.0
-    xlimsup = 1.0
-    yliminf = min(mean_w)*1.2    
-    ylimsup = max(mean_w)*1.2
+    xliminf = 0.1
+    yliminf = 0.0
+
+    # <u'u'>
+    ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+    # TTBL
+    if itype == 13:
+    
+        xlimsup = 520.0
+        ylimsup = 10.0       
+           
+    # Channel    
+    elif itype == 3:
+
+        xlimsup = 300.0
+        ylimsup = 8.0
+    
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+    
+        # If wall oscillations are present
+        if iswitch_wo == 1:
+    
+            # Yao et al. (2019)
+            ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
     
     # Axes labels
-    ax.set_xlabel(r'$y/h$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$W/U_p$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Save and show the figure
-save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string)
+    # Save and show the figure
+    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string)
 
-#!--------------------------------------------------------------------------------------!
+    #!--------------------------------------------------------------------------------------!
 
-# <u'u'>
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    # <v'v'>
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Limits for axes
-xliminf = 0.1
-yliminf = 0.0
+    # Limits for axes
+    xliminf = 0.1
+    yliminf = 0.0
 
-# <u'u'>
-ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    # <v'v'>
+    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-# TTBL
-if itype == 13:
-    
-    xlimsup = 520.0
-    ylimsup = 10.0       
-           
-# Channel    
-elif itype == 3:
+    # TTBL
+    if itype == 13:
 
-    xlimsup = 300.0
-    ylimsup = 8.0
-    
-    # Lee & Moser (2015)
-    ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
-    
-    # If wall oscillations are present
-    if iswitch_wo == 1:
-    
-        # Yao et al. (2019)
-        ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
-    
-# Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$\langle u^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
-
-# Save and show the figure
-save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string)
-
-#!--------------------------------------------------------------------------------------!
-
-# <v'v'>
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-# Limits for axes
-xliminf = 0.1
-yliminf = 0.0
-
-# <v'v'>
-ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-
-# TTBL
-if itype == 13:
-
-    xlimsup = 520.0
-    ylimsup = 1.2
+        xlimsup = 520.0
+        ylimsup = 1.2
             
-# Channel    
-elif itype == 3:
+    # Channel    
+    elif itype == 3:
 
-    xlimsup = 300.0
-    ylimsup = 0.8
+        xlimsup = 300.0
+        ylimsup = 0.8
     
-    # Lee & Moser (2015)
-    ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
     
-    # If wall oscillations are present
-    if iswitch_wo == 1:
+        # If wall oscillations are present
+        if iswitch_wo == 1:
     
-        # Yao et al. (2019)
-        ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            # Yao et al. (2019)
+            ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
     
-# Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    # Axes labels
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Save and show the figure
-save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string)
+    # Save and show the figure
+    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string)
 
-#!--------------------------------------------------------------------------------------!
+    #!--------------------------------------------------------------------------------------!
 
-# <u'v'>
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    # <u'v'>
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# Limits for axes
-xliminf = 0.1
-yliminf = 0.0
+    # Limits for axes
+    xliminf = 0.1
+    yliminf = 0.0
 
-# <u'v'>
-ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    # <u'v'>
+    ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
-# TTBL
-if itype == 13:
+    # TTBL
+    if itype == 13:
 
-    xlimsup = 520.0
-    ylimsup = 1.2
+        xlimsup = 520.0
+        ylimsup = 1.2
         
-    # y-axis label
-    ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        # y-axis label
+        ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
         
-# Channel    
-elif itype == 3:
+    # Channel    
+    elif itype == 3:
 
-    xlimsup = 300.0
-    ylimsup = 0.8
+        xlimsup = 300.0
+        ylimsup = 0.8
         
-    # Lee & Moser (2015)
-    ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
        
-    # y-axis label
-    ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        # y-axis label
+        ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
-    # If wall oscillations are present
-    if iswitch_wo == 1:
+        # If wall oscillations are present
+        if iswitch_wo == 1:
     
-        # Yao et al. (2019)
-        ax.scatter(y_plus_uvmean_yao, mean_uv_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            # Yao et al. (2019)
+            ax.scatter(y_plus_uvmean_yao, mean_uv_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
  
-# Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    # Axes labels
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-# Save and show the figure
-save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string)
+    # Save and show the figure
+    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string)
 
-#!--------------------------------------------------------------------------------------!
+    #!--------------------------------------------------------------------------------------!
 
-# Correlation coefficients in spanwise direction (z)
+#!--- Correlation coefficients in spanwise direction (z) ---!
+if post_corz:
 
-#!--------------------------------------------------------------------------------------!
+    #!--- Calculations for correlations ---!
 
-# Cuuz
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    # Select the height at which correlations are plotted
+    y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
+    print()
 
-# Limits for axes
-xliminf = 0.0
-xlimsup = Lz_plus / 2.0
-yliminf = np.min(Ruuz[c,:])*1.2
-ylimsup = np.max(Ruuz[c,:])*1.2
+    # Search for the index corresponding to the target y+ for correlations
+    c = 0 
+    for j in range(0, ny-1, 1):   
+        if y_plus[j] < y_plus_in: c = c + 1
 
-# Auto-correlation coefficient for u'
-ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    # Print the actual y+ value selected
+    print("Actual y+ value selected = ", y_plus[c])
+    print()
 
-# Reference data at y+ = 10 
-if y_plus_in == 10.0:
+    # Print the corresponding j-th index
+    print("Corresponding j-th index = ", c)
+    print()
 
-    # Kim et al. (1987) data
-    ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+    # Take the correlation functions value at rz = 0 and rescale to obtain correlation coefficients
+    temp = Ruuz[c,0]
+    Ruuz = Ruuz / temp
 
-# Plot horizontal line at Cuu = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                    
-# Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    temp = Rvvz[c,0]
+    Rvvz = Rvvz / temp
 
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    temp = Rwwz[c,0]
+    Rwwz = Rwwz / temp
 
-# Save and show the figure
-save_and_show_plot('Cuuz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    temp = Ruvz[c,0]
+    Ruvz = Ruvz / temp
 
-#!--------------------------------------------------------------------------------------!
+    if numscalar == 1:
+        temp = Rppz[c,0]
+        Rppz = Rppz / temp
 
-# Cvvz
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    # Halve the number of points in z-dir. to avoid periodicity effects
+    nz = nz // 2
+    Lz = Lz / 2.0
 
-# Limits for axes
-xliminf = 0.0
-xlimsup = Lz_plus / 2.0
-yliminf = np.min(Rvvz[c,:])*1.2
-ylimsup = np.max(Rvvz[c,:])*1.2
+    # Create the separation variable array
+    rz = np.linspace(0.0, Lz, nz)
 
-# Auto-correlation coefficient for v'
-ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    # Calculate the index at which the correlation coefficient goes to zero
+    k = 0
+    while Ruuz[c,k] > 0.0: k = k + 1
 
-# Reference data at y+ = 10 
-if y_plus_in == 10.0:
+    rz0    = rz[0]    # First element of rz vector (rz = 0)
+    rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
 
-    # Kim et al. (1987) data
-    ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+    # Rescale separation variable by viscous unit
+    rz = rz / delta_nu
+    
+    #!--- Calculate the integral length scale lambda z ---!
 
-# Plot horizontal line at Cvv = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                  
-# Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    # Use the minimum between the number of points in the interval Cuu(z) [max, 0]
+    # and the maximum spline order (5) in order to avoid problem with the spline interpolation itself.
+    order_spline = min(k-1, 5)
 
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    # Interpolation at the 6th order of accuracy with a spline of 5th order
+    spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=order_spline)
+    lambda_z = spl.integral(rz0, rzstar)
 
-# Save and show the figure
-save_and_show_plot('Cvvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    # Rescale in wall units
+    lambda_z = lambda_z / delta_nu
 
-#!--------------------------------------------------------------------------------------!
+    # Print the integral length scale value
+    print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
+    print()
+    
+    #!--------------------------------------------------------------------------------------!
 
-# Cwwz
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-# Limits for axes
-xliminf = 0.0
-xlimsup = Lz_plus / 2.0
-yliminf = np.min(Rwwz[c,:])*1.2
-ylimsup = np.max(Rwwz[c,:])*1.2
-
-# Auto-correlation coefficient for w'
-ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-
-# Reference data at y+ = 10 
-if y_plus_in == 10.0:
-
-    # Kim et al. (1987) data
-    ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
-
-# Plot horizontal line at Cww = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                   
-# Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-# Save and show the figure
-save_and_show_plot('Cwwz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
-
-#!--------------------------------------------------------------------------------------!
-
-# Cuvz
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-# Limits for axes
-xliminf = 0.0
-xlimsup = Lz_plus / 2.0
-yliminf = np.min(Ruvz[c,:])*1.2
-ylimsup = np.max(Ruvz[c,:])*1.2
-
-# Correlation coefficient for u' and v'
-ax.scatter(rz, Ruvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-
-# Plot horizontal line at Cuv = 0
-ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                   
-# Axes labels
-ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$C_{uv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-# Save and show the figure
-save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
-
-#!--------------------------------------------------------------------------------------!
-
-if numscalar == 1:
-
-    # Cppz
+    # Cuuz
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
     # Limits for axes
     xliminf = 0.0
     xlimsup = Lz_plus / 2.0
-    yliminf = np.min(Rppz[c,:])*1.2
-    ylimsup = np.max(Rppz[c,:])*1.2
+    yliminf = np.min(Ruuz[c,:])*1.2
+    ylimsup = np.max(Ruuz[c,:])*1.2
 
-    # Auto-correlation coefficient for phi'
-    ax.scatter(rz, Rppz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    # Auto-correlation coefficient for u'
+    ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-    # Plot horizontal line at Cpp = 0
+    # Reference data at y+ = 10 
+    if y_plus_in == 10.0:
+
+        # Kim et al. (1987) data
+        ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+
+    # Plot horizontal line at Cuu = 0
     ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                   
+                    
     # Axes labels
     ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$C_{\varphi \varphi}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('Cppz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    save_and_show_plot('Cuuz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+    #!--------------------------------------------------------------------------------------!
+
+    # Cvvz
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # Limits for axes
+    xliminf = 0.0
+    xlimsup = Lz_plus / 2.0
+    yliminf = np.min(Rvvz[c,:])*1.2
+    ylimsup = np.max(Rvvz[c,:])*1.2
+
+    # Auto-correlation coefficient for v'
+    ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+    # Reference data at y+ = 10 
+    if y_plus_in == 10.0:
+
+        # Kim et al. (1987) data
+        ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+
+    # Plot horizontal line at Cvv = 0
+    ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+                  
+    # Axes labels
+    ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+    # Save and show the figure
+    save_and_show_plot('Cvvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+    #!--------------------------------------------------------------------------------------!
+
+    # Cwwz
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # Limits for axes
+    xliminf = 0.0
+    xlimsup = Lz_plus / 2.0
+    yliminf = np.min(Rwwz[c,:])*1.2
+    ylimsup = np.max(Rwwz[c,:])*1.2
+
+    # Auto-correlation coefficient for w'
+    ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+    # Reference data at y+ = 10 
+    if y_plus_in == 10.0:
+
+        # Kim et al. (1987) data
+        ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
+
+    # Plot horizontal line at Cww = 0
+    ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+                   
+    # Axes labels
+    ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+    # Save and show the figure
+    save_and_show_plot('Cwwz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+    #!--------------------------------------------------------------------------------------!
+
+    # Cuvz
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # Limits for axes
+    xliminf = 0.0
+    xlimsup = Lz_plus / 2.0
+    yliminf = np.min(Ruvz[c,:])*1.2
+    ylimsup = np.max(Ruvz[c,:])*1.2
+
+    # Correlation coefficient for u' and v'
+    ax.scatter(rz, Ruvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+    # Plot horizontal line at Cuv = 0
+    ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+                   
+    # Axes labels
+    ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$C_{uv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+    # Save and show the figure
+    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
-# Ratio of production over dissipation of TKE
-fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    if numscalar == 1:
 
-# Limits for axes
-xliminf = 0.1
-yliminf = 0.0
-ylimsup = 2.0
+        # Cppz
+        fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
-# P/eps of TKE
-ax.scatter(y_plus[:ny], p_eps_ratio_tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        # Limits for axes
+        xliminf = 0.0
+        xlimsup = Lz_plus / 2.0
+        yliminf = np.min(Rppz[c,:])*1.2
+        ylimsup = np.max(Rppz[c,:])*1.2
+
+        # Auto-correlation coefficient for phi'
+        ax.scatter(rz, Rppz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+        # Plot horizontal line at Cpp = 0
+        ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+                   
+        # Axes labels
+        ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        ax.set_ylabel(r'$C_{\varphi \varphi}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+        # Set the plot parameters using the function 'set_plot_settings'
+        # Last argument is the switcher for semilog plot (1: yes, 0: no)
+        set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+        # Save and show the figure
+        save_and_show_plot('Cppz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+    #!--------------------------------------------------------------------------------------!
+
+#!--- Turbulent Kinetic Energy (TKE) budgets ---!
+if post_tke_eq:
+
+    # Ratio between turbulent production and dissipation
+    p_eps_ratio_tke = np.zeros(ny)
+
+    tke_prod  = tke_prod  [:ny]
+    tke_pseps = tke_pseps [:ny]
+    p_eps_ratio_tke = np.divide(tke_prod,tke_pseps)
+
+    #!--------------------------------------------------------------------------------------!
+
+    # Ratio of production over dissipation of TKE
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # Limits for axes
+    xliminf = 0.1
+    yliminf = 0.0
+    ylimsup = 2.0
+
+    # P/eps of TKE
+    ax.scatter(y_plus[:ny], p_eps_ratio_tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
-# TTBL
-if itype == 13:
+    # TTBL
+    if itype == 13:
 
-    xlimsup = 520.0
+        xlimsup = 520.0
                 
-# Channel    
-elif itype == 3:
+    # Channel    
+    elif itype == 3:
 
-    xlimsup = 300.0
+        xlimsup = 300.0
         
-    # Moser et al. (1999)
-    ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
+        # Moser et al. (1999)
+        ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
             
-# Axes labels
-ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$P/\varepsilon$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    # Axes labels
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$P/\varepsilon$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Set the plot parameters using the function 'set_plot_settings'
-# Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-# Save and show the figure
-save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
-
-#!--------------------------------------------------------------------------------------!
+    # Save and show the figure
+    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
+    
+    #!--------------------------------------------------------------------------------------!
 
 
 
