@@ -89,22 +89,36 @@ elif itype == 13:
         sh_velx   = M1[:,1]
         time_unit = M1[:,7]
         delta_99  = M1[:,9]
+        power_in  = M1[:,11]
+        a_fact    = M1[:,12]
         
-        # Initialize sum_shsq array (sum of the square of the longitudinal shear velocity) 
+        # Initialize sh_velxsq_sum array (sum of the square of the longitudinal shear velocity) 
         # (streamwise gradient multiplied by kinematic viscosity)
-        if i == 1:        
-            sum_shsq     = np.zeros(len(time_unit))
-            delta_99_sum = np.zeros(len(time_unit))
-    
+        if i == 1:
+                
+            sh_velxsq_sum = np.zeros(len(time_unit))
+            delta_99_sum  = np.zeros(len(time_unit))
+            power_in_sum  = np.zeros(len(time_unit))
+            a_fact_sum    = np.zeros(len(time_unit))
+            
         # Average the square of the longitudinal shear velocity over the realizations 
-        sum_shsq = sum_shsq + (sh_velx**2 / nr)
+        sh_velxsq_sum = sh_velxsq_sum + (sh_velx**2 / nr)
         
         # Average the BL thickness delta_99 over the realizations
-        delta_99_sum = delta_99_sum + delta_99 / nr 
+        delta_99_sum = delta_99_sum + delta_99 / nr
+        
+        # Average the power input over the realizations
+        # (to be refined with the explicit calculation with wall velocities and shear velocities)
+        power_in_sum = power_in_sum + power_in / nr 
+        
+        # Average the BL analogy factor over the realizations
+        a_fact_sum = a_fact_sum + a_fact / nr  
 
-    # Finalize longitudinal shear velocity and BL thickness averages
-    sh_velx  = np.sqrt(sum_shsq)
+    # Finalize the averages
+    sh_velx  = np.sqrt(sh_velxsq_sum)
     delta_99 = delta_99_sum
+    power_in = power_in_sum
+    a_fact   = a_fact_sum
 
     # Calculate friction Reynolds number (averaged over the realizations)
     re_tau   = sh_velx * delta_99 / nu
