@@ -68,6 +68,7 @@ uwall, nu, twd = set_flow_parameters(itype, re)
  y_plus_umean_yao,   mean_u_yao,
  y_plus_uvar_yao,    var_u_yao,
  y_plus_vvar_yao,    var_v_yao,
+ y_plus_wvar_yao,    var_w_yao,
  y_plus_uvmean_yao,  mean_uv_yao, 
  y_plus_moser_1999,  p_eps_ratio_moser_1999 ) = read_ref_data() 
   
@@ -462,10 +463,10 @@ if post_mean:
         ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
     
         # If wall oscillations are present
-        #if iswitch_wo == 1:
+        if iswitch_wo == 1:
     
             # Yao et al. (2019)
-        #    ax.scatter(y_plus_wvar_yao, var_w_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            ax.scatter(y_plus_wvar_yao, var_w_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
     
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
