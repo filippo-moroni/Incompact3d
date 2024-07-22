@@ -162,25 +162,32 @@ import numpy as np
 def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq, snap_numb=None):
 
     # Initialize variables
-    snap_numb = None
-    mean_u    = 0.0
-    mean_w    = 0.0
-    var_u     = 0.0
-    var_v     = 0.0
-    mean_uv   = 0.0
+    snap_numb   = None
+    mean_u      = 0.0
+    mean_w      = 0.0
+    var_u       = 0.0
+    var_v       = 0.0
+    mean_uv     = 0.0
     
-    vort_x    = 0.0
-    vort_y    = 0.0
-    vort_z    = 0.0
-    mg_tot    = 0.0
-    mg_x      = 0.0
-    mg_z      = 0.0
+    vort_x      = 0.0
+    vort_y      = 0.0
+    vort_z      = 0.0
+    mg_tot      = 0.0
+    mg_x        = 0.0
+    mg_z        = 0.0
     
-    Ruuz      = 0.0
-    Rvvz      = 0.0
-    Rwwz      = 0.0
-    Ruvz      = 0.0
-    Rppz      = 0.0
+    Ruuz        = 0.0
+    Rvvz        = 0.0
+    Rwwz        = 0.0
+    Ruvz        = 0.0
+    Rppz        = 0.0
+    
+    tke_conv    = 0.0
+    tke_turbt   = 0.0   
+    tke_pstrain = 0.0     
+    tke_difft   = 0.0
+    tke_prod    = 0.0
+    tke_pseps   = 0.0
     
     print()
 
