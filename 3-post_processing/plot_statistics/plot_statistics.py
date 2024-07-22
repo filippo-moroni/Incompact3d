@@ -126,6 +126,8 @@ if itype == 13:
     print()
     print("Boundary layer thickness, delta_99 = ", bl_thick)
     print()
+    print("Domain height in wall units, Ly+ = ", Ly_plus)
+    print()
     
 # Rescaling variables through wall units
 delta_x_plus = delta_x / delta_nu
@@ -399,7 +401,7 @@ if post_mean:
     if itype == 13:
 
         xlimsup = 520.0
-        ylimsup = 2.5
+        ylimsup = 1.5
             
     # Channel    
     elif itype == 3:

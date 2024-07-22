@@ -167,6 +167,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     mean_w      = 0.0
     var_u       = 0.0
     var_v       = 0.0
+    var_w       = 0.0
     mean_uv     = 0.0
     
     vort_x      = 0.0
@@ -206,6 +207,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             mean_w  = M[:,2]   
             var_u   = M[:,3]
             var_v   = M[:,4]
+            var_w   = M[:,5]
             mean_uv = M[:,12]
     
         # Reading of vorticity components and mean gradient
@@ -304,7 +306,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     print()
  
     return (
-    mean_u, mean_w, var_u, var_v, mean_uv, 
+    mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
     vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
     tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
