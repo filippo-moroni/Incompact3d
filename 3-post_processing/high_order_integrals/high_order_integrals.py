@@ -84,10 +84,11 @@ if os.path.exists(data_path) and os.path.isdir(data_path):
 else:
 
     # Asking the user the realization folder to use (if TTBL)
-    realiz = int(input("Specify the realization folder to read time units 't': "))
-    data_path = f'data_r{realiz}'
     print()
-
+    realiz = int(input("Specify the realization folder to read time units 't': "))
+    print()
+    data_path = f'data_r{realiz}'
+    
 #!---------------------------------------------------------!
 # Calculations start here, we are employing a Python 
 # spline function that passes through all provided points.
