@@ -250,7 +250,7 @@ if itype == 13:
     ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga 
-    ax.plot(cf_gboga, retau_gboga, color='C1', linestyle='-', linewidth=pp.lw)
+    ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
     
     # Axes labels
     ax.set_xlabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
