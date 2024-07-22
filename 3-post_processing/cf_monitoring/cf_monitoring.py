@@ -176,7 +176,7 @@ elif itype == 3:
                 f"{'delta_TU':<{pp.c_w}}, " +
                 f"{'n_snap':<{pp.c_w}}\n"   )
 
-        f.write(f"{mean_cf:{pp.fs2}}, "     +
+        f.write(f"{mean_cf:{pp.fs8}}, "     +
                 f"{t_tot:{pp.fs}}, "        +
                 f"{delta:{pp.fs}}, "        +
                 f"{n_snap:{pp.fs}}\n"       )

@@ -183,8 +183,8 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{re_tau[j]:{pp.fs}}, "         +
             f"{re_ds[j]:{pp.fs}}, "          +
             f"{re_theta[j]:{pp.fs}}, "       +
-            f"{sh_vel[j]:{pp.fs}}, "         +
-            f"{cf[j]:{pp.fs2}}, "            +
+            f"{sh_vel[j]:{pp.fs6}}, "        +
+            f"{cf[j]:{pp.fs8}}, "            +
             f"{a_fact[j]:{pp.fs}}, "         +
             f"{time_unit[j]:{pp.fs}}\n"      )
             
