@@ -5,7 +5,7 @@ Pure temporal spanwise oscillations
 Channel flow, nominal Re_tau = 200
 !------------------------------------!
 
-y^+,                 umean^+
+y^+,                 umean^+ (actual shear velocity scaling)
 1.0664123997287465,  1.2138177554251577
 1.2202181611980578,  1.3382264409113667
 1.3961936377044861,  1.4973538293239628

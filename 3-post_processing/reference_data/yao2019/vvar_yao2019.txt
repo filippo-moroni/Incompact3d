@@ -5,7 +5,7 @@ Pure temporal spanwise oscillations
 Channel flow, nominal Re_tau = 200
 !------------------------------------!
 
-y^+,                 vvar^+
+y^+,                 v_RMS^+ (unforced shear velocity scaling)
 0.5429810312785688,  0.007460930941604715
 0.6532649130362256,  0.008311788470922732
 0.7859623780940866,  0.01038334681087627
