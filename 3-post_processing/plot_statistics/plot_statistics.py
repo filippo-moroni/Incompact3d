@@ -59,22 +59,23 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 uwall, nu, twd = set_flow_parameters(itype, re)
 
 #!--- Reference data ---!
-(y_plus_lm,         mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm, 
- rz_plus_cuuz_kim,  cuuz_kim,                          
- rz_plus_cvvz_kim,  cvvz_kim,                          
- rz_plus_cwwz_kim,  cwwz_kim,                          
- y_plus_touber,     mean_u_touber,                     
- y_plus_umean_yao,  mean_u_yao,                        
- y_plus_uvar_yao,   var_u_yao,                         
- y_plus_vvar_yao,   var_v_yao,                         
- y_plus_uvmean_yao, mean_uv_yao,
- y_plus_moser_1999, p_eps_ratio_moser_1999) = read_ref_data() 
- 
+(y_plus_lm,          mean_u_lm, 
+ var_u_lm, var_v_lm, var_w_lm,      mean_uv_lm,
+ rz_plus_cuuz_kim,   cuuz_kim, 
+ rz_plus_cvvz_kim,   cvvz_kim,
+ rz_plus_cwwz_kim,   cwwz_kim,
+ y_plus_touber,      mean_u_touber,
+ y_plus_umean_yao,   mean_u_yao,
+ y_plus_uvar_yao,    var_u_yao,
+ y_plus_vvar_yao,    var_v_yao,
+ y_plus_uvmean_yao,  mean_uv_yao, 
+ y_plus_moser_1999,  p_eps_ratio_moser_1999 ) = read_ref_data() 
+  
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Read statistics data
-(mean_u, mean_w, var_u, var_v, mean_uv, 
+(mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
  vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
  tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
@@ -141,6 +142,7 @@ Lz_plus = Lz / delta_nu
 mean_u  /= sh_vel
 var_u   /= sh_vel ** 2
 var_v   /= sh_vel ** 2
+var_w   /= sh_vel ** 2
 mean_uv /= sh_vel ** 2
 
 # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
@@ -356,7 +358,7 @@ if post_mean:
     # TTBL
     if itype == 13:
     
-        xlimsup = 520.0
+        xlimsup = Ly_plus
         ylimsup = 10.0       
            
     # Channel    
@@ -400,7 +402,7 @@ if post_mean:
     # TTBL
     if itype == 13:
 
-        xlimsup = 520.0
+        xlimsup = Ly_plus
         ylimsup = 1.5
             
     # Channel    
@@ -430,6 +432,50 @@ if post_mean:
     save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string)
 
     #!--------------------------------------------------------------------------------------!
+    
+    # <w'w'>
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # Limits for axes
+    xliminf = 0.1
+    yliminf = 0.0
+
+    # <w'w'>
+    ax.scatter(y_plus[:ny], var_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+    # TTBL
+    if itype == 13:
+
+        xlimsup = Ly_plus
+        ylimsup = 2.5
+            
+    # Channel    
+    elif itype == 3:
+
+        xlimsup = 300.0
+        ylimsup = 0.8
+    
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
+    
+        # If wall oscillations are present
+        #if iswitch_wo == 1:
+    
+            # Yao et al. (2019)
+        #    ax.scatter(y_plus_wvar_yao, var_w_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+    
+    # Axes labels
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\langle w^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+    # Save and show the figure
+    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string)
+
+    #!--------------------------------------------------------------------------------------!
 
     # <u'v'>
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -444,7 +490,7 @@ if post_mean:
     # TTBL
     if itype == 13:
 
-        xlimsup = 520.0
+        xlimsup = Ly_plus
         ylimsup = 1.2
         
         # y-axis label

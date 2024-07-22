@@ -330,6 +330,7 @@ def read_ref_data():
     mean_u_lm              = 0.0
     var_u_lm               = 0.0
     var_v_lm               = 0.0
+    var_w_lm               = 0.0
     mean_uv_lm             = 0.0
     
     # Kim et al. (1987), Channel Re_tau = 180
@@ -371,6 +372,7 @@ def read_ref_data():
     M = np.loadtxt(dirname + '/lee&moser2015/var_stats_lee&moser2015.txt', skiprows=75, dtype=np.float64)
     var_u_lm   =   M[:,2]
     var_v_lm   =   M[:,3]
+    var_w_lm   =   M[:,4]
     mean_uv_lm = - M[:,5]
     
     # Velocity auto-correlations, Kim et al. (1987) data, y+ = 10.52
@@ -435,16 +437,17 @@ def read_ref_data():
     
     # Return to main program with extracted reference data
     return (
-    y_plus_lm,         mean_u_lm, var_u_lm, var_v_lm, mean_uv_lm,
-    rz_plus_cuuz_kim,  cuuz_kim, 
-    rz_plus_cvvz_kim,  cvvz_kim,
-    rz_plus_cwwz_kim,  cwwz_kim,
-    y_plus_touber,     mean_u_touber,
-    y_plus_umean_yao,  mean_u_yao,
-    y_plus_uvar_yao,   var_u_yao,
-    y_plus_vvar_yao,   var_v_yao,
-    y_plus_uvmean_yao, mean_uv_yao, 
-    y_plus_moser_1999, p_eps_ratio_moser_1999 
+    y_plus_lm,          mean_u_lm, 
+    var_u_lm, var_v_lm, var_w_lm,      mean_uv_lm,
+    rz_plus_cuuz_kim,   cuuz_kim, 
+    rz_plus_cvvz_kim,   cvvz_kim,
+    rz_plus_cwwz_kim,   cwwz_kim,
+    y_plus_touber,      mean_u_touber,
+    y_plus_umean_yao,   mean_u_yao,
+    y_plus_uvar_yao,    var_u_yao,
+    y_plus_vvar_yao,    var_v_yao,
+    y_plus_uvmean_yao,  mean_uv_yao, 
+    y_plus_moser_1999,  p_eps_ratio_moser_1999 
     ) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
