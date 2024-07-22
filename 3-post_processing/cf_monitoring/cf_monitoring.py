@@ -124,7 +124,26 @@ elif itype == 13:
     re_tau   = sh_velx * delta_99 / nu
     
     # Calculate longitudinal friction coefficient
-    cfx = 2.0 * (sh_velx / uwall)**2 
+    cfx = 2.0 * (sh_velx / uwall)**2
+    
+    # Create the file and write  
+    with open('data_post/cf_monitoring_realiz.txt', 'w') as f:
+        f.write(f"{'sh_velx (approx)':<{pp.c_w}}, "  +
+                f"{'cfx (approx)':<{pp.c_w}}, "      +
+                f"{'delta_99 (approx)':<{pp.c_w}}, " +
+                f"{'Re_tau (approx)':<{pp.c_w}}, " +
+                f"{'P_in (approx)':<{pp.c_w}}, "     +
+                f"{'A_fact (approx)':<{pp.c_w}}, "   +
+                f"{'time_unit':<{pp.c_w}}\n"         )
+
+        for j in range(0, len(time_unit)):
+            f.write(f"{sh_velx[j]:{pp.fs}}, "        +
+                    f"{cfx[j]:{pp.fs8}}, "           +
+                    f"{delta_99[j]:{pp.fs}}, "       +
+                    f"{re_tau[j]:{pp.fs}}, "         +
+                    f"{power_in[j]:{pp.fs}}, "       +
+                    f"{a_fact[j]:{pp.fs}}, "         +
+                    f"{time_unit[j]:{pp.fs}}\n"      ) 
 
 #!--------------------------------------------------------------------------------------!
 
