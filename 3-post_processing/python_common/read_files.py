@@ -105,33 +105,51 @@ def read_input_files(filename1,filename2):
         lines = file.readlines()
    
         # Extract needed lines  
-        add_string = lines[3]   # Flow case name
-        file1      = lines[5]   # First snapshot index
-        filen      = lines[6]   # Final snapshot index
-        icrfile    = lines[7]   # File increment
-        nr         = lines[8]   # Number of flow realizations
+        add_string  = lines[3]    # Flow case name
+        file1       = lines[5]    # First snapshot index
+        filen       = lines[6]    # Final snapshot index
+        icrfile     = lines[7]    # File increment
+        nr          = lines[8]    # Number of flow realizations
+        
+        post_mean   = lines[12]   # Compute mean statistics
+        post_vort   = lines[13]   # Compute mean vorticity and mean gradient
+        post_diss   = lines[14]   # Compute mean total dissipation rate    
+        post_corz   = lines[15]   # Compute correlation functions along z (a previous run with post_mean = 1 must be performed)
+        post_tke_eq = lines[16]   # Compute fluctuating terms of TKE equations (a previous run with post_mean = 1 must be performed)
         
         # Extract the needed variables
-        file1   =   file1.split('#')[0].strip()
-        filen   =   filen.split('#')[0].strip()
-        icrfile = icrfile.split('#')[0].strip()
-        nr      =      nr.split('#')[0].strip()
+        add_string  = add_string.split('!')[0]
+        add_string  = add_string.rstrip()
         
-        add_string = add_string.split('!')[0]
-        add_string = add_string.rstrip()
+        file1       =   file1.split('#')[0].strip()
+        filen       =   filen.split('#')[0].strip()
+        icrfile     = icrfile.split('#')[0].strip()
+        nr          =      nr.split('#')[0].strip()
         
-        # Convert to needed variable type (integer)
-        file1      = int(file1)
-        filen      = int(filen)
-        icrfile    = int(icrfile)
-        nr         = int(nr)
+        post_mean   =   post_mean.split('#')[0].strip()
+        post_vort   =   post_vort.split('#')[0].strip()
+        post_diss   =   post_diss.split('#')[0].strip()
+        post_corz   =   post_corz.split('#')[0].strip()
+        post_tke_eq = post_tke_eq.split('#')[0].strip()
+        
+        # Convert to needed variable type (integer or boolean)
+        file1       = int(file1)
+        filen       = int(filen)
+        icrfile     = int(icrfile)
+        nr          = int(nr)
+        
+        post_mean   = bool(int(post_mean))
+        post_vort   = bool(int(post_vort))
+        post_diss   = bool(int(post_diss))
+        post_corz   = bool(int(post_corz))
+        post_tke_eq = bool(int(post_tke_eq))
     
     # Halve the points in y direction for a channel
     if itype == 3:
         ny = (ny - 1) // 2 + 1
         
     # Return to main program with extracted parameters
-    return itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, file1, filen, icrfile, nr, add_string
+    return itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     
