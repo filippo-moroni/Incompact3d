@@ -83,7 +83,7 @@ elif switcher == 1:
     nxi           = nz
     field_name    = "/vortxplanex"
     cmap_name     = "RdBu"
-    field_label   = r"$\omega_x*D/U_w$"
+    field_label   = r"$\omega_x D/U_w$"
     field_ticks   = [-0.5,0.5]
     xlabel        = r'$z/D$'
     pad_cbar_lab  = -20
