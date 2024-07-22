@@ -355,6 +355,8 @@ def read_ref_data():
     var_u_yao              = 0.0
     y_plus_vvar_yao        = 0.0
     var_v_yao              = 0.0
+    y_plus_wvar_yao        = 0.0
+    var_w_yao              = 0.0
     y_plus_uvmean_yao      = 0.0
     mean_uv_yao            = 0.0
     
@@ -410,6 +412,10 @@ def read_ref_data():
     M = np.loadtxt(dirname + '/yao2019/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_vvar_yao = M[:,0]
     var_v_yao       = M[:,1]
+                
+    M = np.loadtxt(dirname + '/yao2019/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_wvar_yao = M[:,0]
+    var_w_yao       = M[:,1]
         
     M = np.loadtxt(dirname + '/yao2019/uvmean_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_uvmean_yao = M[:,0]
@@ -427,10 +433,12 @@ def read_ref_data():
     # Rescale RMSs and obtain variances
     y_plus_uvar_yao   = y_plus_uvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
     y_plus_vvar_yao   = y_plus_vvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
+    y_plus_wvar_yao   = y_plus_wvar_yao   * (sh_vel_c_yao / sh_vel_0_yao)
     y_plus_uvmean_yao = y_plus_uvmean_yao * (sh_vel_c_yao / sh_vel_0_yao)
         
     var_u_yao   = (var_u_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
     var_v_yao   = (var_v_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
+    var_w_yao   = (var_w_yao   *  sh_vel_0_yao / sh_vel_c_yao)**2
     mean_uv_yao = mean_uv_yao  * (sh_vel_0_yao / sh_vel_c_yao)**2
     
     # Moser et al. (1999)
@@ -449,6 +457,7 @@ def read_ref_data():
     y_plus_umean_yao,   mean_u_yao,
     y_plus_uvar_yao,    var_u_yao,
     y_plus_vvar_yao,    var_v_yao,
+    y_plus_wvar_yao,    var_w_yao,
     y_plus_uvmean_yao,  mean_uv_yao, 
     y_plus_moser_1999,  p_eps_ratio_moser_1999 
     ) 
