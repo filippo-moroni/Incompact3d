@@ -59,7 +59,6 @@ print()
 # Asking the user the realization folder to use (if TTBL)
 if itype == 13:
 
-    print()
     realiz = int(input("Specify the realization folder to use: "))
     print()
 
