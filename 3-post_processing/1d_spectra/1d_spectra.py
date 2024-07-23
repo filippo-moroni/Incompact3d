@@ -170,7 +170,7 @@ xliminf = np.min(kz)*0.8
 xlimsup = np.max(kz)*1.2
 ylimsup = np.max(Euuz[c,:])*1.2
 
-if premult == 1:
+if i_premult == 1:
 
     yliminf = np.min(Euuz)*1.2
 
@@ -215,7 +215,7 @@ xliminf = np.min(kz)*0.8
 xlimsup = np.max(kz)*1.2
 ylimsup = np.max(Evvz[c,:])*1.2
 
-if premult == 1:
+if i_premult == 1:
 
     yliminf = np.min(Evvz)*1.2
 
@@ -260,7 +260,7 @@ xliminf = np.min(kz)*0.8
 xlimsup = np.max(kz)*1.2
 ylimsup = np.max(Ewwz[c,:])*1.2
 
-if premult == 1:
+if i_premult == 1:
 
     yliminf = np.min(Ewwz)*1.2
 
@@ -305,7 +305,7 @@ xliminf = np.min(kz)*0.8
 xlimsup = np.max(kz)*1.2
 ylimsup = np.max(Euvz[c,:])*1.2
 
-if premult == 1:
+if i_premult == 1:
 
     yliminf = np.min(Euvz)*1.2
 
