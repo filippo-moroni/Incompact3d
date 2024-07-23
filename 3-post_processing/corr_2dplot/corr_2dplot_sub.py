@@ -121,7 +121,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     ystar = round(ystar, 1)
     
     # Text to show value of maximum correlation  
-    ax.text(xlimsup*0.25, text_y, fr'$y^+ = {ystar}$', color='k', fontsize=5, ha='center')
+    ax.text(xlimsup*0.25, text_y, fr'$y^+ = {ystar}$', color='k', fontsize=4, ha='center')
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='horizontal', ticks=field_ticks)
