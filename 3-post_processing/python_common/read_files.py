@@ -159,7 +159,7 @@ def read_input_files(filename1,filename2):
 
 import numpy as np
 
-def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq, snap_numb=None):
+def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq, ny, nz, snap_numb=None):
 
     # Initialize variables
     snap_numb   = None
@@ -179,11 +179,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     
     eps         = 0.0
     
-    Ruuz        = 0.0
-    Rvvz        = 0.0
-    Rwwz        = 0.0
-    Ruvz        = 0.0
-    Rppz        = 0.0
+    Ruuz = np.zeros((ny,nz), dtype=np.float64, order='F')
+    Rvvz = np.zeros((ny,nz), dtype=np.float64, order='F')
+    Rwwz = np.zeros((ny,nz), dtype=np.float64, order='F')
+    Ruvz = np.zeros((ny,nz), dtype=np.float64, order='F')
+    Rppz = np.zeros((ny,nz), dtype=np.float64, order='F')
     
     tke_conv    = 0.0
     tke_turbt   = 0.0   

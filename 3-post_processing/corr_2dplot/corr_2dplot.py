@@ -68,7 +68,8 @@ y = y[:ny]
  vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
  tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
- snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq)
+ snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
+                        post_corz, post_tke_eq, ny, nz)
 
 # Plot 2-dimensional plots for correlation functions
 corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
