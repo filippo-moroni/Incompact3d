@@ -32,14 +32,28 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     # Restriction is imposed also in y if we are dealing with a Channel. 
     Lz       = Lz / 2.0                       
     nz       = nz // 2 
-    var      = var[:ny,:nz]                       
- 
+    var      = var[:ny,:nz]
+    
+    # Find the index of the maximum value
+    max_index_flat = np.argmax(var)
+
+    # Convert the flat index to a 2D index
+    max_index_2d = np.unravel_index(max_index_flat, var.shape)
+
+    """
+    print(f"Index of maximum value (flat): {max_index_flat}")
+    print(f"Index of maximum value (2D): {max_index_2d}")                       
+    """
+  
     # Calculate friction quantities and adimensionalize
     sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
     delta_nu = nu / sh_vel                    # viscous length 
     y_plus   = y / delta_nu                   
     Lz_plus  = Lz / delta_nu
-                                                                                    
+
+    # Calculate the y+ of maximum correlation
+    ystar = y_plus[max_index_2d[0]] 
+                                                                                   
     # Create the separation variable array (in viscous units)
     rz = np.linspace(0.0, Lz_plus, nz)
 
@@ -96,6 +110,18 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
                 
     # Plotting with filled contours    
     C = ax.contourf(X, Y, var, lvls, cmap=cmap_name, extend='neither')
+    
+    # Horizontal line to show the location of maximum correlation
+    ax.hlines(y=ystar, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+    
+    # Text y-position
+    text_y = ystar + 2.0
+    
+    # Round y* value
+    ystar = round(ystar, 1)
+    
+    # Text to show value of maximum correlation  
+    ax.text(xlimsup*0.25, text_y, fr'$y^+ = {ystar}$', color='k', fontsize=4, ha='center')
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='horizontal', ticks=field_ticks)
