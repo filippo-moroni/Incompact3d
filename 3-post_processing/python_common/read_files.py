@@ -362,7 +362,11 @@ def read_ref_data():
     
     # Moser et al. (1999)
     y_plus_moser_1999      = 0.0
-    p_eps_ratio_moser_1999 = 0.0  # ratio of production and dissipation of TKE  
+    p_eps_ratio_moser_1999 = 0.0  # ratio of production and dissipation of TKE
+    
+    # Lee & Moser (2015), Channel Re_tau = 1000
+    y_plus_lm1000          = 0.0
+    p_eps_ratio_lm1000     = 0.0  # ratio of production and dissipation of TKE minus 1.0  
     
     #!--- Reading of fixed walls channels data ---!
     
@@ -444,7 +448,12 @@ def read_ref_data():
     # Moser et al. (1999)
     M = np.loadtxt(dirname + '/moser1999/p_eps_ratio_moser1999.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_moser_1999      = M[:,0]
-    p_eps_ratio_moser_1999 = M[:,1]      
+    p_eps_ratio_moser_1999 = M[:,1]  
+    
+    # Lee & Moser (2015), Channel Re_tau = 1000
+    M = np.loadtxt(dirname + '/lee&moser2015/p_eps_ratio_minus1_lee&moser2015.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_lm1000      = M[:,0]
+    p_eps_ratio_lm1000 = M[:,1]     
     
     # Return to main program with extracted reference data
     return (
@@ -459,7 +468,8 @@ def read_ref_data():
     y_plus_vvar_yao,    var_v_yao,
     y_plus_wvar_yao,    var_w_yao,
     y_plus_uvmean_yao,  mean_uv_yao, 
-    y_plus_moser_1999,  p_eps_ratio_moser_1999 
+    y_plus_moser_1999,  p_eps_ratio_moser_1999,
+    y_plus_lm1000,      p_eps_ratio_lm1000
     ) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
