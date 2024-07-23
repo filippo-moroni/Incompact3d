@@ -611,8 +611,12 @@ if post_corz:
     # Limits for axes
     xliminf = 0.0
     xlimsup = Lz_plus / 2.0
-    yliminf = np.min(Ruuz[c,:])*1.2
-    ylimsup = np.max(Ruuz[c,:])*1.2
+    
+    min_value1 = np.min(Ruuz[c,:])
+    min_value2 = np.min(cuuz_kim[:])
+
+    yliminf = min(min_value1,min_value2)*1.2
+    ylimsup = 1.2
 
     # Auto-correlation coefficient for u'
     ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -645,8 +649,12 @@ if post_corz:
     # Limits for axes
     xliminf = 0.0
     xlimsup = Lz_plus / 2.0
-    yliminf = np.min(Rvvz[c,:])*1.2
-    ylimsup = np.max(Rvvz[c,:])*1.2
+    
+    min_value1 = np.min(Rvvz[c,:])
+    min_value2 = np.min(cvvz_kim[:])
+
+    yliminf = min(min_value1,min_value2)*1.2
+    ylimsup = 1.2
 
     # Auto-correlation coefficient for v'
     ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -679,8 +687,12 @@ if post_corz:
     # Limits for axes
     xliminf = 0.0
     xlimsup = Lz_plus / 2.0
-    yliminf = np.min(Rwwz[c,:])*1.2
-    ylimsup = np.max(Rwwz[c,:])*1.2
+    
+    min_value1 = np.min(Rwwz[c,:])
+    min_value2 = np.min(cwwz_kim[:])
+
+    yliminf = min(min_value1,min_value2)*1.2
+    ylimsup = 1.2
 
     # Auto-correlation coefficient for w'
     ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
@@ -799,7 +811,7 @@ if post_tke_eq:
         xlimsup = 300.0
         
         # Moser et al. (1999)
-        ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
+    ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
             
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
