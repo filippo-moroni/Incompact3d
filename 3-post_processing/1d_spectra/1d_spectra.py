@@ -67,6 +67,8 @@ delta_nu = nu / sh_vel                    # viscous length
 y_plus   = y / delta_nu                   # y+
 Ly_plus  = Ly / delta_nu                  # Ly+
 
+delta_z  = Lz / nz
+
 # Valid only for TTBLs
 if itype == 13:
     
@@ -93,7 +95,13 @@ if itype == 13:
     print("Domain height in wall units, Ly+ = ", Ly_plus)
     print()
 
-#!--- Calculations for correlations ---!
+#!-------------------------------!
+
+# Select between spectra and pre-multiplied spectra
+i_premult = int(input("Would you like to plot pre-multiplied spectra? (0: no, 1: yes) "))
+print()
+
+#!--- y+ input for 1D spectra ---!
 
 # Select the height at which correlations are plotted
 y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
@@ -112,59 +120,87 @@ print()
 print("Corresponding j-th index = ", c)
 print()
 
+#!-------------------------------!
+
 # Define wavenumber in spanwise direction (z)
 kz = np.zeros(nz)
 for i in range(len(kz)):
     kz[i] = (i+1)*(2*np.pi/Lz)
 
-# FFT
+# Define arrays 
 Euuz = np.zeros((ny,nz))
-Euuz = np.real(fft(Ruuz))
-kzEuuz = Euuz*kz
+Evvz = np.zeros((ny,nz))
+Ewwz = np.zeros((ny,nz))
+Euvz = np.zeros((ny,nz))
 
-#!--- Resize arrays for plotting ---!
+# Apply FFT
+Euuz = np.real(fft(Ruuz))
+Evvz = np.real(fft(Rvvz))
+Ewwz = np.real(fft(Rwwz))
+Euvz = np.real(fft(Ruvz))
 
 # Half number of points in z to avoid periodicity effects
 nzh = nz // 2
 
+# Resize arrays and rescale in wall units 
 kz     = kz[:nzh]*delta_nu
-Euuz   = Euuz[:,:nzh] / sh_vel **2
-kzEuuz = kzEuuz[:,:nzh]
+Euuz   = Euuz[:,:nzh] / sh_vel**2
+Evvz   = Evvz[:,:nzh] / sh_vel**2
+Ewwz   = Ewwz[:,:nzh] / sh_vel**2
+Euvz   = Euvz[:,:nzh] / sh_vel**2
 
+# Pre-multiply if asked
+if i_premult == 1:
+    Euuz = Euuz*kz
+    Evvz = Evvz*kz
+    Ewwz = Ewwz*kz
+    Euvz = Euvz*kz
+    
+    yliminf = np.min(Euuz)*1.2
+
+else:
+
+    yliminf = 0.000001
+    
 #!--- Plot section ---!
 
 # Euuz
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
 # Limits for axes
-xliminf = np.min(kz)
-xlimsup = np.max(kz)
-
-#yliminf = np.min(kzEuuz)*1.2
-#ylimsup = np.max(kzEuuz)*1.2
-
-yliminf = np.min(Euuz)*1.2
-ylimsup = np.max(Euuz)*1.2
-
-yliminf = 0.001
+xliminf = np.min(kz)*0.8
+xlimsup = np.max(kz)*1.2
+ylimsup = np.max(Euuz[c,:])*1.2
 
 # Euuz 
-#ax.plot(kz, kzEuuz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
 ax.plot(kz, Euuz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
-    
-# Axes labels
-ax.set_xlabel(r'$k_z$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-ax.set_ylabel(r'$E_{uu}(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+# Axes labels
+ax.set_xlabel(r'$k_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-# Logarithmic y-axis
-ax.set_yscale('log')
+if i_premult == 1:
+    
+    ax.set_ylabel(r'$k_z^+E_{uu}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Save and show the figure
+    save_and_show_plot('kzEuuz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
 
-# Save and show the figure
-save_and_show_plot('Euuz', snap_numb=snap_numb, add_string=add_string)
+else:
+
+    ax.set_ylabel(r'$E_{uu}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Logarithmic y-axis (only in case of a standard spectrum)
+    ax.set_yscale('log')
+        
+    # Save and show the figure
+    save_and_show_plot('Euuz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+
+
 
 
 
