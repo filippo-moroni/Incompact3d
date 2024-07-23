@@ -31,7 +31,7 @@ import plot_params as pp
 # Import function to read 'input.i3d' and 'post.prm' files
 from read_files import read_input_files
 
-# Import function to setup flow parameters (kinematic viscosity only at the moment)
+# Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!

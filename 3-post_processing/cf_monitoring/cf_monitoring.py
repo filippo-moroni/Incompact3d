@@ -29,7 +29,7 @@ from plot_subs import set_plot_settings
 # Import function to read 'input.i3d' and 'post.prm' files and reference data
 from read_files import read_input_files, read_ref_data_temp_evol
 
-# Import function to setup flow parameters (kinematic viscosity only at the moment)
+# Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!

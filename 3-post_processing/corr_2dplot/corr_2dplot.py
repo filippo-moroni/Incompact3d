@@ -26,7 +26,7 @@ from plot_subs import set_plot_settings, save_and_show_plot
 # Import functions to read 'input.i3d', 'post.prm' files and statistics data
 from read_files import read_input_files, read_data
 
-# Import function to setup flow parameters (kinematic viscosity only at the moment)
+# Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
 # Import function to plot the correlation functions in 2d plots
