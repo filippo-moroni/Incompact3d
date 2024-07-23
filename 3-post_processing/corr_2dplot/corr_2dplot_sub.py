@@ -113,15 +113,12 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     
     # Horizontal line to show the location of maximum correlation
     ax.hlines(y=ystar, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-    
-    # Text y-position
-    text_y = ystar + 3.0
-    
+        
     # Round y* value
     ystar = round(ystar, 1)
     
     # Text to show value of maximum correlation  
-    ax.text(xlimsup*0.25, text_y, fr'$y^+ = {ystar}$', color='k', fontsize=4, ha='center')
+    ax.text(xlimsup*0.2, ystar*1.2, fr'$y^+ = {ystar}$', color='k', fontsize=4, ha='center')
     
     # Colorbar
     cbar = fig.colorbar(C, cax=cax, orientation='horizontal', ticks=field_ticks)
