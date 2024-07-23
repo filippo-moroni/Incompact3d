@@ -157,13 +157,9 @@ if i_premult == 1:
     Evvz = Evvz*kz
     Ewwz = Ewwz*kz
     Euvz = Euvz*kz
-    
-    yliminf = np.min(Euuz)*1.2
 
-else:
-
-    yliminf = 0.000001
-    
+#!------------------------------------------------------------------------------------------------------------------------------!    
+   
 #!--- Plot section ---!
 
 # Euuz
@@ -173,6 +169,14 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 xliminf = np.min(kz)*0.8
 xlimsup = np.max(kz)*1.2
 ylimsup = np.max(Euuz[c,:])*1.2
+
+if premult == 1:
+
+    yliminf = np.min(Euuz)*1.2
+
+else:
+
+    yliminf = 0.000001
 
 # Euuz 
 ax.plot(kz, Euuz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
@@ -200,9 +204,143 @@ else:
         
     # Save and show the figure
     save_and_show_plot('Euuz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    
+#!------------------------------------------------------------------------------------------------------------------------------!
 
+# Evvz
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
+# Limits for axes
+xliminf = np.min(kz)*0.8
+xlimsup = np.max(kz)*1.2
+ylimsup = np.max(Evvz[c,:])*1.2
 
+if premult == 1:
+
+    yliminf = np.min(Evvz)*1.2
+
+else:
+
+    yliminf = 0.000001
+
+# Evvz 
+ax.plot(kz, Evvz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+# Axes labels
+ax.set_xlabel(r'$k_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+if i_premult == 1:
+    
+    ax.set_ylabel(r'$k_z^+E_{vv}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Save and show the figure
+    save_and_show_plot('kzEvvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+else:
+
+    ax.set_ylabel(r'$E_{vv}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Logarithmic y-axis (only in case of a standard spectrum)
+    ax.set_yscale('log')
+        
+    # Save and show the figure
+    save_and_show_plot('Evvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    
+#!------------------------------------------------------------------------------------------------------------------------------!
+
+# Ewwz
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = np.min(kz)*0.8
+xlimsup = np.max(kz)*1.2
+ylimsup = np.max(Ewwz[c,:])*1.2
+
+if premult == 1:
+
+    yliminf = np.min(Ewwz)*1.2
+
+else:
+
+    yliminf = 0.000001
+
+# Ewwz 
+ax.plot(kz, Ewwz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+# Axes labels
+ax.set_xlabel(r'$k_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+if i_premult == 1:
+    
+    ax.set_ylabel(r'$k_z^+E_{ww}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Save and show the figure
+    save_and_show_plot('kzEwwz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+else:
+
+    ax.set_ylabel(r'$E_{ww}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Logarithmic y-axis (only in case of a standard spectrum)
+    ax.set_yscale('log')
+        
+    # Save and show the figure
+    save_and_show_plot('Ewwz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    
+#!------------------------------------------------------------------------------------------------------------------------------!
+
+# Euvz
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = np.min(kz)*0.8
+xlimsup = np.max(kz)*1.2
+ylimsup = np.max(Euvz[c,:])*1.2
+
+if premult == 1:
+
+    yliminf = np.min(Euvz)*1.2
+
+else:
+
+    yliminf = 0.000001
+
+# Euvz 
+ax.plot(kz, Euvz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+# Axes labels
+ax.set_xlabel(r'$k_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+if i_premult == 1:
+    
+    ax.set_ylabel(r'$k_z^+E_{uv}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Save and show the figure
+    save_and_show_plot('kzEuvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+
+else:
+
+    ax.set_ylabel(r'$E_{uv}^+(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Logarithmic y-axis (only in case of a standard spectrum)
+    ax.set_yscale('log')
+        
+    # Save and show the figure
+    save_and_show_plot('Euvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    
+#!------------------------------------------------------------------------------------------------------------------------------!
 
 
 
