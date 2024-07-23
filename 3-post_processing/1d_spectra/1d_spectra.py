@@ -120,6 +120,31 @@ for i in range(len(kz)):
 Euuz = fft(Ruuz)
 
 
+#!--- Plot section ---!
+
+# Euuz
+fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+# Limits for axes
+xliminf = np.min(kz)
+yliminf = np.max(kz)
+xlimsup = np.min(Euuz)*1.2
+ylimsup = np.max(Euuz)*1.2
+
+# Euuz 
+ax.scatter(kz, Euuz[c,:], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+# Axes labels
+ax.set_xlabel(r'$k_z$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$E_{uu}(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Set the plot parameters using the function 'set_plot_settings'
+# Last argument is the switcher for semilog plot (1: yes, 0: no)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+# Save and show the figure
+save_and_show_plot('Euuz', snap_numb=snap_numb, add_string=add_string)
+
 
 
 
