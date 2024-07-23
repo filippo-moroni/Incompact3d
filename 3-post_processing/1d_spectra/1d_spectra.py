@@ -7,6 +7,7 @@ import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.fft import fft
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -56,7 +57,6 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
                                                                                                                                    
-
 # Valid only for TTBLs
 if itype == 13:
     
@@ -123,6 +123,20 @@ print()
 # Print the corresponding j-th index
 print("Corresponding j-th index = ", c)
 print()
+
+# Define wavenumber in spanwise direction (z)
+kz = np.zeros(nz)
+for i in range(len(kz)):
+    kz[i] = (i+1)*(2*np.pi/Lz)
+
+# FFT
+Euuz = fft(Ruuz)
+
+
+
+
+
+
 
 
 
