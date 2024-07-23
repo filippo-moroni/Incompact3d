@@ -39,7 +39,6 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     delta_nu = nu / sh_vel                    # viscous length 
     y_plus   = y / delta_nu                   
     Lz_plus  = Lz / delta_nu
-    var      = var / (sh_vel**2)
                                                                                     
     # Create the separation variable array (in viscous units)
     rz = np.linspace(0.0, Lz_plus, nz)
@@ -90,7 +89,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     # Functions to locate the colorbar
     divider = make_axes_locatable(ax)
     
-    cax = divider.append_axes('right', size=size_cbar, pad=0.05)
+    cax = divider.append_axes('top', size=size_cbar, pad=-0.7)
         
     # Imshow function (unexpectedly it adjusts well the aspect ratio of the plotted image with contourf)
     im = ax.imshow(var, cmap=cmap_name, extent=extent, origin='upper')
@@ -99,13 +98,20 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     C = ax.contourf(X, Y, var, lvls, cmap=cmap_name, extend='neither')
     
     # Colorbar
-    cbar = fig.colorbar(C, cax=cax, orientation='vertical', ticks=field_ticks)
+    cbar = fig.colorbar(C, cax=cax, orientation='horizontal', ticks=field_ticks)
+    
+    """ Options commented to avoid colorbar ticks
     
     # Set colobar tick labels
-    cbar.set_ticklabels(field_tick_labels)
+    #cbar.set_ticklabels(field_tick_labels)
        
     # Colorbar ticks 
-    cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
+    #cbar.ax.tick_params(axis='y', labelsize=pp.fla2, length=pp.lmajt, width=pp.tick_width) 
+     
+    """
+    
+    # No ticks for the colorbar
+    cbar.set_ticks([])
      
     # Colorbar label (use pp.pad_cbar_lab to use the default value for padding of the cbar label)
     cbar.set_label(field_label, fontsize=pp.fla, labelpad=pad_cbar_lab)  

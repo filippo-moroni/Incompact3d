@@ -53,8 +53,8 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 # Settings for contourf and colormap
 cmap_name     = "Greys"
 xlabel        = r'$r_z^+$' 
-pad_cbar_lab  = -18
-size_cbar     = '10%'
+pad_cbar_lab  = -16
+size_cbar     = '2%'
     
 #!--- Parameters ---!
 uwall, nu, twd = set_flow_parameters(itype, re)
@@ -72,10 +72,10 @@ y = y[:ny]
                         post_corz, post_tke_eq, ny, nz)
 
 # Plot 2-dimensional plots for correlation functions
-corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Rvvz,'Rvvz',r'$R_{vv}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}^+$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Rvvz,'Rvvz',r'$R_{vv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
 
 
 
