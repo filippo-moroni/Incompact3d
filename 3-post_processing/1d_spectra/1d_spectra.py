@@ -1,21 +1,12 @@
 #!---------------------------------------------------------!
-#! With this script, we perform plotting of statistics     !
-#! for TTBLs and channel flow simulations:                 !
-#!                                                         !
-#! - mean statistics (mean[u], var[u], etc.);              !
-#! - mean total dissipation (to be done);                  !
-#! - correlation coefficients for spanwise correlations.   !
-#!                                                         !
-#! Calculated and stored:                                  !
-#!                                                         !
-#! - non-dimensional grid spacings and domain dimensions.  !
+#! With this script, we perform plotting of pre-multiplied !
+#! 1D energy spectra of correlation functions.             !
 #!---------------------------------------------------------!
 
 import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import InterpolatedUnivariateSpline
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -38,8 +29,7 @@ from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!
 
-# Create folders to store later results (e.g. grid spacings and time scales files, plots)
-os.makedirs('data_post', mode=0o777, exist_ok=True)
+# Create folder to store plots
 os.makedirs('plots',     mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
@@ -81,7 +71,18 @@ if itype == 13:
         
         # Increment the index
         j = j + 1
-        
+    
+    # Friction Reynolds number
+    re_tau = sh_vel * bl_thick / nu
+    
+    # Print friction Reynolds number and boundary layer thickness
+    print("Friction Reynolds number, re_tau = ", re_tau)
+    print()
+    print("Boundary layer thickness, delta_99 = ", bl_thick)
+    print()
+    print("Domain height in wall units, Ly+ = ", Ly_plus)
+    print()
+           
 #!--------------------------------------------------------------------------------------!
 
 #!--- Calculations ---!
@@ -103,19 +104,6 @@ y_plus       = y       / delta_nu
 Lx_plus = Lx / delta_nu
 Ly_plus = Ly / delta_nu 
 Lz_plus = Lz / delta_nu
-
-# Friction Reynolds number
-if itype == 13:
-    re_tau = sh_vel * bl_thick / nu
-    
-    # Print friction Reynolds number and boundary layer thickness
-    print("Friction Reynolds number, re_tau = ", re_tau)
-    print()
-    print("Boundary layer thickness, delta_99 = ", bl_thick)
-    print()
-    print("Domain height in wall units, Ly+ = ", Ly_plus)
-    print()
-
 
 #!--- Calculations for correlations ---!
 
