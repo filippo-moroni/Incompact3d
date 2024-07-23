@@ -47,9 +47,9 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     #!--- Plot 1D section ---!
 
     # Limits for axes (used in 'set_plot_settings')
-    xliminf = 0.0
+    xliminf = 0.1
     xlimsup = Lz_plus
-    yliminf = 0.0
+    yliminf = 0.1
     ylimsup = y_plus[-1]
 
     # Extent of the image (dimensions of the domain)
@@ -82,7 +82,10 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+    # Logarithmic y-axis
+    ax.set_yscale('log')
 
     # Functions to locate the colorbar
     divider = make_axes_locatable(ax)
