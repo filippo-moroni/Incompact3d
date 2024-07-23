@@ -1,6 +1,6 @@
 #!------------------------------------------------------!
 #! With this script, we perform plotting of correlation !
-#! coefficient functions in 2d plots as function of     !
+#! functions in 2d plots as function of                 !
 #! y+ and spanwise separation variable rz^+.            !
 #!------------------------------------------------------!
 
