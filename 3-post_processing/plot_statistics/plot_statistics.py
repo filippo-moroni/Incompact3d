@@ -806,6 +806,9 @@ if post_tke_eq:
     if itype == 13:
 
         xlimsup = 520.0
+        
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm1000, p_eps_ratio_lm1000 + 1.0, color='C1', linestyle='-', linewidth=pp.lw)
                 
     # Channel    
     elif itype == 3:
