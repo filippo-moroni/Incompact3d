@@ -71,8 +71,7 @@ uwall, nu, twd = set_flow_parameters(itype, re)
  y_plus_wvar_yao,    var_w_yao,
  y_plus_uvmean_yao,  mean_uv_yao, 
  y_plus_moser_1999,  p_eps_ratio_moser_1999,
- y_plus_lm1000,      p_eps_ratio_lm1000) 
- = read_ref_data() 
+ y_plus_lm1000,      p_eps_ratio_lm1000) = read_ref_data() 
   
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
@@ -824,7 +823,7 @@ if post_tke_eq:
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
     save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
