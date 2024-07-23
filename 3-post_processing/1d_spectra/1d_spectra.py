@@ -1,6 +1,8 @@
 #!---------------------------------------------------------!
 #! With this script, we perform plotting of pre-multiplied !
 #! 1D energy spectra of correlation functions.             !
+#!                                                         !
+#! Inspired by 'spectra.py' by G. Boga.                    !
 #!---------------------------------------------------------!
 
 import sys

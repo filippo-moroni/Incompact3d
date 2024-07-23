@@ -3,7 +3,7 @@
 #! instantaneous planes of scalar field or of streamwise   !
 #! vorticity.                                              !
 #!                                                         !
-#! Inspired by 'snap2png.py' by R. Corsini                 !
+#! Inspired by 'snap2png.py' by R. Corsini.                !
 #!---------------------------------------------------------!
 
 import sys
