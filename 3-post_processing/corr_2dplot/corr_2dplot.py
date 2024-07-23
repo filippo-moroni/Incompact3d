@@ -53,7 +53,7 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 # Settings for contourf and colormap
 cmap_name     = "Greys"
 xlabel        = r'$r_z^+$' 
-pad_cbar_lab  = -16
+pad_cbar_lab  = -14
 size_cbar     = '2%'
     
 #!--- Parameters ---!
