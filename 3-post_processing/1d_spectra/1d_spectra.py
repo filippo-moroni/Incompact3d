@@ -56,7 +56,16 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
-                                                                                                                                   
+                                                                                                                                              
+#!--------------------------------------------------------------------------------------!
+
+#!--- Calculations ---!
+          
+# Inner quantities
+sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
+delta_nu = nu / sh_vel                    # viscous length
+y_plus   = y / delta_nu                   # y+
+
 # Valid only for TTBLs
 if itype == 13:
     
@@ -82,28 +91,6 @@ if itype == 13:
     print()
     print("Domain height in wall units, Ly+ = ", Ly_plus)
     print()
-           
-#!--------------------------------------------------------------------------------------!
-
-#!--- Calculations ---!
-
-# Mesh spacings
-delta_x = Lx / nx
-delta_z = Lz / nz
-           
-# Shear quantities
-sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
-delta_nu = nu / sh_vel                    # viscous length
-t_nu     = nu / (sh_vel ** 2)             # viscous time
-  
-# Rescaling variables through wall units
-delta_x_plus = delta_x / delta_nu
-delta_z_plus = delta_z / delta_nu
-y_plus       = y       / delta_nu 
-
-Lx_plus = Lx / delta_nu
-Ly_plus = Ly / delta_nu 
-Lz_plus = Lz / delta_nu
 
 #!--- Calculations for correlations ---!
 
