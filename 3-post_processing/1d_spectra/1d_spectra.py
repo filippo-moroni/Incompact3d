@@ -124,7 +124,9 @@ print()
 
 #!-------------------------------!
 
-# Define wavenumber in spanwise direction (z)
+# Define angular wavenumber in spanwise direction (z)
+# Since we have periodicity in z, the largest wavenumber is pi / delta_z 
+# (smallest harmonic that can be represented (quarter of a sine)
 kz = np.zeros(nz)
 for i in range(len(kz)):
     kz[i] = (i+1)*(2*np.pi/Lz)
@@ -135,7 +137,7 @@ Evvz = np.zeros((ny,nz))
 Ewwz = np.zeros((ny,nz))
 Euvz = np.zeros((ny,nz))
 
-# Apply FFT
+# Apply FFT (we need a periodic signal)
 Euuz = np.real(fft(Ruuz))
 Evvz = np.real(fft(Rvvz))
 Ewwz = np.real(fft(Rwwz))
