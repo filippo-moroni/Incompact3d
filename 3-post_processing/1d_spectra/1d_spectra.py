@@ -65,6 +65,7 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
 delta_nu = nu / sh_vel                    # viscous length
 y_plus   = y / delta_nu                   # y+
+Ly_plus  = Ly / delta_nu                  # Ly+
 
 # Valid only for TTBLs
 if itype == 13:
@@ -117,8 +118,18 @@ for i in range(len(kz)):
     kz[i] = (i+1)*(2*np.pi/Lz)
 
 # FFT
-Euuz = fft(Ruuz)
+Euuz = np.zeros((ny,nz))
+Euuz = np.real(fft(Ruuz))
+kzEuuz = Euuz*kz
 
+#!--- Resize arrays for plotting ---!
+
+# Half number of points in z to avoid periodicity effects
+nzh = nz // 2
+
+kz     = kz[:nzh]*delta_nu
+Euuz   = Euuz[:,:nzh] / sh_vel **2
+kzEuuz = kzEuuz[:,:nzh]
 
 #!--- Plot section ---!
 
@@ -127,12 +138,19 @@ fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_
 
 # Limits for axes
 xliminf = np.min(kz)
-yliminf = np.max(kz)
-xlimsup = np.min(Euuz)*1.2
+xlimsup = np.max(kz)
+
+#yliminf = np.min(kzEuuz)*1.2
+#ylimsup = np.max(kzEuuz)*1.2
+
+yliminf = np.min(Euuz)*1.2
 ylimsup = np.max(Euuz)*1.2
 
+yliminf = 0.001
+
 # Euuz 
-ax.scatter(kz, Euuz[c,:], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+#ax.plot(kz, kzEuuz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
+ax.plot(kz, Euuz[c,:], color='C0', linestyle='-', linewidth=pp.lw)
     
 # Axes labels
 ax.set_xlabel(r'$k_z$',       fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -140,7 +158,10 @@ ax.set_ylabel(r'$E_{uu}(z)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+# Logarithmic y-axis
+ax.set_yscale('log')
 
 # Save and show the figure
 save_and_show_plot('Euuz', snap_numb=snap_numb, add_string=add_string)
