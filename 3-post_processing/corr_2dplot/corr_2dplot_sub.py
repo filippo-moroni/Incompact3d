@@ -47,9 +47,9 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     #!--- Plot 1D section ---!
 
     # Limits for axes (used in 'set_plot_settings')
-    xliminf = 0.1
+    xliminf = 1.0
     xlimsup = Lz_plus
-    yliminf = 0.1
+    yliminf = 1.0
     ylimsup = y_plus[-1]
 
     # Extent of the image (dimensions of the domain)
