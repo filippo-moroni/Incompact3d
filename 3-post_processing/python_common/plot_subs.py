@@ -66,7 +66,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     - snap_numb (str, optional):     Snapshot number to be included in the filename. Added if itype is 13 (TTBL).
     - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name.
     - y_plus_in (float64, optional): The additional parameter to be included in the filename if we are plotting and saving correlation functions.
-    - re_tau (float64, optional):    Additional Friction Reynolds number value to add the the filename if we are saving a plot of a TTBL.
+    - re_tau (int, optional):        Additional Friction Reynolds number value to add the the filename if we are saving a plot of a TTBL.
     
     """
     

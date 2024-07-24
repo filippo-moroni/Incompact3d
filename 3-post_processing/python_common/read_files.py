@@ -200,7 +200,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         print("!--- Plotting of statistics for a channel ---!")
 
         # Setting 'snap_numb' to an empty string
-        snap_numb = ''
+        snap_numb = None
 
         # Reading of mean statistics
         if post_mean:

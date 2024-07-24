@@ -144,11 +144,13 @@ vort_y *= t_nu
 vort_z *= t_nu
 
 # Friction Reynolds number
+re_tau = None
+
 if itype == 13:
     re_tau = sh_vel * bl_thick / nu
     
-    # Round to remove decimal digits
-    re_tau = round(re_tau, 0)
+    # Remove decimal digits
+    re_tau = int(re_tau)
     
     # Print friction Reynolds number and boundary layer thickness
     print("Friction Reynolds number, re_tau = ", re_tau)
@@ -265,15 +267,11 @@ if post_mean:
     
     # Viscous sublayer and log law
     ax.plot(y_plus_vsl, u_plus_vsl, color=pp.grey, linestyle='--', linewidth=pp.lw)
-    ax.plot(y_plus_k, u_plus_k, color=pp.grey, linestyle='--', linewidth=pp.lw)
+    ax.plot(y_plus_k,   u_plus_k,   color=pp.grey, linestyle='--', linewidth=pp.lw)
     
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-    # Set the plot parameters using the function 'set_plot_settings'
-    # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
     
     # TTBL
     if itype == 13:
@@ -298,6 +296,10 @@ if post_mean:
         
             # Yao et al. (2019)
             ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
     
     # Save and show the figure
     save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
@@ -350,7 +352,7 @@ if post_mean:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string)
+    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
     
     #!--------------------------------------------------------------------------------------!
 
@@ -394,7 +396,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string)
+    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -438,7 +440,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string)
+    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
 
     #!--------------------------------------------------------------------------------------!
     
@@ -462,7 +464,7 @@ if post_mean:
     elif itype == 3:
 
         xlimsup = 300.0
-        ylimsup = 0.8
+        ylimsup = 1.5
     
         # Lee & Moser (2015)
         ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
@@ -482,7 +484,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string)
+    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -531,7 +533,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string)
+    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -644,7 +646,7 @@ if post_corz:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('Cuuz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    save_and_show_plot('Cuuz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -682,7 +684,7 @@ if post_corz:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('Cvvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    save_and_show_plot('Cvvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -720,7 +722,7 @@ if post_corz:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('Cwwz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    save_and_show_plot('Cwwz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -748,7 +750,7 @@ if post_corz:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -778,7 +780,7 @@ if post_corz:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
         # Save and show the figure
-        save_and_show_plot('Cppz', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+        save_and_show_plot('Cppz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -830,7 +832,7 @@ if post_tke_eq:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string)
+    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
     
     #!--------------------------------------------------------------------------------------!
 
