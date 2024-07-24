@@ -203,7 +203,7 @@ for var, ylabel in variables:
         ax.set_ylabel(r'$k_z^+{}$'.format(ylabel), fontsize=pp.fla, labelpad=pp.pad_axes_lab)
         
         # Save and show the figure
-        save_and_show_plot(f'kz{var}', snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+        save_and_show_plot(f'kz{var}', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
     else:
     
         # y-axis label

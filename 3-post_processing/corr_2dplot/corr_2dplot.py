@@ -71,11 +71,36 @@ y = y[:ny]
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
 
+# Valid only for TTBLs
+if itype == 13:
+    
+    # Initialize the index
+    j = 0
+    
+    # Calculate the index at which the BL thickness delta99 is and delta_99 itself
+    while mean_u[j] > mean_u[0]*0.01: 
+        
+        # Boundary layer thickness delta_99
+        bl_thick = y[j]
+        
+        # Increment the index
+        j = j + 1
+    
+    # Friction Reynolds number
+    re_tau = sh_vel * bl_thick / nu
+    re_tau = int(re_tau)
+    
+    # Print friction Reynolds number and boundary layer thickness
+    print("Friction Reynolds number, re_tau = ", re_tau)
+    print()
+    print("Boundary layer thickness, delta_99 = ", bl_thick)
+    print()
+
 # Plot 2-dimensional plots for correlation functions
-corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Rvvz,'Rvvz',r'$R_{vv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
-corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb)
+corr_2dplot(Ruuz,'Ruuz',r'$R_{uu}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
+corr_2dplot(Rvvz,'Rvvz',r'$R_{vv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
+corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
+corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
 
 
 

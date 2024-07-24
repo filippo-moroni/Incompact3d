@@ -26,7 +26,7 @@ from plot_subs import set_plot_settings, save_and_show_plot
 #!--------------------------------------------------------------------------------------!
   
 # General subroutine to plot correlation functions
-def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb):
+def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau):
     
     # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
     # Restriction is imposed also in y if we are dealing with a Channel. 
@@ -144,7 +144,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     ax.set_ylabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
     # Save and show the figure
-    save_and_show_plot(field_name, snap_numb=snap_numb, add_string=add_string)
+    save_and_show_plot(field_name, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
     
     
     
