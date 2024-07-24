@@ -612,7 +612,7 @@ if post_corz:
     
     #!--------------------------------------------------------------------------------------!
 
-    # Define the data and labels for each auto-correlation coefficient Cii(rz^+) plot
+    # Define data and labels for each auto-correlation coefficient Cii(rz^+) plot
     cii_plots = [
                  {
                   'title': 'Cuuz',
@@ -676,6 +676,8 @@ if post_corz:
         # Save and show the figure
         save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
+    #!--------------------------------------------------------------------------------------!
+
     # Cuvz
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
@@ -702,7 +704,7 @@ if post_corz:
     # Save and show the figure
     save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
-#!--------------------------------------------------------------------------------------!
+    #!--------------------------------------------------------------------------------------!
 
     if numscalar == 1:
 
