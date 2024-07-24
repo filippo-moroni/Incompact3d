@@ -71,6 +71,9 @@ y = y[:ny]
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
 
+# Inner quantities
+sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
+
 # Valid only for TTBLs
 if itype == 13:
     
@@ -102,7 +105,8 @@ corr_2dplot(Rvvz,'Rvvz',r'$R_{vv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,si
 corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
 corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
 
-
+if numscalar == 1:
+    corr_2dplot(Rppz,'Rppz',r'$R_{\varphi\varphi}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
 
 
 
