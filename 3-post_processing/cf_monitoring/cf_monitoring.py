@@ -128,8 +128,8 @@ elif itype == 13:
     
     # Create the file and write  
     with open('data_post/cf_monitoring_realiz.txt', 'w') as f:
-        f.write(f"{'sh_velx':<{pp.c_w}}, "  +
-                f"{'cfx':<{pp.c_w}}, "      +
+        f.write(f"{'sh_velx (O(6))':<{pp.c_w}}, "  +
+                f"{'cfx (O(6))':<{pp.c_w}}, "      +
                 f"{'delta_99':<{pp.c_w}}, " +
                 f"{'Re_tau':<{pp.c_w}}, " +
                 f"{'P_in':<{pp.c_w}}, "     +
