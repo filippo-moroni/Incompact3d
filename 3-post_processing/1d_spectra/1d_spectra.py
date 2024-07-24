@@ -88,6 +88,7 @@ if itype == 13:
     
     # Friction Reynolds number
     re_tau = sh_vel * bl_thick / nu
+    re_tau = int(re_tau)
     
     # Print friction Reynolds number and boundary layer thickness
     print("Friction Reynolds number, re_tau = ", re_tau)
@@ -212,7 +213,7 @@ for var, ylabel in variables:
         ax.set_yscale('log')
         
         # Save and show the figure
-        save_and_show_plot(var, snap_numb=snap_numb, add_string=add_string, y_plus_in=y_plus_in)
+        save_and_show_plot(var, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
 #!------------------------------------------------------------------------------------------------------------------------------!
 
