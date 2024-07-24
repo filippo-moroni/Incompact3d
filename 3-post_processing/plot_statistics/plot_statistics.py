@@ -278,7 +278,13 @@ if post_mean:
     
         xlimsup = Ly_plus
         ylimsup = 30.0
-                    
+     
+        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        if 150 < re_tau < 210:
+        
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+   
     # Channel    
     elif itype == 3:
 
@@ -370,8 +376,14 @@ if post_mean:
     if itype == 13:
     
         xlimsup = Ly_plus
-        ylimsup = 10.0       
-           
+        ylimsup = 10.0
+        
+        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        if 150 < re_tau < 210:
+        
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+               
     # Channel    
     elif itype == 3:
 
@@ -415,6 +427,12 @@ if post_mean:
 
         xlimsup = Ly_plus
         ylimsup = 1.5
+        
+        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        if 150 < re_tau < 210:
+        
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
     # Channel    
     elif itype == 3:
@@ -459,6 +477,12 @@ if post_mean:
 
         xlimsup = Ly_plus
         ylimsup = 2.5
+        
+        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        if 150 < re_tau < 210:
+        
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
     # Channel    
     elif itype == 3:
@@ -506,6 +530,12 @@ if post_mean:
         
         # y-axis label
         ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        
+        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        if 150 < re_tau < 210:
+        
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
     # Channel    
     elif itype == 3:
