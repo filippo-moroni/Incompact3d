@@ -56,7 +56,7 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
 import matplotlib.pyplot as plt
 
-def save_and_show_plot(variable_name, snap_numb=None, add_string=None, y_plus_in=None):
+def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None):
     
     """
     Saves and shows a plot with a given variable name and optional parameters.
@@ -66,6 +66,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, y_plus_in
     - snap_numb (str, optional):     Snapshot number to be included in the filename. Added if itype is 13 (TTBL).
     - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name.
     - y_plus_in (float64, optional): The additional parameter to be included in the filename if we are plotting and saving correlation functions.
+    - re_tau (float64, optional):    Additional Friction Reynolds number value to add the the filename if we are saving a plot of a TTBL.
     
     """
     
@@ -79,6 +80,10 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, y_plus_in
     # Add add_string if it is provided
     if add_string is not None:
         filename += f'_{add_string}'
+  
+    # Add re_tau if it is provided
+    if re_tau is not None:
+        filename += f'_retau={re_tau}'
     
     # Add y+ location of correlations if provided
     if y_plus_in is not None:
@@ -92,7 +97,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, y_plus_in
     plt.show()
 
 # Example usage:
-# save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string)
+# save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
 # save_and_show_plot('Cuuz', add_string=add_string, y_plus_in=y_plus_in)
     
 
