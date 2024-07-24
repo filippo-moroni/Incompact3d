@@ -612,119 +612,69 @@ if post_corz:
     
     #!--------------------------------------------------------------------------------------!
 
-    # Cuuz
-    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    # Define the data and labels for each auto-correlation coefficient Cii(rz^+) plot
+    cii_plots = [
+                 {
+                  'title': 'Cuuz',
+                  'var': Ruuz,
+                  'kim_data': cuuz_kim,
+                  'kim_rz_plus': rz_plus_cuuz_kim,
+                  'ylabel': r'$C_{uu}(r_z^+)$'
+                 },
+                 {
+                  'title': 'Cvvz',
+                  'var': Rvvz,
+                  'kim_data': cvvz_kim,
+                  'kim_rz_plus': rz_plus_cvvz_kim,
+                  'ylabel': r'$C_{vv}(r_z^+)$'
+                 },
+                 {
+                  'title': 'Cwwz',
+                  'var': Rwwz,
+                  'kim_data': cwwz_kim,
+                  'kim_rz_plus': rz_plus_cwwz_kim,
+                  'ylabel': r'$C_{ww}(r_z^+)$'
+                 }
+                ]
 
-    # Limits for axes
-    xliminf = 0.0
-    xlimsup = Lz_plus / 2.0
+    # Loop through each plot's data and create the plots
+    for plot in cii_plots:
+        
+        # Create the figure and axis
+        fig, ax = plt.subplots(1, 1, figsize=(pp.xinches, pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+        # Limits for axes
+        xliminf = 0.0
+        xlimsup = Lz_plus / 2.0
+
+        min_value1 = np.min(plot['var'][c, :])
+        min_value2 = np.min(plot['kim_data'][:])
+
+        yliminf = min(min_value1, min_value2) * 1.2
+        ylimsup = 1.2
+
+        # Auto-correlation coefficient Cii(rz^+)
+        ax.scatter(rz, plot['var'][c, :nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+
+        # Reference data at y+ = 10
+        if y_plus_in == 10.0:
     
-    min_value1 = np.min(Ruuz[c,:])
-    min_value2 = np.min(cuuz_kim[:])
+            # Kim et al. (1987) data
+            ax.plot(plot['kim_rz_plus'], plot['kim_data'], color='C1', linestyle='-', linewidth=pp.lw)
 
-    yliminf = min(min_value1,min_value2)*1.2
-    ylimsup = 1.2
+        # Plot horizontal line at C = 0
+        ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
 
-    # Auto-correlation coefficient for u'
-    ax.scatter(rz, Ruuz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        # Axes labels
+        ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        ax.set_ylabel(plot['ylabel'], fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-    # Reference data at y+ = 10 
-    if y_plus_in == 10.0:
+        # Set the plot parameters using the function 'set_plot_settings'
+        # Last argument is the switcher for semilog plot (1: yes, 0: no)
+        set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
-        # Kim et al. (1987) data
-        ax.plot(rz_plus_cuuz_kim, cuuz_kim, color='C1', linestyle='-', linewidth=pp.lw)
-
-    # Plot horizontal line at Cuu = 0
-    ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                    
-    # Axes labels
-    ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$C_{uu}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-    # Set the plot parameters using the function 'set_plot_settings'
-    # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-    # Save and show the figure
-    save_and_show_plot('Cuuz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
-
-    #!--------------------------------------------------------------------------------------!
-
-    # Cvvz
-    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-    # Limits for axes
-    xliminf = 0.0
-    xlimsup = Lz_plus / 2.0
-    
-    min_value1 = np.min(Rvvz[c,:])
-    min_value2 = np.min(cvvz_kim[:])
-
-    yliminf = min(min_value1,min_value2)*1.2
-    ylimsup = 1.2
-
-    # Auto-correlation coefficient for v'
-    ax.scatter(rz, Rvvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-
-    # Reference data at y+ = 10 
-    if y_plus_in == 10.0:
-
-        # Kim et al. (1987) data
-        ax.plot(rz_plus_cvvz_kim, cvvz_kim, color='C1', linestyle='-', linewidth=pp.lw)
-
-    # Plot horizontal line at Cvv = 0
-    ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                  
-    # Axes labels
-    ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$C_{vv}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-    # Set the plot parameters using the function 'set_plot_settings'
-    # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-    # Save and show the figure
-    save_and_show_plot('Cvvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
-
-    #!--------------------------------------------------------------------------------------!
-
-    # Cwwz
-    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-    # Limits for axes
-    xliminf = 0.0
-    xlimsup = Lz_plus / 2.0
-    
-    min_value1 = np.min(Rwwz[c,:])
-    min_value2 = np.min(cwwz_kim[:])
-
-    yliminf = min(min_value1,min_value2)*1.2
-    ylimsup = 1.2
-
-    # Auto-correlation coefficient for w'
-    ax.scatter(rz, Rwwz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-
-    # Reference data at y+ = 10 
-    if y_plus_in == 10.0:
-
-        # Kim et al. (1987) data
-        ax.plot(rz_plus_cwwz_kim, cwwz_kim, color='C1', linestyle='-', linewidth=pp.lw)
-
-    # Plot horizontal line at Cww = 0
-    ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-                   
-    # Axes labels
-    ax.set_xlabel(r'$r_z^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$C_{ww}(r_z^+)$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-
-    # Set the plot parameters using the function 'set_plot_settings'
-    # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-    # Save and show the figure
-    save_and_show_plot('Cwwz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
-
-    #!--------------------------------------------------------------------------------------!
+        # Save and show the figure
+        save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
     # Cuvz
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
