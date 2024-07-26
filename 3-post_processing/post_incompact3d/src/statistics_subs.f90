@@ -493,8 +493,8 @@ end subroutine stat_correlation_z
 ! Calculation of Turbulent Kinetic Energy (TKE) terms that cannot be obtained from mean flow statistics data.
 ! Used for for Channels and TTBLs (statistical homogeneity in x and z directions).
 ! All results obtained here are in y-pencils.
-! Results must be later derived.
-
+! Results are later derived in y-direction.
+!--------------------------------------------------------------------
 subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)   
 
   use param
