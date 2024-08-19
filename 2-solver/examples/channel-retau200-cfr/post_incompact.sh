@@ -18,5 +18,21 @@ module load gcc-12.1.1/ompi-4.1.5_nccl
 # Calculate total number of tasks
 TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
 
-# Launching
+# Copying the needed post.prm file
+cp post_1.prm post.prm
+
+# Launching for mean statistics
 mpirun -np $TOTAL_TASKS ../../../3-post_processing/post_incompact3d/build/bin/post_incompact3d
+
+# Copying the needed post.prm file
+cp post_2.prm post.prm
+
+# Launching again for correlations and TKE budgets
+mpirun -np $TOTAL_TASKS ../../../3-post_processing/post_incompact3d/build/bin/post_incompact3d
+
+# Deleting post.prm file
+rm post.prm
+
+
+
+
