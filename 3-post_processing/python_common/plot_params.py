@@ -5,6 +5,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import warnings
 
 # Set Numpy
 np.seterr(divide='ignore', invalid='ignore')
@@ -19,7 +20,6 @@ plt.rcParams.update({
 })
 
 # Filter warnings
-import warnings
 warnings.filterwarnings("error")
 
 #!--------------------------------------------------------------------------------------!
