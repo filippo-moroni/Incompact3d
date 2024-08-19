@@ -307,7 +307,7 @@ end if
      if(post_corz) then
    
          ! Correlation functions calculation (each subdomain, z-pencils)
-         call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
+         call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RsszH1)
       
      end if
      
