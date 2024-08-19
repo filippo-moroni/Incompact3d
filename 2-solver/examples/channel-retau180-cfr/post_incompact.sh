@@ -30,8 +30,6 @@ cp post_2.prm post.prm
 # Launching again for correlations and TKE budgets
 mpirun -np $TOTAL_TASKS ../../../3-post_processing/post_incompact3d/build/bin/post_incompact3d
 
-# Deleting post.prm file
-rm post.prm
 
 
 
