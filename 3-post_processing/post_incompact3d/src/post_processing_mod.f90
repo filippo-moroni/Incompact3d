@@ -447,13 +447,13 @@ contains
         allocate(RvvzH1(zsize(2),zsize(3))); RvvzH1 = zero
         allocate(RwwzH1(zsize(2),zsize(3))); RwwzH1 = zero
         allocate(RuvzH1(zsize(2),zsize(3))); RuvzH1 = zero      
-        allocate(RsszH1(zsize(2),zsize(3))); RppzH1 = zero 
+        allocate(RsszH1(zsize(2),zsize(3))); RsszH1 = zero 
                
         allocate(RuuzHT(zsize(2),zsize(3))); RuuzHT = zero
         allocate(RvvzHT(zsize(2),zsize(3))); RvvzHT = zero
         allocate(RwwzHT(zsize(2),zsize(3))); RwwzHT = zero
         allocate(RuvzHT(zsize(2),zsize(3))); RuvzHT = zero
-        allocate(RsszHT(zsize(2),zsize(3))); RppzHT = zero
+        allocate(RsszHT(zsize(2),zsize(3))); RsszHT = zero
     
     end if
     
