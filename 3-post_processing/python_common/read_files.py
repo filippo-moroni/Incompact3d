@@ -183,7 +183,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     Rvvz = np.zeros((ny,nz), dtype=np.float64, order='F')
     Rwwz = np.zeros((ny,nz), dtype=np.float64, order='F')
     Ruvz = np.zeros((ny,nz), dtype=np.float64, order='F')
-    Rppz = np.zeros((ny,nz), dtype=np.float64, order='F')
+    Rssz = np.zeros((ny,nz), dtype=np.float64, order='F')
     
     tke_conv    = 0.0
     tke_turbt   = 0.0   
@@ -236,7 +236,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             # Read scalar field correlations
             if numscalar == 1:
                 
-                Rppz = np.loadtxt('data_post/Rppz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Rssz = np.loadtxt('data_post/Rssz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
         # Read of TKE 
         if post_tke_eq:
@@ -294,7 +294,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             # Read scalar field correlations
             if numscalar == 1:
             
-                Rppz = np.loadtxt(f'data_post/Rppz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Rssz = np.loadtxt(f'data_post/Rssz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
         # Read of TKE
         if post_tke_eq: 
@@ -311,7 +311,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     return (
     mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
     vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
-    eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
+    eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
     snap_numb
     )

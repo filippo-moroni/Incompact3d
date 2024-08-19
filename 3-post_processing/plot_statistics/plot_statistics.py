@@ -79,7 +79,7 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 # Read statistics data
 (mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
  vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
- eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
+ eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
@@ -603,8 +603,8 @@ if post_corz:
     Ruvz = Ruvz / temp
 
     if numscalar == 1:
-        temp = Rppz[c,0]
-        Rppz = Rppz / temp
+        temp = Rssz[c,0]
+        Rssz = Rssz / temp
 
     # Halve the number of points in z-dir. to avoid periodicity effects
     nz = nz // 2
@@ -738,19 +738,19 @@ if post_corz:
 
     if numscalar == 1:
 
-        # Cppz
+        # Cssz
         fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
         # Limits for axes
         xliminf = 0.0
         xlimsup = Lz_plus / 2.0
-        yliminf = np.min(Rppz[c,:])*1.2
-        ylimsup = np.max(Rppz[c,:])*1.2
+        yliminf = np.min(Rssz[c,:])*1.2
+        ylimsup = np.max(Rssz[c,:])*1.2
 
-        # Auto-correlation coefficient for phi'
-        ax.scatter(rz, Rppz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        # Auto-correlation coefficient for phi' (s: scalar)
+        ax.scatter(rz, Rssz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
-        # Plot horizontal line at Cpp = 0
+        # Plot horizontal line at Css = 0
         ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
                    
         # Axes labels
@@ -762,7 +762,7 @@ if post_corz:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
         # Save and show the figure
-        save_and_show_plot('Cppz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
+        save_and_show_plot('Cssz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
 
     #!--------------------------------------------------------------------------------------!
 

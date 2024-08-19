@@ -66,7 +66,7 @@ y = y[:ny]
 # Read statistics data
 (mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
  vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
- eps, Ruuz, Rvvz, Rwwz, Ruvz, Rppz,
+ eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
@@ -106,7 +106,7 @@ corr_2dplot(Rwwz,'Rwwz',r'$R_{ww}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,si
 corr_2dplot(Ruvz,'Ruvz',r'$R_{uv}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
 
 if numscalar == 1:
-    corr_2dplot(Rppz,'Rppz',r'$R_{\varphi\varphi}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
+    corr_2dplot(Rssz,'Rssz',r'$R_{\varphi\varphi}$',Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau)
 
 
 
