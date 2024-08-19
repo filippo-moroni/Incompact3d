@@ -493,7 +493,7 @@ end if
       call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
-      call MPI_REDUCE(RppzH1,RppzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+      call MPI_REDUCE(RsszH1,RsszHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   end if
   
   if(post_tke_eq) then
@@ -862,18 +862,18 @@ end if
                                        
         close(iunit)
         
-!--- Scalar field correlation function, Rppz ---!
+!--- Scalar field correlation function, Rssz ---!
 #ifdef TTBL_MODE
         ! Writing the snapshot index as character
         write(snap_index, ifilenameformat) ifile 
         snap_index = adjustl(snap_index) 
         
-        ! Write the Rppz filename for TTBL
-        write(filename, '(A,A,A)') 'Rppz-', trim(snap_index), '.txt'
+        ! Write the Rssz filename for TTBL
+        write(filename, '(A,A,A)') 'Rssz-', trim(snap_index), '.txt'
         filename = adjustl(filename)
 #else
-        ! Write the Rppz filename for channel flow
-        write(filename, '(A)') 'Rppz.txt'
+        ! Write the Rssz filename for channel flow
+        write(filename, '(A)') 'Rssz.txt'
         filename = adjustl(filename)
 #endif       
 
@@ -886,7 +886,7 @@ end if
         ! Scalar fluctuations correlation function        
         do j = 1, ysize(2)
                 
-            write(iunit, format_string) (RppzHT(j, k), ' ', k = 1, zsize(3))
+            write(iunit, format_string) (RsszHT(j, k), ' ', k = 1, zsize(3))
                
         end do
                                        
@@ -1028,9 +1028,9 @@ end if
      print *,'==========================================================='
      print *,''
      print *,'The following statistics have been saved in'
-     print *,'"Riiz", "Ruvz" and "Rppz" file(s):'
+     print *,'"Riiz", "Ruvz" and "Rssz" file(s):'
      print *,''
-     print *,'Ruu(z), Rvv(z), Rww(z), Ruv(z), Rpp(z)'
+     print *,'Ruu(z), Rvv(z), Rww(z), Ruv(z), Rss(z)'
      print *,''    
      endif
      

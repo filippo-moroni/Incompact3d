@@ -90,8 +90,8 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: epsmeanHT
   
   ! Arrays for correlation functions (velocity and scalar (p: phi)) 
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1
-  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT,RppzHT
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1,RsszH1
+  real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT,RsszHT
   
   !--- Arrays for fluctuating terms for TKE equation ---!
   real(mytype), save, allocatable, dimension(:,:,:) :: kvprime_mean,  pseudo_eps_tke_mean
@@ -447,13 +447,13 @@ contains
         allocate(RvvzH1(zsize(2),zsize(3))); RvvzH1 = zero
         allocate(RwwzH1(zsize(2),zsize(3))); RwwzH1 = zero
         allocate(RuvzH1(zsize(2),zsize(3))); RuvzH1 = zero      
-        allocate(RppzH1(zsize(2),zsize(3))); RppzH1 = zero 
+        allocate(RsszH1(zsize(2),zsize(3))); RppzH1 = zero 
                
         allocate(RuuzHT(zsize(2),zsize(3))); RuuzHT = zero
         allocate(RvvzHT(zsize(2),zsize(3))); RvvzHT = zero
         allocate(RwwzHT(zsize(2),zsize(3))); RwwzHT = zero
         allocate(RuvzHT(zsize(2),zsize(3))); RuvzHT = zero
-        allocate(RppzHT(zsize(2),zsize(3))); RppzHT = zero
+        allocate(RsszHT(zsize(2),zsize(3))); RppzHT = zero
     
     end if
     
@@ -614,10 +614,10 @@ contains
   if (post_corz) then
   
       ! Subdomains
-      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero;RppzH1=zero
+      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero;RsszH1=zero
   
       ! Total domain
-      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero;RppzHT=zero
+      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero;RsszHT=zero
   
   end if
   
