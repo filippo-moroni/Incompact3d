@@ -323,8 +323,18 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
 #!-----------------------------------------!
 
 import numpy as np
+import os
 
 def read_ref_data():
+
+    # Get environment variable for Desktop path
+    base_path = os.getenv('desktop')
+
+    if base_path is None:
+        raise EnvironmentError("Please set the Desktop environment variable.")
+
+    # Directory where reference data are stored
+    dirname = os.path.join(base_path, 'Incompact3d/3-post_processing/reference_data')
 
     #!--- Initialize reference data ---!
     
@@ -369,10 +379,7 @@ def read_ref_data():
     p_eps_ratio_lm1000     = 0.0  # ratio of production and dissipation of TKE minus 1.0  
     
     #!--- Reading of fixed walls channels data ---!
-    
-    # Directory where reference data are stored
-    dirname = '/home/n286654/Desktop/Incompact3d/3-post_processing/reference_data'
-              
+                  
     # Reading of Lee & Moser (2015) data
     M = np.loadtxt(dirname + '/lee&moser2015/mean_stats_lee&moser2015.txt', skiprows=72, dtype=np.float64)
     y_plus_lm = M[:,1]
