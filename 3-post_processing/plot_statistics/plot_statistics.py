@@ -153,7 +153,7 @@ if itype == 13:
     re_tau = int(re_tau)
     
     # Print friction Reynolds number and boundary layer thickness
-    print("Friction Reynolds number, re_tau = ", re_tau)
+    print("Friction Reynolds number, Re_tau = ", re_tau)
     print()
     print("Boundary layer thickness, delta_99 = ", bl_thick)
     print()
