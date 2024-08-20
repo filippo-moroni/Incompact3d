@@ -1,34 +1,7 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
 module genepsi
 
   public
@@ -49,16 +22,16 @@ contains
 #ifdef DEBG
     if (nrank .eq. 0) write(*,*)'# body_init start'
 #endif
-    !###################################################################
+    !---------------------------------------------------------------------------!
     ! Check if geometry folder exists
-    !###################################################################
+    !---------------------------------------------------------------------------!
     if (nrank==0) then
       inquire(file="geometry", exist=dir_exists)
       if (.not.dir_exists) then
         call execute_command_line("mkdir geometry 2> /dev/null")
       end if
     end if
-    !###################################################################
+    !---------------------------------------------------------------------------!
     ep1(:,:,:)=zero
     call geomcomplex(ep1,xstart(1),xend(1),ny,xstart(2),xend(2),xstart(3),xend(3),dx,yp,dz,one)
 
@@ -68,8 +41,7 @@ contains
 
     return
   end subroutine epsi_init
-!############################################################################
-!############################################################################
+!---------------------------------------------------------------------------!
   subroutine geomcomplex(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, dx, yp, dz, remp)
 
     USE param, ONLY : itype, itype_channel
@@ -91,14 +63,13 @@ contains
     ENDIF
 
   end subroutine geomcomplex
-!############################################################################
-!############################################################################
+!---------------------------------------------------------------------------!
   subroutine genepsi3d(ep1)
 
-    USE variables, only : nx,ny,nz,nxm,nym,nzm,yp, ilist
-    USE param, only : xlx,yly,zlz,dx,dy,dz,izap,npif,nclx,ncly,nclz,istret,itype
+    use variables, only : nx,ny,nz,nxm,nym,nzm,yp, ilist
+    use param, only : xlx,yly,zlz,dx,dy,dz,izap,npif,nclx,ncly,nclz,istret,itype
     use param, only : itime
-    USE complex_geometry
+    use complex_geometry
     use decomp_2d
 
     implicit none
@@ -113,17 +84,17 @@ contains
     ! jet control with microjets using an alternating direction forcing
     ! strategy, Int. J. of Computational Fluid Dynamics, 28, 393--410
     !*****************************************************************!
-    !
+    
     logical :: dir_exists
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ep1
-    !
+    
     if (nrank==0.and.mod(itime,ilist)==0) then
       write(*,*)'==========================================================='
       write(*,*)'Generating the geometry!'
     end if
-    !###################################################################
+    !---------------------------------------------------------------------------!
     ! Check if planes folder exists
-    !###################################################################
+    !---------------------------------------------------------------------------!
     if (nrank==0) then
       inquire(file="data", exist=dir_exists)
       if (.not.dir_exists) then
@@ -134,7 +105,7 @@ contains
         call execute_command_line("mkdir data/geometry 2> /dev/null")
       end if
     end if
-    !###################################################################
+    !---------------------------------------------------------------------------!
     
       call gene_epsi_3D(ep1,nx,ny,nz,dx,dy,dz,xlx,yly,zlz ,&
            nclx,ncly,nclz,nxraf,nyraf,nzraf   ,&
@@ -147,18 +118,18 @@ contains
     !      nxipif,nxfpif,nyipif,nyfpif,nzipif,nzfpif,nobjmax,npif,.false.)
     !
   end subroutine genepsi3d
-!
-!############################################################################
-!############################################################################
+!---------------------------------------------------------------------------!
   subroutine gene_epsi_3D(ep1,nx,ny,nz,dx,dy,dz,xlx,yly,zlz ,&
        nclx,ncly,nclz,nxraf,nyraf,nzraf   ,&
        xi,xf,yi,yf,zi,zf,nobjx,nobjy,nobjz,&
        nobjmax,yp,nraf)
-    use param, only : zero,half, one, two
+    
+       use param, only : zero,half, one, two
     use decomp_2d
     use MPI
+
     implicit none
-    !
+    
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ep1,smoofun,fbcx,fbcy,fbcz
     real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ep2
     real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ep3
@@ -608,16 +579,16 @@ contains
     !
     return
   end subroutine gene_epsi_3D
-!############################################################################
-!############################################################################
+!---------------------------------------------------------------------------!
   subroutine verif_epsi(ep1,npif,izap,nx,ny,nz,nobjmax,&
        nxipif,nxfpif,nyipif,nyfpif,nzipif,nzfpif)
+    
     use decomp_2d
     use param, only: zero, one
     use MPI
 
     implicit none
-    !
+    
     integer                            :: nx,ny,nz,nobjmax
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ep1
     real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ep2
@@ -764,14 +735,15 @@ contains
     !
     return
   end subroutine verif_epsi
-!############################################################################
-!############################################################################
+!---------------------------------------------------------------------------!
   subroutine geomcomplex_io(nx,ny,nz,ep1,nobjx,nobjy,nobjz,xi,xf,yi,yf,zi,zf,&
        nxipif,nxfpif,nyipif,nyfpif,nzipif,nzfpif,nobjmax,npif,read_flag)
+    
     use decomp_2d
-    USE decomp_2d_io
+    use decomp_2d_io
+    
     implicit none
-    !
+    
     logical, intent(in) :: read_flag
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ep1
     integer                            :: nx,ny,nz,nobjmax
@@ -788,7 +760,7 @@ contains
     integer                            :: i,j,k,count
     character :: tmp_char
     character(len=*), parameter :: io_geom = "io-geom"
-    !###################################################################
+    !---------------------------------------------------------------------------!
     if (read_flag) then
       if (nrank==0) print *,'Reading geometry'
       call decomp_2d_read_one(1,ep1,'data/geometry','epsilon.bin',io_geom)   
@@ -796,7 +768,7 @@ contains
       if (nrank==0) print *,'Writing geometry'
       call decomp_2d_write_one(1,ep1,'data/geometry','epsilon.bin',0,io_geom)
     endif
-    !###################################################################
+    !---------------------------------------------------------------------------!
     !x-pencil
     open(67,file='data/geometry/nobjx.dat',form='formatted',access='direct',recl=13)
     do k=xstart(3),xend(3)
@@ -836,7 +808,7 @@ contains
        enddo
     enddo
     close(67)
-    !###################################################################
+    !---------------------------------------------------------------------------!
     !x-pencil
     open(67,file='data/geometry/nxifpif.dat',form='formatted',access='direct',recl=25)
     do k=xstart(3),xend(3)
@@ -882,7 +854,7 @@ contains
        enddo
     enddo
     close(67)
-    !###################################################################
+    !---------------------------------------------------------------------------!
     !x-pencil
     open(67,file='data/geometry/xixf.dat',form='formatted',access='direct',recl=49)
     do k=xstart(3),xend(3)
@@ -930,5 +902,5 @@ contains
     close(67)
     return
   end subroutine geomcomplex_io
-  !############################################################################
+  !---------------------------------------------------------------------------!
 end module genepsi
