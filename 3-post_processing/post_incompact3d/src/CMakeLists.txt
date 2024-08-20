@@ -5,7 +5,6 @@ message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
 
 add_executable(post_incompact3d
-                    BC-dbg-schemes.f90
                     derive.f90
                     derive_y1d.f90
                     filters.f90
@@ -20,7 +19,6 @@ add_executable(post_incompact3d
                     variables.f90
                     visu.f90)
                     
-#add_executable(post_incompact3d ${files_post_incompact3d})
 target_include_directories(post_incompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
 target_link_libraries(post_incompact3d PRIVATE decomp2d)
 if (MPI_FOUND)

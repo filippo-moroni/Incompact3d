@@ -1084,8 +1084,8 @@ subroutine multmatrix9(td2,ta2,ux2,npaire)
 end subroutine multmatrix9
 
 !-----------------------------------------------------------------------------!
-! Compute 1D arrays containing LU decomposition
-! To be checked if it is still used.
+! Compute 1D arrays containing LU decomposition.
+! Used in 'schemes' subroutine inside schemes.f90. 
 !-----------------------------------------------------------------------------!
 subroutine implicit_schemes()
 
