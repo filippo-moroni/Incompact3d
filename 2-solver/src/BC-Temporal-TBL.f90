@@ -1,7 +1,7 @@
 !----------------------------------------------------------!
 !         This module is used to run temporal TBLs         !
 !                       simulations.                       !
-!      Adapted from original Incompact3d files (v4.0)      !
+!      Adapted from original Incompact3d file (v4.0)       !
 !               for channel flow simulations.              !
 !----------------------------------------------------------!
 
