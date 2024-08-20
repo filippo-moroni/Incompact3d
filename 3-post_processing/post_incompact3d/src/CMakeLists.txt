@@ -16,8 +16,7 @@ add_executable(post_incompact3d
                     schemes.f90               
                     statistics_subs.f90
                     tools.f90               
-                    variables.f90
-                    visu.f90)
+                    variables.f90)
                     
 target_include_directories(post_incompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
 target_link_libraries(post_incompact3d PRIVATE decomp2d)
