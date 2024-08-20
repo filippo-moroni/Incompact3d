@@ -273,7 +273,6 @@ subroutine init_xcompact3d()
 
 endsubroutine init_xcompact3d
 !########################################################################
-!########################################################################
 subroutine finalise_xcompact3d()
 
   use MPI
