@@ -1,34 +1,6 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
 
 module case
 
@@ -36,7 +8,6 @@ module case
   use decomp_2d
   use variables
 
-  use user_sim
   use dbg_schemes
   use channel
   use temporal_tbl
@@ -77,11 +48,7 @@ contains
     pressure0 = one
     rho1(:,:,:,:) = one
 
-    if (itype.eq.itype_user) then
-
-       call init_user (ux1, uy1, uz1, ep1, phi1)
-
-    elseif (itype.eq.itype_channel) then
+    if (itype.eq.itype_channel) then
 
        call init_channel (ux1, uy1, uz1, ep1, phi1)
 
@@ -128,11 +95,7 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho
     
-    if (itype .eq. itype_user) then
-
-       call boundary_conditions_user (ux,uy,uz,phi,ep)
-
-    elseif (itype.eq.itype_channel) then
+    if (itype.eq.itype_channel) then
 
        ! Calculate the spanwise wall oscillations
        if (iswitch_wo .eq. 1) then
@@ -226,11 +189,7 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ep
     real(mytype), dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp
 
-    if (itype.eq.itype_user) then
-
-       call postprocess_user (ux, uy, uz, phi, ep)
-
-    elseif (itype.eq.itype_channel) then
+    if (itype.eq.itype_channel) then
 
        call postprocess_channel (ux, uy, uz, pp, phi, ep)
 
@@ -287,13 +246,8 @@ contains
     character(len=32), intent(in) :: num
 
     logical :: called_visu = .false.
-    
-    if (itype.eq.itype_user) then
-
-       call visu_user(ux1, uy1, uz1, pp3, phi1, ep1, num)
-       called_visu = .true.      
-
-    elseif (itype.eq.itype_channel) then
+      
+    if (itype.eq.itype_channel) then
 
        call visu_channel(ux1, uy1, uz1, pp3, phi1, ep1, num)
        called_visu = .true.

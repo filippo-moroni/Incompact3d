@@ -31,8 +31,6 @@ contains
     use decomp_2d_io
     use variables
     use param
-    use MPI
-    use dbg_schemes, only : tanh_prec,cosh_prec,sqrt_prec,abs_prec
     use tools,       only : apply_spatial_filter 
     use ibm_param
          
@@ -54,13 +52,13 @@ contains
     integer      :: i,j,k
         
     ! Momentum thickness calculation 
-    theta_sl = 54.0*xnu/uwall
+    theta_sl = 54.0_mytype*xnu/uwall
     
     ! Initial mean gradient
-    mg = - (uwall / (4.0 * theta_sl)) * (1.0 / cosh_prec(twd / 2.0 / theta_sl))**2
+    mg = - (uwall / (four * theta_sl)) * (one / cosh(twd / two / theta_sl))**2
     
     ! Initial shear velocity
-    sh_vel_ic = sqrt_prec(xnu * abs_prec(mg))
+    sh_vel_ic = sqrt(xnu * abs(mg))
     
     ! Initial viscous length
     delta_nu_ic = xnu / sh_vel_ic
@@ -108,7 +106,7 @@ contains
        if (istret/=0) y=yp(j+xstart(2)-1)
                     
        ! Initial streamwise velocity profile
-       um = uwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
+       um = uwall*(half + half*(tanh((twd/two/theta_sl)*(one - y/twd))))
            
        ! Difference between wall and mean velocities
        diff = uwall - um
@@ -154,7 +152,7 @@ contains
              if (istret/=0) y=yp(j+xstart(2)-1)
              
              ! Initial scalar profile (same thickness of the velocity BL, change if Pr =/ 1)
-             phim = phiwall*(half + half*(tanh_prec((twd/two/theta_sl)*(one - y/twd))))
+             phim = phiwall*(half + half*(tanh((twd/two/theta_sl)*(one - y/twd))))
             
              ! Only mean profile, no noise            
              do i=1,xsize(1)

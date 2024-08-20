@@ -496,79 +496,78 @@ module param
   real(mytype),parameter :: zpnine=0.9_mytype
   real(mytype),parameter :: zpninefive=0.95_mytype
 
+  real(mytype),parameter :: zero=0.0_mytype
   real(mytype),parameter :: half=0.5_mytype
-  real(mytype),parameter :: twothird=2._mytype/3._mytype
-  real(mytype),parameter :: zero=0._mytype
-  real(mytype),parameter :: one=1._mytype
+  real(mytype),parameter :: twothird=2.0_mytype/3.0_mytype
+  real(mytype),parameter :: one=1.0_mytype
   real(mytype),parameter :: onepfive=1.5_mytype
-  real(mytype),parameter :: two=2._mytype
+  real(mytype),parameter :: two=2.0_mytype
   real(mytype),parameter :: twopfive=2.5_mytype
-  real(mytype),parameter :: three=3._mytype
+  real(mytype),parameter :: three=3.0_mytype
   real(mytype),parameter :: threepfive=3.5_mytype
-  real(mytype),parameter :: four=4._mytype
-  real(mytype),parameter :: five=5._mytype
-  real(mytype),parameter :: six=6._mytype
-  real(mytype),parameter :: seven=7._mytype
-  real(mytype),parameter :: eight=8._mytype
-  real(mytype),parameter :: nine=9._mytype
+  real(mytype),parameter :: four=4.0_mytype
+  real(mytype),parameter :: five=5.0_mytype
+  real(mytype),parameter :: six=6.0_mytype
+  real(mytype),parameter :: seven=7.0_mytype
+  real(mytype),parameter :: eight=8.0_mytype
+  real(mytype),parameter :: nine=9.0_mytype
 
-  real(mytype),parameter :: ten=10._mytype
-  real(mytype),parameter :: eleven=11._mytype
-  real(mytype),parameter :: twelve=12._mytype
-  real(mytype),parameter :: thirteen=13._mytype
-  real(mytype),parameter :: fourteen=14._mytype
-  real(mytype),parameter :: fifteen=15._mytype
-  real(mytype),parameter :: sixteen=16._mytype
-  real(mytype),parameter :: seventeen=17._mytype
-  real(mytype),parameter :: eighteen=18._mytype
+  real(mytype),parameter :: ten=10.0_mytype
+  real(mytype),parameter :: eleven=11.0_mytype
+  real(mytype),parameter :: twelve=12.0_mytype
+  real(mytype),parameter :: thirteen=13.0_mytype
+  real(mytype),parameter :: fourteen=14.0_mytype
+  real(mytype),parameter :: fifteen=15.0_mytype
+  real(mytype),parameter :: sixteen=16.0_mytype
+  real(mytype),parameter :: seventeen=17.0_mytype
+  real(mytype),parameter :: eighteen=18.0_mytype
 
-  real(mytype),parameter :: twenty=20._mytype
-  real(mytype),parameter :: twentyone=21._mytype
-  real(mytype),parameter :: twentythree=23._mytype
-  real(mytype),parameter :: twentyfour=24._mytype
-  real(mytype),parameter :: twentyfive=25._mytype
-  real(mytype),parameter :: twentyseven=27._mytype
-  real(mytype),parameter :: twentyeight=28._mytype
-  !
-  real(mytype),parameter :: thirty=30._mytype
-  real(mytype),parameter :: thirtytwo=32._mytype
-  real(mytype),parameter :: thirtyfour=34._mytype
-  real(mytype),parameter :: thirtysix=36._mytype
-  real(mytype),parameter :: thirtyseven=37._mytype
-  !
-  real(mytype),parameter :: forty=40._mytype
-  real(mytype),parameter :: fortyfour=44._mytype
-  real(mytype),parameter :: fortyfive=45._mytype
-  real(mytype),parameter :: fortyeight=48._mytype
-  !
-  real(mytype),parameter :: fifty=50._mytype
-  real(mytype),parameter :: fiftyfour=54._mytype
-  real(mytype),parameter :: fiftyfive=55._mytype
-  real(mytype),parameter :: fiftynine=59._mytype
-  !
-  real(mytype),parameter :: sixty=60._mytype
-  real(mytype),parameter :: sixtytwo=62._mytype
-  real(mytype),parameter :: sixtythree=63._mytype
-  !
-  real(mytype),parameter :: seventy=70._mytype
-  real(mytype),parameter :: seventyfive=75._mytype
-  !
-  real(mytype),parameter :: onehundred=100._mytype
-  real(mytype),parameter :: onehundredtwentysix=126._mytype
-  real(mytype),parameter :: onehundredtwentyeight=128._mytype
-  real(mytype),parameter :: onehundredeighty=180._mytype
-  !
-  real(mytype),parameter :: twohundredsix=206._mytype
-  real(mytype),parameter :: twohundredeight=208._mytype
-  real(mytype),parameter :: twohundredfiftysix=256._mytype
-  real(mytype),parameter :: twohundredseventytwo=272._mytype
-  !
-  real(mytype),parameter :: onethousand=1000._mytype
-  real(mytype),parameter :: twothousand=2000._mytype
-  real(mytype),parameter :: threethousandsixhundred=3600._mytype
-  !
+  real(mytype),parameter :: twenty=20.0_mytype
+  real(mytype),parameter :: twentyone=21.0_mytype
+  real(mytype),parameter :: twentythree=23.0_mytype
+  real(mytype),parameter :: twentyfour=24.0_mytype
+  real(mytype),parameter :: twentyfive=25.0_mytype
+  real(mytype),parameter :: twentyseven=27.0_mytype
+  real(mytype),parameter :: twentyeight=28.0_mytype
+  
+  real(mytype),parameter :: thirty=30.0_mytype
+  real(mytype),parameter :: thirtytwo=32.0_mytype
+  real(mytype),parameter :: thirtyfour=34.0_mytype
+  real(mytype),parameter :: thirtysix=36.0_mytype
+  real(mytype),parameter :: thirtyseven=37.0_mytype
+  
+  real(mytype),parameter :: forty=40.0_mytype
+  real(mytype),parameter :: fortyfour=44.0_mytype
+  real(mytype),parameter :: fortyfive=45.0_mytype
+  real(mytype),parameter :: fortyeight=48.0_mytype
+  
+  real(mytype),parameter :: fifty=50.0_mytype
+  real(mytype),parameter :: fiftyfour=54.0_mytype
+  real(mytype),parameter :: fiftyfive=55.0_mytype
+  real(mytype),parameter :: fiftynine=59.0_mytype
+  
+  real(mytype),parameter :: sixty=60.0_mytype
+  real(mytype),parameter :: sixtytwo=62.0_mytype
+  real(mytype),parameter :: sixtythree=63.0_mytype
+  
+  real(mytype),parameter :: seventy=70.0_mytype
+  real(mytype),parameter :: seventyfive=75.0_mytype
+  
+  real(mytype),parameter :: onehundred=100.0_mytype
+  real(mytype),parameter :: onehundredtwentysix=126.0_mytype
+  real(mytype),parameter :: onehundredtwentyeight=128.0_mytype
+  real(mytype),parameter :: onehundredeighty=180.0_mytype
+  
+  real(mytype),parameter :: twohundredsix=206.0_mytype
+  real(mytype),parameter :: twohundredeight=208.0_mytype
+  real(mytype),parameter :: twohundredfiftysix=256.0_mytype
+  real(mytype),parameter :: twohundredseventytwo=272.0_mytype
+  
+  real(mytype),parameter :: onethousand=1000.0_mytype
+  real(mytype),parameter :: twothousand=2000.0_mytype
+  real(mytype),parameter :: threethousandsixhundred=3600.0_mytype
+  
   complex(mytype),parameter :: cx_one_one=cmplx(one, one, kind=mytype)
-
 
 #ifdef DOUBLE_PREC
   real(mytype),parameter :: pi=dacos(-one)
