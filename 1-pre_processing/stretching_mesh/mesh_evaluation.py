@@ -313,7 +313,7 @@ if itype == 13:
     j = 0
     while j <= ny - 1 and Uo[j] > Uo[0]*0.01:
     	sl_99_ic = yp_ic[j]
-    	j = j + 1
+        j = j + 1
     	
     # Calculation of the number of mesh nodes in the initial shear layer
     npsl = 0      # number of points shear layer
