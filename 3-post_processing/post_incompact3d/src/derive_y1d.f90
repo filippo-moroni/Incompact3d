@@ -8,13 +8,10 @@
 ! subroutines of Incompact3d).                                         !
 !----------------------------------------------------------------------!
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery1D_00(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire)
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -72,13 +69,10 @@ subroutine dery1D_00(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire)
   return
 end subroutine dery1D_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery1D_11(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -150,13 +144,10 @@ subroutine dery1D_11(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire)
   return
 end subroutine dery1D_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery1D_12(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -224,13 +215,10 @@ subroutine dery1D_12(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire)
   return
 end subroutine dery1D_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery1D_21(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -298,13 +286,10 @@ subroutine dery1D_21(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire)
   return
 end subroutine dery1D_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery1D_22(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -346,13 +331,10 @@ subroutine dery1D_22(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire)
   return
 end subroutine dery1D_22
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy1D_00(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -471,13 +453,10 @@ subroutine deryy1D_00(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
   return
 end subroutine deryy1D_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy1D_11(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -656,13 +635,10 @@ subroutine deryy1D_11(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
   return
 end subroutine deryy1D_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy1D_12(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -813,13 +789,10 @@ subroutine deryy1D_12(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
   return
 end subroutine deryy1D_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy1D_21(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -970,13 +943,10 @@ subroutine deryy1D_21(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
   return
 end subroutine deryy1D_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy1D_22(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire) 
-!
-!********************************************************************
 
-  USE param
+  use param
   use derivY
 
   implicit none
@@ -1039,4 +1009,4 @@ subroutine deryy1D_22(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
      enddo
   return
 end subroutine deryy1D_22
-
+!---------------------------------------------------------------------------!

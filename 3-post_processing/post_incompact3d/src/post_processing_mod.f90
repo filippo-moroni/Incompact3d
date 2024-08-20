@@ -1,4 +1,7 @@
-!********************************************************************
+!-----------------------------------------------------------------------------!
+! Module to store the post-processing variables used in 'post_incompact3d'
+! and basic subroutines to allocate memory and to reset to zero arrays.
+!-----------------------------------------------------------------------------!
 module post_processing
 
   use decomp_2d
@@ -110,7 +113,7 @@ module post_processing
      
 contains
 
-  !******************************************************************
+  !-----------------------------------------------------------------------------!
   subroutine init_post_variables
 
     USE var
@@ -299,8 +302,9 @@ contains
     endif
   
   end subroutine init_post_variables
-  !******************************************************************
-  ! Subroutine for allocating the memory for statistics arrays
+  !-----------------------------------------------------------------------------!
+  ! Subroutine for allocating the memory for statistics arrays.
+  !-----------------------------------------------------------------------------!
   subroutine init_statistics()
   
   USE MPI
@@ -505,9 +509,9 @@ contains
 
   end subroutine init_statistics
   
-  !******************************************************************
-  ! Subroutine to reset to zero the arrays of averages on same position 
-  
+  !-----------------------------------------------------------------------------!
+  ! Subroutine to reset to zero the arrays of averages on each single point. 
+  !-----------------------------------------------------------------------------!
   subroutine reset_averages()
   
   USE MPI
@@ -545,9 +549,10 @@ contains
      
   end subroutine reset_averages
 
-  !******************************************************************
+  !-----------------------------------------------------------------------------!
   ! Subroutine to reset to zero the arrays of averages on subdomains
-  ! and on total domain 
+  ! and on total domain.
+  !-----------------------------------------------------------------------------!
   
   subroutine reset_subdomains_and_domain()
   
@@ -641,7 +646,7 @@ contains
   end subroutine reset_subdomains_and_domain
      
 end module post_processing
-!********************************************************************
+!-----------------------------------------------------------------------------!
 
 
 

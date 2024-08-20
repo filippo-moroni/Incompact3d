@@ -1,34 +1,7 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
 module tools
 
   implicit none
@@ -83,7 +56,7 @@ contains
   endif
   
   end subroutine program_header
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   subroutine reading_input_file()
 
   USE decomp_2d
@@ -120,10 +93,10 @@ contains
   call parameter(InputFN)
   
   end subroutine reading_input_file
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   ! Rescale pressure to physical pressure
   ! Written by Kay Schäfer 2019
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   elemental subroutine rescale_pressure(pre1)
 
     use decomp_2d, only : mytype
@@ -145,7 +118,7 @@ contains
     endif
 
   end subroutine
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   subroutine test_scalar_min_max(phi)
 
     use decomp_2d
@@ -153,7 +126,6 @@ contains
     use param
     use var
     use mpi
-    use dbg_schemes, only: abs_prec
 
     implicit none
 
@@ -186,7 +158,7 @@ contains
 
         write(*,*) 'Phi'//char(48+is)//' min max=', real(phimin1,4), real(phimax1,4)
 
-        if (abs_prec(phimax1) > 100._mytype) then !if phi control turned off
+        if (abs(phimax1) > 100._mytype) then !if phi control turned off
            write(*,*) 'Scalar diverged! SIMULATION IS STOPPED!'
            call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
         endif
@@ -195,7 +167,7 @@ contains
 
     return
   end subroutine test_scalar_min_max
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   subroutine test_speed_min_max(ux,uy,uz)
 
     use decomp_2d
@@ -203,7 +175,6 @@ contains
     use param
     use var
     use mpi
-    use dbg_schemes, only: abs_prec
 
     implicit none
 
@@ -245,7 +216,7 @@ contains
        write(*,*) 'U,V,W max=',real(uxmax1,4),real(uymax1,4),real(uzmax1,4)
        !print *,'CFL=',real(abs(max(uxmax1,uymax1,uzmax1)*dt)/min(dx,dy,dz),4)
 
-       if((abs_prec(uxmax1)>=onehundred).or.(abs_prec(uymax1)>=onehundred).OR.(abs_prec(uzmax1)>=onehundred)) then
+       if((abs(uxmax1)>=onehundred).or.(abs(uymax1)>=onehundred).OR.(abs(uzmax1)>=onehundred)) then
          write(*,*) 'Velocity diverged! SIMULATION IS STOPPED!'
          call MPI_ABORT(MPI_COMM_WORLD,code,ierror)
          stop
@@ -255,7 +226,7 @@ contains
 
     return
   end subroutine test_speed_min_max
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   subroutine simu_stats(iwhen)
 
     use decomp_2d
@@ -312,7 +283,7 @@ contains
     endif
 
   end subroutine simu_stats
-  !##############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine init_restart_adios2()
 
     use decomp_2d, only : mytype, phG
@@ -379,9 +350,7 @@ contains
     end if
     
   end subroutine init_restart_adios2
-  !############################################################################
-  !!  SUBROUTINE: apply_spatial_filter
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine apply_spatial_filter(ux1,uy1,uz1,phi1)
 
     use decomp_2d
@@ -458,7 +427,7 @@ contains
     !if (iscalar == 1) phi1(:,:,:,1)=phi11
 
   end subroutine apply_spatial_filter
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine mean_plane_x (f1,nx,ny,nz,fm1)
 
     use param, only : mytype, zero
@@ -474,7 +443,7 @@ contains
     return
 
   end subroutine mean_plane_x
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   subroutine mean_plane_y (f2,nx,ny,nz,fm2)
 
     use param, only : mytype, zero
@@ -490,7 +459,7 @@ contains
     return
 
   end subroutine mean_plane_y
-  !##################################################################
+  !-----------------------------------------------------------------------------!
   subroutine mean_plane_z (f3,nx,ny,nz,fm3)
 
     use param, only : mytype, zero
@@ -506,13 +475,11 @@ contains
     return
 
   end subroutine mean_plane_z
-  !############################################################################
-  !!
-  !!  SUBROUTINE: avg3d
-  !!      AUTHOR: Stefano Rolfo
-  !! DESCRIPTION: Compute the total sum of a a 3d field
-  !!
-  !############################################################################
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: avg3d
+  !      AUTHOR: Stefano Rolfo
+  ! DESCRIPTION: Compute the total sum of a a 3d field
+  !-----------------------------------------------------------------------------!
   subroutine avg3d (var, avg)
 
     use decomp_2d, only: real_type, xsize, xend
@@ -576,16 +543,14 @@ contains
 
   end subroutine avg3d
 end module tools
-!##################################################################
+!-----------------------------------------------------------------------------!
 subroutine stretching()
 
   use decomp_2d
-  !use decomp_2d_poisson
   use variables
   use param
   use var
   use mpi
-  use dbg_schemes, only: abs_prec, sqrt_prec, sin_prec, cos_prec, tan_prec, atan_prec
 
   implicit none
 
@@ -703,52 +668,6 @@ subroutine stretching()
      enddo
   endif
 
-  !   yp(1) = 0.0
-  !   yp(2) = 0.01
-  !   coeff0= 1.1
-  !   blender1 = 0.0
-  !   blender2 = 0.0
-  !   do j=3,ny
-  !!      yeta(j)=(j-1.)*(1./ny)
-  !!      yp(j)=-beta*cos(pi*yeta(j))/sin(yeta(j)*pi)
-  !
-  !     if (yp(j-1).LE.3.5*1.0) then
-  !       dy_plus_target = 8.0
-  !       !Calculate re_tau guess somewhere
-  !      dy_plus_current= (yp(j-1)-yp(j-2))*85.0
-  !       !dy_plus_coeff is from 1 to 0
-  !       dy_plus_coeff = (dy_plus_target-dy_plus_current)/dy_plus_target
-  !       coeff = coeff0**dy_plus_coeff
-  !
-  !       dy_plus_coeff_old1 = dy_plus_coeff   !will be required for blenders
-  !     else if (yp(j-1).GE.39.0*1.0) then
-  !       dy_plus_target = 10.0
-  !       !Calculate re_tau guess somewhere
-  !       dy_plus_current= (yp(j-1)-yp(j-2))*85.0
-  !       !dy_plus_coeff is from 1 to 0
-  !       dy_plus_coeff = (dy_plus_target-dy_plus_current)/dy_plus_target
-  !
-  !       if (blender2.LT.1.0) blender2 = blender2 + 0.1   !carry the coeff smoothly
-  !       coeff = coeff0**((1.0-blender2)*dy_plus_coeff_old2+blender2*dy_plus_coeff)
-  !     else
-  !       dy_plus_target = 80.0
-  !       !Calculate re_tau guess somewhere
-  !       dy_plus_current= (yp(j-1)-yp(j-2))*85.0
-  !       !dy_plus_coeff is from 1 to 0
-  !       dy_plus_coeff = (dy_plus_target-dy_plus_current)/dy_plus_target
-  !
-  !       if (blender1.LT.1.0) blender1 = blender1 + 0.1   !carry the coeff smoothly
-  !       coeff = coeff0**((1.0-blender1)*dy_plus_coeff_old1+blender1*dy_plus_coeff)
-  !
-  !       dy_plus_coeff_old2 = dy_plus_coeff   !will be required for blenders
-  !     endif
-  !     yp(j) = yp(j-1)+(yp(j-1)-yp(j-2))*coeff
-  !   enddo
-  !
-  !   !Normalize to yly
-  !   ypmax = yp(ny)
-  !   yp = yp/ypmax*yly
-
   if (nrank == 0) then
      open(10,file='yp.dat', form='formatted')
      do j=1,ny
@@ -763,16 +682,14 @@ subroutine stretching()
   endif
 
 end subroutine stretching
-!##################################################################
+!-----------------------------------------------------------------------------!
 subroutine inversion5_v1(aaa_in,eee,spI)
 
   use decomp_2d
-  !use decomp_2d_poisson
   use variables
   use param
   use var
   use mpi
-  use dbg_schemes, only: abs_prec
 
   implicit none
 
@@ -829,12 +746,12 @@ subroutine inversion5_v1(aaa_in,eee,spI)
 
   do k = spI%yst(3), spI%yen(3)
      do j = spI%yst(1), spI%yen(1)
-        if (abs_prec(rl(aaa(j,ny/2-1,k,3))) > epsilon) then
+        if (abs(rl(aaa(j,ny/2-1,k,3))) > epsilon) then
            tmp1 = rl(aaa(j,ny/2,k,2)) / rl(aaa(j,ny/2-1,k,3))
         else
            tmp1 = zero
         endif
-        if (abs_prec(iy(aaa(j,ny/2-1,k,3))) > epsilon) then
+        if (abs(iy(aaa(j,ny/2-1,k,3))) > epsilon) then
            tmp2 = iy(aaa(j,ny/2,k,2)) / iy(aaa(j,ny/2-1,k,3))
         else
            tmp2 = zero
@@ -843,14 +760,14 @@ subroutine inversion5_v1(aaa_in,eee,spI)
         b1(j,k) = cx(rl(aaa(j,ny/2,k,3)) - tmp1 * rl(aaa(j,ny/2-1,k,4)),&
                      iy(aaa(j,ny/2,k,3)) - tmp2 * iy(aaa(j,ny/2-1,k,4)))
 
-        if (abs_prec(rl(b1(j,k))) > epsilon) then
+        if (abs(rl(b1(j,k))) > epsilon) then
            tmp1 = rl(sr(j,k)) / rl(b1(j,k))
            tmp3 = rl(eee(j,ny/2,k)) / rl(b1(j,k)) - tmp1 * rl(eee(j,ny/2-1,k))
         else
            tmp1 = zero
            tmp3 = zero
         endif
-        if (abs_prec(iy(b1(j,k))) > epsilon) then
+        if (abs(iy(b1(j,k))) > epsilon) then
            tmp2 = iy(sr(j,k)) / iy(b1(j,k))
            tmp4 = iy(eee(j,ny/2,k)) / iy(b1(j,k)) - tmp2 * iy(eee(j,ny/2-1,k))
         else
@@ -860,12 +777,12 @@ subroutine inversion5_v1(aaa_in,eee,spI)
         a1(j,k) = cx(tmp1,tmp2)
         eee(j,ny/2,k) = cx(tmp3,tmp4)
 
-        if (abs_prec(rl(aaa(j,ny/2-1,k,3))) > epsilon) then
+        if (abs(rl(aaa(j,ny/2-1,k,3))) > epsilon) then
            tmp1 = one / rl(aaa(j,ny/2-1,k,3))
         else
            tmp1 = zero
         endif
-        if (abs_prec(iy(aaa(j,ny/2-1,k,3))) > epsilon) then
+        if (abs(iy(aaa(j,ny/2-1,k,3))) > epsilon) then
            tmp2 = one / iy(aaa(j,ny/2-1,k,3))
         else
            tmp2 = zero
@@ -881,12 +798,12 @@ subroutine inversion5_v1(aaa_in,eee,spI)
   do i = ny/2 - 2, 1, -1
      do k = spI%yst(3), spI%yen(3)
         do j = spI%yst(1), spI%yen(1)
-           if (abs_prec(rl(aaa(j,i,k,3))) > epsilon) then
+           if (abs(rl(aaa(j,i,k,3))) > epsilon) then
               tmp1 = one / rl(aaa(j,i,k,3))
            else
               tmp1 = zero
            endif
-           if (abs_prec(iy(aaa(j,i,k,3))) > epsilon) then
+           if (abs(iy(aaa(j,i,k,3))) > epsilon) then
               tmp2 = one/iy(aaa(j,i,k,3))
            else
               tmp2 = zero
@@ -905,16 +822,14 @@ subroutine inversion5_v1(aaa_in,eee,spI)
   return
 
 end subroutine inversion5_v1
-!##################################################################
+!-----------------------------------------------------------------------------!
 subroutine inversion5_v2(aaa,eee,spI)
 
   use decomp_2d
-  !use decomp_2d_poisson
   use variables
   use param
   use var
   use MPI
-  use dbg_schemes, only: abs_prec
 
   implicit none
 
@@ -968,12 +883,12 @@ subroutine inversion5_v2(aaa,eee,spI)
   enddo
   do k = spI%yst(3), spI%yen(3)
      do j = spI%yst(1), spI%yen(1)
-        if (abs_prec(rl(aaa(j,nym-1,k,3))) > epsilon) then
+        if (abs(rl(aaa(j,nym-1,k,3))) > epsilon) then
            tmp1 = rl(aaa(j,nym,k,2)) / rl(aaa(j,nym-1,k,3))
         else
            tmp1 = zero
         endif
-        if (abs_prec(iy(aaa(j,nym-1,k,3))) > epsilon) then
+        if (abs(iy(aaa(j,nym-1,k,3))) > epsilon) then
            tmp2 = iy(aaa(j,nym,k,2)) / iy(aaa(j,nym-1,k,3))
         else
            tmp2 = zero
@@ -981,14 +896,14 @@ subroutine inversion5_v2(aaa,eee,spI)
         sr(j,k) = cx(tmp1,tmp2)
         b1(j,k) = cx(rl(aaa(j,nym,k,3)) - tmp1 * rl(aaa(j,nym-1,k,4)),&
                      iy(aaa(j,nym,k,3)) - tmp2 * iy(aaa(j,nym-1,k,4)))
-        if (abs_prec(rl(b1(j,k))) > epsilon) then
+        if (abs(rl(b1(j,k))) > epsilon) then
            tmp1 = rl(sr(j,k)) / rl(b1(j,k))
            tmp3 = rl(eee(j,nym,k)) / rl(b1(j,k)) - tmp1 * rl(eee(j,nym-1,k))
         else
            tmp1 = zero
            tmp3 = zero
         endif
-        if (abs_prec(iy(b1(j,k))) > epsilon) then
+        if (abs(iy(b1(j,k))) > epsilon) then
            tmp2 = iy(sr(j,k)) / iy(b1(j,k))
            tmp4 = iy(eee(j,nym,k)) / iy(b1(j,k)) - tmp2 * iy(eee(j,nym-1,k))
         else
@@ -998,12 +913,12 @@ subroutine inversion5_v2(aaa,eee,spI)
         a1(j,k) = cx(tmp1, tmp2)
         eee(j,nym,k) = cx(tmp3, tmp4)
 
-        if (abs_prec(rl(aaa(j,nym-1,k,3))) > epsilon) then
+        if (abs(rl(aaa(j,nym-1,k,3))) > epsilon) then
            tmp1 = one / rl(aaa(j,nym-1,k,3))
         else
            tmp1 = zero
         endif
-        if (abs_prec(iy(aaa(j,nym-1,k,3))) > epsilon) then
+        if (abs(iy(aaa(j,nym-1,k,3))) > epsilon) then
            tmp2 = one / iy(aaa(j,nym-1,k,3))
         else
            tmp2 = zero
@@ -1019,12 +934,12 @@ subroutine inversion5_v2(aaa,eee,spI)
   do i = nym - 2, 1, -1
      do k = spI%yst(3), spI%yen(3)
         do j = spI%yst(1), spI%yen(1)
-           if (abs_prec(rl(aaa(j,i,k,3))) > epsilon) then
+           if (abs(rl(aaa(j,i,k,3))) > epsilon) then
               tmp1 = one / rl(aaa(j,i,k,3))
            else
               tmp1 = zero
            endif
-           if (abs_prec(iy(aaa(j,i,k,3))) > epsilon) then
+           if (abs(iy(aaa(j,i,k,3))) > epsilon) then
               tmp2 = one / iy(aaa(j,i,k,3))
            else
               tmp2 = zero
@@ -1043,7 +958,7 @@ subroutine inversion5_v2(aaa,eee,spI)
   return
 
 end subroutine inversion5_v2
-!##################################################################
+!-----------------------------------------------------------------------------!
 function rl(complexnumber)
 
   use param
@@ -1056,7 +971,7 @@ function rl(complexnumber)
   rl = real(complexnumber, kind=mytype)
 
 end function rl
-!##################################################################
+!-----------------------------------------------------------------------------!
 function iy(complexnumber)
 
   use param
@@ -1069,7 +984,7 @@ function iy(complexnumber)
   iy = aimag(complexnumber)
 
 end function iy
-!##################################################################
+!-----------------------------------------------------------------------------!
 function cx(realpart,imaginarypart)
 
   use param
@@ -1082,7 +997,7 @@ function cx(realpart,imaginarypart)
   cx = cmplx(realpart, imaginarypart, kind=mytype)
 
 end function cx
-!##################################################################
+!-----------------------------------------------------------------------------!
 subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
 
   use decomp_2d
@@ -1108,12 +1023,9 @@ subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
   mweight(:,:,:) = one / mweight(:,:,:)
 
 endsubroutine calc_mweight
-!##################################################################
-function r8_random ( s1, s2, s3 )
 
-!*****************************************************************************80
-!
-!! R8_RANDOM returns a pseudorandom number between 0 and 1.
+!-----------------------------------------------------------------------------!
+!  R8_RANDOM returns a pseudorandom number between 0 and 1.
 !
 !  Discussion:
 !
@@ -1150,7 +1062,9 @@ function r8_random ( s1, s2, s3 )
 !    integers between 1 and 30,000.
 !
 !    Output, real ( kind = 8 ) R8_RANDOM, the next value in the sequence.
-!
+!-----------------------------------------------------------------------------!
+function r8_random ( s1, s2, s3 )
+
   implicit none
 
   integer ( kind = 4 ) s1
@@ -1168,7 +1082,7 @@ function r8_random ( s1, s2, s3 )
 
   return
 end
-!##################################################################
+!-----------------------------------------------------------------------------!
 function return_30k(x) result(y)
 
   integer ( kind = 4 ), intent(in) :: x
@@ -1177,12 +1091,9 @@ function return_30k(x) result(y)
 
   y = iabs(x) - int(iabs(x)/xmax)*xmax
 end function return_30k
-!##################################################################
-function r8_uni ( s1, s2 )
 
-!*****************************************************************************80
-!
-!! R8_UNI returns a pseudorandom number between 0 and 1.
+!-----------------------------------------------------------------------------!
+!  R8_UNI returns a pseudorandom number between 0 and 1.
 !
 !  Discussion:
 !
@@ -1220,7 +1131,9 @@ function r8_uni ( s1, s2 )
 !    to a value between 1 and 2147483398.
 !
 !    Output, real ( kind = 8 ) R8_UNI, the next value in the sequence.
-!
+!-----------------------------------------------------------------------------!
+function r8_uni ( s1, s2 )
+
   implicit none
 
   integer ( kind = 4 ) k
@@ -1250,7 +1163,8 @@ function r8_uni ( s1, s2 )
 
   return
 end
-!##################################################################
+
+!-----------------------------------------------------------------------------!
 subroutine test_min_max(name,text,array_tmp,i_size_array_tmp)
 
   use param
@@ -1288,3 +1202,4 @@ subroutine test_min_max(name,text,array_tmp,i_size_array_tmp)
 
   return
 end subroutine test_min_max
+!-----------------------------------------------------------------------------!

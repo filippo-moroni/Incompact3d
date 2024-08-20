@@ -171,7 +171,6 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   use variables
   use decomp_2d
   use decomp_2d_io
-  use dbg_schemes, only : sqrt_prec
   
   implicit none
   
@@ -247,7 +246,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   do i=1,xsize(1)
     do j=1,xsize(2)
       do k=1,xsize(3)
-        di1(i,j,k) = sqrt_prec(td1(i,j,k)**2 + tf1(i,j,k)**2) ! sqrt[ (du/dy)**2 + (dw/dy)**2 ]
+        di1(i,j,k) = sqrt(td1(i,j,k)**2 + tf1(i,j,k)**2) ! sqrt[ (du/dy)**2 + (dw/dy)**2 ]
       enddo
     enddo
   enddo

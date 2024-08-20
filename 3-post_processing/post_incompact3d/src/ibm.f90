@@ -1,14 +1,20 @@
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
 module ibm
 
   public
 
 contains
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine corgp_IBM (ux,uy,uz,px,py,pz,nlock)
     USE param
     USE decomp_2d
     USE variables
+    
     implicit none
+    
     integer :: i,j,k,nlock
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz,px,py,pz
     if (nz == 1) then
@@ -40,14 +46,14 @@ contains
 
     return
   end subroutine corgp_IBM
-  !############################################################################
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine body(ux1,uy1,uz1,ep1)
     use param, only : zero, one, dx, dz
     use decomp_2d, only : xstart, xend, xsize, mytype, nrank
-    !use decomp_2d_io
     use variables, only : ny
+   
     implicit none
+    
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,ep1
     integer :: i,j,k
 
@@ -71,17 +77,16 @@ contains
 
     return
   end subroutine body
-  !############################################################################
-  !############################################################################
+  !---------------------------------------------------------------------------!
   subroutine lagpolx(u)
-    !
+    
     USE param
     USE complex_geometry
     USE decomp_2d
     USE variables
-    !
+    
     implicit none
-    !
+    
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: u
     integer                                            :: i,j,k
     real(mytype)                                       :: x,y,z
@@ -156,17 +161,16 @@ contains
     !
     return
   end subroutine lagpolx
-  !############################################################################
-  !############################################################################
-  subroutine lagpoly(u)
-    !
+  !---------------------------------------------------------------------------!
+    subroutine lagpoly(u)
+    
     USE param
     USE complex_geometry
     USE decomp_2d
     USE variables
-    !
+    
     implicit none
-    !
+    
     real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u
     integer                                            :: i,j,k
     real(mytype)                                       :: x,y,z
@@ -176,7 +180,7 @@ contains
     real(mytype)                                       :: xpol,ypol,dypol   !|variables concernant les polynômes
     real(mytype),dimension(10)                         :: xa,ya           !|de   Lagrange. A mettre impérativement en
     integer                                            :: ia,na             !|double précision
-    !
+    
     do k=1,ysize(3)
        do i=1,ysize(1)
           if(nobjy(i,k).ne.0)then
@@ -248,17 +252,16 @@ contains
     !
     return
   end subroutine lagpoly
-  !############################################################################
-  !############################################################################
-  subroutine lagpolz(u)
-    !
+  !---------------------------------------------------------------------------!
+    subroutine lagpolz(u)
+    
     USE param
     USE complex_geometry
     USE decomp_2d
     USE variables
-    !
+    
     implicit none
-    !
+    
     real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: u
     integer                                            :: i,j,k
     real(mytype)                                       :: x,y,z
@@ -333,22 +336,20 @@ contains
     !
     return
   end subroutine lagpolz
-  !############################################################################
-  !############################################################################
-  subroutine polint(xa,ya,n,x,y,dy)
-    !
+  !---------------------------------------------------------------------------!
+    subroutine polint(xa,ya,n,x,y,dy)
+    
     use decomp_2d
-    use dbg_schemes, only: abs_prec
-    !
+    
     implicit none
-    !
+    
     integer,parameter            :: nmax=30
     integer                      :: n,i,m,ns
     real(mytype)                 :: dy,x,y,den,dif,dift,ho,hp,w
     real(mytype),dimension(nmax) :: c,d
     real(mytype),dimension(n)    :: xa,ya
     ns=1
-    dif=abs_prec(x-xa(1))
+    dif=abs(x-xa(1))
     do i=1,n
        dift=abs(x-xa(i))
        if(dift.lt.dif)then
@@ -381,25 +382,20 @@ contains
     enddo
     return
   end subroutine polint
-!*--------------------------------------------------------------------------*!
-!*                                                                          *!
-!*                      Cubic Spline Reconstruction                         *!
-!*                                                                          *!
-!*--------------------------------------------------------------------------*!
-!***************************************************************************
-!***************************************************************************
-!***************************************************************************
-!
+!---------------------------------------------------------------------------!
+!                      Cubic Spline Reconstruction                          !
+!---------------------------------------------------------------------------!
+
 subroutine cubsplx(u,lind)
-  !
+  
   USE param
   USE complex_geometry
   USE decomp_2d
   USE variables
   USE ibm_param
-  !
+  
   implicit none
-  !
+  
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: u
   integer                                            :: i,j,k
   real(mytype)                                       :: x,y,z
@@ -413,14 +409,14 @@ subroutine cubsplx(u,lind)
   real(mytype)                                       :: bcimp           ! Imposed BC 
   integer                                            :: inxi,inxf
   real(mytype)                                       :: ana_resi,ana_resf         ! Position of Boundary (Analytically)
-  !
+  
   ! Initialise Arrays
   xa(:)=0.
   ya(:)=0.
-  !
+  
   ! Impose the Correct BC
   bcimp=lind  
-  !
+  
   do k=1,xsize(3)
      do j=1,xsize(2)
         if(nobjx(j,k).ne.0)then
@@ -540,24 +536,20 @@ subroutine cubsplx(u,lind)
         endif
      enddo
   enddo
-  !
+  
   return
 end subroutine cubsplx
-!
-!***************************************************************************
-!***************************************************************************
-!***************************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine cubsply(u,lind)
-  !
+  
   USE param
   USE complex_geometry
   USE decomp_2d
   USE variables
   USE ibm_param
-  !
+  
   implicit none
-  !
+  
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: u
   integer                                            :: i,j,k
   real(mytype)                                       :: x,y,z
@@ -703,24 +695,20 @@ subroutine cubsply(u,lind)
         endif
      enddo
   enddo
-  !
+  
   return
 end subroutine cubsply
-!
-!***************************************************************************
-!***************************************************************************
-!***************************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine cubsplz(u,lind)
-  !
+  
   USE param
   USE complex_geometry
   USE decomp_2d
   USE variables
   USE ibm_param
-  !
+  
   implicit none
-  !
+  
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: u
   integer                                            :: i,j,k
   real(mytype)                                       :: x,y,z
@@ -734,14 +722,14 @@ subroutine cubsplz(u,lind)
   real(mytype)                                       :: bcimp           ! Imposed BC 
   integer                                            :: inxi,inxf  
   real(mytype)                                       :: ana_resi,ana_resf
-  !
+  
   ! Initialise Arrays
   xa(:)=zero
   ya(:)=zero
-  !
+  
   ! Impose the Correct BC
   bcimp=lind  
-  !
+  
   do j=1,zsize(2)
      do i=1,zsize(1)
         if(nobjz(i,j).ne.0)then
@@ -857,21 +845,17 @@ subroutine cubsplz(u,lind)
         endif
      enddo
   enddo
-  !
+  
   return
 end subroutine cubsplz
-!
-!***************************************************************************
-!***************************************************************************
-!***************************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine cubic_spline(xa,ya,n,x,y)
-   !
+   
    use decomp_2d
    use param, only : zero, two, three, zpfive
-   !
+   
    implicit none
-   !
+   
    integer                      :: n,i,j,nc,nk
    real(mytype)                 :: x,y,xcc
    real(mytype),dimension(n)    :: xa,ya
@@ -879,7 +863,7 @@ subroutine cubic_spline(xa,ya,n,x,y)
    real(mytype)                 :: ypri,yprf
    real(mytype),dimension(n-2)  :: xx,alpha,cc,zz,ll,aa,yy
    real(mytype),dimension(n-3)  :: hh,dd,bb,mm
-     !
+
    ! Initialise Arrays
    xaa(:)=zero
    yaa(:)=zero
@@ -951,27 +935,24 @@ subroutine cubic_spline(xa,ya,n,x,y)
          y= aa(j-1) + bb(j-1)*(xcc-xx(j-1)) + cc(j-1)*(xcc-xx(j-1))**2 + dd(j-1)*(xcc-xx(j-1))**3;
       endif
    enddo
-   !
+   
    return
 end subroutine cubic_spline
-!***************************************************************************
-!***************************************************************************
-!***************************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine ana_y_cyl(i,y_pos,ana_res)
-  !
+  
   USE param
   USE complex_geometry
   USE decomp_2d
   USE variables
   USE ibm_param
-  !
+  
   implicit none
-  !
+  
   integer                                            :: i
   real(mytype)                                       :: y_pos,ana_res 
   real(mytype)                                       :: cexx,ceyy
-  !
+  
   if (t.ne.0.) then
      cexx = cex + ubcx*(t-ifirst*dt)
      ceyy = cey + ubcy*(t-ifirst*dt)
@@ -984,25 +965,24 @@ subroutine ana_y_cyl(i,y_pos,ana_res)
   else
       ana_res=ceyy - sqrt(ra**2.0-((i+ystart(1)-1-1)*dx-cexx)**2.0)
   endif     
-  !
+  
   return
 end subroutine ana_y_cyl
-!***************************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine ana_x_cyl(j,x_pos,ana_res)
-  !
+  
   USE param
   USE complex_geometry
   USE decomp_2d
   USE variables
   USE ibm_param
-  !
+  
   implicit none
-  !
+  
   integer                                            :: j
   real(mytype)                                       :: x_pos,ana_res 
   real(mytype)                                       :: cexx,ceyy
-  !
+  
   if (t.ne.0.) then
      cexx = cex + ubcx*(t-ifirst*dt)
      ceyy = cey + ubcy*(t-ifirst*dt)
@@ -1015,10 +995,10 @@ subroutine ana_x_cyl(j,x_pos,ana_res)
   else
       ana_res = cexx - sqrt(ra**2.0-(yp(j+xstart(2)-1)-ceyy)**2.0)
   endif     
-  !
+  
   return
 end subroutine ana_x_cyl
-!*******************************************************************
+!---------------------------------------------------------------------------!
 SUBROUTINE analitic_x(j,x_pos,ana_res,k)
 
   USE decomp_2d, ONLY : mytype
@@ -1029,8 +1009,7 @@ SUBROUTINE analitic_x(j,x_pos,ana_res,k)
   real(mytype)                                       :: x_pos,ana_res 
 
 END SUBROUTINE analitic_x
-!*******************************************************************
-!*******************************************************************
+!---------------------------------------------------------------------------!
 SUBROUTINE analitic_y(i,y_pos,ana_res,k)
 
   USE decomp_2d, ONLY : mytype
@@ -1041,8 +1020,6 @@ SUBROUTINE analitic_y(i,y_pos,ana_res,k)
   real(mytype)                                       :: y_pos,ana_res 
 
 END SUBROUTINE analitic_y
-!*******************************************************************
-!*******************************************************************
-  
+!---------------------------------------------------------------------------!
   
 end module ibm

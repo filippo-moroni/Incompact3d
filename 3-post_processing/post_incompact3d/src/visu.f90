@@ -1,34 +1,7 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
 module visu
   
   implicit none
@@ -43,21 +16,23 @@ module visu
   !        2 for 2D output with Y average
   !        3 for 2D output with Z average
   integer, save :: output2D
+   
   integer :: ioxdmf
-  character(len=9) :: ifilenameformat = '(I3.3)'
+  character(len=9) :: ifilenameformat = '(I4.4)'  ! This was I3.3; modified to account for > 999 planes' savings
   real, save :: tstart, tend
 
   character(len=*), parameter :: io_name = "solution-io"
 
   private
   public :: output2D, visu_init, visu_ready, visu_finalise, write_snapshot, end_snapshot, &
-       write_field, io_name
+            write_field, io_name, write_xdmf_header, write_xdmf_footer, ioxdmf, filenamedigits, &
+            ifilenameformat
 
 contains
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Initialize the visu module
-  !
+  !-----------------------------------------------------------------------------!
   subroutine visu_init()
 
     use MPI
@@ -68,7 +43,6 @@ contains
     use decomp_2d_io, only : decomp_2d_init_io, decomp_2d_open_io, decomp_2d_append_mode
     use decomp_2d_io, only : decomp_2d_register_variable
 
-    
     implicit none
 
     ! Local variables
@@ -110,7 +84,7 @@ contains
 
     call decomp_2d_init_io(io_name)
 
-    !! Register variables
+    ! Register variables
     call decomp_2d_register_variable(io_name, "ux", 1, 0, output2D, mytype)
     call decomp_2d_register_variable(io_name, "uy", 1, 0, output2D, mytype)
     call decomp_2d_register_variable(io_name, "uz", 1, 0, output2D, mytype)
@@ -124,13 +98,22 @@ contains
        enddo
     endif
     
+    ! Add extra IO name for saving helicity density and streamwise vorticity with x-normal plane
+    call decomp_2d_register_variable(io_name, "hel",   1, 0, 1, mytype)
+    call decomp_2d_register_variable(io_name, "vortx", 1, 0, 1, mytype)
+    
+    ! Add extra IO name for saving scalar planes with z-normal 
+    if (iscalar .ne. 0) then
+        call decomp_2d_register_variable(io_name, "phiplanez", 1, 0, 3, mytype)
+    end if
+    
   end subroutine visu_init
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Indicate visu ready for IO. This is only required for ADIOS2 backend, using MPIIO this
   ! subroutine doesn't do anything.
   ! XXX: Call after all visu initialisation (main visu + case visu)
-  !
+  !-----------------------------------------------------------------------------!
   subroutine visu_ready ()
 
     use decomp_2d_io, only : decomp_2d_open_io, decomp_2d_append_mode, decomp_2d_write_mode
@@ -168,10 +151,10 @@ contains
     
   end subroutine visu_ready
   
-  !
+  !-----------------------------------------------------------------------------!
   ! Finalise the visu module. When using the ADIOS2 backend this closes the IO which is held open
   ! for the duration of the simulation, otherwise does nothing.
-  ! 
+  !-----------------------------------------------------------------------------!
   subroutine visu_finalise()
 
     use decomp_2d_io, only : decomp_2d_close_io
@@ -184,9 +167,9 @@ contains
     
   end subroutine visu_finalise
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write a snapshot
-  !
+  !-----------------------------------------------------------------------------!
   subroutine write_snapshot(rho1, ux1, uy1, uz1, pp3, phi1, ep1, itime, num)
 
     use decomp_2d, only : transpose_z_to_y, transpose_y_to_x
@@ -210,7 +193,7 @@ contains
 
     implicit none
 
-    !! inputs
+    ! Inputs
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ep1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), nrhotime), intent(in) :: rho1
@@ -271,8 +254,7 @@ contains
     call transpose_y_to_x(ppi2,pp1,ph2) !nxm ny nz
     call interxpv(ta1,pp1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
             nxmsize,xsize(1),xsize(2),xsize(3),1)
-
-
+            
     ! Rescale pressure
     call rescale_pressure(ta1)
 
@@ -292,15 +274,19 @@ contains
 
   end subroutine write_snapshot
 
-  subroutine end_snapshot(itime, num)
+  !-----------------------------------------------------------------------------!
+  subroutine end_snapshot(ux1, uz1, itime, num)
 
-    use decomp_2d, only : nrank
+    use decomp_2d,    only : nrank, mytype, xsize
     use decomp_2d_io, only : decomp_2d_end_io
-    use param, only : istret, xlx, yly, zlz
-    use variables, only : nx, ny, nz, beta
-    use var, only : dt,t
+    use param,        only : istret, xlx, yly, zlz
+    use variables,    only : nx, ny, nz, beta
+    use var,          only : dt,t
 
     implicit none
+    
+    ! Inputs
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uz1
 
     integer, intent(in) :: itime
     character(len=32), intent(in) :: num
@@ -310,7 +296,7 @@ contains
     integer :: ierr
     
     ! Write XDMF footer
-    if (use_xdmf) call write_xdmf_footer()
+    if (use_xdmf) call write_xdmf_footer(ux1,uz1)
 
     ! Add metadata if XDMF is not used
     if (.not. use_xdmf) then
@@ -351,14 +337,14 @@ contains
 
   end subroutine end_snapshot
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write the header of the XDMF file
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !
+  !-----------------------------------------------------------------------------!
   subroutine write_xdmf_header(pathname, filename, num)
 
     use variables, only : nvisu, yp
-    use param, only : dx,dy,dz,istret
+    use param,     only : dx,dy,dz,istret
     use decomp_2d, only : mytype, nrank, xszV, yszV, zszV, ystV
 
     implicit none
@@ -371,7 +357,7 @@ contains
     real(mytype) :: xp(xszV(1)), zp(zszV(3))
 
     if (nrank.eq.0) then
-      OPEN(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf"))
+      open(newunit=ioxdmf,file="./data/"//gen_snapshotname(pathname, filename, num, "xdmf"))
 
       write(ioxdmf,'(A22)')'<?xml version="1.0" ?>'
       write(ioxdmf,*)'<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>'
@@ -458,33 +444,70 @@ contains
     endif
   end subroutine write_xdmf_header
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write the footer of the XDMF file
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !
-  subroutine write_xdmf_footer()
+  !-----------------------------------------------------------------------------!
+  subroutine write_xdmf_footer(ux,uz)
 
-    use decomp_2d, only : nrank
-
+    use decomp_2d,   only : nrank, mytype, xsize
+    use param
+    
     implicit none
+    
+    ! Inputs 
+    real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux, uz
+    
+    ! Locals
+    character(len=20) :: char_value1, char_value2
 
+    ! Calculate Re_tau for a TTBL to add its value to the end of the snapshot
+    if(itype .eq. itype_ttbl) then
+    
+        ! Shear velocity bottom wall
+        call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+      
+        ! Boundary layer thickness
+        call calculate_bl_thick(ux,delta_99,counter)
+      
+        if(nrank .eq. 0) then
+        
+            ! Calculate friction Re number for a TBL, based on longitudinal shear velocity
+            re_tau_tbl = delta_99 * sh_velx / xnu
+          
+            ! Convert Re_tau and BL thickness from real to character
+            write(char_value1, '(F12.6)') re_tau_tbl
+            write(char_value2, '(F12.6)') delta_99
+            
+        end if
+    end if  
+        
     if (nrank.eq.0) then
-      write(ioxdmf,'(/)')
+      write(ioxdmf,*)'        <Time Value="',t,'" />'
       write(ioxdmf,*)'    </Grid>'
       write(ioxdmf,*)'</Domain>'
       write(ioxdmf,'(A7)')'</Xdmf>'
+      
+      ! Add Re_tau to a TTBL .xdmf footer
+      if(itype .eq. itype_ttbl) then
+          write(ioxdmf,*)'<!-- Additional information -->'
+          write(ioxdmf,*)'<!-- Friction Reynolds number, Re_tau = '// trim(adjustl(char_value1)) //' -->'
+          write(ioxdmf,*)'<!-- Boundary layer thickness, delta_99 = '// trim(adjustl(char_value2)) //' -->'
+          write(ioxdmf,*)'<!--                        -->'
+      end if
+            
       close(ioxdmf)
     endif
 
   end subroutine write_xdmf_footer
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write the given field for visualization
   ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !
+  !-----------------------------------------------------------------------------!
   subroutine write_field(f1, pathname, filename, num, skip_ibm, flush)
 
-    use mpi
+    use MPI
     
     use var, only : ep1
     use var, only : zero, one
@@ -497,7 +520,7 @@ contains
     implicit none
 
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: f1
-    character(len=*), intent(in) :: pathname, filename, num 
+    character(len=*),  intent(in) :: pathname, filename, num 
     logical, optional, intent(in) :: skip_ibm, flush
 
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: local_array
@@ -547,7 +570,7 @@ contains
           else if (output2D.eq.3) then
              write(ioxdmf,*)'            Dimensions="',1,yszV(2),xszV(1),'">'
           endif
-          write(ioxdmf,*)'              '//gen_h5path(gen_filename(pathname, filename, num, 'bin'), num)
+          write(ioxdmf,*)'              '//gen_h5path(gen_filename2(filename, num, 'bin'), num)
           write(ioxdmf,*)'           </DataItem>'
           write(ioxdmf,*)'        </Attribute>'
        endif
@@ -570,11 +593,13 @@ contains
           call decomp_2d_write_one(1,f1,"data",gen_filename(pathname, filename, num, 'bin'),0,io_name)
        end if
     else
-       call decomp_2d_write_plane(1,local_array,output2D,-1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
+       ! Change 4th entry to select the specific plane; -1 is for average plane, positive integers specify the specific plane
+       call decomp_2d_write_plane(1,local_array,output2D,1,"data",gen_filename(pathname, filename, num, 'bin'),io_name)
     endif
 
   end subroutine write_field
-
+  
+  !-----------------------------------------------------------------------------!
   function gen_snapshotname(pathname, varname, num, ext)
     character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
@@ -586,8 +611,8 @@ contains
 #endif
   end function gen_snapshotname
   
+  !-----------------------------------------------------------------------------!
   function gen_filename(pathname, varname, num, ext)
-
     character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
     character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename
@@ -596,11 +621,10 @@ contains
     character(len=len(varname)) :: gen_filename
     write(gen_filename, "(A)") varname
 #endif
-    
   end function gen_filename
 
+  !-----------------------------------------------------------------------------!
   function gen_h5path(filename, num)
-
     character(len=*), intent(in) :: filename, num
 #ifndef ADIOS2
     character(len=*), parameter :: path_to_h5file = "./"
@@ -611,7 +635,24 @@ contains
     character(len=(len(path_to_h5file) + len(num) + 1+ len(filename))) :: gen_h5path
     write(gen_h5path, "(A)") path_to_h5file//num//"/"//filename
 #endif
-    
   end function gen_h5path
   
+  !----------------------------------------------!
+  ! Generation of the filename without pathname, !
+  ! used in gen_h5path for .xdmf file creation.  !
+  !                                              !
+  ! Adapted from gen_filename.                   !
+  !----------------------------------------------!
+  function gen_filename2(varname, num, ext)
+
+    character(len=*), intent(in) :: varname, num, ext
+#ifndef ADIOS2
+    character(len=(4 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename2
+    write(gen_filename2, "(A)") varname//'-'//num//'.'//ext
+#else
+    character(len=len(varname)) :: gen_filename2
+    write(gen_filename2, "(A)") varname
+#endif
+  end function gen_filename2
+    
 end module visu

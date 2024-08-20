@@ -4,7 +4,15 @@
 !      Adapted from original Incompact3d file (v2.0)       !
 !                    of R. Corsini                         !
 !----------------------------------------------------------!
-
+! This program has the following files that are 
+! identical to Incompact3d 'modified':
+!
+! - 'parameters.f90'
+! - 'schemes.f90' (except for the comments for the implicit diffusion module, absent here)
+! - 'module_param.f90'
+! - 'variables.f90'
+! - 'tools.f90' (reduced version here, less subroutines).
+!----------------------------------------------------------!
 program post
 
   use decomp_2d

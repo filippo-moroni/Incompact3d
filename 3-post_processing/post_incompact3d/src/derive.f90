@@ -1,42 +1,11 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derx_00(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -91,13 +60,10 @@ subroutine derx_00(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind)
   return
 end subroutine derx_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derx_11(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -164,13 +130,10 @@ subroutine derx_11(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind)
   return
 end subroutine derx_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derx_12(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -234,13 +197,10 @@ subroutine derx_12(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind)
   return
 end subroutine derx_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derx_21(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -304,13 +264,10 @@ subroutine derx_21(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind)
   return
 end subroutine derx_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derx_22(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -348,13 +305,10 @@ subroutine derx_22(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind)
   return
 end subroutine derx_22
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery_00(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -446,13 +400,10 @@ subroutine dery_00(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind)
   return
 end subroutine dery_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery_11(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -568,13 +519,10 @@ subroutine dery_11(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind)
   return
 end subroutine dery_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery_12(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -687,13 +635,10 @@ subroutine dery_12(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind)
   return
 end subroutine dery_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery_21(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -806,13 +751,10 @@ subroutine dery_21(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind)
   return
 end subroutine dery_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine dery_22(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -881,13 +823,10 @@ subroutine dery_22(ty,uy,ry,sy,ffy,fsy,fwy,ppy,nx,ny,nz,npaire,lind)
   return
 end subroutine dery_22
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derz_00(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -969,13 +908,10 @@ subroutine derz_00(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind)
   return
 end subroutine derz_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derz_11(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1082,13 +1018,10 @@ subroutine derz_11(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind)
   return
 end subroutine derz_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derz_12(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1194,13 +1127,10 @@ subroutine derz_12(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind)
   return
 end subroutine derz_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derz_21(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1306,13 +1236,10 @@ subroutine derz_21(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind)
   return
 end subroutine derz_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derz_22(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1372,13 +1299,10 @@ subroutine derz_22(tz,uz,rz,sz,ffz,fsz,fwz,nx,ny,nz,npaire,lind)
   return
 end subroutine derz_22
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derxx_00(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -1499,13 +1423,10 @@ subroutine derxx_00(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind)
   return
 end subroutine derxx_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derxx_11(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -1684,13 +1605,10 @@ subroutine derxx_11(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind)
   return
 end subroutine derxx_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derxx_12(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -1840,13 +1758,10 @@ subroutine derxx_12(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind)
   return
 end subroutine derxx_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derxx_21(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -1996,13 +1911,10 @@ subroutine derxx_21(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind)
   return
 end subroutine derxx_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derxx_22(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
   use ibm, only : lagpolx, cubsplx
 
@@ -2070,13 +1982,10 @@ subroutine derxx_22(tx,ux,rx,sx,sfx,ssx,swx,nx,ny,nz,npaire,lind)
   return
 end subroutine derxx_22
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy_00(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -2225,13 +2134,10 @@ subroutine deryy_00(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind)
   return
 end subroutine deryy_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy_11(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -2451,13 +2357,10 @@ subroutine deryy_11(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind)
   return
 end subroutine deryy_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy_12(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -2649,13 +2552,10 @@ subroutine deryy_12(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind)
   return
 end subroutine deryy_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy_21(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -2847,13 +2747,10 @@ subroutine deryy_21(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind)
   return
 end subroutine deryy_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryy_22(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivY
   use ibm, only : lagpoly, cubsply
 
@@ -2941,13 +2838,10 @@ subroutine deryy_22(ty,uy,ry,sy,sfy,ssy,swy,nx,ny,nz,npaire,lind)
   return
 end subroutine deryy_22
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derzz_00(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -3095,13 +2989,10 @@ subroutine derzz_00(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
   return
 end subroutine derzz_00
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derzz_11(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -3320,13 +3211,10 @@ subroutine derzz_11(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
   return
 end subroutine derzz_11
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derzz_12(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -3516,13 +3404,10 @@ subroutine derzz_12(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
   return
 end subroutine derzz_12
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derzz_21(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -3712,13 +3597,10 @@ subroutine derzz_21(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
   return
 end subroutine derzz_21
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derzz_22(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivZ
   use ibm, only : lagpolz, cubsplz
 
@@ -3809,13 +3691,10 @@ subroutine derzz_22(tz,uz,rz,sz,sfz,ssz,swz,nx,ny,nz,npaire,lind)
   return
 end subroutine derzz_22
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derxvp(tx,ux,rx,sx,cfx6,csx6,cwx6,nx,nxm,ny,nz,npaire)
-  !
-  !********************************************************************
-
-  USE param
+  
+  use param
   use derivX
 
   implicit none
@@ -3826,8 +3705,6 @@ subroutine derxvp(tx,ux,rx,sx,cfx6,csx6,cwx6,nx,nxm,ny,nz,npaire)
   real(mytype), dimension(ny,nz) :: sx
   real(mytype), dimension(nxm) :: cfx6,csx6,cwx6
   integer :: i,j,k,nyz
-
-
 
   nyz=ny*nz
 
@@ -3924,13 +3801,10 @@ subroutine derxvp(tx,ux,rx,sx,cfx6,csx6,cwx6,nx,nxm,ny,nz,npaire)
   return
 end subroutine derxvp
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine interxvp(tx,ux,rx,sx,cifx6,cisx6,ciwx6,nx,nxm,ny,nz,npaire)
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
 
   implicit none
@@ -4054,13 +3928,10 @@ subroutine interxvp(tx,ux,rx,sx,cifx6,cisx6,ciwx6,nx,nxm,ny,nz,npaire)
   return
 end subroutine interxvp
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derxpv(tx,ux,rx,sx,cfi6,csi6,cwi6,cfx6,csx6,cwx6,nxm,nx,ny,nz,npaire)
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use derivX
 
   implicit none
@@ -4139,14 +4010,11 @@ subroutine derxpv(tx,ux,rx,sx,cfi6,csi6,cwi6,cfx6,csx6,cwx6,nxm,nx,ny,nz,npaire)
   return
 end subroutine derxpv
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine interxpv(tx,ux,rx,sx,cifi6,cisi6,ciwi6,cifx6,cisx6,ciwx6,&
-     nxm,nx,ny,nz,npaire)
-  !
-  !********************************************************************
+                    nxm,nx,ny,nz,npaire)
 
-  USE param
+  use param
   use derivX
 
   implicit none
@@ -4278,14 +4146,11 @@ subroutine interxpv(tx,ux,rx,sx,cifi6,cisi6,ciwi6,cifx6,cisx6,ciwx6,&
   return
 end subroutine interxpv
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine interyvp(ty,uy,ry,sy,cify6,cisy6,ciwy6,nx,ny,nym,nz,npaire)
-  !
-  !********************************************************************
 
-  USE param
-  USE derivY
+  use param
+  use derivY
 
   implicit none
 
@@ -4455,14 +4320,11 @@ subroutine interyvp(ty,uy,ry,sy,cify6,cisy6,ciwy6,nx,ny,nym,nz,npaire)
   return
 end subroutine interyvp
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine deryvp(ty,uy,ry,sy,cfy6,csy6,cwy6,ppyi,nx,ny,nym,nz,npaire)
-  !
-  !********************************************************************
 
-  USE param
-  USE derivY
+  use param
+  use derivY
 
   implicit none
 
@@ -4600,15 +4462,12 @@ subroutine deryvp(ty,uy,ry,sy,cfy6,csy6,cwy6,ppyi,nx,ny,nym,nz,npaire)
   return
 end subroutine deryvp
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine interypv(ty,uy,ry,sy,cifi6y,cisi6y,ciwi6y,cify6,cisy6,ciwy6,&
-     nx,nym,ny,nz,npaire)
-  !
-  !********************************************************************
+                    nx,nym,ny,nz,npaire)
 
-  USE param
-  USE derivY
+  use param
+  use derivY
 
   implicit none
 
@@ -4788,15 +4647,12 @@ subroutine interypv(ty,uy,ry,sy,cifi6y,cisi6y,ciwi6y,cify6,cisy6,ciwy6,&
   return
 end subroutine interypv
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derypv(ty,uy,ry,sy,cfi6y,csi6y,cwi6y,cfy6,csy6,cwy6,&
-     ppy,nx,nym,ny,nz,npaire)
-  !
-  !********************************************************************
+                  ppy,nx,nym,ny,nz,npaire)
 
-  USE param
-  USE derivY
+  use param
+  use derivY
 
   implicit none
 
@@ -4933,14 +4789,11 @@ subroutine derypv(ty,uy,ry,sy,cfi6y,csi6y,cwi6y,cfy6,csy6,cwy6,&
   return
 end subroutine derypv
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derzvp(tz,uz,rz,sz,cfz6,csz6,cwz6,nx,ny,nz,nzm,npaire)
-  !
-  !********************************************************************
 
-  USE param
-  USE derivZ
+  use param
+  use derivZ
 
   implicit none
 
@@ -5113,14 +4966,11 @@ subroutine derzvp(tz,uz,rz,sz,cfz6,csz6,cwz6,nx,ny,nz,nzm,npaire)
   return
 end subroutine derzvp
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine interzvp(tz,uz,rz,sz,cifz6,cisz6,ciwz6,nx,ny,nz,nzm,npaire)
-  !
-  !********************************************************************
 
-  USE param
-  USE derivZ
+  use param
+  use derivZ
 
   implicit none
 
@@ -5290,15 +5140,12 @@ subroutine interzvp(tz,uz,rz,sz,cifz6,cisz6,ciwz6,nx,ny,nz,nzm,npaire)
   return
 end subroutine interzvp
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine derzpv(tz,uz,rz,sz,cfiz6,csiz6,cwiz6,cfz6,csz6,cwz6,&
-     nx,ny,nzm,nz,npaire)
-  !
-  !********************************************************************
+                  nx,ny,nzm,nz,npaire)
 
-  USE param
-  USE derivZ
+  use param
+  use derivZ
 
   implicit none
 
@@ -5424,15 +5271,12 @@ subroutine derzpv(tz,uz,rz,sz,cfiz6,csiz6,cwiz6,cfz6,csz6,cwz6,&
   return
 end subroutine derzpv
 
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine interzpv(tz,uz,rz,sz,cifiz6,cisiz6,ciwiz6,cifz6,cisz6,ciwz6,&
-     nx,ny,nzm,nz,npaire)
-  !
-  !********************************************************************
+                    nx,ny,nzm,nz,npaire)
 
-  USE param
-  USE derivZ
+  use param
+  use derivZ
 
   implicit none
 
@@ -5611,3 +5455,4 @@ subroutine interzpv(tz,uz,rz,sz,cifiz6,cisiz6,ciwiz6,cifz6,cisz6,ciwz6,&
 
   return
 end subroutine interzpv
+!---------------------------------------------------------------------------!
