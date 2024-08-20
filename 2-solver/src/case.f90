@@ -7,11 +7,8 @@ module case
   use param
   use decomp_2d
   use variables
-
-  use dbg_schemes
   use channel
   use temporal_tbl
-  
   use var, only : nzmsize
 
   implicit none

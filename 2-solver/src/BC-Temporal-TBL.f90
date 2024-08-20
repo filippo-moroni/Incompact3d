@@ -14,7 +14,7 @@ module temporal_tbl
   implicit none
 
   character(len=100) :: fileformat
-  character(len=1),parameter :: NL=char(10) !new line character
+  character(len=1),parameter :: NL=char(10)  ! new line character
 
   private   ! All functions/subroutines private by default
   public :: init_temporal_tbl,        &
@@ -25,12 +25,11 @@ module temporal_tbl
 
 contains
   !---------------------------------------------------------------------------!
+  ! Initial condition for a temporal turbulent boundary layer (TTBL) as
+  ! Kozul et al. (2016).
+  !---------------------------------------------------------------------------!
   subroutine init_temporal_tbl (ux1,uy1,uz1,phi1)
 
-    use decomp_2d
-    use decomp_2d_io
-    use variables
-    use param
     use tools,       only : apply_spatial_filter 
     use ibm_param
          
@@ -166,11 +165,10 @@ contains
     return
   end subroutine init_temporal_tbl
   !---------------------------------------------------------------------------!
+  ! Boundary conditions for a temporal turbulent boundary layer (TTBL) with
+  ! possibility of scalar field and spanwise wall oscillations.
+  !---------------------------------------------------------------------------!
   subroutine boundary_conditions_ttbl(phi)
-
-    use param
-    use variables
-    use decomp_2d
 
     implicit none
     
@@ -237,7 +235,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine visu_ttbl_init(visu_initialised)
 
-    use decomp_2d,    only : mytype
     use decomp_2d_io, only : decomp_2d_register_variable
     use visu,         only : io_name, output2D
     
