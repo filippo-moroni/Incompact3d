@@ -1,49 +1,19 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
 
 module les
 
-  character(len=*), parameter :: io_turb = "turb-io", &
-       turb_dir = "turb-data"
+  character(len=*), parameter :: io_turb  = "turb-io",  &
+                                 turb_dir = "turb-data"
 contains
 
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: init_explicit_les
+  ! DESCRIPTION: Initialises the explicit LES parameters
+  !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
+  !-----------------------------------------------------------------------------!
   subroutine init_explicit_les
-    !================================================================================
-    !
-    !  SUBROUTINE: init_explicit_les
-    ! DESCRIPTION: Initialises the explicit LES parameters
-    !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
-    !
-    !================================================================================
 
     USE param
     USE variables
@@ -53,7 +23,7 @@ contains
 
     integer :: j
 
-    !you can specify other metric e.g. max(dx,dy,dz) or min(dx,dy,dz)
+    ! you can specify other metric e.g. max(dx,dy,dz) or min(dx,dy,dz)
 
     do j = 1, ny - 1
        del(j) = (dx * (yp(j + 1) - yp(j)) * dz)**(one / three)
@@ -82,22 +52,20 @@ contains
     endif
 
   end subroutine init_explicit_les
-  !************************************************************
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: Compute_SGS
+  ! DESCRIPTION: computes the SGS terms (divergence of the SGS stresses) used in the
+  !              momentum equation
+  !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
+  !-----------------------------------------------------------------------------!
   subroutine Compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,iconservative)
-    !================================================================================
-    !
-    !  SUBROUTINE: Compute_SGS
-    ! DESCRIPTION: computes the SGS terms (divergence of the SGS stresses) used in the
-    !              momentum equation
-    !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
-    !
-    !================================================================================
 
     USE param
     USE variables
     USE decomp_2d
     USE decomp_2d_io
     use var, only: nut1
+    
     implicit none
 
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1, ep1
@@ -133,18 +101,15 @@ contains
 
   end subroutine Compute_SGS
 
-
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: smag
+  ! DESCRIPTION: Calculates the eddy-viscosity nut according to the standard
+  !              Smagorinsky model
+  !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
+  !-----------------------------------------------------------------------------!
   subroutine smag(nut1,ux1,uy1,uz1)
-    !================================================================================
-    !
-    !  SUBROUTINE: smag
-    ! DESCRIPTION: Calculates the eddy-viscosity nut according to the standard
-    !              Smagorinsky model
-    !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
-    !
-    !================================================================================
 
-    use MPI
+    USE MPI
     USE param
     USE variables
     USE decomp_2d
@@ -158,7 +123,6 @@ contains
     USE var, only : sxx2,syy2,szz2,sxy2,sxz2,syz2,srt_smag2,nut2
     USE var, only : sxx3,syy3,szz3,sxy3,sxz3,syz3
     USE ibm_param
-    use dbg_schemes, only: sqrt_prec
 
     implicit none
 
@@ -170,7 +134,6 @@ contains
 
     integer :: i, j, k, ierr
     character(len = 30) :: filename
-
 
     ! INFO about the auxillary arrays
     !--------------------------------------------------------
@@ -245,12 +208,11 @@ contains
              length=smagcst*del(j)
                 
              !Calculate eddy visc nu_t
-             nut2(i, j, k) = ((length)**two) * sqrt_prec(two * srt_smag2(i, j, k))
+             nut2(i, j, k) = ((length)**two) * sqrt(two * srt_smag2(i, j, k))
           enddo
        enddo
     enddo
     call transpose_y_to_x(nut2, nut1)
-
 
     if (mod(itime,ilist)==0) then 
       srtmin_loc = minval(srt_smag)
@@ -282,15 +244,13 @@ contains
 
   end subroutine smag
 
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: dynsmag
+  ! DESCRIPTION: Calculates the eddy-viscosity nut according to the Lilly-Germano
+  !              dynamic Smagorinsky model
+  !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
+  !-----------------------------------------------------------------------------!
   subroutine dynsmag(nut1,ux1,uy1,uz1,ep1)
-    !================================================================================
-    !
-    !  SUBROUTINE: dynsmag
-    ! DESCRIPTION: Calculates the eddy-viscosity nut according to the Lilly-Germano
-    !              dynamic Smagorinsky model
-    !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
-    !
-    !================================================================================
 
     USE param
     USE variables
@@ -306,7 +266,6 @@ contains
     use tools, only : mean_plane_z
     USE ibm_param
     USE param, only : zero
-    use dbg_schemes, only: sqrt_prec
     
     implicit none
 
@@ -321,7 +280,6 @@ contains
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: uxx1f, uyy1f, uzz1f, uxy1f, uxz1f, uyz1f
     real(mytype), dimension(ysize(1), ysize(2), ysize(3)) :: uxx2f, uyy2f, uzz2f, uxy2f, uxz2f, uyz2f
     real(mytype), dimension(zsize(1), zsize(2), zsize(3)) :: uxx3f, uyy3f, uzz3f, uxy3f, uxz3f, uyz3f
-
 
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: sxx1f, syy1f, szz1f, sxy1f, sxz1f, syz1f
     real(mytype), dimension(ysize(1), ysize(2), ysize(3)) :: syy2f, szz2f, sxy2f, syz2f
@@ -701,7 +659,6 @@ contains
     call transpose_y_to_z(axz2f, te3)
     call transpose_y_to_z(ayz2f, tf3)
 
-
     call filz(axx3f, ta3, di3,fisz,fiffzp,fifszp,fifwzp,zsize(1),zsize(2),zsize(3),1,zero)
     call filz(ayy3f, tb3, di3,fisz,fiffzp,fifszp,fifwzp,zsize(1),zsize(2),zsize(3),1,zero)
     call filz(azz3f, tc3, di3,fisz,fiffzp,fifszp,fifwzp,zsize(1),zsize(2),zsize(3),1,zero)
@@ -786,7 +743,6 @@ contains
        if (nrank==0) write(*,*) "filz smagC1= ", maxval(ta3), maxval(smagC3f), maxval(ta3) - maxval(smagC3f)
     endif
 
-
     dsmagcst3 = zero
     call mean_plane_z(smagC3f, zsize(1), zsize(2), zsize(3), dsmagcst3(:, :, 1))
 
@@ -840,9 +796,7 @@ contains
 
   end subroutine dynsmag
 
-  subroutine wale(nut1,ux1,uy1,uz1)
-  !================================================================================
-  !
+  !-----------------------------------------------------------------------------!
   !  SUBROUTINE: wale
   ! DESCRIPTION: Calculates the eddy-viscosity nut according to the wall-adapting
   !              local eddy-viscosity (WALE) model:
@@ -852,8 +806,8 @@ contains
   !              Flow, turbulence and Combustion, 62(3), pp.183-200.
   !
   !      AUTHOR: Arash Hamzehloo <a.hamzehloo@imperial.ac.uk>
-  !
-  !================================================================================
+  !-----------------------------------------------------------------------------!
+  subroutine wale(nut1,ux1,uy1,uz1)
 
   USE param
   USE variables
@@ -906,7 +860,6 @@ contains
 
   syy2(:,:,:)=gyy2(:,:,:)
   sxy2(:,:,:)=half*(gxy2(:,:,:)+ta2(:,:,:))
-
 
   !WORK Z-PENCILS
   call transpose_y_to_z(ux2,ux3)
@@ -1019,16 +972,13 @@ contains
 
 end subroutine wale
 
-
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: sgs_mom_nonconservative
+  ! DESCRIPTION: Calculates the divergence of the sub-grid-scale stresses
+  !              using a non-conservative formulation
+  !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
+  !-----------------------------------------------------------------------------!
   subroutine sgs_mom_nonconservative(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,nut1,ep1)
-    !================================================================================
-    !
-    !  SUBROUTINE: sgs_mom_nonconservative
-    ! DESCRIPTION: Calculates the divergence of the sub-grid-scale stresses
-    !              using a non-conservative formulation
-    !      AUTHOR: G. Deskos <g.deskos14@imperial.ac.uk>
-    !
-    !================================================================================
 
     USE param
     USE variables
@@ -1064,7 +1014,6 @@ end subroutine wale
     sgsx1 = td1 * nut1 + two * sxx1 * ta1
     sgsy1 = te1 * nut1 + two * sxy1 * ta1
     sgsz1 = tf1 * nut1 + two * sxz1 * ta1
-
 
     !WORK Y-PENCILS
     call transpose_x_to_y(sgsx1, sgsx2)
@@ -1182,13 +1131,12 @@ end subroutine wale
 
   end subroutine sgs_mom_nonconservative
 
-  !************************************************************
+  !-----------------------------------------------------------------------------!
   subroutine sgs_scalar_nonconservative(sgsphi1,nut1,phi1,is)
 
     USE param
     USE variables
     USE decomp_2d
-
     USE var, only: di1,tb1,di2,tb2,di3,tb3,tc1,tc2,tc3
  
     implicit none
@@ -1249,5 +1197,6 @@ end subroutine wale
     call transpose_y_to_x(sgsphi2, sgsphi1)
 
   end subroutine sgs_scalar_nonconservative
+  !-----------------------------------------------------------------------------!
 
 end module les

@@ -1,34 +1,6 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
 
 module ludecomp
 
@@ -39,14 +11,14 @@ module ludecomp
   private
   public :: ludecomp7, ludecomp9
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !
+  !---------------------------------------------------------------------------!
   ! Interface for septadiag / nonadiag LU decomposition used in implicit mode
-  ! septadiag is for when isecondder is not equal 5 ('classic' second order schemes)
-  ! nonadiag is for when isecondder is equal to 5 ('diffusive' second order schemes)
-  ! ludecompX_0 is called when ncly=0 (when the matrix is cyclic)
+  ! septadiag is used when isecondder is not equal 5 ('classic' second order schemes)
+  ! nonadiag  is used when isecondder is equal to 5 ('diffusive' second order schemes)
+  ! ludecompX_0  is called when ncly=0 (when the matrix is cyclic)
   ! ludecompX_12 is called when ncly=1 or 2
-  !
+  !---------------------------------------------------------------------------!
+
   interface ludecomp7
      module procedure ludecomp7_12
      module procedure ludecomp7_0
@@ -59,13 +31,14 @@ module ludecomp
 
 contains
 
-!*******************************************************************
-!Decomposition LU matrix septadiag
-  subroutine ludecomp7_12(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,ny)
-!
-!*******************************************************************
+   !---------------------------------------------------------------------------!
+   ! Decomposition LU matrix septadiag
+   !---------------------------------------------------------------------------!  
+   subroutine ludecomp7_12(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,ny)
+
     use decomp_2d, only : mytype
-    USE param
+    use param
+    
     implicit none
     
     integer :: i,j,k
@@ -103,16 +76,14 @@ contains
        ssm(j)=ccm(j)-zzm(j)*rrm(j-1)
     enddo
 
+   end subroutine ludecomp7_12
+   !---------------------------------------------------------------------------!
+   ! Decomposition LU matrix cyclic septadiag
+   !---------------------------------------------------------------------------!   
+   subroutine ludecomp7_0(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,ny)
 
-  end subroutine ludecomp7_12
-
-!*******************************************************************
-!Decomposition LU matrix cyclic septadiag
-  subroutine ludecomp7_0(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,ny)
-!
-!*******************************************************************
     use decomp_2d, only : mytype
-    USE param
+    use param
     
     implicit none
 
@@ -229,12 +200,11 @@ contains
     enddo
 
   end subroutine ludecomp7_0
-
-!*******************************************************************
-!Decomposition LU matrix nonadiag
+  !---------------------------------------------------------------------------!
+  ! Decomposition LU matrix nonadiag
+  !---------------------------------------------------------------------------!
   subroutine ludecomp9_12(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,ttm,uum,sssm,zzzm,ny)
-!
-!*******************************************************************
+
     use decomp_2d, only : mytype
     use param
 
@@ -253,7 +223,6 @@ contains
     hhm(1)=bbm(1)
     ssm(1)=ccm(1)
     sssm(1)=rrm(1)
-
 
     zzzm(2)=ddm(2)/ggm(1)
     ggm(2)=aam(2)-zzzm(2)*hhm(1)
@@ -290,15 +259,14 @@ contains
 
     enddo
   end subroutine ludecomp9_12
-
-!*******************************************************************
-!Decomposition LU matrix cyclic nonadiag
+  !---------------------------------------------------------------------------!
+  ! Decomposition LU matrix cyclic nonadiag
+  !---------------------------------------------------------------------------!
   subroutine ludecomp9_0(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,ny)
-!
-!*******************************************************************
+
     use decomp_2d, only : mytype
     use param
-    USE MPI
+    use MPI
 
     implicit none
 
@@ -313,7 +281,6 @@ contains
 
     real(mytype), dimension(ny,ny) :: mata, matl, matu, prod
 
-
     ggm=zero;hhm=zero;ssm=zero
     u1m=zero;u2m=zero;u3m=zero
     vvm=zero;wwm=zero;zzm=zero
@@ -325,9 +292,9 @@ contains
   end subroutine ludecomp9_0
 
 end module ludecomp
+!---------------------------------------------------------------------------!
 
-!*******************************************************************
-!
+!---------------------------------------------------------------------------!
 module matinv
 
   use decomp_2d, only : mytype
@@ -336,13 +303,15 @@ module matinv
 
   private
   public :: septinv, nonainv
-  !
+
+  !---------------------------------------------------------------------------!
   ! Interface for septadiag/nonadiag matrix inversion used in implicit mode
-  ! septadiag is for when isecondder is not equal 5 ('classic' second order schemes)
-  ! nonadiag is for when isecondder is equal to 5 ('diffusive' second order schemes)
+  ! septadiag is used when isecondder is not equal 5 ('classic' second order schemes)
+  ! nonadiag  is used when isecondder is equal to 5 ('diffusive' second order schemes)
   ! Xinv_0 is called when ncly=0 (when the matrix is cyclic)
   ! Xinv_12 is called when ncly=1 or 2
-  !
+  !---------------------------------------------------------------------------!
+
   interface septinv
      module procedure septinv_12
      module procedure septinv_0
@@ -355,11 +324,11 @@ module matinv
 
 contains
 
-!********************************************************************
-!INVERSE SEPTADIAG MATRIX
-  subroutine septinv_12(xsol,bbb,ggm,hhm,ssm,rrm,vvm,wwm,zzm,nx,ny,nz)
-    !
-    !********************************************************************
+    !---------------------------------------------------------------------------!
+    ! Inverse septdiag matrix
+    !---------------------------------------------------------------------------!
+    subroutine septinv_12(xsol,bbb,ggm,hhm,ssm,rrm,vvm,wwm,zzm,nx,ny,nz)
+
     use decomp_2d, only : mytype
 
     implicit none
@@ -412,12 +381,11 @@ contains
     enddo
 
   end subroutine septinv_12
-
-!********************************************************************
-!INVERSE SEPTADIAG CYCLIC
+  !---------------------------------------------------------------------------!
+  ! Inverse septdiag cyclic matrix
+  !---------------------------------------------------------------------------!
   subroutine septinv_0(xsol,bbb,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,nx,ny,nz)
-!    
-!********************************************************************
+
     use decomp_2d, only : mytype
 
     implicit none
@@ -479,12 +447,11 @@ contains
     enddo
 
   end subroutine septinv_0
-  
-!********************************************************************
-!INVERSE NONADIAG
+  !---------------------------------------------------------------------------!
+  ! Inverse nonadiag matrix
+  !---------------------------------------------------------------------------!
   subroutine nonainv_12(xSol,bbb,ggm,hhm,ssm,sssm,ttm,zzzm,zzm,wwm,vvm,nx,ny,nz)
-!
-!********************************************************************
+  
     use decomp_2d, only : mytype
 
     implicit none
@@ -527,14 +494,13 @@ contains
     enddo
 
   end subroutine nonainv_12
-
-!********************************************************************
-!INVERSE NONADIAG CYCLIC
+  !---------------------------------------------------------------------------!
+  ! Inverse nonadiag cyclic matrix
+  !---------------------------------------------------------------------------!
   subroutine nonainv_0(xsol,bbb,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,nx,ny,nz)
-    !
-    !********************************************************************
+
     use decomp_2d, only : mytype
-    USE MPI
+    use MPI
     
     implicit none
 
@@ -602,55 +568,50 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   ! LOCAL
   real(mytype),dimension(ysize(1),ysize(3)) :: bctop, bcbot
 
+  ! Explicit Euler
   if (itimescheme.eq.1) then
-     !>>> Explicit Euler
      ta1(:,:,:) = gdt(1) * dvar1(:,:,:,1)
 
+  ! AB2   
   elseif (itimescheme.eq.2) then
-     !>>> AB2
+     
+     ! Start with explicit Euler (ts = 1)
      if ((itime.eq.1).and.(irestart.eq.0)) then
-        !>>> Start with explicit Euler
         ta1(:,:,:) = dt*dvar1(:,:,:,1)
-
+     ! Otherwise AB2
      else
-        !>>> Then AB2
         ta1(:,:,:) = adt(1)*dvar1(:,:,:,1) + bdt(1)*dvar1(:,:,:,2)
-
      endif
 
-     !save (N+Lxz)(n-1)
+     ! save (N+Lxz)(n-1)
      dvar1(:,:,:,2) = dvar1(:,:,:,1)
 
-
+  ! AB3
   else if (itimescheme.eq.3) then
-     !>>> AB3
+     ! Start with explicit Euler (ts = 1)
      if ((itime.eq.1).and.(irestart.eq.0)) then
-        !>>> Start with explicit Euler
         ta1(:,:,:) = dt*dvar1(:,:,:,1)
-
+     ! Then AB2 (ts = 2)
      else if ((itime.eq.2).and.(irestart.eq.0)) then
-        !>>> Then AB2
         ta1(:,:,:) = onepfive*dt*dvar1(:,:,:,1) - half*dt*dvar1(:,:,:,2)
-
+     ! Otherwise AB3
      else
-        !>>> Then AB3
         ta1(:,:,:) = adt(1)*dvar1(:,:,:,1) + bdt(1)*dvar1(:,:,:,2) &
                    + cdt(1)*dvar1(:,:,:,3)
-
      endif
 
-     !save (N+Lxz)(n-1)
+     ! save (N+Lxz)(n-1)
      dvar1(:,:,:,3)=dvar1(:,:,:,2)
      dvar1(:,:,:,2)=dvar1(:,:,:,1)
 
+  ! AB4   
   elseif (itimescheme.eq.4) then
-     !>>> AB4
      if (nrank.eq.0) then
         print *, "AB4 not implemented!"
         STOP
      endif
      
-  !>>> Runge-Kutta (low storage) RK3
+  ! Runge-Kutta (low storage) RK3
   elseif(itimescheme.eq.5) then
      if(itr.eq.1) then
         ta1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)
@@ -659,20 +620,21 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      endif
      dvar1(:,:,:,2)=dvar1(:,:,:,1)
 
+  ! We should not be here
   else
-     !>>> We should not be here
      if (nrank.eq.0) then
         print *, "Unrecognised implicit itimescheme: ", itimescheme
      endif
      call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
 
   endif
-  
-  
-  !--- Perform semi-implicit time integration only at the last iteration of the RK cycle ---!
-  ! For Adams-Bashforth schemes, we always enter into semi-implicit time integration,
+
+  !-----------------------------------------------------------------------------!
+  ! Perform semi-implicit time integration only at the last iteration 
+  ! of the RK cycle. 
+  ! For Adams-Bashforth schemes, we always enter into semi-implicit time integration, 
   ! since we have no sub-time steps.
-  
+  !-----------------------------------------------------------------------------!
   if((itimescheme .le. 3) .or. (itimescheme.eq.5 .and. itr.eq.3)) then
 
   if (present(forcing1)) then
@@ -681,7 +643,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      endif
   endif
 
-  !Y-PENCIL FOR MATRIX INVERSION
+  ! Y-PENCIL FOR MATRIX INVERSION
   call transpose_x_to_y(var1,tb2)
   call transpose_x_to_y(ta1,ta2)
 
@@ -705,7 +667,6 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   else if (itype .eq. itype_ttbl .and. isc .ne. 0) then
      bcbot(:,:) = phiwall
      bctop(:,:) = tb2(:,ny-1,:)
-     !bctop(:,:) = zero
      
   ! Channel flow (velocity BCs and scalar BCs)
   else if (itype .eq. itype_channel .and. isc .eq. 0) then
@@ -842,11 +803,11 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   return
 end subroutine inttimp
 
-!********************************************************************
-!PREMULT FOR INTTIMP WITH SEPTADIAG
+!-----------------------------------------------------------------------------!
+! Premult for inttimp with septdiag
+!-----------------------------------------------------------------------------!
 subroutine multmatrix7(td2,ta2,ux2,npaire,cly1,clyn,xcst)
-! 
-!********************************************************************
+
    USE param, only : iimplicit, istret, zero, ncly1, nclyn, two
    USE variables
    USE derivY
@@ -1007,12 +968,11 @@ subroutine multmatrix7(td2,ta2,ux2,npaire,cly1,clyn,xcst)
    endif
 
 end subroutine multmatrix7
-
-!********************************************************************
-
+!-----------------------------------------------------------------------------!
+! Premult for inttimp with nonadiag
+!-----------------------------------------------------------------------------!
 subroutine multmatrix9(td2,ta2,ux2,npaire)
-  !
-  !********************************************************************
+
   USE param
   USE variables
   USE derivY
@@ -1026,7 +986,6 @@ subroutine multmatrix9(td2,ta2,ux2,npaire)
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)), intent(inout) :: ux2
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)), intent(inout) :: td2,ta2
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: di2
-
 
   !A.uhat
 
@@ -1124,9 +1083,10 @@ subroutine multmatrix9(td2,ta2,ux2,npaire)
 
 end subroutine multmatrix9
 
-!
+!-----------------------------------------------------------------------------!
 ! Compute 1D arrays containing LU decomposition
-!
+! To be checked if it is still used.
+!-----------------------------------------------------------------------------!
 subroutine implicit_schemes()
 
   USE param
@@ -2209,14 +2169,15 @@ if (isecondder.ne.5) then
 
 end subroutine implicit_schemes
 
-!
+!-----------------------------------------------------------------------------!
 ! Allocate 1D arrays containing LU decompositions
-!
+!-----------------------------------------------------------------------------!
 subroutine init_implicit()
 
   USE decomp_2d
   USE param
   USE variables
+
   implicit none
 
   ! velocity, ncly1 = 2, nclyn = 2
@@ -2281,9 +2242,9 @@ subroutine init_implicit()
 
 end subroutine init_implicit
 
-!
+!-----------------------------------------------------------------------------!
 ! Used to build the scalar implicit coefficients
-!
+!-----------------------------------------------------------------------------!
 subroutine init_implicit_coef(tab1d, tab2d)
 
   use decomp_2d, only : mytype
@@ -2301,5 +2262,6 @@ subroutine init_implicit_coef(tab1d, tab2d)
   enddo
 
 end subroutine init_implicit_coef
+!-----------------------------------------------------------------------------!
 
 end module ydiff_implicit

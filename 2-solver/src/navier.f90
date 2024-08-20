@@ -1,34 +1,7 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
 module navier
 
   implicit none
@@ -41,12 +14,12 @@ module navier
   public :: gradp, tbl_flrt
 
 contains
-  !############################################################################
-  !!  SUBROUTINE: solve_poisson
-  !!      AUTHOR: Paul Bartholomew
-  !! DESCRIPTION: Takes the intermediate momentum field as input,
-  !!              computes div and solves pressure-Poisson equation.
-  !############################################################################
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: solve_poisson
+  !      AUTHOR: Paul Bartholomew
+  ! DESCRIPTION: Takes the intermediate momentum field as input,
+  !              computes div and solves pressure-Poisson equation.
+  !-----------------------------------------------------------------------------!
   SUBROUTINE solve_poisson(pp3, px1, py1, pz1, rho1, ux1, uy1, uz1, ep1, drho1, divu3)
 
     USE decomp_2d, ONLY : mytype, xsize, zsize, ph1, nrank
@@ -167,17 +140,15 @@ contains
     !ENDIF
 
   END SUBROUTINE solve_poisson
-  !############################################################################
-  !!
-  !!  SUBROUTINE: lmn_t_to_rho_trans
-  !! DESCRIPTION: Converts the temperature transient to the density transient
-  !!              term. This is achieved by application of EOS and chain rule.
-  !!      INPUTS: dtemp1 - the RHS of the temperature equation.
-  !!                rho1 - the density field.
-  !!     OUTPUTS:  drho1 - the RHS of the density equation.
-  !!      AUTHOR: Paul Bartholomew
-  !!
-  !############################################################################
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: lmn_t_to_rho_trans
+  ! DESCRIPTION: Converts the temperature transient to the density transient
+  !              term. This is achieved by application of EOS and chain rule.
+  !      INPUTS: dtemp1 - the RHS of the temperature equation.
+  !                rho1 - the density field.
+  !     OUTPUTS:  drho1 - the RHS of the density equation.
+  !      AUTHOR: Paul Bartholomew
+  !-----------------------------------------------------------------------------!
   SUBROUTINE lmn_t_to_rho_trans(drho1, dtemp1, rho1, dphi1, phi1)
 
     USE decomp_2d
@@ -224,14 +195,13 @@ contains
     drho1(:,:,:) = rho1(:,:,:) * drho1(:,:,:)
 
   ENDSUBROUTINE lmn_t_to_rho_trans
-  !############################################################################
-  !subroutine COR_VEL
-  !Correction of u* by the pressure gradient to get a divergence free
-  !field
+  !-----------------------------------------------------------------------------!
+  ! Correction of u* by the pressure gradient to get a divergence free
+  ! field.
   ! input : px,py,pz
   ! output : ux,uy,uz
-  !written by SL 2018
-  !############################################################################
+  ! Written by SL 2018.
+  !-----------------------------------------------------------------------------!
   subroutine cor_vel (ux,uy,uz,px,py,pz)
 
     USE decomp_2d
@@ -275,13 +245,12 @@ contains
 
     return
   end subroutine cor_vel
-  !############################################################################
-  !subroutine DIVERGENCE
-  !Calculation of div u* for nlock=1 and of div u^{n+1} for nlock=2
+  !-----------------------------------------------------------------------------!
+  ! Calculation of div u* for nlock=1 and of div u^{n+1} for nlock=2.
   ! input : ux1,uy1,uz1,ep1 (on velocity mesh)
   ! output : pp3 (on pressure mesh)
-  !written by SL 2018
-  !############################################################################
+  ! Written by SL 2018.
+  !-----------------------------------------------------------------------------!
   subroutine divergence (pp3,rho1,ux1,uy1,uz1,ep1,drho1,divu3,nlock)
 
     USE param
@@ -396,19 +365,18 @@ contains
 
     return
   end subroutine divergence
-  !############################################################################
-  !subroutine GRADP
-  !Computation of the pressure gradient from the pressure mesh to the
-  !velocity mesh
-  !Saving pressure gradients on boundaries for correct imposition of
-  !BCs on u* via the fractional step method (it is not possible to
-  !impose BC after correction by pressure gradient otherwise lost of
-  !incompressibility--> BCs are imposed on u*)
+  !-----------------------------------------------------------------------------!
+  ! Computation of the pressure gradient from the pressure mesh to the
+  ! velocity mesh.
+  ! Saving pressure gradients on boundaries for correct imposition of
+  ! BCs on u* via the fractional step method (it is not possible to
+  ! impose BC after correction by pressure gradient otherwise lost of
+  ! incompressibility--> BCs are imposed on u*).
   !
   ! input: pp3 - pressure field (on pressure mesh)
   ! output: px1, py1, pz1 - pressure gradients (on velocity mesh)
-  !written by SL 2018
-  !############################################################################
+  ! Written by SL 2018.
+  !-----------------------------------------------------------------------------!
   subroutine gradp(px1,py1,pz1,pp3)
 
     USE param
@@ -517,8 +485,7 @@ contains
 
     return
   end subroutine gradp
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine pre_correc(ux,uy,uz,ep)
 
     USE decomp_2d
@@ -605,7 +572,6 @@ contains
        enddo
     endif
 
-
     !********NCLX==1*************************************
     if (nclx1==1) then
        do k=1,xsize(3)
@@ -690,7 +656,6 @@ contains
        endif
     endif
 
-
     !********NCLZ==2*************************************
     if (nclz1==2) then
        if (xstart(3)==1) then
@@ -767,9 +732,9 @@ contains
 
     return
   end subroutine pre_correc
-  !############################################################################
-  !############################################################################
-  !! Convert to/from conserved/primary variables
+  !-----------------------------------------------------------------------------!
+  ! Convert to/from conserved/primary variables
+  !-----------------------------------------------------------------------------!
   SUBROUTINE primary_to_conserved(rho1, var1)
 
     USE decomp_2d, ONLY : mytype, xsize
@@ -783,8 +748,7 @@ contains
     var1(:,:,:) = rho1(:,:,:,1) * var1(:,:,:)
 
   ENDSUBROUTINE primary_to_conserved
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   SUBROUTINE velocity_to_momentum (rho1, ux1, uy1, uz1)
 
     USE decomp_2d, ONLY : mytype, xsize
@@ -805,8 +769,7 @@ contains
     CALL primary_to_conserved(rho1, uz1)
 
   ENDSUBROUTINE velocity_to_momentum
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   SUBROUTINE conserved_to_primary(rho1, var1)
 
     USE decomp_2d, ONLY : mytype, xsize
@@ -820,8 +783,7 @@ contains
     var1(:,:,:) = var1(:,:,:) / rho1(:,:,:,1)
 
   ENDSUBROUTINE conserved_to_primary
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   SUBROUTINE momentum_to_velocity (rho1, ux1, uy1, uz1)
 
     USE decomp_2d, ONLY : mytype, xsize
@@ -842,9 +804,9 @@ contains
     CALL conserved_to_primary(rho1, uz1)
 
   ENDSUBROUTINE momentum_to_velocity
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   ! Calculate velocity-divergence constraint
+  !-----------------------------------------------------------------------------!
   SUBROUTINE calc_divu_constraint(divu3, rho1, phi1)
 
     USE decomp_2d, ONLY : mytype, xsize, ysize, zsize
@@ -982,10 +944,9 @@ contains
     !ENDIF
 
   ENDSUBROUTINE calc_divu_constraint
-
-  !############################################################################
-  !############################################################################
-  ! Calculate extrapolation drhodt 
+  !-----------------------------------------------------------------------------!
+  ! Calculate extrapolation drhodt
+  !-----------------------------------------------------------------------------! 
   SUBROUTINE extrapol_drhodt(drhodt1_next, rho1, drho1)
 
     USE decomp_2d, ONLY : mytype, xsize, nrank
@@ -1039,14 +1000,12 @@ contains
     ENDIF
 
   ENDSUBROUTINE extrapol_drhodt
-  !############################################################################
-  !!
-  !! Subroutine : birman_drhodt_corr
-  !! Author     :
-  !! Description: Calculate extrapolation drhodt correction
-  !!
-  !############################################################################
 
+  !-----------------------------------------------------------------------------!
+  ! Subroutine : birman_drhodt_corr
+  ! Author     :
+  ! Description: Calculate extrapolation drhodt correction
+  !-----------------------------------------------------------------------------!
   SUBROUTINE birman_drhodt_corr(drhodt1_next, rho1)
 
     USE decomp_2d, ONLY : mytype, xsize, ysize, zsize
@@ -1088,13 +1047,12 @@ contains
     drhodt1_next(:,:,:) = drhodt1_next(:,:,:) - invpe * td1(:,:,:)
 
   ENDSUBROUTINE birman_drhodt_corr
-  !############################################################################
-  !!
-  !!  SUBROUTINE: test_varcoeff
-  !!      AUTHOR: Paul Bartholomew
-  !! DESCRIPTION: Tests convergence of the variable-coefficient Poisson solver
-  !!
-  !############################################################################
+
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: test_varcoeff
+  !      AUTHOR: Paul Bartholomew
+  ! DESCRIPTION: Tests convergence of the variable-coefficient Poisson solver
+  !-----------------------------------------------------------------------------!
   SUBROUTINE test_varcoeff(converged, divup3norm, pp3, dv3, atol, rtol, poissiter)
 
     USE MPI
@@ -1159,13 +1117,12 @@ contains
     endif
 
   ENDSUBROUTINE test_varcoeff
-  !############################################################################
-  !!
-  !!  SUBROUTINE: calc_varcoeff_rhs
-  !!      AUTHOR: Paul Bartholomew
-  !! DESCRIPTION: Computes RHS of the variable-coefficient Poisson solver
-  !!
-  !############################################################################
+
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: calc_varcoeff_rhs
+  !      AUTHOR: Paul Bartholomew
+  ! DESCRIPTION: Computes RHS of the variable-coefficient Poisson solver
+  !-----------------------------------------------------------------------------!
   SUBROUTINE calc_varcoeff_rhs(pp3, rho1, px1, py1, pz1, dv3, drho1, ep1, divu3, rho0, poissiter)
 
     USE MPI
@@ -1216,12 +1173,9 @@ contains
     pp3(:,:,:) = pp3(:,:,:) + rho0 * dv3(:,:,:)
 
   ENDSUBROUTINE calc_varcoeff_rhs
-  !############################################################################
-  !********************************************************************
-  !
+
+  !-----------------------------------------------------------------------------!
   subroutine tbl_flrt (ux1,uy1,uz1)
-  !
-  !********************************************************************
 
     USE decomp_2d
     USE decomp_2d_poisson
@@ -1299,18 +1253,16 @@ contains
     enddo
 
   end subroutine tbl_flrt
-!############################################################################
-!!
-!!  SUBROUTINE: avg3d
-!!      AUTHOR: Stefano Rolfo
-!! DESCRIPTION: Compute the total sum of a a 3d field
-!!
-!############################################################################
+
+!-----------------------------------------------------------------------------!
+!  SUBROUTINE: avg3d
+!      AUTHOR: Stefano Rolfo
+! DESCRIPTION: Compute the total sum of a a 3d field
+!-----------------------------------------------------------------------------!
 subroutine avg3d (var, avg)
 
   use decomp_2d, only: real_type, xsize, xend
   use param
-  use dbg_schemes, only: sqrt_prec
   use variables, only: nx,ny,nz,nxm,nym,nzm
   use mpi
 
@@ -1364,11 +1316,11 @@ subroutine avg3d (var, avg)
      enddo
   enddo
   call MPI_ALLREDUCE(dep,avg,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-  !avg=sqrt_prec(avg)/(nxc*nyc*nzc)
   avg=avg/(nxc*nyc*nzc)
 
   return
 
 end subroutine avg3d
+!-----------------------------------------------------------------------------!
 
 endmodule navier

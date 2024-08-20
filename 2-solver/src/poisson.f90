@@ -60,8 +60,6 @@ module decomp_2d_poisson
   public :: decomp_2d_poisson_init,decomp_2d_poisson_finalize,poisson
 contains
 
-
-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! Initialise Poisson solver for given boundary conditions
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -415,8 +413,6 @@ contains
 
   subroutine poisson_100(rhs)
 
-    use dbg_schemes, only: abs_prec
-
     implicit none
 
     real(mytype), dimension(:,:,:), intent(INOUT) :: rhs
@@ -470,7 +466,7 @@ contains
     do k = sp%xst(3), sp%xen(3)
        do j = sp%xst(2), sp%xen(2)
           do i = sp%xst(1), sp%xen(1)
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) then
+             if (abs(cw1(i,j,k)) > 1.0e-4) then
                 write(*,100) 'START', i, j, k, cw1(i,j,k)
              end if
           end do
@@ -489,7 +485,7 @@ contains
              cw1(i,j,k) = cx(tmp1 * bz(k) + tmp2 * az(k), &
                              tmp2 * bz(k) - tmp1 * az(k))
 #ifdef DEBUG
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) &
+             if (abs(cw1(i,j,k)) > 1.0e-4) &
                   write(*,100) 'after z',i,j,k,cw1(i,j,k)
 #endif
           end do
@@ -506,7 +502,7 @@ contains
                              tmp2 * by(j) - tmp1 * ay(j))
              if (j > (ny/2+1)) cw1(i,j,k) = -cw1(i,j,k)
 #ifdef DEBUG
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) &
+             if (abs(cw1(i,j,k)) > 1.0e-4) &
                   write(*,100) 'after y',i,j,k,cw1(i,j,k)
 #endif
           end do
@@ -539,7 +535,7 @@ contains
     do k = sp%xst(3), sp%xen(3)
        do j = sp%xst(2), sp%xen(2)
           do i = sp%xst(1), sp%xen(1)
-             if (abs_prec(cw1b(i,j,k)) > 1.0e-4) then
+             if (abs(cw1b(i,j,k)) > 1.0e-4) then
                 write(*,100) 'after x',i,j,k,cw1b(i,j,k)
              end if
           end do
@@ -554,20 +550,20 @@ contains
              tmp1 = rl(kxyz(i,j,k))
              tmp2 = iy(kxyz(i,j,k))
              ! CANNOT DO A DIVISION BY ZERO
-             if ((abs_prec(tmp1) < epsilon).and.(abs_prec(tmp2) < epsilon)) then    
+             if ((abs(tmp1) < epsilon).and.(abs(tmp2) < epsilon)) then    
                 cw1b(i,j,k)=cx(zero, zero)
              end if
-             if ((abs_prec(tmp1) < epsilon).and.(abs_prec(tmp2) >= epsilon)) then
+             if ((abs(tmp1) < epsilon).and.(abs(tmp2) >= epsilon)) then
                 cw1b(i,j,k)=cx(zero, iy(cw1b(i,j,k)) / (-tmp2))
              end if
-             if ((abs_prec(tmp1) >= epsilon).and.(abs_prec(tmp2) < epsilon)) then    
+             if ((abs(tmp1) >= epsilon).and.(abs(tmp2) < epsilon)) then    
                 cw1b(i,j,k)=cx(rl(cw1b(i,j,k)) / (-tmp1), zero)
              end if
-             if ((abs_prec(tmp1) >= epsilon).and.(abs_prec(tmp2) >= epsilon)) then
+             if ((abs(tmp1) >= epsilon).and.(abs(tmp2) >= epsilon)) then
                 cw1b(i,j,k)=cx(rl(cw1b(i,j,k)) / (-tmp1), iy(cw1b(i,j,k)) / (-tmp2))
              end if
 #ifdef DEBUG
-             if (abs_prec(cw1b(i,j,k)) > 1.0e-4) &
+             if (abs(cw1b(i,j,k)) > 1.0e-4) &
                   write(*,100) 'AFTER',i,j,k,cw1b(i,j,k)
 #endif
           end do
@@ -602,7 +598,7 @@ contains
     do k = sp%xst(3),sp%xen(3)
        do j = sp%xst(2),sp%xen(2)
           do i = sp%xst(1),sp%xen(1)
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) then
+             if (abs(cw1(i,j,k)) > 1.0e-4) then
                 write(*,100) 'AFTER X',i,j,k,cw1(i,j,k)
              end if
           end do
@@ -620,7 +616,7 @@ contains
                              tmp2 * by(j) + tmp1 * ay(j))
              if (j > (ny/2+1)) cw1(i,j,k) = -cw1(i,j,k)
 #ifdef DEBUG
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) &
+             if (abs(cw1(i,j,k)) > 1.0e-4) &
                   write(*,100) 'AFTER Y',i,j,k,cw1(i,j,k)
 #endif
           end do
@@ -636,7 +632,7 @@ contains
              cw1(i,j,k) = cx(tmp1 * bz(k) - tmp2 * az(k), &
                              tmp2 * bz(k) + tmp1 * az(k))
 #ifdef DEBUG
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) &
+             if (abs(cw1(i,j,k)) > 1.0e-4) &
                   write(*,100) 'END',i,j,k,cw1(i,j,k)
 #endif
           end do
@@ -672,8 +668,6 @@ contains
   ! Solving 3D Poisson equation: Neumann in Y; periodic in X & Z
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   subroutine poisson_010(rhs)
-
-    use dbg_schemes, only: abs_prec
 
     implicit none
 
@@ -726,7 +720,7 @@ contains
     do k = sp%xst(3), sp%xen(3)
        do j = sp%xst(2), sp%xen(2)
           do i = sp%xst(1), sp%xen(1)
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) then
+             if (abs(cw1(i,j,k)) > 1.0e-4) then
                 write(*,100) 'START',i,j,k,cw1(i,j,k)
              end if
           end do
@@ -745,7 +739,7 @@ contains
              cw1(i,j,k) = cx(tmp1 * bz(k) + tmp2 * az(k), &
                              tmp2 * bz(k) - tmp1 * az(k))
 #ifdef DEBUG
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) &
+             if (abs(cw1(i,j,k)) > 1.0e-4) &
                   write(*,100) 'after z',i,j,k,cw1(i,j,k)
 #endif
           end do
@@ -762,7 +756,7 @@ contains
                              tmp2 * bx(i) - tmp1 * ax(i))
              if (i.gt.(nx/2+1)) cw1(i,j,k)=-cw1(i,j,k)
 #ifdef DEBUG
-             if (abs_prec(cw1(i,j,k)) > 1.0e-4) &
+             if (abs(cw1(i,j,k)) > 1.0e-4) &
                   write(*,100) 'after x',i,j,k,cw1(i,j,k)
 #endif
           end do
@@ -798,7 +792,7 @@ contains
     do k = sp%yst(3), sp%yen(3)
        do j = sp%yst(2), sp%yen(2)
           do i = sp%yst(1), sp%yen(1)
-             if (abs_prec(cw2b(i,j,k)) > 1.0e-4) then
+             if (abs(cw2b(i,j,k)) > 1.0e-4) then
                 write(*,100) 'after y',i,j,k,cw2b(i,j,k)
                 write(*,*)kxyz(i,j,k)
              end if
@@ -817,13 +811,13 @@ contains
                 tmp1 = rl(kxyz(i,j,k))
                 tmp2 = iy(kxyz(i,j,k))
                 !CANNOT DO A DIVISION BY ZERO
-                if ((abs_prec(tmp1) < epsilon).and.(abs_prec(tmp2) < epsilon)) then    
+                if ((abs(tmp1) < epsilon).and.(abs(tmp2) < epsilon)) then    
                    cw2b(i,j,k) = cx(zero, zero)
                 end if
-                if ((abs_prec(tmp1) < epsilon).and.(abs_prec(tmp2) >= epsilon)) then
+                if ((abs(tmp1) < epsilon).and.(abs(tmp2) >= epsilon)) then
                    cw2b(i,j,k) = cx(zero, iy(cw2b(i,j,k)) / (-tmp2))
                 end if
-                if ((abs_prec(tmp1) >= epsilon).and.(abs_prec(tmp2) < epsilon)) then    
+                if ((abs(tmp1) >= epsilon).and.(abs(tmp2) < epsilon)) then    
                    cw2b(i,j,k) = cx(rl(cw2b(i,j,k)) / (-tmp1), zero)
                 end if
                 if ((abs_prec(tmp1) >= epsilon).and.(abs_prec(tmp2) >= epsilon)) then

@@ -1,34 +1,10 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
+!-----------------------------------------------------------------------------!
+! This module stores (mainly) work variables.
+!-----------------------------------------------------------------------------!
 module variables
     
   use decomp_2d, only : mytype
@@ -43,12 +19,12 @@ module variables
   ! If ncl = 0,      --> n  = 2*l
   !                  --> nm = n
   !                  --> m  = n + 2
-  !nstat = size arrays for statistic collection
-  !2-->every 2 mesh nodes
-  !4-->every 4 mesh nodes
-  !nvisu = size for visualization collection
+  ! nstat = size arrays for statistic collection
+  ! 2-->every 2 mesh nodes
+  ! 4-->every 4 mesh nodes
+  ! nvisu = size for visualization collection
 
-  !Possible n points: 3 5 7 9 11 13 17 19 21 25 31 33 37 41 49 51 55 61 65 73 81 91 97 101 109 121 129 145 151 161 163 181 193 201 217 241 251 257 271 289 301 321 325 361 385 401 433 451 481 487 501 513 541 577 601 641 649 721 751 769 801 811 865 901 961 973 1001 1025 1081 1153 1201 1251 1281 1297 1351 1441 1459 1501 1537 1601 1621 1729 1801 1921 1945 2001 2049 2161 2251 2305 2401 2431 2501 2561 2593 2701 2881 2917 3001 3073 3201 3241 3457 3601 3751 3841 3889 4001 4051 4097 4321 4375 4501 4609 4801 4861 5001 5121 5185 5401 5761 5833 6001 6145 6251 6401 6481 6751 6913 7201 7291 7501 7681 7777 8001 8101 8193 8641 8749 9001 9217 9601 9721 enough
+  ! Possible n points: 3 5 7 9 11 13 17 19 21 25 31 33 37 41 49 51 55 61 65 73 81 91 97 101 109 121 129 145 151 161 163 181 193 201 217 241 251 257 271 289 301 321 325 361 385 401 433 451 481 487 501 513 541 577 601 641 649 721 751 769 801 811 865 901 961 973 1001 1025 1081 1153 1201 1251 1281 1297 1351 1441 1459 1501 1537 1601 1621 1729 1801 1921 1945 2001 2049 2161 2251 2305 2401 2431 2501 2561 2593 2701 2881 2917 3001 3073 3201 3241 3457 3601 3751 3841 3889 4001 4051 4097 4321 4375 4501 4609 4801 4861 5001 5121 5185 5401 5761 5833 6001 6145 6251 6401 6481 6751 6913 7201 7291 7501 7681 7777 8001 8101 8193 8641 8749 9001 9217 9601 9721 enough
 
   integer :: nx,ny,nz,numscalar,p_row,p_col,nxm,nym,nzm
   integer :: nstat=1,nvisu=1,nprobe=1,nlength=1,ilist=25
@@ -65,7 +41,7 @@ module variables
 #endif
 #endif
 
-  !module filter
+  ! module filter
   real(mytype),dimension(200) :: idata
   real(mytype),allocatable,dimension(:) :: fiffx, fifcx, fifbx, fisfx, fiscx, fisbx,fifsx,fifwx,fissx,fiswx
   real(mytype),allocatable,dimension(:) :: fiffxp,fifsxp,fifwxp,fisfxp,fissxp,fiswxp
@@ -78,7 +54,7 @@ module variables
   real(mytype),allocatable,dimension(:,:) :: fisy,fivy
   real(mytype),allocatable,dimension(:,:) :: fisz,fivz
 
-  !module derivative
+  ! module derivative
   real(mytype),allocatable,dimension(:) :: ffx,sfx,fsx,fwx,ssx,swx
   real(mytype),allocatable,dimension(:) :: ffxp,sfxp,fsxp,fwxp,ssxp,swxp
   real(mytype),allocatable,dimension(:) :: ffy,sfy,fsy,fwy,ssy,swy
@@ -96,7 +72,6 @@ module variables
   real(mytype), save, allocatable, dimension(:,:) :: sx,vx
   real(mytype), save, allocatable, dimension(:,:) :: sy,vy
   real(mytype), save, allocatable, dimension(:,:) :: sz,vz
-
 
   ! module implicit
   real(mytype), dimension(:), pointer :: gg, hh, ss, rr, vv, ww, zz, lo1, lo2, lo3, up1, up2, up3
@@ -224,7 +199,7 @@ module variables
        deryy1D_00,deryy1D_11,deryy1D_12,deryy1D_21,deryy1D_22
   PROCEDURE (DERIVATIVE_YY_1D), POINTER :: deryy1D,deryyS1D
 
-  !O6SVV (Order 6th Spectral Vanishing Viscosity)
+  ! O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype),allocatable,dimension(:) :: newsm,newtm,newsmt,newtmt
   real(mytype),allocatable,dimension(:) :: newrm,newrmt
 
@@ -262,7 +237,7 @@ module variables
   PROCEDURE (FILTER_Z) filz_00,filz_11, filz_12, filz_21, filz_22
   PROCEDURE (FILTER_Z), POINTER :: filz,filzS
 
-  !module pressure
+  ! module pressure
   real(mytype), save, allocatable, dimension(:,:) :: dpdyx1,dpdyxn,dpdzx1,dpdzxn
   real(mytype), save, allocatable, dimension(:,:) :: dpdxy1,dpdxyn,dpdzy1,dpdzyn
   real(mytype), save, allocatable, dimension(:,:) :: dpdxz1,dpdxzn,dpdyz1,dpdyzn
@@ -272,7 +247,7 @@ module variables
   real(mytype), save, allocatable, dimension(:,:) :: byx1,byy1,byz1,byxn,byyn,byzn
   real(mytype), save, allocatable, dimension(:,:) :: bzx1,bzy1,bzz1,bzxn,bzyn,bzzn
 
-  !module derpres
+  ! module derpres
   real(mytype),allocatable,dimension(:) :: cfx6,ccx6,cbx6,cfxp6,ciwxp6,csxp6,&
        cwxp6,csx6,cwx6,cifx6,cicx6,cisx6
   real(mytype),allocatable,dimension(:) :: cibx6,cifxp6,cisxp6,ciwx6
@@ -292,12 +267,12 @@ module variables
        csi6z,cwi6z,cifi6z,cici6z
   real(mytype),allocatable,dimension(:) :: cibi6z,cifip6z,cisip6z,ciwip6z,cisi6z,ciwi6z
 
-  !module waves
+  ! module waves (spectral Poisson solver)
   complex(mytype),allocatable,dimension(:) :: zkz,zk2,ezs
   complex(mytype),allocatable,dimension(:) :: yky,yk2,eys
   complex(mytype),allocatable,dimension(:) :: xkx,xk2,exs
 
-  !module mesh
+  ! module mesh
   real(mytype),allocatable,dimension(:) :: ppy,pp2y,pp4y
   real(mytype),allocatable,dimension(:) :: ppyi,pp2yi,pp4yi
   real(mytype),allocatable,dimension(:) :: xp,xpi,yp,ypi,dyp,zp,zpi,del
@@ -305,23 +280,25 @@ module variables
   real(mytype) :: alpha,beta
 
 end module variables
-!############################################################################
+!-----------------------------------------------------------------------------!
+! This module stores (mainly) variables that do not change runtime
+! (they are parameters, even if they are not in Fortran meaning).
+!-----------------------------------------------------------------------------!
 module param
 
   use decomp_2d, only : mytype
 
+  ! BCs (velocity and scalar fields)
   integer :: nclx1,nclxn,ncly1,nclyn,nclz1,nclzn
   integer :: nclxS1,nclxSn,nclyS1,nclySn,nclzS1,nclzSn
 
-  !logical variable for boundary condition that is true in periodic case
-  !and false otherwise
+  ! Logical variable for boundary condition that is true in periodic case
+  ! and false otherwise
   logical :: nclx,ncly,nclz
 
   ! Flow cases
   integer :: itype
-  integer, parameter :: itype_user    = 0,  &
-                        itype_channel = 3,  &
-                        itype_dbg     = 6,  &
+  integer, parameter :: itype_channel = 3,  &
                         itype_ttbl    = 13
 
   ! Time step, first and last
@@ -412,7 +389,7 @@ module param
        nchamp*80,filepath*80, fileturb*80, filevisu*80, datapath*80
   real(mytype), dimension(5) :: adt,bdt,cdt,ddt,gdt
 
-  !VISU
+  ! VISU
   integer :: save_w,save_w1,save_w2,save_w3,save_qc,save_pc
   integer :: save_ux,save_uy,save_uz,save_phi,save_pre
   integer :: save_uxm,save_uym,save_uzm,save_phim,save_prem
@@ -569,16 +546,11 @@ module param
   
   complex(mytype),parameter :: cx_one_one=cmplx(one, one, kind=mytype)
 
-#ifdef DOUBLE_PREC
-  real(mytype),parameter :: pi=dacos(-one)
-  real(mytype),parameter :: twopi=two*dacos(-one)
-#else
   real(mytype),parameter :: pi=acos(-one)
   real(mytype),parameter :: twopi=two*acos(-one)
-#endif
 
 end module param
-!############################################################################
+!-----------------------------------------------------------------------------!
 module complex_geometry
 
   use decomp_2d,only : mytype
@@ -589,7 +561,7 @@ module complex_geometry
   real(mytype),allocatable,dimension(:,:,:) :: xi,xf,yi,yf,zi,zf
   integer :: nxraf,nyraf,nzraf,nraf,nobjmax
 end module complex_geometry
-!############################################################################
+!-----------------------------------------------------------------------------!
 module derivX
 
   use decomp_2d, only : mytype
@@ -601,14 +573,14 @@ module derivX
   real(mytype) :: cs1x,ds1x,alsa2x,as2x,alsanx,asnx,bsnx,csnx,dsnx,alsamx
   real(mytype) :: asmx,alsa3x,as3x,bs3x,alsatx,astx,bstx
 
-  !O6SVV (Order 6th Spectral Vanishing Viscosity)
+  ! O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype) :: alsa4x,as4x,bs4x,cs4x
   real(mytype) :: alsattx,asttx,bsttx,csttx
   real(mytype) :: alsaix,asix,bsix,csix,dsix
   real(mytype) :: alsaixt,asixt,bsixt,csixt,dsixt
 
 end module derivX
-!############################################################################
+!-----------------------------------------------------------------------------!
 module derivY
 
   use decomp_2d, only : mytype
@@ -620,14 +592,14 @@ module derivY
   real(mytype) :: cs1y,ds1y,alsa2y,as2y,alsany,asny,bsny,csny,dsny,alsamy
   real(mytype) :: asmy,alsa3y,as3y,bs3y,alsaty,asty,bsty
 
-  !O6SVV (Order 6th Spectral Vanishing Viscosity)
+  ! O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype) :: alsa4y,as4y,bs4y,cs4y
   real(mytype) :: alsatty,astty,bstty,cstty
   real(mytype) :: alsajy,asjy,bsjy,csjy,dsjy
   real(mytype) :: alsajyt,asjyt,bsjyt,csjyt,dsjyt
 
 end module derivY
-!############################################################################
+!-----------------------------------------------------------------------------!
 module derivZ
 
   use decomp_2d, only : mytype
@@ -639,14 +611,14 @@ module derivZ
   real(mytype) :: cs1z,ds1z,alsa2z,as2z,alsanz,asnz,bsnz,csnz,dsnz,alsamz
   real(mytype) :: asmz,alsa3z,as3z,bs3z,alsatz,astz,bstz
 
-  !O6SVV (Order 6th Spectral Vanishing Viscosity)
+  ! O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype) :: alsa4z,as4z,bs4z,cs4z
   real(mytype) :: alsattz,asttz,bsttz,csttz
   real(mytype) :: alsakz,askz,bskz,cskz,dskz
   real(mytype) :: alsakzt,askzt,bskzt,cskzt,dskzt
 
 end module derivZ
-!############################################################################
+!-----------------------------------------------------------------------------!
 ! Describes the parameters for the discrete filters in X-Pencil
 module parfiX
   use decomp_2d, only : mytype
@@ -658,7 +630,7 @@ module parfiX
   real(mytype) :: fialmx, fiamx, fibmx, ficmx, fidmx, fiemx, fifmx  ! Coefficient for filter at boundary point m=n-1
   real(mytype) :: fialpx, fiapx, fibpx, ficpx, fidpx, fiepx, fifpx  ! Coefficient for filter at boundary point p=n-2
 end module parfiX
-!############################################################################
+!-----------------------------------------------------------------------------!
 module parfiY
   use decomp_2d, only : mytype
   real(mytype) :: fial1y, fia1y, fib1y, fic1y, fid1y, fie1y, fif1y ! Coefficients for filter at boundary point 1
@@ -669,7 +641,7 @@ module parfiY
   real(mytype) :: fialmy, fiamy, fibmy, ficmy, fidmy, fiemy, fifmy ! Coefficient for filter at boundary point m=n-1
   real(mytype) :: fialpy, fiapy, fibpy, ficpy, fidpy, fiepy, fifpy ! Coefficient for filter at boundary point p=n-2
 end module parfiY
-!############################################################################
+!-----------------------------------------------------------------------------!
 module parfiZ
   use decomp_2d, only : mytype
   real(mytype) :: fial1z, fia1z, fib1z, fic1z, fid1z, fie1z, fif1z ! Coefficients for filter at boundary point 1
@@ -680,11 +652,11 @@ module parfiZ
   real(mytype) :: fialmz, fiamz, fibmz, ficmz, fidmz, fiemz, fifmz ! Coefficient for filter at boundary point m=n-1
   real(mytype) :: fialpz, fiapz, fibpz, ficpz, fidpz, fiepz, fifpz ! Coefficient for filter at boundary point p=n-2
 end module parfiZ
-!############################################################################
+!-----------------------------------------------------------------------------!
 module simulation_stats
   real(8) :: tstart,time1,trank,tranksum,ttotal,tremaining,telapsed
 end module simulation_stats
-!############################################################################
+!-----------------------------------------------------------------------------!
 module ibm_param
   use decomp_2d, only : mytype
   real(mytype) :: cex,cey,cez,ra,ubcx,ubcy,ubcz,rads, c_air
@@ -692,4 +664,4 @@ module ibm_param
   integer :: inana ! Analytical BC as Input
   integer :: imove
 end module ibm_param
-!############################################################################
+!-----------------------------------------------------------------------------!

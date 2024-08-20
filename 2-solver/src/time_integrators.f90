@@ -1,192 +1,23 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
 
 module time_integrators
 
   implicit none
 
-  private
-  public :: int_time
+  private 
+  
+  ! Main subroutine for time-integration
+  public  :: int_time
 
 contains
 
-  subroutine intt(var1,dvar1,npaire,isc,forcing1,wall_vel)
-
-    use MPI
-    use param
-    use variables
-    use decomp_2d
-    use ydiff_implicit, only : inttimp
-#ifdef DEBG 
-    use tools, only : avg3d
-#endif
-
-    implicit none
-
-    ! INPUT / OUTPUT
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: var1
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dvar1
-
-    ! INPUTS
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in), optional :: forcing1
-    integer, intent(in), optional :: npaire, isc
-    
-    ! Wall-velocity BC, in order to differentiate between different directions
-    real(mytype), intent(in), optional :: wall_vel
-
-    ! LOCAL
-    integer :: is, code, ierror
-
-#ifdef DEBG 
-    real(mytype) avg_param
-#endif
-
-#ifdef DEBG
-    avg_param = zero
-    call avg3d (var1, avg_param)
-    if (nrank == 0) write(*,*)'## SUB intt VAR var1 (start) AVG ', avg_param
-    avg_param = zero
-    call avg3d (dvar1(:,:,:,1), avg_param)
-    if (nrank == 0) write(*,*)'## SUB intt VAR dvar1(1) (start) AVG ', avg_param
-    avg_param = zero
-    call avg3d (dvar1(:,:,:,2), avg_param)
-    if (nrank == 0) write(*,*)'## SUB intt VAR dvar1(2) (start) AVG ', avg_param
-#endif
-
-    if (iimplicit.ge.1) then
-       !>>> (semi)implicit Y diffusion
-
-       if (present(isc)) then
-          is = isc
-       else
-          is = 0
-       endif
-       if (present(npaire).and.present(forcing1)) then
-          call inttimp(var1, dvar1, npaire=npaire, isc=is, forcing1=forcing1, wall_vel=wall_vel)
-       else if (present(npaire)) then
-          call inttimp(var1, dvar1, npaire=npaire, isc=is, wall_vel=wall_vel)
-       else
-          if (nrank  == 0) write(*,*) "Error in intt call."
-          call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
-       endif
-
-    elseif (itimescheme.eq.1) then
-       !>>> Euler
-
-       var1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)+var1(:,:,:)
-    elseif(itimescheme.eq.2) then
-       !>>> Adam-Bashforth second order (AB2)
-
-       ! Do first time step with Euler
-       if(itime.eq.1.and.irestart.eq.0) then
-          var1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)+var1(:,:,:)
-       else
-          var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+var1(:,:,:)
-       endif
-       dvar1(:,:,:,2)=dvar1(:,:,:,1)
-    elseif(itimescheme.eq.3) then
-       !>>> Adams-Bashforth third order (AB3)
-
-       ! Do first time step with Euler
-       if(itime.eq.1.and.irestart.eq.0) then
-          var1(:,:,:)=dt*dvar1(:,:,:,1)+var1(:,:,:)
-       elseif(itime.eq.2.and.irestart.eq.0) then
-          ! Do second time step with AB2
-          var1(:,:,:)=onepfive*dt*dvar1(:,:,:,1)-half*dt*dvar1(:,:,:,2)+var1(:,:,:)
-          dvar1(:,:,:,3)=dvar1(:,:,:,2)
-       else
-          ! Finally using AB3
-          var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+cdt(itr)*dvar1(:,:,:,3)+var1(:,:,:)
-          dvar1(:,:,:,3)=dvar1(:,:,:,2)
-       endif
-       dvar1(:,:,:,2)=dvar1(:,:,:,1)
-    elseif(itimescheme.eq.4) then
-       !>>> Adams-Bashforth fourth order (AB4)
-
-       if (nrank==0) then
-          write(*,*) "AB4 not implemented!"
-          stop
-       endif
-
-       !>>> Runge-Kutta (low storage) RK3
-    elseif(itimescheme.eq.5) then
-       if(itr.eq.1) then
-          var1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)+var1(:,:,:)
-       else
-          var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+var1(:,:,:)
-       endif
-       dvar1(:,:,:,2)=dvar1(:,:,:,1)
-       !>>> Runge-Kutta (low storage) RK4
-    elseif(itimescheme.eq.6) then
-
-       if (nrank==0) then
-          write(*,*) "RK4 not implemented!"
-          STOP
-       endif
-
-    else
-
-       if (nrank==0) then
-          write(*,*) "Unrecognised itimescheme: ", itimescheme
-          STOP
-       endif
-
-    endif
-
-#ifdef DEBG
-    avg_param = zero
-    call avg3d (var1, avg_param)
-    if (nrank == 0) write(*,*)'## SUB intt VAR var1 AVG ', avg_param
-    avg_param = zero
-    call avg3d (dvar1(:,:,:,1), avg_param)
-    if (nrank == 0) write(*,*)'## SUB intt VAR dvar1 AVG ', avg_param
-    if (nrank   ==  0) write(*,*)'# intt done'
-#endif
-
-    return
-
-  end subroutine intt
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !!
-  !!  SUBROUTINE: int_time
-  !! DESCRIPTION: 
-  !!      INPUTS: 
-  !!     OUTPUTS:
-  !!       NOTES: 
-  !!      AUTHOR:  
-  !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  SUBROUTINE int_time(rho1, ux1, uy1, uz1, phi1, drho1, dux1, duy1, duz1, dphi1)
+  !-----------------------------------------------------------------------------!
+  ! Main subroutine that collects all the other subroutines for
+  ! time integration. It is called by the main file xcompact3d.f90.
+  !-----------------------------------------------------------------------------!
+  subroutine int_time(rho1, ux1, uy1, uz1, phi1, drho1, dux1, duy1, duz1, dphi1)
 
     use decomp_2d, only : mytype, xsize, nrank
     use param,     only : zero, one
@@ -204,23 +35,25 @@ contains
 
     IMPLICIT NONE
 
-    !! INPUT/OUTPUT
+    ! INPUT/OUTPUT
     REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3), ntime) :: drho1, dux1, duy1, duz1
     REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3), ntime, numscalar) :: dphi1
 
-    !! OUTPUT
+    ! OUTPUT
     REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
     REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1
     REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3), numscalar) :: phi1
 
-    !! LOCAL
+    ! LOCAL
     integer :: is, i, j, k
+
 #ifdef DEBG
     real(mytype) avg_param
     if (nrank .eq. 0) write(*,*)'## Init int_time'
 #endif
 
     call int_time_momentum(ux1, uy1, uz1, dux1, duy1, duz1)
+
 #ifdef DEBG
      avg_param = zero
      call avg3d (dux1, avg_param)
@@ -305,17 +138,15 @@ contains
 
   ENDSUBROUTINE int_time
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !!
-  !!  SUBROUTINE: int_time_momentum
-  !! DESCRIPTION: Integrates the momentum equations in time by calling time
-  !!              integrator.
-  !!      INPUTS: dux1, duy1, duz1 - the RHS(s) of the momentum equations
-  !!     OUTPUTS: ux1,   uy1,  uz1 - the intermediate momentum state.
-  !!       NOTES: This is integrating the MOMENTUM in time (!= velocity)
-  !!      AUTHOR: Paul Bartholomew
-  !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: int_time_momentum
+  ! DESCRIPTION: Integrates the momentum equations in time by calling time
+  !              integrator.
+  !      INPUTS: dux1, duy1, duz1 - the RHS(s) of the momentum equations
+  !     OUTPUTS: ux1,   uy1,  uz1 - the intermediate momentum state.
+  !       NOTES: This is integrating the MOMENTUM in time (!= velocity)
+  !      AUTHOR: Paul Bartholomew
+  !-----------------------------------------------------------------------------!
   subroutine int_time_momentum(ux1, uy1, uz1, dux1, duy1, duz1)
 
     USE param
@@ -358,16 +189,14 @@ contains
 
   endsubroutine int_time_momentum
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !!
-  !!  SUBROUTINE: int_time_continuity
-  !! DESCRIPTION: Integrates the continuity (aka density transport) equation in
-  !!              time
-  !!      INPUTS: drho1 - the RHS(s) of the continuity equation.
-  !!     OUTPUTS:  rho1 - the density at new time.
-  !!      AUTHOR: Paul Bartholomew
-  !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: int_time_continuity
+  ! DESCRIPTION: Integrates the continuity (aka density transport) equation in
+  !              time
+  !      INPUTS: drho1 - the RHS(s) of the continuity equation.
+  !     OUTPUTS:  rho1 - the density at new time.
+  !      AUTHOR: Paul Bartholomew
+  !-----------------------------------------------------------------------------!
   subroutine int_time_continuity(rho1, drho1)
 
     USE param
@@ -425,15 +254,13 @@ contains
 
   endsubroutine int_time_continuity
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  !!
-  !!  SUBROUTINE: int_time_temperature
-  !! DESCRIPTION: Integrates the temperature equation in time
-  !!      INPUTS: drho1 - the RHS(s) of the temperature equation.
-  !!     OUTPUTS:  rho1 - the density at new time.
-  !!      AUTHOR: Paul Bartholomew
-  !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: int_time_temperature
+  ! DESCRIPTION: Integrates the temperature equation in time
+  !      INPUTS: drho1 - the RHS(s) of the temperature equation.
+  !     OUTPUTS:  rho1 - the density at new time.
+  !      AUTHOR: Paul Bartholomew
+  !-----------------------------------------------------------------------------!
   subroutine int_time_temperature(rho1, drho1, dphi1, phi1)
 
     USE param
@@ -501,5 +328,154 @@ contains
     call calc_rho_eos(rho1(:,:,:,1), tc1, phi1, tb1, xsize(1), xsize(2), xsize(3))
 
   endsubroutine int_time_temperature
+
+  !-----------------------------------------------------------------------------!
+  ! Perform time-integration of a generic field (velocity, scalars, etc.) with
+  ! call to an external subroutine for implicit y-diffusion if necessary.
+  !-----------------------------------------------------------------------------!
+  subroutine intt(var1,dvar1,npaire,isc,forcing1,wall_vel)
+
+   use MPI
+   use param
+   use variables
+   use decomp_2d
+   use ydiff_implicit, only : inttimp
+
+#ifdef DEBG 
+   use tools, only : avg3d
+#endif
+
+   implicit none
+
+   ! INPUT / OUTPUT
+   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: var1
+   real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dvar1
+
+   ! INPUTS
+   real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in), optional :: forcing1
+   integer, intent(in), optional :: npaire, isc
+   
+   ! Wall-velocity BC, in order to differentiate between different directions
+   real(mytype), intent(in), optional :: wall_vel
+
+   ! LOCAL
+   integer :: is, code, ierror
+
+#ifdef DEBG 
+   real(mytype) avg_param
+#endif
+
+#ifdef DEBG
+   avg_param = zero
+   call avg3d (var1, avg_param)
+   if (nrank == 0) write(*,*)'## SUB intt VAR var1 (start) AVG ', avg_param
+   avg_param = zero
+   call avg3d (dvar1(:,:,:,1), avg_param)
+   if (nrank == 0) write(*,*)'## SUB intt VAR dvar1(1) (start) AVG ', avg_param
+   avg_param = zero
+   call avg3d (dvar1(:,:,:,2), avg_param)
+   if (nrank == 0) write(*,*)'## SUB intt VAR dvar1(2) (start) AVG ', avg_param
+#endif
+
+   ! (Semi) implicit Y-diffusion 
+   ! (all integrations are performed inside inttimp subroutine)
+   if (iimplicit.ge.1) then
+
+      if (present(isc)) then
+         is = isc
+      else
+         is = 0
+      endif
+      
+      if (present(npaire).and.present(forcing1)) then
+         call inttimp(var1, dvar1, npaire=npaire, isc=is, forcing1=forcing1, wall_vel=wall_vel)
+      else if (present(npaire)) then
+         call inttimp(var1, dvar1, npaire=npaire, isc=is, wall_vel=wall_vel)
+      else
+         if (nrank  == 0) write(*,*) "Error in intt call."
+         call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
+      endif
+   
+   !--- Fully-explicit time integration ---!
+   
+   ! Euler
+   elseif (itimescheme.eq.1) then
+      var1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)+var1(:,:,:)
+   
+   ! Adam-Bashforth second order (AB2)
+   elseif(itimescheme.eq.2) then
+      
+      ! Do first time step with Euler
+      if(itime.eq.1.and.irestart.eq.0) then
+         var1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)+var1(:,:,:)
+      else
+         var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+var1(:,:,:)
+      endif
+      dvar1(:,:,:,2)=dvar1(:,:,:,1)
+
+   ! Adams-Bashforth third order (AB3)
+   elseif(itimescheme.eq.3) then
+     
+      ! Do first time step with Euler
+      if(itime.eq.1.and.irestart.eq.0) then
+         var1(:,:,:)=dt*dvar1(:,:,:,1)+var1(:,:,:)
+      elseif(itime.eq.2.and.irestart.eq.0) then
+         ! Do second time step with AB2
+         var1(:,:,:)=onepfive*dt*dvar1(:,:,:,1)-half*dt*dvar1(:,:,:,2)+var1(:,:,:)
+         dvar1(:,:,:,3)=dvar1(:,:,:,2)
+      else
+         ! Finally using AB3
+         var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+cdt(itr)*dvar1(:,:,:,3)+var1(:,:,:)
+         dvar1(:,:,:,3)=dvar1(:,:,:,2)
+      endif
+      dvar1(:,:,:,2)=dvar1(:,:,:,1)
+   
+   ! Adams-Bashforth fourth order (AB4)
+   elseif(itimescheme.eq.4) then
+
+      if (nrank==0) then
+         write(*,*) "AB4 not implemented!"
+         stop
+      endif
+
+   ! Runge-Kutta (low storage) RK3
+   elseif(itimescheme.eq.5) then
+      if(itr.eq.1) then
+         var1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)+var1(:,:,:)
+      else
+         var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+var1(:,:,:)
+      endif
+      dvar1(:,:,:,2)=dvar1(:,:,:,1)
+   
+   ! Runge-Kutta (low storage) RK4
+   elseif(itimescheme.eq.6) then
+
+      if (nrank==0) then
+         write(*,*) "RK4 not implemented!"
+         STOP
+      endif
+
+   else
+
+      if (nrank==0) then
+         write(*,*) "Unrecognised itimescheme: ", itimescheme
+         STOP
+      endif
+
+   endif
+
+#ifdef DEBG
+   avg_param = zero
+   call avg3d (var1, avg_param)
+   if (nrank == 0) write(*,*)'## SUB intt VAR var1 AVG ', avg_param
+   avg_param = zero
+   call avg3d (dvar1(:,:,:,1), avg_param)
+   if (nrank == 0) write(*,*)'## SUB intt VAR dvar1 AVG ', avg_param
+   if (nrank   ==  0) write(*,*)'# intt done'
+#endif
+
+   return
+
+ end subroutine intt
 
 end module time_integrators

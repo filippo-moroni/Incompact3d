@@ -1,46 +1,19 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
 module transeq
 
   private
   public :: calculate_transeq_rhs
 
 contains
-  !############################################################################
-  !!  SUBROUTINE: calculate_transeq_rhs
-  !!      AUTHOR: Paul Bartholomew
-  !! DESCRIPTION: Calculates the right hand sides of all transport
-  !!              equations - momentum, scalar transport, etc.
-  !############################################################################
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: calculate_transeq_rhs
+  !      AUTHOR: Paul Bartholomew
+  ! DESCRIPTION: Calculates the right hand sides of all transport
+  !              equations - momentum, scalar transport, etc.
+  !-----------------------------------------------------------------------------!
   subroutine calculate_transeq_rhs(drho1,dux1,duy1,duz1,dphi1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
 
     use decomp_2d, only : mytype, xsize, zsize
@@ -78,15 +51,13 @@ contains
     !endif
 
   end subroutine calculate_transeq_rhs
-  !############################################################################
-  !!
-  !!  subroutine: momentum_rhs_eq
-  !!      AUTHOR: ?
-  !!    MODIFIED: Kay Schäfer
-  !! DESCRIPTION: Calculation of convective and diffusion terms of momentum
-  !!              equation
-  !!
-  !############################################################################
+  !-----------------------------------------------------------------------------!
+  !  subroutine: momentum_rhs_eq
+  !      AUTHOR: ?
+  !    MODIFIED: Kay Schäfer
+  ! DESCRIPTION: Calculation of convective and diffusion terms of momentum
+  !              equation
+  !-----------------------------------------------------------------------------!
   subroutine momentum_rhs_eq(dux1,duy1,duz1,rho1,ux1,uy1,uz1,ep1,phi1,divu3)
 
     use param
@@ -581,7 +552,6 @@ contains
     if (nrank == 0) write(*,*)'## MomRHS Forc duz1 ', avg_param
 #endif
 
-    
 #ifdef DEBG
     avg_param = zero
     call avg3d (dux1, avg_param)
@@ -613,25 +583,22 @@ contains
 #endif
 
   end subroutine momentum_rhs_eq
-  !############################################################################
-  !############################################################################
-  !!
-  !!  SUBROUTINE: momentum_full_viscstress_tensor
-  !!      AUTHOR: Paul Bartholomew
-  !! DESCRIPTION: In an incompressible flow the viscous stress
-  !!              tensor reduces to
-  !!                d2u^j / {dx^i}^2
-  !!              however if div(u) != 0 we have
-  !!                d2u^j / {dx^i}^2 + 1/3 d/dx^j div(u)
-  !!              and further if \mu != const.
-  !!                \mu (d2u^j / {dx^i}^2 + 1/3 d/dx^j div(u))
-  !!                  + d\mu/dx^i (du^j/dx^i + du^i/dx^j
-  !!                  - 2/3 div(u) \delta^{ij})
-  !!              This subroutine computes the additional
-  !!              contributions not accounted for in the
-  !!              incompressible solver.
-  !!
-  !############################################################################
+  !-----------------------------------------------------------------------------!
+  !  SUBROUTINE: momentum_full_viscstress_tensor
+  !      AUTHOR: Paul Bartholomew
+  ! DESCRIPTION: In an incompressible flow the viscous stress
+  !              tensor reduces to
+  !                d2u^j / {dx^i}^2
+  !              however if div(u) != 0 we have
+  !                d2u^j / {dx^i}^2 + 1/3 d/dx^j div(u)
+  !              and further if \mu != const.
+  !                \mu (d2u^j / {dx^i}^2 + 1/3 d/dx^j div(u))
+  !                  + d\mu/dx^i (du^j/dx^i + du^i/dx^j
+  !                  - 2/3 div(u) \delta^{ij})
+  !              This subroutine computes the additional
+  !              contributions not accounted for in the
+  !              incompressible solver.
+  !-----------------------------------------------------------------------------!
   subroutine momentum_full_viscstress_tensor(dux1, duy1, duz1, divu3, mu1)
 
     use param
@@ -739,9 +706,9 @@ contains
 
 
   end subroutine momentum_full_viscstress_tensor
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   ! This should be the subroutine for Boussinesq approximation 
-  ! of bouyancy forcing for momentum eq.
+  ! of bouyancy forcing for momentum equation.
   !---------------------------------------------------------------------------!
   subroutine momentum_gravity(dux1, duy1, duz1, peculiar_density1, richardson)
 
@@ -878,10 +845,8 @@ contains
        enddo
     enddo
 
-
   end subroutine momentum_gravity
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine scalar_transport_eq(dphi1, rho1, ux1, uy1, uz1, phi1, schmidt, is)
 
     use param
@@ -1070,8 +1035,7 @@ contains
     endif
 
   endsubroutine scalar_transport_eq
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine scalar(dphi1, rho1, ux1, uy1, uz1, phi1)
 
     use param
@@ -1129,8 +1093,7 @@ contains
     sync_scal_needed = .true.
 
   end subroutine scalar
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine scalar_settling(dphi1, phi1, is)
 
     use param
@@ -1169,8 +1132,7 @@ contains
     dphi1(:,:,:,1,is) = dphi1(:,:,:,1,is) - uset(is) * gravx * ta1(:,:,:)
 
   endsubroutine scalar_settling
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine temperature_rhs_eq(drho1, rho1, ux1, uy1, uz1, phi1)
 
     use param
@@ -1198,8 +1160,7 @@ contains
     call scalar_transport_eq(drho1, rho1, ux1, uy1, uz1, te1, prandtl)
 
   end subroutine temperature_rhs_eq
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
   subroutine continuity_rhs_eq(drho1, rho1, ux1, divu3)
 
     use decomp_2d, only : mytype, xsize, ysize, zsize
@@ -1256,6 +1217,5 @@ contains
     endif
 
   end subroutine continuity_rhs_eq
-  !############################################################################
-  !############################################################################
+  !-----------------------------------------------------------------------------!
 end module transeq

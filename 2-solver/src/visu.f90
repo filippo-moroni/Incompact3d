@@ -1,34 +1,7 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
+
 module visu
   
   implicit none
@@ -57,9 +30,9 @@ module visu
 
 contains
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Initialize the visu module
-  !
+  !-----------------------------------------------------------------------------!
   subroutine visu_init()
 
     use MPI
@@ -136,11 +109,11 @@ contains
     
   end subroutine visu_init
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Indicate visu ready for IO. This is only required for ADIOS2 backend, using MPIIO this
   ! subroutine doesn't do anything.
   ! XXX: Call after all visu initialisation (main visu + case visu)
-  !
+  !-----------------------------------------------------------------------------!
   subroutine visu_ready ()
 
     use decomp_2d_io, only : decomp_2d_open_io, decomp_2d_append_mode, decomp_2d_write_mode
@@ -178,10 +151,10 @@ contains
     
   end subroutine visu_ready
   
-  !
+  !-----------------------------------------------------------------------------!
   ! Finalise the visu module. When using the ADIOS2 backend this closes the IO which is held open
   ! for the duration of the simulation, otherwise does nothing.
-  ! 
+  !-----------------------------------------------------------------------------!
   subroutine visu_finalise()
 
     use decomp_2d_io, only : decomp_2d_close_io
@@ -194,9 +167,9 @@ contains
     
   end subroutine visu_finalise
 
-  !
+  !-----------------------------------------------------------------------------!
   ! Write a snapshot
-  !
+  !-----------------------------------------------------------------------------!
   subroutine write_snapshot(rho1, ux1, uy1, uz1, pp3, phi1, ep1, itime, num)
 
     use decomp_2d, only : transpose_z_to_y, transpose_y_to_x
@@ -301,8 +274,7 @@ contains
 
   end subroutine write_snapshot
 
-!---------------------------------------------------------------------------------!
-
+  !-----------------------------------------------------------------------------!
   subroutine end_snapshot(ux1, uz1, itime, num)
 
     use decomp_2d,    only : nrank, mytype, xsize
@@ -626,7 +598,8 @@ contains
     endif
 
   end subroutine write_field
-
+  
+  !-----------------------------------------------------------------------------!
   function gen_snapshotname(pathname, varname, num, ext)
     character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
@@ -638,8 +611,8 @@ contains
 #endif
   end function gen_snapshotname
   
+  !-----------------------------------------------------------------------------!
   function gen_filename(pathname, varname, num, ext)
-
     character(len=*), intent(in) :: pathname, varname, num, ext
 #ifndef ADIOS2
     character(len=(len(pathname) + 1 + len(varname) + 1 + len(num) + 1 + len(ext))) :: gen_filename
@@ -648,11 +621,10 @@ contains
     character(len=len(varname)) :: gen_filename
     write(gen_filename, "(A)") varname
 #endif
-    
   end function gen_filename
 
+  !-----------------------------------------------------------------------------!
   function gen_h5path(filename, num)
-
     character(len=*), intent(in) :: filename, num
 #ifndef ADIOS2
     character(len=*), parameter :: path_to_h5file = "./"
@@ -663,7 +635,6 @@ contains
     character(len=(len(path_to_h5file) + len(num) + 1+ len(filename))) :: gen_h5path
     write(gen_h5path, "(A)") path_to_h5file//num//"/"//filename
 #endif
-    
   end function gen_h5path
   
   !----------------------------------------------!
@@ -672,7 +643,6 @@ contains
   !                                              !
   ! Adapted from gen_filename.                   !
   !----------------------------------------------!
-  
   function gen_filename2(varname, num, ext)
 
     character(len=*), intent(in) :: varname, num, ext
@@ -683,7 +653,6 @@ contains
     character(len=len(varname)) :: gen_filename2
     write(gen_filename2, "(A)") varname
 #endif
-    
   end function gen_filename2
     
 end module visu
