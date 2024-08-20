@@ -8,7 +8,8 @@
 ! identical to Incompact3d 'modified':
 !
 ! - 'parameters.f90'
-! - 'schemes.f90' (except for the comments for the implicit diffusion module, absent here)
+! - 'schemes.f90' (except for the comments for the implicit diffusion module, 
+!                  that is absent in this program)
 ! - 'module_param.f90'
 ! - 'variables.f90'
 ! - 'tools.f90' (reduced version here, less subroutines).
