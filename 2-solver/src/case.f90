@@ -21,25 +21,25 @@ module case
             test_flow, preprocessing, postprocessing, visu_case, visu_case_init
 
 contains
-  !##################################################################
+  !---------------------------------------------------------------------------!
   subroutine init (rho1, ux1, uy1, uz1, ep1, phi1, drho1, dux1, duy1, duz1, dphi1, &
                    pp3,  px1, py1, pz1)
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,ep1
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: px1, py1, pz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1,duy1,duz1,drho1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime,numscalar) :: dphi1
     real(mytype),dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress) :: pp3
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: px1, py1, pz1
 
-    INTEGER :: it, is
+    integer :: it, is
 
     ! Zero out the pressure field
     pp3(:,:,:,1) = zero
-    px1(:,:,:) = zero
-    py1(:,:,:) = zero
-    pz1(:,:,:) = zero
+    px1(:,:,:)   = zero
+    py1(:,:,:)   = zero
+    pz1(:,:,:)   = zero
 
     ! Default density and pressure0 to one
     pressure0 = one
@@ -48,10 +48,6 @@ contains
     if (itype.eq.itype_channel) then
 
        call init_channel (ux1, uy1, uz1, ep1, phi1)
-
-    elseif (itype.eq.itype_dbg) then
-
-       call init_dbg (ux1, uy1, uz1, ep1, phi1)
     
     elseif (itype.eq.itype_ttbl) then
 
@@ -85,7 +81,7 @@ contains
     enddo
 
   end subroutine init
-  !##################################################################
+  !---------------------------------------------------------------------------!
   subroutine boundary_conditions (rho,ux,uy,uz,phi,ep)
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz,ep
@@ -100,10 +96,6 @@ contains
        end if
 
        call boundary_conditions_channel (ux, uy, uz, phi)
-
-    elseif (itype.eq.itype_dbg) then
-
-       call boundary_conditions_dbg (ux, uy, uz, phi)
     
     elseif (itype.eq.itype_ttbl) then
        
@@ -117,7 +109,7 @@ contains
     endif
 
   end subroutine boundary_conditions
-  !##################################################################
+  !---------------------------------------------------------------------------!
   subroutine preprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
     use decomp_2d, only : mytype, xsize, ph1
@@ -134,7 +126,7 @@ contains
     real(mytype),dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp3
 
   end subroutine preprocessing
-  !##################################################################
+  !---------------------------------------------------------------------------!
   subroutine postprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
     use decomp_2d,   only : mytype, xsize, ph1
@@ -174,7 +166,7 @@ contains
     call postprocess_case(rho1, ux1, uy1, uz1, pp3, T, ep1)
 
   end subroutine postprocessing
-  !##################################################################
+  !---------------------------------------------------------------------------!
   subroutine postprocess_case(rho,ux,uy,uz,pp,phi,ep)
 
     use var, only : nzmsize
@@ -184,15 +176,11 @@ contains
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ep
-    real(mytype), dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp
+    real(mytype),dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress), intent(in) :: pp
 
     if (itype.eq.itype_channel) then
 
        call postprocess_channel (ux, uy, uz, pp, phi, ep)
-
-    elseif (itype.eq.itype_dbg) then
-
-       call postprocess_dbg (ux, uy, uz, phi, ep)
         
     elseif (itype.eq.itype_ttbl) then
 
@@ -201,13 +189,11 @@ contains
     endif
 
   end subroutine postprocess_case
-  !##################################################################
-  !!
-  !!  SUBROUTINE: visu_case_init
-  !!      AUTHOR: PB
-  !! DESCRIPTION: Initialise case-specific visualization
-  !!
-  !##################################################################
+  !---------------------------------------------------------------------------!
+  !  SUBROUTINE: visu_case_init
+  !      AUTHOR: PB
+  ! DESCRIPTION: Initialise case-specific visualization
+  !---------------------------------------------------------------------------!
   subroutine visu_case_init
 
     implicit none
@@ -223,13 +209,11 @@ contains
     end if
     
   end subroutine visu_case_init
-  !##################################################################
-  !!
-  !!  SUBROUTINE: visu_case
-  !!      AUTHOR: CF
-  !! DESCRIPTION: Call case-specific visualization
-  !!
-  !##################################################################
+  !---------------------------------------------------------------------------!
+  !  SUBROUTINE: visu_case
+  !      AUTHOR: CF
+  ! DESCRIPTION: Call case-specific visualization
+  !---------------------------------------------------------------------------!
   subroutine visu_case(rho1,ux1,uy1,uz1,pp3,phi1,ep1,num)
 
     use var,   only : nzmsize
@@ -265,14 +249,12 @@ contains
     endif
 
   end subroutine visu_case
-  !##################################################################
-  !!
-  !!  SUBROUTINE: momentum_forcing
-  !!      AUTHOR: Paul Bartholomew
-  !! DESCRIPTION: Calls case-specific forcing functions for the
-  !!              momentum equations.
-  !!
-  !##################################################################
+  !---------------------------------------------------------------------------!
+  !  SUBROUTINE: momentum_forcing
+  !      AUTHOR: Paul Bartholomew
+  ! DESCRIPTION: Calls case-specific forcing functions for the
+  !              momentum equations.
+  !---------------------------------------------------------------------------!
   subroutine momentum_forcing(dux1, duy1, duz1, rho1, ux1, uy1, uz1, phi1)
 
     implicit none
@@ -289,14 +271,12 @@ contains
     endif
 
   end subroutine momentum_forcing
-  !##################################################################
-  !!
-  !!  SUBROUTINE: scalar_forcing
-  !!      AUTHOR: Kay Schäfer
-  !! DESCRIPTION: Calls case-specific forcing functions for the
-  !!              scalar transport equations.
-  !!
-  !##################################################################
+  !---------------------------------------------------------------------------!
+  !  SUBROUTINE: scalar_forcing
+  !      AUTHOR: Kay Schäfer
+  ! DESCRIPTION: Calls case-specific forcing functions for the
+  !              scalar transport equations.
+  !---------------------------------------------------------------------------!
   subroutine scalar_forcing(dphi1, rho1, ux1, uy1, uz1, phi1)
 
     implicit none
@@ -306,7 +286,7 @@ contains
     real(mytype), dimension(xsize(1),xsize(2),xsize(3),ntime) :: dphi1
 
   end subroutine scalar_forcing
-  !##################################################################
+  !---------------------------------------------------------------------------!
   subroutine set_fluid_properties(rho1, mu1)
 
     implicit none
@@ -315,7 +295,7 @@ contains
     real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: mu1
 
   endsubroutine set_fluid_properties
-  !##################################################################
+  !---------------------------------------------------------------------------!
   subroutine test_flow(rho1,ux1,uy1,uz1,phi1,ep1,drho1,divu3)
 
     use decomp_2d
@@ -346,7 +326,7 @@ contains
     endif
 
   end subroutine test_flow
-  !##################################################################
+  !---------------------------------------------------------------------------!
 end module case
 
 

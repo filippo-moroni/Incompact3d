@@ -1,46 +1,22 @@
-!################################################################################
-!This file is part of Xcompact3d.
-!
-!Xcompact3d
-!Copyright (c) 2012 Eric Lamballais and Sylvain Laizet
-!eric.lamballais@univ-poitiers.fr / sylvain.laizet@gmail.com
-!
-!    Xcompact3d is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation.
-!
-!    Xcompact3d is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with the code.  If not, see <http://www.gnu.org/licenses/>.
-!-------------------------------------------------------------------------------
-!-------------------------------------------------------------------------------
-!    We kindly request that you cite Xcompact3d/Incompact3d in your
-!    publications and presentations. The following citations are suggested:
-!
-!    1-Laizet S. & Lamballais E., 2009, High-order compact schemes for
-!    incompressible flows: a simple and efficient method with the quasi-spectral
-!    accuracy, J. Comp. Phys.,  vol 228 (15), pp 5989-6015
-!
-!    2-Laizet S. & Li N., 2011, Incompact3d: a powerful tool to tackle turbulence
-!    problems with up to 0(10^5) computational cores, Int. J. of Numerical
-!    Methods in Fluids, vol 67 (11), pp 1735-1757
-!################################################################################
+!Copyright (c) 2012-2022, Xcompact3d
+!This file is part of Xcompact3d (xcompact3d.com)
+!SPDX-License-Identifier: BSD 3-Clause
 
 subroutine filter(af)
+  
   USE param
   USE parfiX
   USE parfiY
   USE parfiZ
   USE variables
   USE var
-  !=================================================
-  ! Discrete low-pass filter according to
-  !=================================================
+
+  !---------------------------------------------------------------------------!
+  ! Discrete low-pass filter according to Motheau & Abraham (2016)
+  !---------------------------------------------------------------------------!
+
   implicit none
+  
   real(mytype),intent(in) :: af   ! this should be the alpha parameter of the filtering operation
 
 #ifdef DEBG
@@ -85,8 +61,7 @@ subroutine filter(af)
   return
 
 end subroutine filter
-
-
+!---------------------------------------------------------------------------!
 subroutine set_filter_coefficients(af,alfa1,a1,b1,c1,d1,alfa2,a2,b2,c2,d2,alfa3,a3,b3,c3,d3,e3,f3,&
      alfan,an,bn,cn,dn,alfam,am,bm,cm,dm,alfap,ap,bp,cp,dp,ep,fp,&
      alfai,ai,bi,ci,di,ff,fs,fw,ffp,fsp,fwp,n,ncl1,ncln)
@@ -244,10 +219,10 @@ subroutine set_filter_coefficients(af,alfa1,a1,b1,c1,d1,alfa2,a2,b2,c2,d2,alfa3,
   return
 
 end subroutine set_filter_coefficients
-
+!---------------------------------------------------------------------------!
 subroutine filx_00(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiX
   use ibm, only : lagpolx, cubsplx
 
@@ -315,10 +290,10 @@ subroutine filx_00(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   return
 
 end subroutine filx_00
-
+!---------------------------------------------------------------------------!
 subroutine filx_11(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiX
   use ibm, only : lagpolx, cubsplx
 
@@ -407,10 +382,10 @@ subroutine filx_11(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   return
 
 end subroutine filx_11
-
+!---------------------------------------------------------------------------!
 subroutine filx_12(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiX
   use ibm, only : lagpolx, cubsplx
 
@@ -493,10 +468,10 @@ subroutine filx_12(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   return
 
 end subroutine filx_12
-
+!---------------------------------------------------------------------------!
 subroutine filx_21(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiX
   use ibm, only : lagpolx, cubsplx
 
@@ -580,11 +555,10 @@ subroutine filx_21(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
   return
 
 end subroutine filx_21
-
-
+!---------------------------------------------------------------------------!
 subroutine filx_22(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiX
   use ibm, only : lagpolx, cubsplx
 
@@ -628,10 +602,10 @@ subroutine filx_22(tx,ux,rx,fisx,fiffx,fifsx,fifwx,nx,ny,nz,npaire,lind)
 
   return
 end subroutine filx_22
-
+!---------------------------------------------------------------------------!
 subroutine fily_00(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiY
   use ibm, only : lagpoly, cubsply
 
@@ -700,14 +674,10 @@ subroutine fily_00(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   return
 
 end subroutine fily_00
-
-!********************************************************************
-!
+!---------------------------------------------------------------------------!
 subroutine fily_11(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind) 
-  !
-  !********************************************************************
 
-  USE param
+  use param
   use parfiY
   use ibm, only : lagpoly, cubsply
 
@@ -796,11 +766,10 @@ subroutine fily_11(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   return
 
 end subroutine fily_11
-
-
+!---------------------------------------------------------------------------!
 subroutine fily_12(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiY
   use ibm, only : lagpoly, cubsply
 
@@ -881,11 +850,10 @@ subroutine fily_12(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   endif
 
 end subroutine fily_12
-
-
+!---------------------------------------------------------------------------!
 subroutine fily_21(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiY
   use ibm, only : lagpoly, cubsply
 
@@ -968,10 +936,10 @@ subroutine fily_21(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   return
 
 end subroutine fily_21
-
+!---------------------------------------------------------------------------!
 subroutine fily_22(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiY
   use ibm, only : lagpoly, cubsply
 
@@ -1017,10 +985,10 @@ subroutine fily_22(ty,uy,ry,fisy,fiffy,fifsy,fifwy,nx,ny,nz,npaire,lind)
   return
 
 end subroutine fily_22
-
+!---------------------------------------------------------------------------!
 subroutine filz_00(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1088,10 +1056,10 @@ subroutine filz_00(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
   return
 end subroutine filz_00
-
+!---------------------------------------------------------------------------!
 subroutine filz_11(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1178,10 +1146,10 @@ subroutine filz_11(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
   return
 end subroutine filz_11
-
+!---------------------------------------------------------------------------!
 subroutine filz_12(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1263,10 +1231,10 @@ subroutine filz_12(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   return
 
 end subroutine filz_12
-
+!---------------------------------------------------------------------------!
 subroutine filz_21(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1348,11 +1316,10 @@ subroutine filz_21(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   return
 
 end subroutine filz_21
-
-
+!---------------------------------------------------------------------------!
 subroutine filz_22(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind) 
 
-  USE param
+  use param
   use parfiZ
   use ibm, only : lagpolz, cubsplz
 
@@ -1397,3 +1364,4 @@ subroutine filz_22(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
   return
 
 end subroutine filz_22
+!---------------------------------------------------------------------------!

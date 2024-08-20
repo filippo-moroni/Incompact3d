@@ -5,8 +5,7 @@ message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
 
 add_executable(xcompact3d 
-                    BC-Channel-flow.f90
-                    BC-dbg-schemes.f90                 
+                    BC-Channel-flow.f90                
                     BC-Temporal-TBL.f90
                     case.f90
                     constants.f90
@@ -29,14 +28,13 @@ add_executable(xcompact3d
                     variables.f90
                     visu.f90
                     xcompact3d.f90)
-#add_executable(xcompact3d ${files_xcompact})
+
 target_include_directories(xcompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
 target_link_libraries(xcompact3d PRIVATE decomp2d)
 if (MPI_FOUND)
   target_link_libraries(xcompact3d PRIVATE MPI::MPI_Fortran)
 endif (MPI_FOUND)
 if(ADIOS2_FOUND)
-  #target_link_libraries(xcompact3d ${ADIOS_LIBRARIES})
   target_link_libraries(xcompact3d PRIVATE adios2::fortran_mpi)
 endif()
 

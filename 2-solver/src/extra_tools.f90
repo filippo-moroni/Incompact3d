@@ -14,7 +14,6 @@
   
   use param
   use decomp_2d
-  use dbg_schemes, only : sqrt_prec, abs_prec
   use variables,   only : nx,ny,nz,yp,numscalar,sc
       
   implicit none
@@ -82,7 +81,7 @@
           if (iscalar .eq. 1) then
               
               ! Analogy factor
-              A_fact = (xnu / sc(1)) * abs_prec(mean_phigwtot) / sh_vel**2 
+              A_fact = (xnu / sc(1)) * abs(mean_phigwtot) / sh_vel**2 
               
           end if
           
@@ -288,7 +287,6 @@
 
   use var,         only : ux2,uz2
   use var,         only : ta2,tc2,di2
-  use dbg_schemes, only : sqrt_prec, abs_prec
   use ibm_param,   only : ubcx,ubcz
 
   use MPI
@@ -348,7 +346,7 @@
          if (itype .eq. itype_ttbl) then
 
              ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-             mean_gw = mean_gw + sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
+             mean_gw = mean_gw + sqrt(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
 
              ! Mean streamwise gradient dU/dy
              mean_gwx = mean_gwx + ta2(i,1,k) / den
@@ -360,7 +358,7 @@
          else if (itype .eq. itype_channel) then
 
              ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-             mean_gw = mean_gw + (sqrt_prec(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt_prec(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den / two
+             mean_gw = mean_gw + (sqrt(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den / two
 
              ! Mean streamwise gradient dU/dy
              mean_gwx = mean_gwx + (ta2(i,1,k) - ta2(i,ysize(2),k)) / den / two
@@ -378,9 +376,9 @@
   call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
 
   ! Finalize shear velocities calculation
-  sh_vel  = sqrt_prec(sh_vel  * xnu)
-  sh_velx = sqrt_prec(abs_prec(sh_velx) * xnu)
-  sh_velz = sqrt_prec(abs_prec(sh_velz) * xnu)
+  sh_vel  = sqrt(sh_vel  * xnu)
+  sh_velx = sqrt(abs(sh_velx) * xnu)
+  sh_velz = sqrt(abs(sh_velz) * xnu)
 
   end subroutine calculate_shear_velocity
   
@@ -395,12 +393,10 @@
   !---------------------------------------------------------------------------!
   subroutine spanwise_wall_oscillations(ux1,uz1)
 
-  use dbg_schemes, only : sin_prec, sqrt_prec
   use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
   use param,       only : a_wo, t_wo, ifeedback_control, in_phase
   use param,       only : two, xnu, pi
-  use decomp_2d,   only : xsize
-  use decomp_2d,   only : mytype
+  use decomp_2d,   only : xsize, mytype
 
   implicit none
 
@@ -429,7 +425,7 @@
   end if
 
   ! Calculation of the spanwise wall velocity
-  span_vel = amplitude * sin_prec(two*pi*t/period + in_phase*pi)
+  span_vel = amplitude * sin(two*pi*t/period + in_phase*pi)
 
   end subroutine spanwise_wall_oscillations
   
@@ -797,6 +793,7 @@
   output2D = 0
   
   end subroutine write_vortx_plane_x
+  !---------------------------------------------------------------------------!
 
 
 
