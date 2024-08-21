@@ -38,10 +38,10 @@ contains
   subroutine visu_init()
 
     use MPI
-    use param, only : ilmn, iscalar, ilast, ifirst, ioutput, istret
-    use variables, only : numscalar, prec, nvisu
-    use param, only : dx, dy, dz
-    use decomp_2d, only : nrank, mytype, xszV, yszV, zszV, xsize, ysize, zsize
+    use variables,    only : numscalar, prec
+    use param,        only : ilmn, iscalar, ilast, ifirst, ioutput, istret
+    use param,        only : dx, dy, dz, nvisu
+    use decomp_2d,    only : nrank, mytype, xszV, yszV, zszV, xsize, ysize, zsize
     use decomp_2d_io, only : decomp_2d_init_io, decomp_2d_open_io, decomp_2d_append_mode
     use decomp_2d_io, only : decomp_2d_register_variable
 
@@ -324,8 +324,8 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine write_xdmf_header(pathname, filename, num)
 
-    use variables, only : nvisu, yp
-    use param,     only : dx,dy,dz,istret
+    use variables, only : yp
+    use param,     only : dx,dy,dz,istret,nvisu
     use decomp_2d, only : mytype, nrank, xszV, yszV, zszV, ystV
 
     implicit none

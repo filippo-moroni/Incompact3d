@@ -37,8 +37,8 @@ def read_input_files(filename1,filename2):
         Lz         = lines[23]
         re         = lines[26]
         dt         = lines[29]
-        numscalar  = lines[34]
-        iswitch_wo = lines[88]
+        numscalar  = lines[35]
+        iswitch_wo = lines[89]
     
         # Removing characters in front of the extracted strings and the comments:
         # 1) split: the string is split when the specified character is encountered; 

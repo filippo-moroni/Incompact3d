@@ -157,7 +157,9 @@ contains
 
        ! XXX: Ultimate goal for ADIOS2 is to pass do all postproc online - do we need this?
        !      Currently, needs some way to "register" variables for IO
-       call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
+       
+       ! Save case-specific field for visualization (e.g. Q-criterion)
+       if (ivisu .eq. 1) call visu_case(rho1, ux1, uy1, uz1, pp3, T, ep1, num)
 
        call end_snapshot(ux1, uz1, itime, num)
                      

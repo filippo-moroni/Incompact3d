@@ -123,11 +123,11 @@ subroutine init_xcompact3d()
                      restart, simu_stats, compute_cfldiff
 
   use param, only : ilesmod, jles,itype
-  use param, only : irestart
+  use param, only : irestart, nvisu, ilist
 
   use variables, only : nx, ny, nz, nxm, nym, nzm
   use variables, only : p_row, p_col
-  use variables, only : nstat, nvisu, ilist, nprobe
+  use variables, only : nstat, nprobe
 
   use les, only: init_explicit_les
 

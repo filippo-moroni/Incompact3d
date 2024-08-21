@@ -35,13 +35,14 @@ subroutine parameter(input_i3d)
                         numscalar, iin, init_noise,               &
                         nclx1, nclxn, ncly1, nclyn, nclz1, nclzn, &
                         iibm, ilmn, ilesmod, iscalar,             &
-                        isnap, ipost, ifilter, C_filter,          &
+                        ipost, ifilter, C_filter,                 &
                         gravx, gravy, gravz
        
   NAMELIST /NumOptions/ ifirstder, isecondder, ipinter, itimescheme, iimplicit, &
                         nu0nu, cnu
                         
-  NAMELIST /InOutParam/ irestart, icheckpoint, ioutput, ioutput_cf, ioutput_plane, ilist, nvisu, output2D, start_output
+  NAMELIST /InOutParam/ icheckpoint, ioutput, ioutput_cf, ioutput_plane, &
+                        ilist, isnap, ivisu, nvisu, output2D, start_output
   
   NAMELIST /AdditionalControls/ iswitch_wo
   NAMELIST /WallOscillations/ ifeedback_control, a_wo, t_wo, in_phase
@@ -593,7 +594,8 @@ subroutine parameter_defaults()
   ioutput_cf = 200      ! Frequency for saving cf and related quantities
   ioutput_plane = 200   ! Frequency for saving planes for visualization
   ilist = 25            ! Frequency for writing to screen (out/log file)
-  isnap = 1             ! Save snapshots (0: no, 1: yes)        
+  isnap = 1             ! Save snapshots (0: no, 1: yes)
+  ivisu = 1             ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)        
   nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
   output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
   start_output = 1      ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots)                                             
