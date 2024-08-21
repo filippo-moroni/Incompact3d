@@ -82,7 +82,6 @@ if (CMAKE_BUILD_TYPE MATCHES "DEBUG")
   add_definitions("-DDEBG")
 endif (CMAKE_BUILD_TYPE MATCHES "DEBUG")
 
-
 find_package(MPI REQUIRED)
 # Stop if there is no MPI_Fortran_Compiler
 if (MPI_Fortran_COMPILER)
