@@ -422,7 +422,7 @@ subroutine cubsplx(u,lind)
         if(nobjx(j,k).ne.0)then
            ia=0
            do i=1,nobjx(j,k)          
-              !  1st Boundary
+              ! 1st Boundary
               nxpif=npif
               ia=ia+1
               if (ianal.eq.0) then
@@ -465,8 +465,8 @@ subroutine cubsplx(u,lind)
                     endif
                  enddo
               endif
-              !
-              !  2nd Boundary
+              
+              ! 2nd Boundary
               nxpif=npif
               ia=ia+1
               if (ianal.eq.0) then
@@ -514,24 +514,24 @@ subroutine cubsplx(u,lind)
                   u(ipol,j,k)=bcimp                                   
               else
               ! Cubic Spline Reconstruction
-		  na=ia
-		  do ipol=ipoli,ipolf
-		     if ((inxf.eq.1).and.(inxi.eq.1)) then ! If the Body Extends from the Inlet to the Outlet (Special Case)
-                 u(ipol,j,k)=bcimp                            
-             else
-		         xpol=dx*(ipol-1)
-		         if (xpol.eq.ana_resi) then
-		            u(ipol,j,k)=bcimp
-		         elseif (xpol.eq.ana_resf) then
-		            u(ipol,j,k)=bcimp
-		         else   
-		            call cubic_spline(xa,ya,na,xpol,ypol)
-		            u(ipol,j,k)=ypol
-		         endif
-		     endif
-		  enddo
-		  ia=0
-	      endif    
+		        na=ia
+		        do ipol=ipoli,ipolf
+		           if ((inxf.eq.1).and.(inxi.eq.1)) then ! If the Body Extends from the Inlet to the Outlet (Special Case)
+                     u(ipol,j,k)=bcimp                            
+                 else
+		               xpol=dx*(ipol-1)
+		               if (xpol.eq.ana_resi) then
+		                  u(ipol,j,k)=bcimp
+		               elseif (xpol.eq.ana_resf) then
+		                  u(ipol,j,k)=bcimp
+		               else   
+		                  call cubic_spline(xa,ya,na,xpol,ypol)
+		                  u(ipol,j,k)=ypol
+		               endif
+		            endif
+		         enddo
+		         ia=0
+	            endif    
            enddo
         endif
      enddo
