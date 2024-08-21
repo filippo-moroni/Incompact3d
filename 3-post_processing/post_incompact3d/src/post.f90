@@ -50,7 +50,7 @@ program post
   character(99) :: filename,dirname
   character(99) :: snap_index,snap_n_index,printing  ! characters to print to screen and to read snapshots' indexes
   
-  character(99)  :: a
+  character(1)  :: a
   
   ! Format for snapshots numbers
   character(len=9) :: ifilenameformat = '(I4.4)'
@@ -970,7 +970,7 @@ end if
   ! Print useful informations on the screen
   if (nrank==0) then
      write(*,*) '==========================================================='
-     write(*,*) ''
+     write(*,*) ""
      write(*,*) 'Post-processing finished successfully!'
      write(*,*) ''
 #ifdef TTBL_MODE
