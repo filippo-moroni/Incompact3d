@@ -173,7 +173,7 @@ end if
                        
      ! Show progress on post-processing    
      if (nrank==0) then
-        print *,'----------------------------------------------------'
+        write(*,*) '----------------------------------------------------'
 
         ! Print the snapshot currently being processed         
         write(printing, '(A,A,A,A)') 'We are averaging snapshot = ', trim(snap_index), ' / ', trim(snap_n_index) 
@@ -615,7 +615,7 @@ end if
      call system('mkdir -p '//trim(dirname))
 
      ! Formatted data
-     print *,'----------------------------------------------------'
+     write(*,*) '----------------------------------------------------'
      write(*,"(1x,'Writing output data in formatted .txt file(s)')")
      
      ! Mean statistics writing
@@ -969,97 +969,97 @@ end if
 
   ! Print useful informations on the screen
   if (nrank==0) then
-     print *,'==========================================================='
-     print *,''
-     print *,'Post-processing finished successfully!'
-     print *,''
+     write(*,*) '==========================================================='
+     write(*,*) ''
+     write(*,*) 'Post-processing finished successfully!'
+     write(*,*) ''
 #ifdef TTBL_MODE
-     print *,'!--- Temporal TBL mode ---!'
+     write(*,*) '!--- Temporal TBL mode ---!'
 #else
-     print *,'!--- Channel flow mode ---!'
+     write(*,*) '!--- Channel flow mode ---!'
 #endif
-     print *,''
-     print *,'2DECOMP with p_row*p_col=',p_row,p_col
-     print *,''
-     print *,'nx*ny*nz=',nx*ny*nz
-     print *,'nx,ny,nz=',nx,ny,nz
-     print *,'dx,dy,dz=',dx,dy,dz
-     print *,''
-     print *,'Averaged time per snapshot (s):',real(ttotal/nt,4)
-     print *,'Total wallclock (s):',real(ttotal,4)
-     print *,'Total wallclock (m):',real(ttotal/60.,4)
-     print *,'Total wallclock (h):',real(ttotal/3600.,4)
-     print *,'Total wallclock (d):',real(ttotal*1.1574e-5,4)
-     print *,''
+     write(*,*) ''
+     write(*,*) '2DECOMP with p_row*p_col=',p_row,p_col
+     write(*,*) ''
+     write(*,*) 'nx*ny*nz=',nx*ny*nz
+     write(*,*) 'nx,ny,nz=',nx,ny,nz
+     write(*,*) 'dx,dy,dz=',dx,dy,dz
+     write(*,*) ''
+     write(*,*) 'Averaged time per snapshot (s):',real(ttotal/nt,4)
+     write(*,*) 'Total wallclock (s):',real(ttotal,4)
+     write(*,*) 'Total wallclock (m):',real(ttotal/60.,4)
+     write(*,*) 'Total wallclock (h):',real(ttotal/3600.,4)
+     write(*,*) 'Total wallclock (d):',real(ttotal*1.1574e-5,4)
+     write(*,*) ''
      
      ! Mean statistics
      if (post_mean) then
-     print *,'==========================================================='
-     print *,''
-     print *,'The following statistics have been saved in'
-     print *,'"mean_stats" file(s):'
-     print *,''
-     print *,'mean[u], mean[v], mean[w]'
-     print *,' var[u],  var[v],  var[w]'
-     print *,'skew[u], skew[v], skew[w]'
-     print *,'kurt[u], kurt[v], kurt[w]'
-     print *,''
-     print *,"mean[u'v'], mean[u'w'], mean[v'w']"
-     print *,''
-     print *,"mean[p],   var[p],      mean[v'p']"
-     print *,'mean[phi], var[phi]'
-     print *,''
-     print *,"mean[u'phi'], mean[v'phi'], mean[w'phi']"
-     print *,''    
+     write(*,*) '==========================================================='
+     write(*,*) ''
+     write(*,*) 'The following statistics have been saved in'
+     write(*,*) '"mean_stats" file(s):'
+     write(*,*) ''
+     write(*,*) 'mean[u], mean[v], mean[w]'
+     write(*,*) 'var[u],  var[v],  var[w]'
+     write(*,*) 'skew[u], skew[v], skew[w]'
+     write(*,*) 'kurt[u], kurt[v], kurt[w]'
+     write(*,*) ''
+     write(*,*) "mean[u'v'], mean[u'w'], mean[v'w']"
+     write(*,*) ''
+     write(*,*) "mean[p],   var[p],      mean[v'p']"
+     write(*,*) 'mean[phi], var[phi]'
+     write(*,*) ''
+     write(*,*) "mean[u'phi'], mean[v'phi'], mean[w'phi']"
+     write(*,*) ''    
      endif
      
      ! Vorticity and mean gradient 
      if (post_vort) then
-     print *,'==========================================================='
-     print *,''
-     print *,'The following statistics have been saved in'
-     print *,'"vort_stats" file(s):'
-     print *,''
-     print *,'mean[omega_x], mean[omega_y], mean[omega_z]'
-     print *,'dU_par/dy,     dU/dy,         dW/dy'
-     print *,'dPhi/dy'
-     print *,''    
+     write(*,*) '==========================================================='
+     write(*,*) ''
+     write(*,*) 'The following statistics have been saved in'
+     write(*,*) '"vort_stats" file(s):'
+     write(*,*) ''
+     write(*,*) 'mean[omega_x], mean[omega_y], mean[omega_z]'
+     write(*,*) 'dU_par/dy,     dU/dy,         dW/dy'
+     write(*,*) 'dPhi/dy'
+     write(*,*) ''    
      endif
      
      ! Total dissipation rate 
      if (post_diss) then
-     print *,'==========================================================='
-     print *,''
-     print *,'The following statistics have been saved in'
-     print *,'"diss_stats" file(s):'
-     print *,''
-     print *,'mean[eps]'
-     print *,''    
+     write(*,*) '==========================================================='
+     write(*,*) ''
+     write(*,*) 'The following statistics have been saved in'
+     write(*,*) '"diss_stats" file(s):'
+     write(*,*) ''
+     write(*,*) 'mean[eps]'
+     write(*,*) ''    
      endif
      
      ! Correlation functions 
      if (post_corz) then
-     print *,'==========================================================='
-     print *,''
-     print *,'The following statistics have been saved in'
-     print *,'"Riiz", "Ruvz" and "Rssz" file(s):'
-     print *,''
-     print *,'Ruu(z), Rvv(z), Rww(z), Ruv(z), Rss(z)'
-     print *,''    
+     write(*,*) '==========================================================='
+     write(*,*) ''
+     write(*,*) 'The following statistics have been saved in'
+     write(*,*) '"Riiz", "Ruvz" and "Rssz" file(s):'
+     write(*,*) ''
+     write(*,*) 'Ruu(z), Rvv(z), Rww(z), Ruv(z), Rss(z)'
+     write(*,*) ''    
      endif
      
      ! Turbulent Kinetic Energy equation
      if (post_tke_eq) then
-     print *,'==========================================================='
-     print *,''
-     print *,'The following statistics have been saved in'
-     print *,'"tke_stats" file(s):'
-     print *,''
-     print *,'tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps'
-     print *,''  
+     write(*,*) '==========================================================='
+     write(*,*)
+     write(*,*) 'The following statistics have been saved in'
+     write(*,*) '"tke_stats" file(s):'
+     write(*,*) ''
+     write(*,*) 'tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps'
+     write(*,*) ''  
      endif
-     
-     print *,'==========================================================='
+
+     write(*,*) '==========================================================='
      
   endif
 
