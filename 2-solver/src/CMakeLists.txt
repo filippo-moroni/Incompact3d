@@ -9,24 +9,24 @@ add_executable(xcompact3d
                     BC-Temporal-TBL.f90
                     case.f90
                     constants.f90
-                    ../../4-common/derive.f90
-                    ../../4-common/derive_y1d.f90
-                    ../../4-common/extra_tools.f90
-                    ../../4-common/filters.f90
+                    ../../4-common/src/derive.f90
+                    ../../4-common/src/derive_y1d.f90
+                    ../../4-common/src/extra_tools.f90
+                    ../../4-common/src/filters.f90
                     genepsi3d.f90
-                    ../../4-common/ibm.f90
-                    ../../4-common/implicit.f90
+                    ../../4-common/src/ibm.f90
+                    ../../4-common/src/implicit.f90
                     les_models.f90
-                    ../../4-common/module_param.f90
+                    ../../4-common/src/module_param.f90
                     navier.f90
-                    ../../4-common/parameters.f90
+                    ../../4-common/src/parameters.f90
                     poisson.f90
-                    ../../4-common/schemes.f90
+                    ../../4-common/src/schemes.f90
                     time_integrators.f90
                     tools.f90
                     transeq.f90                 
-                    ../../4-common/variables.f90
-                    ../../4-common/visu.f90
+                    ../../4-common/src/variables.f90
+                    ../../4-common/src/visu.f90
                     xcompact3d.f90)
 
 target_include_directories(xcompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
