@@ -29,6 +29,7 @@ program post
   use MPI
   use post_processing
   use tools
+  use iso_fortran_env
 
   implicit none
 
@@ -609,10 +610,9 @@ end if
      
 !------------------Write formatted data--------------------!
      
-     ! New directory for the statistics
-     write(dirname,"('data_post/')") 
-        
-     call system('mkdir -p '//trim(dirname))
+     ! New directory for the statistics (/data_post folder)
+     write(dirname,"('data_post/')")      
+     call execute_command_line('mkdir -p data_post')
 
      ! Formatted data
      write(*,*) '----------------------------------------------------'
