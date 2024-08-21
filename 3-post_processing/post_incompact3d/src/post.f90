@@ -970,82 +970,82 @@ end if
   ! Print useful informations on the screen
   if (nrank==0) then
      write(*,*) '==========================================================='
-     write(*,*) ""
+     write(*,*) ' '
      write(*,*) 'Post-processing finished successfully!'
-     write(*,*) ''
+     write(*,*) ' '
 #ifdef TTBL_MODE
      write(*,*) '!--- Temporal TBL mode ---!'
 #else
      write(*,*) '!--- Channel flow mode ---!'
 #endif
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) '2DECOMP with p_row*p_col=',p_row,p_col
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'nx*ny*nz=',nx*ny*nz
      write(*,*) 'nx,ny,nz=',nx,ny,nz
      write(*,*) 'dx,dy,dz=',dx,dy,dz
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'Averaged time per snapshot (s):',real(ttotal/nt,4)
      write(*,*) 'Total wallclock (s):',real(ttotal,4)
      write(*,*) 'Total wallclock (m):',real(ttotal/60.,4)
      write(*,*) 'Total wallclock (h):',real(ttotal/3600.,4)
      write(*,*) 'Total wallclock (d):',real(ttotal*1.1574e-5,4)
-     write(*,*) ''
+     write(*,*) ' '
      
      ! Mean statistics
      if (post_mean) then
      write(*,*) '==========================================================='
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'The following statistics have been saved in'
      write(*,*) '"mean_stats" file(s):'
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'mean[u], mean[v], mean[w]'
      write(*,*) 'var[u],  var[v],  var[w]'
      write(*,*) 'skew[u], skew[v], skew[w]'
      write(*,*) 'kurt[u], kurt[v], kurt[w]'
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) "mean[u'v'], mean[u'w'], mean[v'w']"
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) "mean[p],   var[p],      mean[v'p']"
      write(*,*) 'mean[phi], var[phi]'
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) "mean[u'phi'], mean[v'phi'], mean[w'phi']"
-     write(*,*) ''    
+     write(*,*) ' '    
      endif
      
      ! Vorticity and mean gradient 
      if (post_vort) then
      write(*,*) '==========================================================='
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'The following statistics have been saved in'
      write(*,*) '"vort_stats" file(s):'
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'mean[omega_x], mean[omega_y], mean[omega_z]'
      write(*,*) 'dU_par/dy,     dU/dy,         dW/dy'
      write(*,*) 'dPhi/dy'
-     write(*,*) ''    
+     write(*,*) ' '    
      endif
      
      ! Total dissipation rate 
      if (post_diss) then
      write(*,*) '==========================================================='
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'The following statistics have been saved in'
      write(*,*) '"diss_stats" file(s):'
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'mean[eps]'
-     write(*,*) ''    
+     write(*,*) ' '    
      endif
      
      ! Correlation functions 
      if (post_corz) then
      write(*,*) '==========================================================='
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'The following statistics have been saved in'
      write(*,*) '"Riiz", "Ruvz" and "Rssz" file(s):'
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'Ruu(z), Rvv(z), Rww(z), Ruv(z), Rss(z)'
-     write(*,*) ''    
+     write(*,*) ' '    
      endif
      
      ! Turbulent Kinetic Energy equation
@@ -1054,9 +1054,9 @@ end if
      write(*,*)
      write(*,*) 'The following statistics have been saved in'
      write(*,*) '"tke_stats" file(s):'
-     write(*,*) ''
+     write(*,*) ' '
      write(*,*) 'tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps'
-     write(*,*) ''  
+     write(*,*) ' '  
      endif
 
      write(*,*) '==========================================================='
