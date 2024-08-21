@@ -473,10 +473,11 @@ subroutine cubsplx(u,lind)
                  xa(ia)=xf(i,j,k)
                  ana_resf=xf(i,j,k)
               else
-                 call analitic_x(j,xf(i,j,k),ana_resf,k) ! Calculate the position of BC analytically
+                 ! Calculate the position of BC analytically
+                 call analitic_x(j,xf(i,j,k),ana_resf,k) 
                  xa(ia)=ana_resf
-              endif              
-              ya(ia)=bcimp              
+              endif
+              ya(ia)=bcimp
               if(xf(i,j,k).lt.xlx)then ! Immersed Object
                  inxf=0
                  ix=(xf(i,j,k)+dx)/dx+1
@@ -487,12 +488,12 @@ subroutine cubsplx(u,lind)
                     if(izap.eq.1)then  ! Skip First Points
                        xa(ia)=(ix-1)*dx+ipif*dx
                        ya(ia)=u(ix+ipif,j,k)
-                    else               ! Don't Skip any Points
+                    else  ! Don't Skip any Points
                        xa(ia)=(ix-1)*dx+(ipif-1)*dx
                        ya(ia)=u(ix+ipif-1,j,k)
                     endif
                  enddo
-              else                     ! Boundary Coincides with Physical Boundary (Outlet)
+              else  ! Boundary Coincides with Physical Boundary (Outlet)
                  inxf=1
                  ipolf=nx
                  ix=(xf(i,j,k)+dx)/dx+1
@@ -502,36 +503,36 @@ subroutine cubsplx(u,lind)
                     ia=ia+1
                     if(izap.eq.1)then  ! Skip First Points
                        xa(ia)=(ix-1)*dx+ipif*dx
-                       ya(ia)=bcimp                                   
-                    else               ! Don't Skip any Points
+                       ya(ia)=bcimp
+                    else  ! Don't Skip any Points
                        xa(ia)=(ix-1)*dx+(ipif-1)*dx
-                       ya(ia)=bcimp                                   
+                       ya(ia)=bcimp
                     endif
                  enddo
               endif
               ! Special Case
               if (xi(i,j,k).eq.xf(i,j,k)) then
-                  u(ipol,j,k)=bcimp                                   
+                  u(ipol,j,k)=bcimp
               else
               ! Cubic Spline Reconstruction
-		        na=ia
-		        do ipol=ipoli,ipolf
-		           if ((inxf.eq.1).and.(inxi.eq.1)) then ! If the Body Extends from the Inlet to the Outlet (Special Case)
-                     u(ipol,j,k)=bcimp                            
+              na=ia
+              do ipol=ipoli,ipolf
+                 if ((inxf.eq.1).and.(inxi.eq.1)) then ! If the Body Extends from the Inlet to the Outlet (Special Case)
+                    u(ipol,j,k)=bcimp
                  else
-		               xpol=dx*(ipol-1)
-		               if (xpol.eq.ana_resi) then
-		                  u(ipol,j,k)=bcimp
-		               elseif (xpol.eq.ana_resf) then
-		                  u(ipol,j,k)=bcimp
-		               else   
-		                  call cubic_spline(xa,ya,na,xpol,ypol)
-		                  u(ipol,j,k)=ypol
-		               endif
-		            endif
-		         enddo
-		         ia=0
-	            endif    
+                    xpol=dx*(ipol-1)
+                    if (xpol.eq.ana_resi) then
+                       u(ipol,j,k)=bcimp
+                    elseif (xpol.eq.ana_resf) then
+                       u(ipol,j,k)=bcimp
+                    else   
+                       call cubic_spline(xa,ya,na,xpol,ypol)
+                       u(ipol,j,k)=ypol
+                    endif
+                  endif
+               enddo
+               ia=0
+               endif
            enddo
         endif
      enddo
@@ -605,7 +606,7 @@ subroutine cubsply(u,lind)
                        ya(ia)=u(i,jy-jpif+1,k)
                     endif
                  enddo
-              else                   ! Boundary Coincides with Physical Boundary (Bottom)
+              else ! Boundary Coincides with Physical Boundary (Bottom)
                  jy=1
                  jpoli=1
                  do while(yp(jy).lt.yi(j,i,k))
@@ -676,21 +677,21 @@ subroutine cubsply(u,lind)
               if (yi(j,i,k).eq.yf(j,i,k)) then
                   u(i,jpol,k)=bcimp                                   
               else
-		  !calcul du polynôme
-		   na=ia
-		   do jpol=jpoli,jpolf
-		         xpol=yp(jpol)
-		         if (xpol.eq.ana_resi) then
-		            u(i,jpol,k)=bcimp
-		         elseif (xpol.eq.ana_resf) then
-		            u(i,jpol,k)=bcimp
-		         else   
-		            call cubic_spline(xa,ya,na,xpol,ypol)
-		            u(i,jpol,k)=ypol
-		         endif
-		   enddo
-		   ia=0
-	      endif    
+        !calcul du polynôme
+         na=ia
+         do jpol=jpoli,jpolf
+               xpol=yp(jpol)
+               if (xpol.eq.ana_resi) then
+                  u(i,jpol,k)=bcimp
+               elseif (xpol.eq.ana_resf) then
+                  u(i,jpol,k)=bcimp
+               else   
+                  call cubic_spline(xa,ya,na,xpol,ypol)
+                  u(i,jpol,k)=ypol
+               endif
+         enddo
+         ia=0
+         endif    
            enddo
         endif
      enddo
@@ -819,27 +820,27 @@ subroutine cubsplz(u,lind)
                     endif
                  enddo
               endif
-         !     ! Special Case
-         !     if (zi(k,i,j).eq.zf(k,i,j)) then
-         !         u(i,j,kpol)=bcimp                                   
-         !     else              
-    	      ! Cubic Spline Reconstruction
-	            na=ia
-	            do kpol=kpoli,kpolf 
+            !     ! Special Case
+            !     if (zi(k,i,j).eq.zf(k,i,j)) then
+            !         u(i,j,kpol)=bcimp                                   
+            !     else              
+            ! Cubic Spline Reconstruction
+               na=ia
+               do kpol=kpoli,kpolf 
                           ! Special Case
                           if (zi(k,i,j).eq.zf(k,i,j)) then
                                 u(i,j,kpol)=bcimp
                           else
-	                    if ((inxf.eq.1).and.(inxi.eq.1)) then ! If the Body Extends from the Front to the Back (Special Case)
-	                          u(i,j,kpol)=bcimp                            
-	                     else              
-	                          xpol=dz*(kpol-1)
-	                          call cubic_spline(xa,ya,na,xpol,ypol)
-	                          u(i,j,kpol)=ypol
-	                     endif
+                       if ((inxf.eq.1).and.(inxi.eq.1)) then ! If the Body Extends from the Front to the Back (Special Case)
+                             u(i,j,kpol)=bcimp                            
+                        else              
+                             xpol=dz*(kpol-1)
+                             call cubic_spline(xa,ya,na,xpol,ypol)
+                             u(i,j,kpol)=ypol
+                        endif
                            endif
-	            enddo
-	            ia=0
+               enddo
+               ia=0
          !     endif
            enddo
         endif
