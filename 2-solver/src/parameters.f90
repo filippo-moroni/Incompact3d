@@ -31,11 +31,11 @@ subroutine parameter(input_i3d)
 
   NAMELIST /BasicParam/ itype, p_row, p_col, nx, ny, nz,          &
                         istret, beta, xlx, yly, zlz,              &
-                        re, dt, ifirst, ilast, numscalar,         &
-                        iin, init_noise,                          &
+                        re, dt, ifirst, ilast, irestart,          &
+                        numscalar, iin, init_noise,               &
                         nclx1, nclxn, ncly1, nclyn, nclz1, nclzn, &
                         iibm, ilmn, ilesmod, iscalar,             &
-                        ivisu, ipost, ifilter, C_filter,          &
+                        isnap, ipost, ifilter, C_filter,          &
                         gravx, gravy, gravz
        
   NAMELIST /NumOptions/ ifirstder, isecondder, ipinter, itimescheme, iimplicit, &
@@ -566,13 +566,13 @@ subroutine parameter_defaults()
   ! BasicParam
   istret      = 0
   beta        = 0
+  irestart    = 0
   iin         = 0
   init_noise  = zero
   iibm        = 0                      
   ilmn        = .FALSE.                      
   ilesmod     = 0
   iscalar     = 0
-  ivisu       = 1  ! save snapshots (0: no, 1: yes)
   ipost       = 0
   ifilter     = 0
   C_filter    = 0.49_mytype
@@ -587,9 +587,16 @@ subroutine parameter_defaults()
   nu0nu       = four
   cnu         = 0.44_mytype
   
-  ! InOutParam          
-  irestart    = 0                      
-  output2D    = 0                                     
+  ! InOutParam
+  icheckpoint = 40000   ! Frequency for writing backup files
+  ioutput = 40000       ! Frequency for saving snapshots
+  ioutput_cf = 200      ! Frequency for saving cf and related quantities
+  ioutput_plane = 200   ! Frequency for saving planes for visualization
+  ilist = 25            ! Frequency for writing to screen (out/log file)
+  isnap = 1             ! Save snapshots (0: no, 1: yes)        
+  nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
+  output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
+  start_output = 1      ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots)                                             
 
   ! AdditionalControls
   iswitch_wo  = 0  ! wall oscillations (0: no, 1: yes)

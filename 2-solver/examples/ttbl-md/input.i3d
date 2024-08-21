@@ -30,6 +30,7 @@ re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference sc
 dt = 0.005            ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
 ilast = 320000        ! Last iteration
+irestart = 0          ! Read initial flow field? (0: no, 1: yes)
 
 ! Enable modelling tools
 numscalar = 1         ! Number of scalars 
@@ -69,13 +70,13 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 &InOutParam
 !====================
 
-! Basic I/O
-irestart = 0          ! Read initial flow field? (0: No, 1: Yes) 
-icheckpoint = 40000   ! Frequency for writing backup file
-ioutput = 40000       ! Frequency for saving and visualization
+! Basic I/O 
+icheckpoint = 40000   ! Frequency for writing backup files
+ioutput = 40000       ! Frequency for saving snapshots
 ioutput_cf = 200      ! Frequency for saving cf and related quantities
 ioutput_plane = 200   ! Frequency for saving planes for visualization
-ilist = 25            ! Frequency for writing to screen        
+ilist = 25            ! Frequency for writing to screen (out/log file)
+isnap = 1             ! Save snapshots (0: no, 1: yes)        
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
 start_output = 1      ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots) 
