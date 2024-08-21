@@ -50,7 +50,7 @@ program post
   character(99) :: filename,dirname
   character(99) :: snap_index,snap_n_index,printing  ! characters to print to screen and to read snapshots' indexes
   
-  character(1)  :: a
+  character(99)  :: a
   
   ! Format for snapshots numbers
   character(len=9) :: ifilenameformat = '(I4.4)'
