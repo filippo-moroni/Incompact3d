@@ -1,5 +1,5 @@
 include_directories(../../4-common/decomp2d
-	            ${CMAKE_SOURCE_DIR}/src)
+	                 ${CMAKE_SOURCE_DIR}/src)
 
 message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
@@ -29,12 +29,13 @@ add_executable(xcompact3d
                     ../../4-common/src/visu.f90
                     xcompact3d.f90)
 
-target_include_directories(xcompact3d PRIVATE ../../4-common/decomp2d)
+target_include_directories(xcompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
 target_link_libraries(xcompact3d PRIVATE decomp2d)
 
 if (MPI_FOUND)
   target_link_libraries(xcompact3d PRIVATE MPI::MPI_Fortran)
 endif (MPI_FOUND)
+
 if(ADIOS2_FOUND)
   target_link_libraries(xcompact3d PRIVATE adios2::fortran_mpi)
 endif()

@@ -1,7 +1,7 @@
 file(GLOB files_decomp decomp_2d.f90
                        glassman.f90
 		                   io.f90)
-include_directories(${CMAKE_SOURCE_DIR}/decomp2d)
+
 if(${FFT_Choice} MATCHES "generic")
   file(GLOB files_fft fft_generic.f90)
 endif(${FFT_Choice} MATCHES "generic")
