@@ -1,5 +1,5 @@
 include_directories(../../4-common/decomp2d
-	                 ${CMAKE_SOURCE_DIR}/src)
+	                  ${CMAKE_SOURCE_DIR}/src)
 
 message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
