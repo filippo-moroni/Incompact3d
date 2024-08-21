@@ -137,7 +137,7 @@ else(ADIOS_FOUND)
 endif()
 
 # Create a static library for the fft
-add_subdirectory(decomp2d)
+add_subdirectory(../../4-common/decomp2d)
 
 # Create the Xcompact3d executable
 add_subdirectory(src)

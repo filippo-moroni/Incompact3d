@@ -146,7 +146,7 @@ else(TTBL_MODE)
 endif()
 
 # Create a static library for the fft
-add_subdirectory(decomp2d)
+add_subdirectory(../../../4-common/decomp2d)
 
 # Create the PostIncompact3d executable
 add_subdirectory(src)
