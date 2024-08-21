@@ -66,9 +66,9 @@ contains
 !---------------------------------------------------------------------------!
   subroutine genepsi3d(ep1)
 
-    use variables, only : nx,ny,nz,nxm,nym,nzm,yp, ilist
+    use variables, only : nx,ny,nz,nxm,nym,nzm,yp
     use param, only : xlx,yly,zlz,dx,dy,dz,izap,npif,nclx,ncly,nclz,istret,itype
-    use param, only : itime
+    use param, only : itime,ilist
     use complex_geometry
     use decomp_2d
 
