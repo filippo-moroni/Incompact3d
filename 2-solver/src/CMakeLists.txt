@@ -29,7 +29,7 @@ add_executable(xcompact3d
                     ../../4-common/src/visu.f90
                     xcompact3d.f90)
 
-target_include_directories(xcompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
+target_include_directories(xcompact3d PRIVATE ../../4-common/decomp2d)
 target_link_libraries(xcompact3d PRIVATE decomp2d)
 
 if (MPI_FOUND)

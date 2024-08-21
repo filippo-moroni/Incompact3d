@@ -21,7 +21,7 @@ add_executable(post_incompact3d
                     ../../../4-common/src/variables.f90
                     ../../../4-common/src/visu.f90)
                     
-target_include_directories(post_incompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
+target_include_directories(post_incompact3d PRIVATE ../../../4-common/decomp2d)
 target_link_libraries(post_incompact3d PRIVATE decomp2d)
 if (MPI_FOUND)
   target_link_libraries(post_incompact3d PRIVATE MPI::MPI_Fortran)
