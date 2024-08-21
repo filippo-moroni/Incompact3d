@@ -5,16 +5,19 @@
 !                    of R. Corsini                         !
 !----------------------------------------------------------!
 ! This program has the following files that are 
-! identical to Incompact3d 'modified':
+! shared with Incompact3d 'modified':
 !
-! - 'parameters.f90'
-! - 'schemes.f90' (except for the comments for the implicit diffusion module, 
-!                  that is absent in this program)
-! - 'module_param.f90'
-! - 'variables.f90'
-! - 'tools.f90' (reduced version here, less subroutines).
-! - 'visu.f90'
+! - 'derive.f90'
+! - 'derive_y1d.f90'
 ! - 'extra_tools.f90'
+! - 'filters.f90'
+! - 'ibm.f90'
+! - 'implicit.f90'
+! - 'module_param.f90'
+! - 'parameters.f90'
+! - 'schemes.f90' 
+! - 'variables.f90'
+! - 'visu.f90'
 !----------------------------------------------------------!
 program post
 

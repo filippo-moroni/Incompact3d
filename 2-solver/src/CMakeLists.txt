@@ -9,28 +9,29 @@ add_executable(xcompact3d
                     BC-Temporal-TBL.f90
                     case.f90
                     constants.f90
-                    derive.f90
-                    derive_y1d.f90
-                    extra_tools.f90
-                    filters.f90
+                    ../../4-incompact3d_common/derive.f90
+                    ../../4-incompact3d_common/derive_y1d.f90
+                    ../../4-incompact3d_common/extra_tools.f90
+                    ../../4-incompact3d_common/filters.f90
                     genepsi3d.f90
-                    ibm.f90
-                    implicit.f90
+                    ../../4-incompact3d_common/ibm.f90
+                    ../../4-incompact3d_common/implicit.f90
                     les_models.f90
                     ../../4-incompact3d_common/module_param.f90
                     navier.f90
-                    parameters.f90
+                    ../../4-incompact3d_common/parameters.f90
                     poisson.f90
-                    schemes.f90
+                    ../../4-incompact3d_common/schemes.f90
                     time_integrators.f90
                     tools.f90
                     transeq.f90                 
-                    variables.f90
-                    visu.f90
+                    ../../4-incompact3d_common/variables.f90
+                    ../../4-incompact3d_common/visu.f90
                     xcompact3d.f90)
 
 target_include_directories(xcompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
 target_link_libraries(xcompact3d PRIVATE decomp2d)
+
 if (MPI_FOUND)
   target_link_libraries(xcompact3d PRIVATE MPI::MPI_Fortran)
 endif (MPI_FOUND)

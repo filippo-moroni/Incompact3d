@@ -1058,8 +1058,8 @@ contains
     USE MPI
     USE decomp_2d, ONLY: mytype, ph1, real_type, nrank
     USE var, ONLY : nzmsize
-    USE param, ONLY : npress, itime
-    USE variables, ONLY : nxm, nym, nzm, ilist
+    USE param, ONLY : npress, itime, ilist
+    USE variables, ONLY : nxm, nym, nzm
 
     IMPLICIT NONE
 

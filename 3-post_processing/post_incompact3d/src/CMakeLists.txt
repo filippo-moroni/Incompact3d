@@ -5,20 +5,21 @@ message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 message(STATUS "PROJECT_BINARY_DIR: ${PROJECT_BINARY_DIR}")
 
 add_executable(post_incompact3d
-                    derive.f90
-                    derive_y1d.f90
-                    extra_tools.f90
-                    filters.f90
-                    ibm.f90
-                    module_param.f90
-                    parameters.f90
+                    ../../4-incompact3d_common/derive.f90
+                    ../../4-incompact3d_common/derive_y1d.f90
+                    ../../4-incompact3d_common/extra_tools.f90
+                    ../../4-incompact3d_common/filters.f90
+                    ../../4-incompact3d_common/ibm.f90
+                    ../../4-incompact3d_common/implicit.f90
+                    ../../4-incompact3d_common/module_param.f90
+                    ../../4-incompact3d_common/parameters.f90
                     post.f90
                     post_processing_mod.f90
-                    schemes.f90               
+                    ../../4-incompact3d_common/schemes.f90
                     statistics_subs.f90
-                    tools.f90               
-                    variables.f90
-                    visu.f90)
+                    tools_pp.f90
+                    ../../4-incompact3d_common/variables.f90
+                    ../../4-incompact3d_common/visu.f90)
                     
 target_include_directories(post_incompact3d PRIVATE ${PROJECT_BINARY_DIR}/decomp2d)
 target_link_libraries(post_incompact3d PRIVATE decomp2d)
