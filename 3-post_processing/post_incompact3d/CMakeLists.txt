@@ -26,7 +26,7 @@ INCLUDE(CMakeParseArguments)
 # make sure that the default is a RELEASE
 if (NOT CMAKE_BUILD_TYPE)
   set (CMAKE_BUILD_TYPE RELEASE CACHE STRING
-      "Choose the type of build, options are: None, Debug, Release."
+      "Choose the type of build, options are: None Debug Release."
       FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
@@ -37,16 +37,16 @@ message(STATUS "Fortran compiler version ${CMAKE_Fortran_COMPILER_VERSION}")
 if (Fortran_COMPILER_NAME MATCHES "GNU")
   # gfortran
   message(STATUS "Setting gfortran flags")
-  set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none")
+  set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none -std=f2008")
   if (CMAKE_Fortran_COMPILER_VERSION GREATER_EQUAL "10")
     message(STATUS "Set New Fortran basic flags")
-    set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none -fallow-argument-mismatch")
+    set(CMAKE_Fortran_FLAGS "-cpp -funroll-loops -floop-optimize -g -Warray-bounds -fcray-pointer -fbacktrace -ffree-line-length-none -fallow-argument-mismatch -std=f2008")
   endif (CMAKE_Fortran_COMPILER_VERSION GREATER_EQUAL "10")
   set(CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
   set(CMAKE_Fortran_FLAGS_DEBUG   "-DDEBG -O0 -g")
 elseif (Fortran_COMPILER_NAME MATCHES "Intel")
   message(STATUS "Setting ifort flags")
-  set(CMAKE_Fortran_FLAGS "-fpp -xHost -heaparrays -safe-cray-ptr -g -traceback")
+  set(CMAKE_Fortran_FLAGS "-fpp -xHost -heaparrays -safe-cray-ptr -g -traceback -stand=f08")
   set (CMAKE_Fortran_FLAGS_RELEASE "-O3 -ipo")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g -DDEBG")
   #set(CMAKE_Fortran_FLAGS "-cpp xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2 -ipo -fp-model fast=2 -mcmodel=large -safe-cray-ptr")
@@ -75,7 +75,7 @@ else (Fortran_COMPILER_NAME MATCHES "GNU")
   message ("Fortran compiler: " ${Fortran_COMPILER_NAME})
   message ("No optimized Fortran compiler flags are known, we just try -O2...")
   set (CMAKE_Fortran_FLAGS_RELEASE "-O2")
-  set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")  
+  set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
 endif (Fortran_COMPILER_NAME MATCHES "GNU")
 
 if (CMAKE_BUILD_TYPE MATCHES "DEBUG")

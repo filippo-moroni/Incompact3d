@@ -43,7 +43,7 @@ program post
   real(mytype) :: den                                ! denominator of the divisions
   real(mytype) :: temp                               ! temporary variable
    
-  integer :: iunit		      		     ! unit for the file to open (assigned by the compiler)
+  integer :: iunit                                   ! unit for the file to open (assigned by the compiler)
     
   integer,dimension(5) :: sel                        ! index for the number of post-processing subroutines employed (selector index) 
  
