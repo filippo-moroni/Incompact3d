@@ -249,6 +249,9 @@ contains
     
   end subroutine visu_ttbl_init
   !---------------------------------------------------------------------------!
+  ! Visualization of the instantaneous flow field is performed with
+  ! the Q-criterion.
+  !---------------------------------------------------------------------------! 
   subroutine visu_ttbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
 
     use var,  only : ux2, uy2, uz2, ux3, uy3, uz3

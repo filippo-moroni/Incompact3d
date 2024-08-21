@@ -8,13 +8,15 @@ module visu
 
   ! True to activate the XDMF output
   logical, save :: use_xdmf = .true.
+  
   ! True to use the new enumeration
   logical, save :: filenamedigits = .false.
-  ! output2D is defined in the input.i3d file
+  
+  ! output2D is specified in the input.i3d file
   !        0 for 3D output (default)
-  !        1 for 2D output with X average
-  !        2 for 2D output with Y average
-  !        3 for 2D output with Z average
+  !        1 for 2D output with x-normal plane (for average modifiy 'write_field')
+  !        2 for 2D output with y-normal plane (for average modifiy 'write_field')
+  !        3 for 2D output with z-normal plane (for average modifiy 'write_field')
   integer, save :: output2D
    
   integer :: ioxdmf
@@ -98,8 +100,7 @@ contains
        enddo
     endif
     
-    ! Add extra IO name for saving helicity density and streamwise vorticity with x-normal plane
-    call decomp_2d_register_variable(io_name, "hel",   1, 0, 1, mytype)
+    ! Add extra IO name for saving streamwise vorticity planes with x-normal
     call decomp_2d_register_variable(io_name, "vortx", 1, 0, 1, mytype)
     
     ! Add extra IO name for saving scalar planes with z-normal 
@@ -125,26 +126,6 @@ contains
 #ifdef ADIOS2
     
     mode = decomp_2d_write_mode
-
-    ! XXX: Currently opening BP4 files in append mode seems to corrupt data.
-    ! if (.not.outloc_init) then
-    !    if (irestart == 1) then
-    !       !! Restarting - is the output already available to write to?
-    !       inquire(file=gen_iodir_name("data", io_name), exist=dir_exists)
-    !       if (dir_exists) then
-    !          outloc_init = .true.
-    !       end if
-    !    end if
-       
-    !    if (.not.outloc_init) then !! Yes, yes, but check the restart check above.
-    !       mode = decomp_2d_write_mode
-    !    else
-    !       mode = decomp_2d_append_mode
-    !    end if
-    !    outloc_init = .true.
-    ! else
-    !    mode = decomp_2d_append_mode
-    ! end if
 
     call decomp_2d_open_io(io_name, "data", mode)
 #endif
@@ -172,9 +153,9 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine write_snapshot(rho1, ux1, uy1, uz1, pp3, phi1, ep1, itime, num)
 
-    use decomp_2d, only : transpose_z_to_y, transpose_y_to_x
-    use decomp_2d, only : mytype, xsize, ysize, zsize
-    use decomp_2d, only : nrank
+    use decomp_2d,    only : transpose_z_to_y, transpose_y_to_x
+    use decomp_2d,    only : mytype, xsize, ysize, zsize
+    use decomp_2d,    only : nrank
     use decomp_2d_io, only : decomp_2d_start_io
 
     use param, only : nrhotime, ilmn, iscalar, ioutput, irestart
@@ -210,7 +191,7 @@ contains
     logical, save :: outloc_init = .false.
     logical :: dir_exists
 
-    ! Update log file
+    ! Update log (output) file
     if (nrank.eq.0) then
       call cpu_time(tstart)
       print *,'Writing snapshots =>',itime/ioutput
@@ -281,7 +262,7 @@ contains
     use decomp_2d_io, only : decomp_2d_end_io
     use param,        only : istret, xlx, yly, zlz
     use variables,    only : nx, ny, nz, beta
-    use var,          only : dt,t
+    use var,          only : dt, t
 
     implicit none
     
