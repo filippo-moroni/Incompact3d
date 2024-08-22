@@ -118,7 +118,7 @@ if (SINGLE_PRECISION_OUTPUT)
   add_definitions("-DSAVE_SINGLE")
 endif()
 
-# FFT options
+#!--- FFT options ---!
 set(FFT_Choice "generic" CACHE STRING "FFT for XCompact3d project (generic is the default)")
 set_property(CACHE FFT_Choice PROPERTY STRINGS generic fftw3 mkl)
 
@@ -127,6 +127,8 @@ message(STATUS "FFT_Choice is set to: ${FFT_Choice}")
 
 # Include directory for FFTW3
 include_directories(../5-external/fftw-3.3.10)
+
+#!-------------------!
 
 # Look for ADIOS2 library
 option(USE_ADIOS2 "Build XCompact with ADIOS2 library" OFF)
