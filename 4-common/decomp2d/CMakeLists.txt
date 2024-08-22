@@ -33,7 +33,7 @@ if(${FFT_Choice} MATCHES "fftw3")
   # Link against the FFTW3 library
   target_link_libraries(decomp2d PRIVATE fftw3)
   
-  endif(${FFT_Choice} MATCHES "fftw3")
+endif(${FFT_Choice} MATCHES "fftw3")
 
 if (MPI_FOUND)
   target_link_libraries(decomp2d PRIVATE MPI::MPI_Fortran)
