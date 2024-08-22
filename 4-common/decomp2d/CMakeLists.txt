@@ -7,6 +7,9 @@ if(${FFT_Choice} MATCHES "generic")
   file(GLOB files_fft fft_generic.f90)
 endif(${FFT_Choice} MATCHES "generic")
 
+# FFTW3 does not work: probably it needs an external installation
+# of the file fftw3.f.
+
 # FFTW3
 if(${FFT_Choice} MATCHES "fftw3")
   file(GLOB files_fft fft_fftw3.f90)
