@@ -25,7 +25,7 @@ set(SRCFILES ${files_decomp} ${files_fft})
 add_library(decomp2d STATIC ${SRCFILES})
 
 # Add the directory where fftw3.f is located
-target_include_directories(decomp2d PRIVATE ../../5-external/fftw-3.3.10/include)
+target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10/include)
 
 if (MPI_FOUND)
   target_link_libraries(decomp2d PRIVATE MPI::MPI_Fortran)
