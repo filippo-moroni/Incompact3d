@@ -26,7 +26,7 @@ add_library(decomp2d STATIC ${SRCFILES})
 
 # Add the directory where the FFTW3 file 'fftw3.f' is located
 if(${FFT_Choice} MATCHES "fftw3")
-  target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10/include/)
+  target_include_directories(decomp2d PRIVATE ../../5-external/fftw-3.3.10/include)
 endif(${FFT_Choice} MATCHES "fftw3")
 
 if (MPI_FOUND)
