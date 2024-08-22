@@ -207,7 +207,7 @@ contains
           ! Implicit boundary conditions are usually given in input file
           ! It is possible to modify g_sc here
           ! It is not possible to modify alpha_sc and beta_sc here
-          !
+          
           ! Bottom temperature if alpha_sc(:,1)=1 and beta_sc(:,1)=0 (default)
           !if (nclyS1.eq.2) g_sc(:,1) = one
           ! Top temperature if alpha_sc(:,2)=1 and beta_sc(:,2)=0 (default)

@@ -28,7 +28,7 @@ module variables
   ! Possible n points: 3 5 7 9 11 13 17 19 21 25 31 33 37 41 49 51 55 61 65 73 81 91 97 101 109 121 129 145 151 161 163 181 193 201 217 241 251 257 271 289 301 321 325 361 385 401 433 451 481 487 501 513 541 577 601 641 649 721 751 769 801 811 865 901 961 973 1001 1025 1081 1153 1201 1251 1281 1297 1351 1441 1459 1501 1537 1601 1621 1729 1801 1921 1945 2001 2049 2161 2251 2305 2401 2431 2501 2561 2593 2701 2881 2917 3001 3073 3201 3241 3457 3601 3751 3841 3889 4001 4051 4097 4321 4375 4501 4609 4801 4861 5001 5121 5185 5401 5761 5833 6001 6145 6251 6401 6481 6751 6913 7201 7291 7501 7681 7777 8001 8101 8193 8641 8749 9001 9217 9601 9721 enough
 
   integer :: nx,ny,nz,numscalar,p_row,p_col,nxm,nym,nzm
-  integer :: nstat=1,nprobe=1,nlength=1  !ilist=25 !nvisu=1
+  integer :: nstat=1,nprobe=1,nlength=1  
 
   real(mytype),allocatable,dimension(:) :: sc,uset,cp,ri,group
   
@@ -305,13 +305,12 @@ module param
   ! Time step, first and last
   integer :: itime,ifirst,ilast
   
-  integer :: ntime ! How many (sub)timestpeps do we need to store?
-  integer :: imodulo2,idemarre,icommence,irecord
+  ! How many (sub)timestpeps do we need to store?
+  integer :: ntime 
   integer :: itime0
-  integer :: iscalar,istat,iread,iadvance_time,irotation,iibm
-  integer :: ipost, initstat
+  integer :: iscalar,iadvance_time
   
-  real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,xxk1,xxk2,t0
+  real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,t0
   real(mytype) :: dt,re,xnu,init_noise
   
   ! Basic Param
@@ -357,16 +356,19 @@ module param
   integer            :: idir_stream, spinup_time
   real(mytype)       :: wrotation
   real(mytype)       :: re_cent, fcpg, re_bulk, re_tau
-  real(mytype), save :: ubulk  ! Bulk velocity
+  
+  ! Bulk velocity
+  real(mytype), save :: ubulk
+  !--------------------!
 
   ! Numerical Fourier (CFL diffusion parameter)
   real(mytype) :: cfl_diff_x,cfl_diff_y,cfl_diff_z,cfl_diff_sum
 
-  !!
-  real(mytype) :: xcst
-  real(mytype), allocatable, dimension(:) :: xcst_sc
+  ! Coefficient for the implicit y-diffusion terms (it involves viscosity and time-step)
+  real(mytype)                            :: xcst     ! For velocity field
+  real(mytype), allocatable, dimension(:) :: xcst_sc  ! For scalar fields
+  
   real(mytype), allocatable, dimension(:,:) :: alpha_sc, beta_sc, g_sc
-  real(mytype) :: g_bl_inf, f_bl_inf
 
   !! Scalars
   logical, allocatable, dimension(:) :: sc_even, sc_skew
@@ -374,7 +376,7 @@ module param
   real(mytype) :: Tref
   
   ! IBM
-  integer :: npif,izap,ianal
+  integer :: npif,izap,ianal,iibm
 
   ! LES
   integer :: itest           ! frequency to print to screen LES constants 
@@ -400,17 +402,8 @@ module param
 
   logical :: ibirman_eos
   
-  character :: filesauve*80, filenoise*80, &
-       nchamp*80,filepath*80, fileturb*80, filevisu*80, datapath*80
+  ! Coefficients for time-integration schemes
   real(mytype), dimension(5) :: adt,bdt,cdt,ddt,gdt
-
-  ! VISU
-  integer :: save_w,save_w1,save_w2,save_w3,save_qc,save_pc
-  integer :: save_ux,save_uy,save_uz,save_phi,save_pre
-  integer :: save_uxm,save_uym,save_uzm,save_phim,save_prem
-  integer :: save_ibm,save_dmap,save_utmap,save_dudx,save_dudy,save_dudz
-  integer :: save_dvdx,save_dvdy,save_dvdz,save_dwdx,save_dwdy,save_dwdz
-  integer :: save_dphidx,save_dphidy,save_dphidz,save_abs,save_V
     
   ! Shear quantities at the wall (used for Channel and TTBL)
   real(mytype), save :: sh_vel        ! Total shear velocity
@@ -634,7 +627,7 @@ module derivZ
 
 end module derivZ
 !-----------------------------------------------------------------------------!
-! Describes the parameters for the discrete filters in X-Pencil
+! Describes the parameters for the discrete filters in x-pencils
 module parfiX
   use decomp_2d, only : mytype
   real(mytype) :: fial1x, fia1x, fib1x, fic1x, fid1x, fie1x, fif1x  ! Coefficients for filter at boundary point 1
@@ -646,6 +639,7 @@ module parfiX
   real(mytype) :: fialpx, fiapx, fibpx, ficpx, fidpx, fiepx, fifpx  ! Coefficient for filter at boundary point p=n-2
 end module parfiX
 !-----------------------------------------------------------------------------!
+! Describes the parameters for the discrete filters in y-pencils
 module parfiY
   use decomp_2d, only : mytype
   real(mytype) :: fial1y, fia1y, fib1y, fic1y, fid1y, fie1y, fif1y ! Coefficients for filter at boundary point 1
@@ -657,6 +651,7 @@ module parfiY
   real(mytype) :: fialpy, fiapy, fibpy, ficpy, fidpy, fiepy, fifpy ! Coefficient for filter at boundary point p=n-2
 end module parfiY
 !-----------------------------------------------------------------------------!
+! Describes the parameters for the discrete filters in z-pencils
 module parfiZ
   use decomp_2d, only : mytype
   real(mytype) :: fial1z, fia1z, fib1z, fic1z, fid1z, fie1z, fif1z ! Coefficients for filter at boundary point 1

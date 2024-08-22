@@ -11,9 +11,7 @@
 subroutine parameter(input_i3d)
 
   use MPI
-  
   use iso_fortran_env
-
   use param
   use variables
   use complex_geometry
@@ -26,8 +24,7 @@ subroutine parameter(input_i3d)
   implicit none
 
   character(len=80), intent(in) :: input_i3d
-  real(mytype) :: theta,cfl,cf2
-  integer :: longueur,impi,j,is,total
+  integer :: is
 
   NAMELIST /BasicParam/ itype, p_row, p_col, nx, ny, nz,          &
                         istret, beta, xlx, yly, zlz,              &
@@ -35,7 +32,7 @@ subroutine parameter(input_i3d)
                         numscalar, iin, init_noise,               &
                         nclx1, nclxn, ncly1, nclyn, nclz1, nclzn, &
                         iibm, ilmn, ilesmod, iscalar,             &
-                        ipost, ifilter, C_filter,                 &
+                        ifilter, C_filter,                        &
                         gravx, gravy, gravz
        
   NAMELIST /NumOptions/ ifirstder, isecondder, ipinter, itimescheme, iimplicit, &
@@ -65,7 +62,7 @@ subroutine parameter(input_i3d)
                  Fr, ibirman_eos
   
   ! Not used at the moment
-  NAMELIST /Statistics/ nstat, initstat
+  NAMELIST /Statistics/ nstat
   NAMELIST /ExtraNumControl/ icfllim, cfl_limit
   
 #ifdef DEBG
@@ -574,7 +571,6 @@ subroutine parameter_defaults()
   ilmn        = .FALSE.                      
   ilesmod     = 0
   iscalar     = 0
-  ipost       = 0
   ifilter     = 0
   C_filter    = 0.49_mytype
   gravx       = zero
@@ -645,18 +641,12 @@ subroutine parameter_defaults()
   primary_species = -1
   Fr              = zero    
   ibirman_eos     = .FALSE. 
-  
-  ! Statistics               
-  initstat = huge(i)                
-  
+    
   ! ExtraNumControl 
   icfllim   = 0     ! Switcher to enable CFL limit constraint (0: no, 1: yes)
   cfl_limit = 0.95  ! CFL limit to adjust time-step 
   
   !-- Additional parameters not present in namelists --!                  
-  imodulo2  = 1
-  filepath  = './data/'
-  datapath  = './data/'
   itime0    = 0
   t0        = zero
   pressure0 = one
