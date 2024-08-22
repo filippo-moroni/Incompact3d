@@ -122,6 +122,9 @@ endif()
 set(FFT_Choice "generic" CACHE STRING "FFT for XCompact3d project (generic is the default)")
 set_property(CACHE FFT_Choice PROPERTY STRINGS generic fftw3 mkl)
 
+# Print the value of FFT_Choice to the screen
+message("FFT_Choice is set to: ${FFT_Choice}")
+
 # Look for ADIOS2 library
 option(USE_ADIOS2 "Build XCompact with ADIOS2 library" OFF)
 if(USE_ADIOS2)
