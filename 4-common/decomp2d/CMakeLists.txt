@@ -31,7 +31,7 @@ if(${FFT_Choice} MATCHES "fftw3")
   target_link_directories(decomp2d PRIVATE ../../5-external/fftw-3.3.10/build)
 
   # Link against the FFTW3 library
-  target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10)
+  target_link_libraries(decomp2d PRIVATE fftw3)
   
   endif(${FFT_Choice} MATCHES "fftw3")
 
