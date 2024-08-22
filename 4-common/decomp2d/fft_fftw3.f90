@@ -33,7 +33,7 @@ module decomp_2d_fft
   !     use plan(0,j) for r2c transforms;
   !     use plan(2,j) for c2r transforms;
   
-  !integer*8, save :: plan(-1:2,3)
+  ! Declaration of 'integer(kind=8)' was previously 'integer*8'
   integer(kind=8), save :: plan(-1:2,3)
 
   ! common code used for all engines, including global variables, 
