@@ -650,7 +650,6 @@ subroutine parameter_defaults()
   itime0    = 0
   t0        = zero
   pressure0 = one
-  irotation = 0
   itest     = 1
   npress    = 1  ! By default only one pressure field is needed
 
