@@ -2,9 +2,20 @@ file(GLOB files_decomp decomp_2d.f90
                        glassman.f90
 		                   io.f90)
 
+# Generic FFT
 if(${FFT_Choice} MATCHES "generic")
   file(GLOB files_fft fft_generic.f90)
 endif(${FFT_Choice} MATCHES "generic")
+
+# FFTW3
+if(${FFT_Choice} MATCHES "fftw3")
+  file(GLOB files_fft fft_fftw3.f90)
+endif(${FFT_Choice} MATCHES "fftw3")
+
+# FFT MKL (Intel)
+if(${FFT_Choice} MATCHES "mkl")
+  file(GLOB files_fft fft_mkl.f90)
+endif(${FFT_Choice} MATCHES "mkl")
 
 set(SRCFILES ${files_decomp} ${files_fft})
 
