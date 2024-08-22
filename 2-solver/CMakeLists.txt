@@ -125,6 +125,9 @@ set_property(CACHE FFT_Choice PROPERTY STRINGS generic fftw3 mkl)
 # Print the value of FFT_Choice to the screen
 message(STATUS "FFT_Choice is set to: ${FFT_Choice}")
 
+# Include directory for FFTW3
+include_directories(../5-external/fftw-3.3.10)
+
 # Look for ADIOS2 library
 option(USE_ADIOS2 "Build XCompact with ADIOS2 library" OFF)
 if(USE_ADIOS2)
