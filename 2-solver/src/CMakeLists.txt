@@ -8,7 +8,6 @@ add_executable(xcompact3d
                     BC-Channel-flow.f90                
                     BC-Temporal-TBL.f90
                     case.f90
-                    constants.f90
                     ../../4-common/src/derive.f90
                     ../../4-common/src/derive_y1d.f90
                     ../../4-common/src/extra_tools.f90
