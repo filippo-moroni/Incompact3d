@@ -28,8 +28,8 @@ if(${FFT_Choice} MATCHES "fftw3")
   target_include_directories(decomp2d PRIVATE ../../5-external/fftw-3.3.10/include)
 
   # Add the FFTW3 directory where 'libfftw3.so' is located
-  target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10/lib/libfftw3.so)
-  #target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10/lib/libfftw3_threads.so)
+  #target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10/lib/libfftw3.so)
+  target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10/lib/libfftw3_threads.so)
 
 endif(${FFT_Choice} MATCHES "fftw3")
 
