@@ -19,8 +19,8 @@ endif(${FFT_Choice} MATCHES "mkl")
 
 set(SRCFILES ${files_decomp} ${files_fft})
 
+# Create the static library for decomp2d
 add_library(decomp2d STATIC ${SRCFILES})
-
 
 if(${FFT_Choice} MATCHES "fftw3")
   
@@ -28,11 +28,8 @@ if(${FFT_Choice} MATCHES "fftw3")
   target_include_directories(decomp2d PRIVATE ../../5-external/fftw-3.3.10/include)
 
   # Add the FFTW3 directory where 'libfftw3.so' is located
-  target_link_directories(decomp2d PRIVATE ../../5-external/fftw-3.3.10/build)
+  target_link_libraries(decomp2d PRIVATE ../../5-external/fftw-3.3.10/build)
 
-  # Link against the FFTW3 library
-  target_link_libraries(decomp2d PRIVATE fftw3)
-  
 endif(${FFT_Choice} MATCHES "fftw3")
 
 if (MPI_FOUND)
