@@ -249,8 +249,7 @@ contains
 
     implicit none
 
-    integer :: i,j,k,iresflg,nzmsize,ierror,is,it,code
-    integer :: ierror_o=0 !error to open sauve file during restart
+    integer :: i,j,k,iresflg,is,code
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,ep1
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: px1,py1,pz1
     real(mytype), dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1,duy1,duz1
@@ -260,13 +259,12 @@ contains
     real(mytype), dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho1
     real(mytype), dimension(xsize(1),xsize(2),xsize(3),ntime) :: drho1
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: mu1
-    real(mytype) :: xdt,tfield,y
-    integer, dimension(2) :: dims, dummy_coords
-    logical, dimension(2) :: dummy_periods
+    real(mytype) :: tfield
+
     logical :: fexists
     character(len=90) :: filestart
-    character(len=32) :: fmt2,fmt3,fmt4
     character(len=7)  :: fmt1
+    character(len=32) :: fmt2,fmt3,fmt4
     character(len=80) :: varname
     
     character(99) :: filename, ts_index
@@ -490,15 +488,6 @@ contains
          itime0 = ifirst-1
        end if
        
-    endif
-
-    if (nrank==0) then
-       if (ierror_o /= 0) then !Included by Felipe Schuch
-          write(*,*) '==========================================================='
-          write(*,*) 'Error: Impossible to read '//trim(filestart)
-          write(*,*) '==========================================================='
-          call MPI_ABORT(MPI_COMM_WORLD,code,ierror)
-       endif
     endif
 
     ! Reconstruction of the dp/dx, dp/dy and dp/dz from pp3
