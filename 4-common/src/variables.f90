@@ -1140,12 +1140,14 @@ contains
        zpi(k)=(real(k,mytype)-half)*dz
     enddo
     
+    !--- Time integration schemes ---!
     adt=zero
     bdt=zero
     cdt=zero
     gdt=zero
 
-    if (itimescheme.eq.1) then ! Euler
+    ! Euler
+    if (itimescheme.eq.1) then 
 
        iadvance_time=1
 
@@ -1156,7 +1158,9 @@ contains
 
        ntime = 1
        nrhotime = 2
-    elseif (itimescheme.eq.2) then ! AB2
+
+    ! AB2
+    elseif (itimescheme.eq.2) then 
        iadvance_time=1
        adt(1)=onepfive*dt
        bdt(1)=-half*dt
@@ -1165,7 +1169,9 @@ contains
 
        ntime = 2
        nrhotime = 3
-    elseif (itimescheme.eq.3) then ! AB3
+
+    ! AB3
+    elseif (itimescheme.eq.3) then 
        iadvance_time=1
 
        adt(1)= (twentythree/twelve)*dt
@@ -1176,7 +1182,9 @@ contains
 
        ntime = 3
        nrhotime = 4
-    elseif(itimescheme==4) then  ! AB4
+
+    ! AB4
+    elseif(itimescheme==4) then  
        iadvance_time=1
 
        adt(1)= (  fiftyfive/twentyfour)*dt
@@ -1188,7 +1196,9 @@ contains
 
        ntime    = 4
        nrhotime = 5
-    elseif(itimescheme.eq.5) then !RK3
+   
+    ! RK3
+    elseif(itimescheme.eq.5) then 
        iadvance_time=3
 
        adt(1)=(eight/fifteen)*dt
@@ -1203,7 +1213,9 @@ contains
 
        ntime = 2
        nrhotime = 3
-    elseif(itimescheme.eq.6) then !RK4 Carpenter and Kennedy
+      
+    ! RK4 Carpenter and Kennedy
+    elseif(itimescheme.eq.6) then 
        iadvance_time=5
        adt(1)=zero
        adt(2)=-0.4178904745_mytype
@@ -1225,6 +1237,7 @@ contains
        nrhotime = 5 ! (A guess)
 
     endif
+    
     allocate(dux1(xsize(1),xsize(2),xsize(3),ntime))
     dux1=zero
     allocate(duy1(xsize(1),xsize(2),xsize(3),ntime))
