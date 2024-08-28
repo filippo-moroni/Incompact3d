@@ -71,10 +71,21 @@ if itype == 13:
     # Maximum cf estimated at peak for TTBL (Cimarelli et al. (2024))
     cf = 0.007
     
+    #!--- Ask the user to insert the domain dimensions based on TTBL thickness delta at Re_tau = 500 ---!
+    scalex = float(input("Enter the scale factor in x-dir. based on BL thickness delta: "))
+    print()
+    
+    # Common value for y-direction is 3.0 (Kozul et al. (2016), Cimarelli et al. (2024)), 
+    # but values around 2.0 should still be enough to avoid confiment effects of upper boundary.
+    scaley = 3.0
+    
+    scalez = float(input("Enter the scale factor in z-dir. based on BL thickness delta: "))
+    print()
+    
     # Domain dimensions
-    xlx = 4.0*bl_thickness   # domain dimension in x direction
-    yly = 3.0*bl_thickness   # domain dimension in y direction
-    zlz = 2.0*bl_thickness   # domain dimension in z direction           
+    xlx = scalex*bl_thickness   # domain dimension in x direction
+    yly = scaley*bl_thickness   # domain dimension in y direction
+    zlz = scalez*bl_thickness   # domain dimension in z direction           
 
 # Channel    
 elif itype == 3:
