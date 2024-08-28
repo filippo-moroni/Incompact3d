@@ -72,6 +72,7 @@ if itype == 13:
     cf = 0.007
     
     #!--- Ask the user to insert the domain dimensions based on TTBL thickness delta at Re_tau = 500 ---!
+    print()
     scalex = float(input("Enter the scale factor in x-dir. based on BL thickness delta: "))
     print()
     
@@ -382,14 +383,10 @@ print('Number of mesh nodes in streamwise direction,  nx = ', nx)
 print('Number of mesh nodes in wall normal direction, ny = ', ny)
 print('Number of mesh nodes in spanwise direction,    nz = ', nz)
 print()
-print('Domain dimension, Lx = ',xlx)     
-print('Domain dimension, Ly = ',yly)
-print('Domain dimension, Lz = ',zlz)
-print()
-print('Stretching index =', istret)
-print('Beta parameter = ', beta)
-print('Kinematic viscosity, nu = ', nu)
-print('Time step, dt = ', dt)
+print('Stretching switcher, istret = ', istret)
+print('Beta parameter, beta        = ', beta)
+print('Kinematic viscosity, nu     = ', nu)
+print('Time step, dt               = ', dt)
 print('Reynolds number (Re = 1/nu) = ', re)
 
 if itype == 3:
@@ -400,7 +397,7 @@ if itype == 3:
     print('Estimated friction Reynolds number, Re_tau ~ ', re_tau)
     
 elif itype == 13:
-    print('Wall velocity, Uwall = ', uwall)
+    print('Wall velocity, Uwall        = ', uwall)
     print('Tripping wire diameter, twd = ', twd)
     print()
     print('!--- Reference data according to Cimarelli et al. (2024): ---!')
@@ -411,10 +408,14 @@ elif itype == 13:
 print()
 print('!----- Outputs: -----!')
 print()
-print('!--- Non-dimensional domain dimensions: ---!')
+print('!--- Domain dimensions: ---!')
 print()
 
 if itype == 13:
+    print('Domain dimension, Lx = ', xlx)     
+    print('Domain dimension, Ly = ', yly)
+    print('Domain dimension, Lz = ', zlz)
+    print()
     print('Length of the domain (Lx+) at IC:', xlx_nd_ic)
     print('Height of the domain (Ly+) at IC:', yly_nd_ic)
     print('Width  of the domain (Lz+) at IC:', zlz_nd_ic)
