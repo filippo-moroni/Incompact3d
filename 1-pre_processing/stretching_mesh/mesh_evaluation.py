@@ -312,7 +312,7 @@ if itype == 13:
     # Calculate the thickness delta99^+ of the initial shear layer
     j = 0
     while j <= ny - 1 and Uo[j] > Uo[0]*0.01:
-    	sl_99_ic = yp_ic[j]
+        sl_99_ic = yp_ic[j]
         j = j + 1
     	
     # Calculation of the number of mesh nodes in the initial shear layer
