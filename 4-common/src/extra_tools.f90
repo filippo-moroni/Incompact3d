@@ -253,8 +253,8 @@
       if (exists) then
           open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,F12.4,A,I12)')  &
-                         a_wo_loc, ',', t_wo_loc, ',', re_tau_tbl, ',', & 
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.4,A,I12)') &
+                         a_wo_loc, ',', t_wo_loc, ',', re_tau_tbl, ',',  &  
                          span_vel, ',', t,        ',', itime
                              
       else
@@ -264,8 +264,8 @@
                         'A^+', ',', 'T^+', ',', 'Re_tau', ',', &                                                        
                         'Ww',  ',', 't',   ',', 'ts'
           
-          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,F12.4,A,I12)')  &
-                         a_wo_loc, ',', t_wo_loc, ',', re_tau_tbl, ',', & 
+          write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F12.6,A,F12.4,A,I12)') &
+                         a_wo_loc, ',', t_wo_loc, ',', re_tau_tbl, ',',  & 
                          span_vel, ',', t,        ',', itime
                     
       end if
