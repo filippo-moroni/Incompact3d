@@ -282,12 +282,18 @@ if post_mean:
         xlimsup = Ly_plus
         ylimsup = 30.0
      
-        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
         if 150 < re_tau < 210:
         
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
-   
+            
+        # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
+        elif 400 < re_tau < 450:
+        
+            # Kozul et al. (2016)
+            ax.plot(y_plus_umean_kozul, mean_u_kozul, color='C1', linestyle='-', linewidth=pp.lw) 
+               
     # Channel    
     elif itype == 3:
 
@@ -381,11 +387,17 @@ if post_mean:
         xlimsup = Ly_plus
         ylimsup = 10.0
         
-        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
         if 150 < re_tau < 210:
         
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
+        elif 400 < re_tau < 450:
+        
+            # Kozul et al. (2016)
+            ax.plot(y_plus_uvar_kozul, var_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)    
                
     # Channel    
     elif itype == 3:
@@ -431,11 +443,17 @@ if post_mean:
         xlimsup = Ly_plus
         ylimsup = 1.5
         
-        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
         if 150 < re_tau < 210:
         
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
+            
+        # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
+        elif 400 < re_tau < 450:
+        
+            # Kozul et al. (2016)
+            ax.plot(y_plus_vvar_kozul, var_v_kozul, color='C1', linestyle='-', linewidth=pp.lw) 
             
     # Channel    
     elif itype == 3:
@@ -481,7 +499,7 @@ if post_mean:
         xlimsup = Ly_plus
         ylimsup = 2.5
         
-        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
         if 150 < re_tau < 210:
         
             # Lee & Moser (2015)
@@ -534,7 +552,7 @@ if post_mean:
         # y-axis label
         ax.set_ylabel(r'$\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
         
-        # Plot Lee & Moser data if Re_tau is close to their Re_tau (180) 
+        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
         if 150 < re_tau < 210:
         
             # Lee & Moser (2015)
