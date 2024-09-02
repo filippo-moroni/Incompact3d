@@ -17,7 +17,7 @@
 # Loading of modules
 module load ...
 
-# Calculate total number of tasks
+# Calculate total number of tasks (verified that it works)
 TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
 
 # Launching

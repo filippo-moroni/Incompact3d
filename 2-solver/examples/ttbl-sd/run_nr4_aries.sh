@@ -19,7 +19,7 @@
 module load gcc-12.1.1/gcc
 module load gcc-12.1.1/ompi-4.1.5_nccl
 
-# Calculate total number of tasks
+# Calculate total number of tasks (verified that it works)
 TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
 
 # Launching
