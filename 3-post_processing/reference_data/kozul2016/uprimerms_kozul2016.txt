@@ -1,7 +1,7 @@
 !------------------------------------!
 Kozul et al. (2016)
 Temporal TBL simulation with Re_D ~ 500.
-Statistics at Re_theta = 1100.
+Statistics at Re_theta = 1100, that corresponds to Re_tau ~ 425 (according to G. Boga data).
 Streamwise fluctuations RMS.
 !------------------------------------!
 

@@ -376,8 +376,16 @@ def read_ref_data():
     
     # Lee & Moser (2015), Channel Re_tau = 1000
     y_plus_lm1000          = 0.0
-    p_eps_ratio_lm1000     = 0.0  # ratio of production and dissipation of TKE minus 1.0  
+    p_eps_ratio_lm1000     = 0.0  # ratio of production and dissipation of TKE minus 1.0
     
+    # Kozul et al. (2016)
+    y_plus_umean_kozul     = 0.0
+    mean_u_kozul           = 0.0
+    y_plus_uvar_kozul      = 0.0
+    var_u_kozul            = 0.0
+    y_plus_vvar_kozul      = 0.0
+    var_v_kozul            = 0.0
+      
     #!--- Reading of fixed walls channels data ---!
                   
     # Reading of Lee & Moser (2015) data
@@ -460,8 +468,25 @@ def read_ref_data():
     # Lee & Moser (2015), Channel Re_tau = 1000
     M = np.loadtxt(dirname + '/lee&moser2015/p_eps_ratio_minus1_lee&moser2015.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_lm1000      = M[:,0]
-    p_eps_ratio_lm1000 = M[:,1]     
+    p_eps_ratio_lm1000 = M[:,1]
     
+    #!--- Kozul et al. (2016) ---!
+    M = np.loadtxt(dirname + '/kozul2016/umean_kozul2016.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_umean_kozul     = M[:,0]
+    mean_u_kozul           = M[:,1]
+    
+    M = np.loadtxt(dirname + '/kozul2016/uprimerms_kozul2016.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_uvar_kozul      = M[:,0]
+    var_u_kozul            = M[:,1]
+    
+    M = np.loadtxt(dirname + '/kozul2016/vprimerms_kozul2016.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_vvar_kozul      = M[:,0]
+    var_v_kozul            = M[:,1]   
+    
+    # Square RMSs to obtain variances
+    var_u_kozul = var_u_kozul**2
+    var_v_kozul = var_v_kozul**2          
+              
     # Return to main program with extracted reference data
     return (
     y_plus_lm,          mean_u_lm, 
@@ -476,7 +501,10 @@ def read_ref_data():
     y_plus_wvar_yao,    var_w_yao,
     y_plus_uvmean_yao,  mean_uv_yao, 
     y_plus_moser_1999,  p_eps_ratio_moser_1999,
-    y_plus_lm1000,      p_eps_ratio_lm1000
+    y_plus_lm1000,      p_eps_ratio_lm1000,
+    y_plus_umean_kozul, mean_u_kozul,
+    y_plus_uvar_kozul,  var_u_kozul,
+    y_plus_vvar_kozul,  var_v_kozul    
     ) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
