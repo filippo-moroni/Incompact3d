@@ -59,22 +59,23 @@ os.makedirs('plots',     mode=0o777, exist_ok=True)
 uwall, nu, twd = set_flow_parameters(itype, re)
 
 #!--- Reference data ---!
-(y_plus_lm,          mean_u_lm, 
- var_u_lm, var_v_lm, var_w_lm,      mean_uv_lm,
- rz_plus_cuuz_kim,   cuuz_kim, 
- rz_plus_cvvz_kim,   cvvz_kim,
- rz_plus_cwwz_kim,   cwwz_kim,
- y_plus_touber,      mean_u_touber,
- y_plus_umean_yao,   mean_u_yao,
- y_plus_uvar_yao,    var_u_yao,
- y_plus_vvar_yao,    var_v_yao,
- y_plus_wvar_yao,    var_w_yao,
- y_plus_uvmean_yao,  mean_uv_yao, 
- y_plus_moser_1999,  p_eps_ratio_moser_1999,
- y_plus_lm1000,      p_eps_ratio_lm1000,
- y_plus_umean_kozul, mean_u_kozul,
- y_plus_uvar_kozul,  var_u_kozul,
- y_plus_vvar_kozul,  var_v_kozul ) = read_ref_data() 
+(y_plus_lm,           mean_u_lm, 
+ var_u_lm, var_v_lm,  var_w_lm,      mean_uv_lm,
+ rz_plus_cuuz_kim,    cuuz_kim, 
+ rz_plus_cvvz_kim,    cvvz_kim,
+ rz_plus_cwwz_kim,    cwwz_kim,
+ y_plus_touber,       mean_u_touber,
+ y_plus_umean_yao,    mean_u_yao,
+ y_plus_uvar_yao,     var_u_yao,
+ y_plus_vvar_yao,     var_v_yao,
+ y_plus_wvar_yao,     var_w_yao,
+ y_plus_uvmean_yao,   mean_uv_yao, 
+ y_plus_moser_1999,   p_eps_ratio_moser_1999,
+ y_plus_lm1000,       p_eps_ratio_lm1000,
+ y_plus_umean_kozul,  mean_u_kozul,
+ y_plus_uvar_kozul,   var_u_kozul,
+ y_plus_vvar_kozul,   var_v_kozul,
+ y_plus_uvmean_kozul, mean_uv_kozul) = read_ref_data() 
   
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
@@ -557,7 +558,13 @@ if post_mean:
         
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
+            
+        # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
+        elif 400 < re_tau < 450:
         
+            # Kozul et al. (2016)
+            ax.plot(y_plus_uvmean_kozul, mean_uv_kozul, color='C1', linestyle='-', linewidth=pp.lw) 
+            
     # Channel    
     elif itype == 3:
 

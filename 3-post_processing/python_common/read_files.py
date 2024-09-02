@@ -385,6 +385,8 @@ def read_ref_data():
     var_u_kozul            = 0.0
     y_plus_vvar_kozul      = 0.0
     var_v_kozul            = 0.0
+    y_plus_uvmean_kozul    = 0.0
+    mean_uv_kozul          = 0.0
       
     #!--- Reading of fixed walls channels data ---!
                   
@@ -481,30 +483,35 @@ def read_ref_data():
     
     M = np.loadtxt(dirname + '/kozul2016/vprimerms_kozul2016.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_vvar_kozul      = M[:,0]
-    var_v_kozul            = M[:,1]   
+    var_v_kozul            = M[:,1]
     
+    M = np.loadtxt(dirname + '/kozul2016/uvmean_kozul2016.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_uvmean_kozul    = M[:,0]
+    mean_uv_kozul          = M[:,1]
+     
     # Square RMSs to obtain variances
     var_u_kozul = var_u_kozul**2
     var_v_kozul = var_v_kozul**2          
               
     # Return to main program with extracted reference data
     return (
-    y_plus_lm,          mean_u_lm, 
-    var_u_lm, var_v_lm, var_w_lm,      mean_uv_lm,
-    rz_plus_cuuz_kim,   cuuz_kim, 
-    rz_plus_cvvz_kim,   cvvz_kim,
-    rz_plus_cwwz_kim,   cwwz_kim,
-    y_plus_touber,      mean_u_touber,
-    y_plus_umean_yao,   mean_u_yao,
-    y_plus_uvar_yao,    var_u_yao,
-    y_plus_vvar_yao,    var_v_yao,
-    y_plus_wvar_yao,    var_w_yao,
-    y_plus_uvmean_yao,  mean_uv_yao, 
-    y_plus_moser_1999,  p_eps_ratio_moser_1999,
-    y_plus_lm1000,      p_eps_ratio_lm1000,
-    y_plus_umean_kozul, mean_u_kozul,
-    y_plus_uvar_kozul,  var_u_kozul,
-    y_plus_vvar_kozul,  var_v_kozul    
+    y_plus_lm,           mean_u_lm, 
+    var_u_lm, var_v_lm,  var_w_lm,      mean_uv_lm,
+    rz_plus_cuuz_kim,    cuuz_kim, 
+    rz_plus_cvvz_kim,    cvvz_kim,
+    rz_plus_cwwz_kim,    cwwz_kim,
+    y_plus_touber,       mean_u_touber,
+    y_plus_umean_yao,    mean_u_yao,
+    y_plus_uvar_yao,     var_u_yao,
+    y_plus_vvar_yao,     var_v_yao,
+    y_plus_wvar_yao,     var_w_yao,
+    y_plus_uvmean_yao,   mean_uv_yao, 
+    y_plus_moser_1999,   p_eps_ratio_moser_1999,
+    y_plus_lm1000,       p_eps_ratio_lm1000,
+    y_plus_umean_kozul,  mean_u_kozul,
+    y_plus_uvar_kozul,   var_u_kozul,
+    y_plus_vvar_kozul,   var_v_kozul,
+    y_plus_uvmean_kozul, mean_uv_kozul    
     ) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
