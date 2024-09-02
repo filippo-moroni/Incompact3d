@@ -194,7 +194,7 @@ contains
        if (nrank == 0.and.(mod(itime, ilist) == 0 .or. itime == ifirst .or. itime==ilast)) then
           call cpu_time(time1)
           write(*,*) '==========================================================='
-          write(*,"(' Time step =',i7,'/',i7,', Time unit =',F9.4)") itime,ilast,t
+          write(*,"(' Time step =',i7,'/',i7,', Time unit =',F12.4)") itime,ilast,t
        endif
 
     ! At the end of a time step
