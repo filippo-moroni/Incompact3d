@@ -1,0 +1,9 @@
+!------------------------------------!
+Kozul et al. (2016)
+Temporal TBL simulation with Re_D ~ 500.
+Statistics at Re_theta = 1100.
+Vertical fluctuations RMS.
+!------------------------------------!
+
+y^+,                 v',rms^+
+
