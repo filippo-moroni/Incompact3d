@@ -244,7 +244,7 @@
       ! Write filename
       write(filename,"('data/monitoring/oscill_param.txt')") 
    
-      ! Calculate amplitude and period of oscillations in wall units
+      ! Calculate amplitude and period of oscillations in wall units (loc: local value)
       a_wo_loc = a_wo / sh_velx
       t_wo_loc = t_wo / t_viscous
       
