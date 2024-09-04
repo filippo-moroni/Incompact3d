@@ -1,6 +1,6 @@
 file(GLOB files_decomp decomp_2d.f90
                        glassman.f90
-		                   io.f90)
+		       io.f90)
 
 # Generic FFT
 if(${FFT_Choice} MATCHES "generic")
