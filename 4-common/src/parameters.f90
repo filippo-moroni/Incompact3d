@@ -594,8 +594,8 @@ subroutine parameter_defaults()
   ivisu = 1              ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)        
   nvisu = 1              ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
   output2D = 0           ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
-  start_output = 1       ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots)
-  end_output = huge(i)   ! Time-step at which we stop to save snapshots (valid for both 3d and 2d snapshots) (default: huge)                                             
+  start_output = 1       ! Time-step at which we start (>=) to save snapshots (valid for both 3d and 2d snapshots)
+  end_output = huge(i)   ! Time-step at which we stop (<=) to save snapshots (valid for both 3d and 2d snapshots) (default: huge)                                             
 
   ! AdditionalControls
   iswitch_wo  = 0        ! wall oscillations (0: no, 1: yes)
@@ -647,7 +647,7 @@ subroutine parameter_defaults()
   icfllim   = 0     ! Switcher to enable CFL limit constraint (0: no, 1: yes)
   cfl_limit = 0.95  ! CFL limit to adjust time-step 
   
-  !-- Additional parameters not present in namelists --!                  
+  !--- Additional parameters not present in namelists ---!                  
   itime0    = 0
   t0        = zero
   pressure0 = one
