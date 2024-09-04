@@ -70,9 +70,7 @@ program xcompact3d
         !   !! XXX N.B. from this point, X-pencil velocity arrays contain velocity (LMN only).
         !   !! Note - all other solvers work on velocity always
         !endif
-        
-        ! test_flow was here
-        
+                
      enddo ! End of sub-time steps cycle
      
      ! Calculation of numerics-related parameters (CFL, Pé, S) and if the simulation diverged
