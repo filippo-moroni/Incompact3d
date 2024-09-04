@@ -34,12 +34,18 @@ if(${FFT_Choice} MATCHES "fftw3")
 endif(${FFT_Choice} MATCHES "fftw3")
 
 # FFT MKL (Intel)
+#if(${FFT_Choice} MATCHES "mkl")
+
+#  message (STATUS "Compiling using MKL")
+#  file(GLOB files_fft $ENV{MKLROOT}/include/mkl_dfti.f90 fft_mkl.f90)
+
+#endif(${FFT_Choice} MATCHES "mkl")
+
 if(${FFT_Choice} MATCHES "mkl")
-
-  message (STATUS "Compiling using MKL")
-  file(GLOB files_fft $ENV{MKLROOT}/include/mkl_dfti.f90 fft_mkl.f90)
-
-endif(${FFT_Choice} MATCHES "mkl")
+  set(BLA_VENDOR Intel10_64lp_static)  # Or simply "Intel"
+  find_package(MKL REQUIRED)
+  target_link_libraries(decomp2d PRIVATE MKL::MKL)
+endif()
 
 
 if (MPI_FOUND)
