@@ -56,12 +56,13 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
 import matplotlib.pyplot as plt
 
-def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None):
+def save_and_show_plot(subfolder, variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None):
     
     """
     Saves and shows a plot with a given variable name and optional parameters.
     
     Parameters:
+    - subfolder (str, optional):     Name of the subfolder in which we are saving the .pdf file.
     - variable_name (str):           The name of the variable to be saved in the filename.
     - snap_numb (str, optional):     Snapshot number to be included in the filename. Added if itype is 13 (TTBL).
     - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name.
@@ -71,7 +72,14 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     """
     
     # Initialize the filename
-    filename = f'plots/{variable_name}'
+    filename = f'plots'
+      
+    # Add subfolder if it is provided
+    if subfolder is not None:
+        filename += f'/{subfolder}'
+        
+    # Add variable name
+    filename += f'/{variable_name}'
     
     # Add snap_numb if it is provided
     if snap_numb is not None:
