@@ -56,18 +56,18 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
 import matplotlib.pyplot as plt
 
-def save_and_show_plot(subfolder, variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None):
+def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None, subfolder=None):
     
     """
     Saves and shows a plot with a given variable name and optional parameters.
     
     Parameters:
-    - subfolder (str, optional):     Name of the subfolder in which we are saving the .pdf file.
     - variable_name (str):           The name of the variable to be saved in the filename.
     - snap_numb (str, optional):     Snapshot number to be included in the filename. Added if itype is 13 (TTBL).
     - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name.
     - y_plus_in (float64, optional): The additional parameter to be included in the filename if we are plotting and saving correlation functions.
     - re_tau (int, optional):        Additional Friction Reynolds number value to add the the filename if we are saving a plot of a TTBL.
+    - subfolder (str, optional):     Name of the subfolder in which we are saving the .pdf file.
     
     """
     

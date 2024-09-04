@@ -320,7 +320,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
     
     # Save and show the figure
-    save_and_show_plot('plots/mean_stats', 'umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
 
     #!--------------------------------------------------------------------------------------!
 
