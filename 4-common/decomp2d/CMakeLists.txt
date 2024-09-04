@@ -14,7 +14,9 @@ endif(${FFT_Choice} MATCHES "fftw3")
 
 # FFT MKL (Intel)
 if(${FFT_Choice} MATCHES "mkl")
-  file(GLOB files_fft fft_mkl.f90)
+  #file(GLOB files_fft fft_mkl.f90)
+  message (STATUS "Compiling using MKL")
+  file(GLOB files_fft $ENV{MKLROOT}/include/mkl_dfti.f90 fft_mkl.f90)
 endif(${FFT_Choice} MATCHES "mkl")
 
 set(SRCFILES ${files_decomp} ${files_fft})
@@ -35,30 +37,14 @@ endif(${FFT_Choice} MATCHES "fftw3")
 
 #!---------------------------------------------------------------!
 
-# Check if MKLROOT is defined
-if(NOT DEFINED ENV{MKLROOT})
-  message(FATAL_ERROR "MKLROOT environment variable is not set.")
-endif()
-
-# Add MKL FFT dependencies manually
+# FFT MKL (Intel)
 if(${FFT_Choice} MATCHES "mkl")
-  set(MKL_ROOT $ENV{MKLROOT})
 
-  # Include the MKL headers
-  target_include_directories(decomp2d PRIVATE ${MKL_ROOT}/include)
+  target_compile_options(decomp2d PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_COMPILE_OPTIONS>)
+  target_include_directories(decomp2d PUBLIC $<TARGET_PROPERTY:MKL::MKL,INTERFACE_INCLUDE_DIRECTORIES>)
+  target_link_libraries(decomp2d PUBLIC $<LINK_ONLY:MKL::MKL>)
 
-  # Link MKL libraries
-  if(CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
-    target_link_libraries(decomp2d PRIVATE
-      ${MKL_ROOT}/lib/intel64/libmkl_intel_lp64.a
-      ${MKL_ROOT}/lib/intel64/libmkl_sequential.a
-      ${MKL_ROOT}/lib/intel64/libmkl_core.a
-      -lpthread -lm -ldl
-    )
-  else()
-    message(FATAL_ERROR "MKL linking only supported with Intel compilers in this example.")
-  endif()
-endif()
+endif(${FFT_Choice} MATCHES "mkl")
 
 #!---------------------------------------------------------------!
 
