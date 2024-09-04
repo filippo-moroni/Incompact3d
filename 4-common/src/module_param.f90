@@ -350,6 +350,7 @@ module param
   integer :: ivisu          ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)
   integer :: nvisu          ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
   integer :: start_output   ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots)
+  integer :: end_output     ! Time-step at which we stop to save snapshots (valid for both 3d and 2d snapshots) (default: huge)
   
   !--- Channel flow ---!
   logical            :: cpg

@@ -39,7 +39,7 @@ subroutine parameter(input_i3d)
                         nu0nu, cnu
                         
   NAMELIST /InOutParam/ icheckpoint, ioutput, ioutput_cf, ioutput_plane, &
-                        ilist, isnap, ivisu, nvisu, output2D, start_output
+                        ilist, isnap, ivisu, nvisu, output2D, start_output, end_output
   
   NAMELIST /AdditionalControls/ iswitch_wo
   NAMELIST /WallOscillations/ ifeedback_control, a_wo, t_wo, in_phase
@@ -585,19 +585,20 @@ subroutine parameter_defaults()
   cnu         = 0.44_mytype
   
   ! InOutParam
-  icheckpoint = 40000   ! Frequency for writing backup files
-  ioutput = 40000       ! Frequency for saving snapshots
-  ioutput_cf = 200      ! Frequency for saving cf and related quantities
-  ioutput_plane = 200   ! Frequency for saving planes for visualization
-  ilist = 25            ! Frequency for writing to screen (out/log file)
-  isnap = 1             ! Save snapshots (0: no, 1: yes)
-  ivisu = 1             ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)        
-  nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
-  output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
-  start_output = 1      ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots)                                             
+  icheckpoint = 40000    ! Frequency for writing backup files
+  ioutput = 40000        ! Frequency for saving snapshots
+  ioutput_cf = 200       ! Frequency for saving cf and related quantities
+  ioutput_plane = 200    ! Frequency for saving planes for visualization
+  ilist = 25             ! Frequency for writing to screen (out/log file)
+  isnap = 1              ! Save snapshots (0: no, 1: yes)
+  ivisu = 1              ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)        
+  nvisu = 1              ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
+  output2D = 0           ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
+  start_output = 1       ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots)
+  end_output = huge(i)   ! Time-step at which we stop to save snapshots (valid for both 3d and 2d snapshots) (default: huge)                                             
 
   ! AdditionalControls
-  iswitch_wo  = 0  ! wall oscillations (0: no, 1: yes)
+  iswitch_wo  = 0        ! wall oscillations (0: no, 1: yes)
   
   ! WallOscillations 
   ifeedback_control = 0  ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop) (0: no, 1: yes)

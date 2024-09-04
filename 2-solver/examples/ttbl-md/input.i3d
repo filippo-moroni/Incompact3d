@@ -80,6 +80,7 @@ ivisu = 1             ! Save case-specific field for visualization (e.g. Q-crite
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
 start_output = 1      ! Time-step at which we start to save snapshots (valid for both 3d and 2d snapshots) 
+end_output = 10000000 ! Time-step at which we stop to save snapshots (valid for both 3d and 2d snapshots) (default: huge)
 
 /End
 
