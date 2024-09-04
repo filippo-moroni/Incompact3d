@@ -177,7 +177,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine postprocess_case(rho,ux,uy,uz,pp,phi,ep)
 
-    use var, only : nzmsize
+    use var,   only : nzmsize
     use param, only : npress
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
