@@ -33,31 +33,34 @@ if(${FFT_Choice} MATCHES "fftw3")
 
 endif(${FFT_Choice} MATCHES "fftw3")
 
+#!---------------------------------------------------------------!
+
+# Check if MKLROOT is defined
+if(NOT DEFINED ENV{MKLROOT})
+  message(FATAL_ERROR "MKLROOT environment variable is not set.")
+endif()
+
 # Add MKL FFT dependencies manually
 if(${FFT_Choice} MATCHES "mkl")
-
-  # Set MKL root directory (ensure $MKLROOT is defined in your environment)
-  if(NOT DEFINED MKLROOT)
-    message(FATAL_ERROR "MKLROOT environment variable is not set.")
-  endif()
+  set(MKL_ROOT $ENV{MKLROOT})
 
   # Include the MKL headers
-  target_include_directories(decomp2d PRIVATE ${MKLROOT}/include)
+  target_include_directories(decomp2d PRIVATE ${MKL_ROOT}/include)
 
   # Link MKL libraries
   if(CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
     target_link_libraries(decomp2d PRIVATE
-      ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a
-      ${MKLROOT}/lib/intel64/libmkl_sequential.a
-      ${MKLROOT}/lib/intel64/libmkl_core.a
+      ${MKL_ROOT}/lib/intel64/libmkl_intel_lp64.a
+      ${MKL_ROOT}/lib/intel64/libmkl_sequential.a
+      ${MKL_ROOT}/lib/intel64/libmkl_core.a
       -lpthread -lm -ldl
     )
   else()
     message(FATAL_ERROR "MKL linking only supported with Intel compilers in this example.")
   endif()
-
 endif()
 
+#!---------------------------------------------------------------!
 
 if (MPI_FOUND)
   target_link_libraries(decomp2d PRIVATE MPI::MPI_Fortran)
