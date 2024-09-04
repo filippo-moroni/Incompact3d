@@ -8,7 +8,7 @@ if (IO_BACKEND MATCHES "adios2")
   enable_language(C CXX)
 endif (IO_BACKEND MATCHES "adios2")
 
-set(DESCRIPTION "Building Incompact3d using cmake")
+set(DESCRIPTION "Building Xcompact3d using cmake")
 
 message(STATUS "building ${PROJECT_NAME}")
 
@@ -37,7 +37,7 @@ elseif (CMAKE_BUILD_TYPE MATCHES "RELEASE")
 elseif (CMAKE_BUILD_TYPE MATCHES "DEBUG")
   message (STATUS "Selected build type : Debug")
 elseif (CMAKE_BUILD_TYPE MATCHES "DEV")
-  message (FATAL_ERROR "DEV build is a work in progress and currently not supported by Incompact3d")
+  message (FATAL_ERROR "DEV build is a work in progress and currently not supported by Xcompact3d")
 else (CMAKE_BUILD_TYPE MATCHES "NONE")
   message (FATAL_ERROR "Invalid build type, options are: NONE DEV DEBUG RELEASE.")
 endif (CMAKE_BUILD_TYPE MATCHES "NONE")
