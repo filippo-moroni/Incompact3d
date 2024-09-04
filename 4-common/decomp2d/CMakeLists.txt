@@ -33,19 +33,12 @@ if(${FFT_Choice} MATCHES "fftw3")
 
 endif(${FFT_Choice} MATCHES "fftw3")
 
-# MKL static linking
+# MKL
 if(${FFT_Choice} MATCHES "mkl")
-
-  # Add MKL include directory
-  target_include_directories(decomp2d PRIVATE ${MKLROOT}/include)
-
-  # Link the necessary static MKL libraries
-  target_link_libraries(decomp2d PRIVATE ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a)
-  target_link_libraries(decomp2d PRIVATE ${MKLROOT}/lib/intel64/libmkl_sequential.a)
-  target_link_libraries(decomp2d PRIVATE ${MKLROOT}/lib/intel64/libmkl_core.a)
-  target_link_libraries(decomp2d PRIVATE -lpthread -lm -ldl)
-  
-endif(${FFT_Choice} MATCHES "mkl")
+  set(BLA_VENDOR Intel10_64lp_static)  # Or simply "Intel"
+  find_package(MKL REQUIRED)
+  target_link_libraries(decomp2d PRIVATE MKL::MKL)
+endif()
 
 
 if (MPI_FOUND)
