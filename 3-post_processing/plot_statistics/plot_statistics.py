@@ -46,6 +46,7 @@ os.makedirs('data_post',          mode=0o777, exist_ok=True)
 os.makedirs('plots',              mode=0o777, exist_ok=True)
 os.makedirs('plots/mean_stats',   mode=0o777, exist_ok=True)
 os.makedirs('plots/correlations', mode=0o777, exist_ok=True)
+os.makedirs('plots/tke_budget',   mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -370,7 +371,7 @@ if post_mean:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
     
     #!--------------------------------------------------------------------------------------!
 
@@ -426,7 +427,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
 
     #!--------------------------------------------------------------------------------------!
 
@@ -482,7 +483,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
 
     #!--------------------------------------------------------------------------------------!
     
@@ -532,7 +533,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
 
     #!--------------------------------------------------------------------------------------!
 
@@ -593,7 +594,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
 
     #!--------------------------------------------------------------------------------------!
 
@@ -734,7 +735,7 @@ if post_corz:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
         # Save and show the figure
-        save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
+        save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations')
 
     #!--------------------------------------------------------------------------------------!
 
@@ -762,7 +763,7 @@ if post_corz:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
+    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations')
 
     #!--------------------------------------------------------------------------------------!
 
@@ -792,7 +793,7 @@ if post_corz:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
         # Save and show the figure
-        save_and_show_plot('Cssz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
+        save_and_show_plot('Cssz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations')
 
     #!--------------------------------------------------------------------------------------!
 
@@ -844,7 +845,7 @@ if post_tke_eq:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='tke_budget')
     
     #!--------------------------------------------------------------------------------------!
 
