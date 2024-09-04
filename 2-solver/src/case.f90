@@ -151,8 +151,14 @@ contains
     ! Recover temperature when decomposed (pressure to be recovered externally)
     T = phi1
 
-    ! Writing the snapshot if requested from the user and if we are at the right time step
-    if ((isnap .ne. 0) .and. ((mod(itime, ioutput) .eq. 0) .or. (itime.eq.ifirst)) .and. (itime .ge. start_output)) then
+    ! Writing snapshots only if some conditions are met
+    if ( ( isnap .ne. 0 )                                        .and. &  ! Snapshots enabled by the switcher 'isnap'
+         ((itime .eq. ifirst) .or. (mod(itime, ioutput) .eq. 0)) .and. &  ! Save at the first time step or at every 'ioutput' time-steps  
+         ( itime .ge. start_output)                              .and. &  ! Save snapshots if time-step is greater or equal to 'start_output' 
+         ( itime .le. end_output  )                                    &  ! Save snapshots if time-step is less or equal to 'end_output' 
+       ) then
+       
+       ! Write snapshot
        call write_snapshot(rho1, ux1, uy1, uz1, pp3, T, ep1, itime, num)
 
        ! XXX: Ultimate goal for ADIOS2 is to pass do all postproc online - do we need this?
