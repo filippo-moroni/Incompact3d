@@ -15,7 +15,7 @@
 # Leonardo Data Centric General Purpose (DCGP).
 
 # Loading of cmake
-module load cmake 
+#module load cmake 
 
 # Loading of modules (Intel)
 module load intel-oneapi-compilers/2023.2.1
