@@ -4,6 +4,7 @@
 
 module decomp_2d_poisson
 
+  use MPI
   use decomp_2d_constants
   use decomp_2d
   use decomp_2d_fft
@@ -1813,7 +1814,7 @@ contains
     use MPI
     use derivX 
     use derivY 
-    use derivZ 
+    use derivZ
 
     implicit none
 

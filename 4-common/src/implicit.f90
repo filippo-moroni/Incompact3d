@@ -539,6 +539,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   use decomp_2d
   use derivY
   use matinv
+  use decomp_2d_mpi, only : nrank
 
   implicit none
 
