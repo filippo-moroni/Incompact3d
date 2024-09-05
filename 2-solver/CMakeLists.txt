@@ -48,6 +48,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                      "${CMAKE_SOURCE_DIR}/cmake/fft"
                      "${CMAKE_SOURCE_DIR}/cmake/2decomp-fft")
 
+set(CMAKE_PREFIX_PATH "../5-external/2decomp-fft" ${CMAKE_PREFIX_PATH})
+
 find_package(DECOMP2D REQUIRED)
 
 # Despite IO is handled by 2DECOMP&FFT we need to set it
