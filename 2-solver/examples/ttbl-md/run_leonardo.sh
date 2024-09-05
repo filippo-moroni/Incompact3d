@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=test           # job name
-#SBATCH --account= ...            # account name
-#SBATCH --partition=dcgp_usr_prod # partition name
-#SBATCH --time=23:59:59           # format HH : MM : SS
+#SBATCH --account=CNHPC_1572529   # account name
+#SBATCH --partition=dcgp_qos_dbg  # partition name
+#SBATCH --time=00:29:59           # format HH : MM : SS
 #SBATCH --nodes=1                 # node number
 #SBATCH --ntasks-per-node=112     # tasks out of 112
 #SBATCH --cpus-per-task=1         # CPUs per task
