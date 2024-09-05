@@ -1,14 +1,7 @@
 # - Find the 2decomp-fft library
 
-# Set the path relative to this CMake file
-set(DECOMP2D_PATH "${CMAKE_CURRENT_LIST_DIR}/../../5-external/2decomp-fft")
-
-# Find the 2decomp-fft library
-find_package(decomp2d PATHS ${DECOMP2D_PATH})
-
-
-#find_package(decomp2d
-#             PATHS ${CMAKE_SOURCE_DIR}/decomp2d/build)
+find_package(decomp2d
+             PATHS ${CMAKE_SOURCE_DIR}/../5-external/2decomp-fft)
              
 if (decomp2d_FOUND)
   message(STATUS "2decomp-fft FOUND")
