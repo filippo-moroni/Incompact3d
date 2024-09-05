@@ -15,7 +15,7 @@ module navier
   public :: solve_poisson, divergence, calc_divu_constraint
   public :: pre_correc, cor_vel
   public :: lmn_t_to_rho_trans, momentum_to_velocity, velocity_to_momentum
-  public :: gradp, tbl_flrt
+  public :: gradp
 
 contains
   !-----------------------------------------------------------------------------!
@@ -1009,6 +1009,7 @@ contains
     use var, only : rho2, ta2, tb2, di2, sy, sfyp, ssyp, swyp
     use var, only : rho3, ta3, di3, sz, sfzp, sszp, swzp
     use param, only : zero
+    
     implicit none
 
     real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
@@ -1043,15 +1044,14 @@ contains
   !      AUTHOR: Paul Bartholomew
   ! DESCRIPTION: Tests convergence of the variable-coefficient Poisson solver
   !-----------------------------------------------------------------------------!
-  SUBROUTINE test_varcoeff(converged, divup3norm, pp3, dv3, atol, rtol, poissiter)
+  subroutine test_varcoeff(converged, divup3norm, pp3, dv3, atol, rtol, poissiter)
 
-    USE MPI
-    USE decomp_2d, ONLY: mytype, ph1, real_type, nrank
-    USE var, ONLY : nzmsize
-    USE param, ONLY : npress, itime, ilist
-    USE variables, ONLY : nxm, nym, nzm
+    use mpi
+    use var, only : nzmsize
+    use param, only : npress, itime, ilist
+    use variables, only : nxm, nym, nzm
 
-    IMPLICIT NONE
+    implicit none
 
     !! INPUTS
     REAL(mytype), INTENT(INOUT), DIMENSION(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress) :: pp3
@@ -1113,19 +1113,17 @@ contains
   !      AUTHOR: Paul Bartholomew
   ! DESCRIPTION: Computes RHS of the variable-coefficient Poisson solver
   !-----------------------------------------------------------------------------!
-  SUBROUTINE calc_varcoeff_rhs(pp3, rho1, px1, py1, pz1, dv3, drho1, ep1, divu3, rho0, poissiter)
+  subroutine calc_varcoeff_rhs(pp3, rho1, px1, py1, pz1, dv3, drho1, ep1, divu3, rho0, poissiter)
 
-    USE MPI
+    use mpi
 
-    USE decomp_2d
+    use param, only : nrhotime, ntime
+    use param, only : one
 
-    USE param, ONLY : nrhotime, ntime
-    USE param, ONLY : one
+    use var, only : ta1, tb1, tc1
+    use var, only : nzmsize
 
-    USE var, ONLY : ta1, tb1, tc1
-    USE var, ONLY : nzmsize
-
-    IMPLICIT NONE
+    implicit none
 
     !! INPUTS
     INTEGER, INTENT(IN) :: poissiter
@@ -1165,84 +1163,6 @@ contains
   ENDSUBROUTINE calc_varcoeff_rhs
 
   !-----------------------------------------------------------------------------!
-  subroutine tbl_flrt (ux1,uy1,uz1)
-
-    USE decomp_2d
-    USE decomp_2d_poisson
-    USE variables
-    USE param
-    USE MPI
-
-    implicit none
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
-    real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2
-
-    integer :: j,i,k,code
-    real(mytype) :: can,ut1,ut2,ut3,ut4,utt1,utt2,utt3,utt4,udif
-
-    ux1(1,:,:)=bxx1(:,:)
-    ux1(nx,:,:)=bxxn(:,:)
-
-    call transpose_x_to_y(ux1,ux2)
-    call transpose_x_to_y(uy1,uy2)
-    ! Flow rate at the inlet
-    ut1=zero;utt1=zero
-    if (ystart(1)==1) then !! CPUs at the inlet
-      do k=1,ysize(3)
-        do j=1,ysize(2)-1
-          ut1=ut1+(yp(j+1)-yp(j))*(ux2(1,j+1,k)-half*(ux2(1,j+1,k)-ux2(1,j,k)))
-        enddo
-      enddo
-      ! ut1=ut1/real(ysize(3),mytype)
-    endif
-    call MPI_ALLREDUCE(ut1,utt1,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-    utt1=utt1/real(nz,mytype) !! Volume flow rate per unit spanwise dist
-    ! Flow rate at the outlet
-    ut2=zero;utt2=zero
-    if (yend(1)==nx) then !! CPUs at the outlet
-      do k=1,ysize(3)
-        do j=1,ysize(2)-1
-          ut2=ut2+(yp(j+1)-yp(j))*(ux2(ysize(1),j+1,k)-half*(ux2(ysize(1),j+1,k)-ux2(ysize(1),j,k)))
-        enddo
-      enddo
-      ! ut2=ut2/real(ysize(3),mytype)
-    endif
-
-    call MPI_ALLREDUCE(ut2,utt2,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-    utt2=utt2/real(nz,mytype) !! Volume flow rate per unit spanwise dist
-
-    ! Flow rate at the top and bottom
-    ut3=zero
-    ut4=zero
-    do k=1,ysize(3)
-      do i=1,ysize(1)
-        ut3=ut3+uy2(i,1,k)
-        ut4=ut4+uy2(i,ny,k)
-      enddo
-    enddo
-    call MPI_ALLREDUCE(ut3,utt3,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-    call MPI_ALLREDUCE(ut4,utt4,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
-    utt3=utt3/(real(nx*nz,mytype))*xlx  !!! Volume flow rate per unit spanwise dist
-    utt4=utt4/(real(nx*nz,mytype))*xlx  !!! Volume flow rate per unit spanwise dist
-
-    !! velocity correction
-    udif=(utt1-utt2+utt3-utt4)/yly
-    if ((nrank==0).and.(mod(itime,ilist)==0)) then
-      write(*,"(' Mass balance: L-BC, R-BC,',2f12.6)") utt1,utt2
-      write(*,"(' Mass balance: B-BC, T-BC, Crr-Vel',3f11.5)") utt3,utt4,udif
-    endif
-    ! do k=1,xsize(3)
-    !   do j=1,xsize(2)
-    !     ux1(nx,i,k)=ux1(nx,i,k)+udif
-    !   enddo
-    ! enddo
-    do k=1,xsize(3)
-      do j=1,xsize(2)
-        bxxn(j,k)=bxxn(j,k)+udif
-      enddo
-    enddo
-
-  end subroutine tbl_flrt
 
 !-----------------------------------------------------------------------------!
 !  SUBROUTINE: avg3d
