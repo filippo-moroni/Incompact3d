@@ -281,7 +281,7 @@ if post_mean:
     ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
     # Description of .pdf file
-    description = 'Mean streamwise velocity profile. Reference data '
+    description = 'Mean streamwise velocity profile.'
     
     # TTBL
     if itype == 13:
@@ -296,7 +296,7 @@ if post_mean:
             ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015).'
                         
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -305,7 +305,7 @@ if post_mean:
             ax.plot(y_plus_umean_kozul, mean_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Kozul et al. (2016).'
+            description += ' Reference data Kozul et al. (2016).'
                            
     # Channel    
     elif itype == 3:
@@ -317,7 +317,7 @@ if post_mean:
         ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += 'Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -406,7 +406,7 @@ if post_mean:
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Description of .pdf file
-    description = 'Streamwise velocity variance. Reference data '
+    description = 'Streamwise velocity variance.'
 
     # TTBL
     if itype == 13:
@@ -421,7 +421,7 @@ if post_mean:
             ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015).'
         
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -430,7 +430,7 @@ if post_mean:
             ax.plot(y_plus_uvar_kozul, var_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Kozul et al. (2016).'    
+            description += ' Reference data Kozul et al. (2016).'    
                
     # Channel    
     elif itype == 3:
@@ -442,7 +442,7 @@ if post_mean:
         ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += 'Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -479,7 +479,7 @@ if post_mean:
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Description of .pdf file
-    description = 'Wall-normal velocity variance. Reference data '
+    description = 'Wall-normal velocity variance.'
 
     # TTBL
     if itype == 13:
@@ -494,7 +494,7 @@ if post_mean:
             ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015).'
             
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -503,7 +503,7 @@ if post_mean:
             ax.plot(y_plus_vvar_kozul, var_v_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Kozul et al. (2016).'  
+            description += ' Reference data Kozul et al. (2016).'  
             
     # Channel    
     elif itype == 3:
@@ -515,7 +515,7 @@ if post_mean:
         ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += 'Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -552,7 +552,7 @@ if post_mean:
     ax.scatter(y_plus[:ny], var_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Description of .pdf file
-    description = 'Spanwise velocity variance. Reference data '
+    description = 'Spanwise velocity variance.'
 
     # TTBL
     if itype == 13:
@@ -567,7 +567,7 @@ if post_mean:
             ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015).'
             
     # Channel    
     elif itype == 3:
@@ -579,7 +579,7 @@ if post_mean:
         ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += 'Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -616,7 +616,7 @@ if post_mean:
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Description of .pdf file
-    description = 'Reynolds stress. Reference data '
+    description = 'Reynolds stress.'
     
     # TTBL
     if itype == 13:
@@ -634,7 +634,7 @@ if post_mean:
             ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015).'
             
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -643,7 +643,7 @@ if post_mean:
             ax.plot(y_plus_uvmean_kozul, mean_uv_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += 'Kozul et al. (2016).'   
+            description += ' Reference data Kozul et al. (2016).'   
             
     # Channel    
     elif itype == 3:
@@ -655,7 +655,7 @@ if post_mean:
         ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += 'Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015).'
        
         # y-axis label
         ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
