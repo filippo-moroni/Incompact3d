@@ -48,6 +48,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                      "${CMAKE_SOURCE_DIR}/cmake/fft"
                      "${CMAKE_SOURCE_DIR}../../5-external/2decomp-fft")
 
+set(decomp2d_DIR "../5-external/2decomp-fft")
 
 find_package(DECOMP2D REQUIRED)
 
