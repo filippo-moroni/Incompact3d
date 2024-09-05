@@ -1,0 +1,12 @@
+# The fortran modules provided by this target.
+provides
+ decomp_2d.mod
+ decomp_2d@d2d_log.smod
+ decomp_2d_constants.mod
+ decomp_2d_fft.mod
+ decomp_2d_fft@d2d_fft_log.smod
+ decomp_2d_io.mod
+ decomp_2d_mpi.mod
+ factor.mod
+ mkl_dft_type.mod
+ mkl_dfti.mod
