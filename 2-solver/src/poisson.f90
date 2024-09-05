@@ -16,8 +16,6 @@ module decomp_2d_poisson
 
   private        ! Make everything private unless declared public
 
-  !  real(mytype), private, parameter :: PI = 3.14159265358979323846_mytype
-
 #ifdef DOUBLE_PREC
   real(mytype), parameter :: epsilon = 1.e-16_mytype
 #else
@@ -1804,8 +1802,8 @@ contains
   !**************************************************************************
   !
   subroutine matrice_refinement()
-    !
-    !**************************************************************************
+  !
+  !**************************************************************************
 
     use decomp_2d
     use variables
