@@ -4,6 +4,10 @@
 
 module navier
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  
   implicit none
 
   private
@@ -20,32 +24,31 @@ contains
   ! DESCRIPTION: Takes the intermediate momentum field as input,
   !              computes div and solves pressure-Poisson equation.
   !-----------------------------------------------------------------------------!
-  SUBROUTINE solve_poisson(pp3, px1, py1, pz1, rho1, ux1, uy1, uz1, ep1, drho1, divu3)
+  subroutine solve_poisson(pp3, px1, py1, pz1, rho1, ux1, uy1, uz1, ep1, drho1, divu3)
 
-    USE decomp_2d, ONLY : mytype, xsize, zsize, ph1, nrank
-    USE decomp_2d_poisson, ONLY : poisson
-    USE var, ONLY : nzmsize
-    USE var, ONLY : dv3
-    USE param, ONLY : ntime, nrhotime, npress
-    USE param, ONLY : ilmn, ivarcoeff, zero, one 
+    use decomp_2d_poisson, only : poisson
+    use var,               only : nzmsize, dv3
+    use param,             only : ntime, nrhotime, npress
+    use param,             only : ilmn, ivarcoeff, zero, one 
 
     implicit none
 
     ! Inputs
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)), INTENT(IN) :: ux1, uy1, uz1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)), INTENT(IN) :: ep1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime), INTENT(IN) :: rho1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3), ntime), INTENT(IN) :: drho1
-    REAL(mytype), DIMENSION(zsize(1), zsize(2), zsize(3)), INTENT(IN) :: divu3
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ux1, uy1, uz1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)), intent(in) :: ep1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3), nrhotime), intent(in) :: rho1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3), ntime), intent(in) :: drho1
+    real(mytype), dimension(zsize(1), zsize(2), zsize(3)), intent(in) :: divu3
 
     ! Outputs
-    REAL(mytype), DIMENSION(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress) :: pp3
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)) :: px1, py1, pz1
+    real(mytype), dimension(ph1%zst(1):ph1%zen(1), ph1%zst(2):ph1%zen(2), nzmsize, npress) :: pp3
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: px1, py1, pz1
 
     ! Locals
-    INTEGER :: nlock, poissiter
-    LOGICAL :: converged
-    REAL(mytype) :: atol, rtol, rho0, divup3norm
+    integer :: nlock, poissiter
+    logical :: converged
+    real(mytype) :: atol, rtol, rho0, divup3norm
+    
 #ifdef DEBG
     real(mytype) avg_param
 #endif
@@ -69,7 +72,7 @@ contains
     !   CALL momentum_to_velocity(rho1, ux1, uy1, uz1)
     !ENDIF
 
-    CALL divergence(pp3(:,:,:,1),rho1,ux1,uy1,uz1,ep1,drho1,divu3,nlock)
+    call divergence(pp3(:,:,:,1),rho1,ux1,uy1,uz1,ep1,drho1,divu3,nlock)
     
     !IF (ilmn.AND.ivarcoeff) THEN
     !   dv3(:,:,:) = pp3(:,:,:,1)
@@ -149,16 +152,15 @@ contains
   !     OUTPUTS:  drho1 - the RHS of the density equation.
   !      AUTHOR: Paul Bartholomew
   !-----------------------------------------------------------------------------!
-  SUBROUTINE lmn_t_to_rho_trans(drho1, dtemp1, rho1, dphi1, phi1)
+  subroutine lmn_t_to_rho_trans(drho1, dtemp1, rho1, dphi1, phi1)
 
-    USE decomp_2d
-    USE param, ONLY : zero
-    USE param, ONLY : imultispecies, massfrac, mol_weight
-    USE param, ONLY : ntime
-    USE var, ONLY : numscalar
-    USE var, ONLY : ta1, tb1
+    use param, only : zero
+    use param, only : imultispecies, massfrac, mol_weight
+    use param, only : ntime
+    use var, only : numscalar
+    use var, only : ta1, tb1
 
-    IMPLICIT NONE
+    implicit none
 
     !! INPUTS
     REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3)) :: dtemp1, rho1
@@ -204,14 +206,14 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine cor_vel (ux,uy,uz,px,py,pz)
 
-    USE decomp_2d
-    USE variables
-    USE param
+    use variables
+    use param
 
     implicit none
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)),intent(in) :: px,py,pz
+    
 #ifdef DEBG
     real(mytype) avg_param
 #endif
@@ -253,24 +255,22 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine divergence (pp3,rho1,ux1,uy1,uz1,ep1,drho1,divu3,nlock)
 
-    USE param
-    USE decomp_2d
-    USE variables
-    USE var, ONLY: ta1, tb1, tc1, pp1, pgy1, pgz1, di1, &
+    use param
+    use variables
+    use var, only: ta1, tb1, tc1, pp1, pgy1, pgz1, di1, &
          duxdxp2, uyp2, uzp2, duydypi2, upi2, ta2, dipp2, &
          duxydxyp3, uzp3, po3, dipp3, nxmsize, nymsize, nzmsize
-    USE MPI
-    USE ibm_param
+    use mpi
+    use ibm_param
 
     implicit none
 
-    !  TYPE(DECOMP_INFO) :: ph1,ph3,ph4
-
-    !X PENCILS NX NY NZ  -->NXM NY NZ
+    !x pencils nx ny nz  -->nxm ny nz
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)),intent(in) :: ux1,uy1,uz1,ep1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime),intent(in) :: drho1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime),intent(in) :: rho1
-    !Z PENCILS NXM NYM NZ  -->NXM NYM NZM
+    
+    !z pencils nxm nym nz  -->nxm nym nzm
     real(mytype),dimension(zsize(1),zsize(2),zsize(3)),intent(in) :: divu3
     real(mytype),dimension(ph1%zst(1):ph1%zen(1),ph1%zst(2):ph1%zen(2),nzmsize) :: pp3
 
@@ -379,11 +379,10 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine gradp(px1,py1,pz1,pp3)
 
-    USE param
-    USE decomp_2d
-    USE variables
-    USE MPI
-    USE var, only: pp1,pgy1,pgz1,di1,pp2,ppi2,pgy2,pgz2,pgzi2,dip2,&
+    use param
+    use variables
+    use mpi
+    use var, only: pp1,pgy1,pgz1,di1,pp2,ppi2,pgy2,pgz2,pgzi2,dip2,&
          pgz3,ppi3,dip3,nxmsize,nymsize,nzmsize
 
     implicit none
@@ -488,11 +487,10 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine pre_correc(ux,uy,uz,ep)
 
-    USE decomp_2d
-    USE variables
-    USE param
-    USE var
-    USE MPI
+    use variables
+    use param
+    use var
+    use mpi
     use ibm, only : corgp_ibm, body
 
     implicit none
@@ -504,6 +502,7 @@ contains
     integer :: code
     integer, dimension(2) :: dims, dummy_coords
     logical, dimension(2) :: dummy_periods
+    
 #ifdef DEBG
     real(mytype) avg_param
 #endif
@@ -735,100 +734,94 @@ contains
   !-----------------------------------------------------------------------------!
   ! Convert to/from conserved/primary variables
   !-----------------------------------------------------------------------------!
-  SUBROUTINE primary_to_conserved(rho1, var1)
+  subroutine primary_to_conserved(rho1, var1)
 
-    USE decomp_2d, ONLY : mytype, xsize
-    USE param, ONLY : nrhotime
+    use param, only : nrhotime
 
-    IMPLICIT NONE
+    implicit none
 
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)) :: var1
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: var1
 
     var1(:,:,:) = rho1(:,:,:,1) * var1(:,:,:)
 
-  ENDSUBROUTINE primary_to_conserved
+  endsubroutine primary_to_conserved
   !-----------------------------------------------------------------------------!
-  SUBROUTINE velocity_to_momentum (rho1, ux1, uy1, uz1)
+  subroutine velocity_to_momentum (rho1, ux1, uy1, uz1)
 
-    USE decomp_2d, ONLY : mytype, xsize
-    USE param, ONLY : nrhotime
-    USE var, ONLY : ilmn
+    use param, only : nrhotime
+    use var, only : ilmn
 
-    IMPLICIT NONE
+    implicit none
 
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1
 
-    IF (.NOT.ilmn) THEN
-       RETURN
-    ENDIF
+    if (.not.ilmn) then
+       return
+    endif
 
-    CALL primary_to_conserved(rho1, ux1)
-    CALL primary_to_conserved(rho1, uy1)
-    CALL primary_to_conserved(rho1, uz1)
+    call primary_to_conserved(rho1, ux1)
+    call primary_to_conserved(rho1, uy1)
+    call primary_to_conserved(rho1, uz1)
 
-  ENDSUBROUTINE velocity_to_momentum
+  endsubroutine velocity_to_momentum
   !-----------------------------------------------------------------------------!
-  SUBROUTINE conserved_to_primary(rho1, var1)
+  subroutine conserved_to_primary(rho1, var1)
 
-    USE decomp_2d, ONLY : mytype, xsize
-    USE param, ONLY : nrhotime
+    use param, only : nrhotime
 
-    IMPLICIT NONE
+    implicit none
 
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)) :: var1
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: var1
 
     var1(:,:,:) = var1(:,:,:) / rho1(:,:,:,1)
 
-  ENDSUBROUTINE conserved_to_primary
+  endsubroutine conserved_to_primary
   !-----------------------------------------------------------------------------!
-  SUBROUTINE momentum_to_velocity (rho1, ux1, uy1, uz1)
+  subroutine momentum_to_velocity (rho1, ux1, uy1, uz1)
 
-    USE decomp_2d, ONLY : mytype, xsize
-    USE param, ONLY : nrhotime
-    USE var, ONLY : ilmn
+    use param, only : nrhotime
+    use var, only : ilmn
 
-    IMPLICIT NONE
+    implicit none
 
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1
 
-    IF (.NOT.ilmn) THEN
-       RETURN
-    ENDIF
+    if (.not.ilmn) then
+       return
+    endif
 
-    CALL conserved_to_primary(rho1, ux1)
-    CALL conserved_to_primary(rho1, uy1)
-    CALL conserved_to_primary(rho1, uz1)
+    call conserved_to_primary(rho1, ux1)
+    call conserved_to_primary(rho1, uy1)
+    call conserved_to_primary(rho1, uz1)
 
-  ENDSUBROUTINE momentum_to_velocity
+  endsubroutine momentum_to_velocity
   !-----------------------------------------------------------------------------!
   ! Calculate velocity-divergence constraint
   !-----------------------------------------------------------------------------!
-  SUBROUTINE calc_divu_constraint(divu3, rho1, phi1)
+  subroutine calc_divu_constraint(divu3, rho1, phi1)
 
-    USE decomp_2d, ONLY : mytype, xsize, ysize, zsize
-    USE decomp_2d, ONLY : transpose_x_to_y, transpose_y_to_z
-    USE param, ONLY : nrhotime, zero, ilmn, pressure0, imultispecies, massfrac, mol_weight
-    USE param, ONLY : ibirman_eos
-    USE param, ONLY : xnu, prandtl
-    USE param, ONLY : one
-    USE param, ONLY : iimplicit
-    USE variables
+    use param, only : nrhotime, zero, ilmn, pressure0, imultispecies, massfrac, mol_weight
+    use param, only : ibirman_eos
+    use param, only : xnu, prandtl
+    use param, only : one
+    use param, only : iimplicit
+    use variables
 
-    USE var, ONLY : ta1, tb1, tc1, td1, di1
-    USE var, ONLY : phi2, ta2, tb2, tc2, td2, te2, di2
-    USE var, ONLY : phi3, ta3, tb3, tc3, td3, rho3, di3
-    USE param, only : zero
-    IMPLICIT NONE
+    use var, only : ta1, tb1, tc1, td1, di1
+    use var, only : phi2, ta2, tb2, tc2, td2, te2, di2
+    use var, only : phi3, ta3, tb3, tc3, td3, rho3, di3
+    use param, only : zero
+    implicit none
 
-    INTEGER :: is, tmp
+    integer :: is, tmp
 
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), numscalar) :: phi1
-    REAL(mytype), INTENT(OUT), DIMENSION(zsize(1), zsize(2), zsize(3)) :: divu3
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), numscalar) :: phi1
+    real(mytype), intent(out), dimension(zsize(1), zsize(2), zsize(3)) :: divu3
 
     !IF (ilmn.and.(.not.ibirman_eos)) THEN
        !!------------------------------------------------------------------------------
@@ -947,106 +940,103 @@ contains
   !-----------------------------------------------------------------------------!
   ! Calculate extrapolation drhodt
   !-----------------------------------------------------------------------------! 
-  SUBROUTINE extrapol_drhodt(drhodt1_next, rho1, drho1)
+  subroutine extrapol_drhodt(drhodt1_next, rho1, drho1)
 
-    USE decomp_2d, ONLY : mytype, xsize, nrank
-    USE param, ONLY : ntime, nrhotime, itime, itimescheme, itr, dt, gdt, irestart
-    USE param, ONLY : half, three, four
-    USE param, ONLY : ibirman_eos
+    use param, only : ntime, nrhotime, itime, itimescheme, itr, dt, gdt, irestart
+    use param, only : half, three, four
+    use param, only : ibirman_eos
 
-    IMPLICIT NONE
+    implicit none
 
-    INTEGER :: subitr
+    integer :: subitr
 
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), ntime) :: drho1
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
-    REAL(mytype), INTENT(OUT), DIMENSION(xsize(1), xsize(2), xsize(3)) :: drhodt1_next
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), ntime) :: drho1
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
+    real(mytype), intent(out), dimension(xsize(1), xsize(2), xsize(3)) :: drhodt1_next
 
-    IF (itimescheme.EQ.1) THEN
-       !! EULER
+    if (itimescheme.eq.1) then
+       !! Euler
        drhodt1_next(:,:,:) = (rho1(:,:,:,1) - rho1(:,:,:,2)) / dt
-    ELSEIF (itimescheme.EQ.2) THEN
+    elseif (itimescheme.eq.2) then
        !! AB2
-       IF ((itime.EQ.1).AND.(irestart.EQ.0)) THEN
+       if ((itime.eq.1).and.(irestart.eq.0)) then
           drhodt1_next(:,:,:) = (rho1(:,:,:,1) - rho1(:,:,:,2)) / dt
-       ELSE
+       else
           drhodt1_next(:,:,:) = three * rho1(:,:,:,1) - four * rho1(:,:,:,2) + rho1(:,:,:,3)
           drhodt1_next(:,:,:) = half * drhodt1_next(:,:,:) / dt
-       ENDIF
-       ! ELSEIF (itimescheme.EQ.3) THEN
+       endif
+       ! elseif (itimescheme.eq.3) then
        !    !! AB3
-       ! ELSEIF (itimescheme.EQ.4) THEN
+       ! elseif (itimescheme.eq.4) then
        !    !! AB4
-    ELSEIF (itimescheme.EQ.5) THEN
+    elseif (itimescheme.eq.5) then
        !! RK3
-       IF (itime.GT.1) THEN
+       if (itime.gt.1) then
           drhodt1_next(:,:,:) = rho1(:,:,:,2)
-          DO subitr = 1, itr
+          do subitr = 1, itr
              drhodt1_next(:,:,:) = drhodt1_next(:,:,:) + (gdt(subitr) / dt) &
                   * (rho1(:,:,:,2) - rho1(:,:,:,3))
-          ENDDO
-       ELSE
+          enddo
+       else
           drhodt1_next(:,:,:) = drho1(:,:,:,1)
-       ENDIF
-    ELSE
-       IF (nrank.EQ.0) THEN
-          PRINT *, "Extrapolating drhodt not implemented for timescheme:", itimescheme
-          STOP
-       ENDIF
-    ENDIF
+       endif
+    else
+       if (nrank.eq.0) then
+          print *, "Extrapolating drhodt not implemented for timescheme:", itimescheme
+          stop
+       endif
+    endif
 
-    IF (ibirman_eos) THEN
-       CALL birman_drhodt_corr(drhodt1_next, rho1)
-    ENDIF
+    if (ibirman_eos) then
+       call birman_drhodt_corr(drhodt1_next, rho1)
+    endif
 
-  ENDSUBROUTINE extrapol_drhodt
+  endsubroutine extrapol_drhodt
 
   !-----------------------------------------------------------------------------!
   ! Subroutine : birman_drhodt_corr
   ! Author     :
   ! Description: Calculate extrapolation drhodt correction
   !-----------------------------------------------------------------------------!
-  SUBROUTINE birman_drhodt_corr(drhodt1_next, rho1)
+  subroutine birman_drhodt_corr(drhodt1_next, rho1)
 
-    USE decomp_2d, ONLY : mytype, xsize, ysize, zsize
-    USE decomp_2d, ONLY : transpose_x_to_y, transpose_y_to_z, transpose_z_to_y, transpose_y_to_x
-    USE variables, ONLY : derxx, deryy, derzz
-    USE param, ONLY : nrhotime
-    USE param, ONLY : xnu, prandtl
-    USE param, ONLY : iimplicit
+    use variables, only : derxx, deryy, derzz
+    use param, only : nrhotime
+    use param, only : xnu, prandtl
+    use param, only : iimplicit
 
-    USE var, ONLY : td1, te1, di1, sx, sfxp, ssxp, swxp
-    USE var, ONLY : rho2, ta2, tb2, di2, sy, sfyp, ssyp, swyp
-    USE var, ONLY : rho3, ta3, di3, sz, sfzp, sszp, swzp
-    USE param, only : zero
-    IMPLICIT NONE
+    use var, only : td1, te1, di1, sx, sfxp, ssxp, swxp
+    use var, only : rho2, ta2, tb2, di2, sy, sfyp, ssyp, swyp
+    use var, only : rho3, ta3, di3, sz, sfzp, sszp, swzp
+    use param, only : zero
+    implicit none
 
-    REAL(mytype), INTENT(IN), DIMENSION(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
-    REAL(mytype), DIMENSION(xsize(1), xsize(2), xsize(3)) :: drhodt1_next
+    real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3), nrhotime) :: rho1
+    real(mytype), dimension(xsize(1), xsize(2), xsize(3)) :: drhodt1_next
 
-    REAL(mytype) :: invpe
+    real(mytype) :: invpe
 
     invpe = xnu / prandtl
 
-    CALL transpose_x_to_y(rho1(:,:,:,1), rho2)
-    CALL transpose_y_to_z(rho2, rho3)
+    call transpose_x_to_y(rho1(:,:,:,1), rho2)
+    call transpose_y_to_z(rho2, rho3)
 
-    !! Diffusion term
-    CALL derzz (ta3,rho3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1, zero)
-    CALL transpose_z_to_y(ta3, tb2)
+    !! diffusion term
+    call derzz (ta3,rho3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1, zero)
+    call transpose_z_to_y(ta3, tb2)
 
     iimplicit = -iimplicit
-    CALL deryy (ta2,rho2,di2,sy,sfyp,ssyp,swyp,ysize(1),ysize(2),ysize(3),1, zero)
+    call deryy (ta2,rho2,di2,sy,sfyp,ssyp,swyp,ysize(1),ysize(2),ysize(3),1, zero)
     iimplicit = -iimplicit
     ta2(:,:,:) = ta2(:,:,:) + tb2(:,:,:)
-    CALL transpose_y_to_x(ta2, te1)
+    call transpose_y_to_x(ta2, te1)
 
-    CALL derxx (td1,rho1,di1,sx,sfxp,ssxp,swxp,xsize(1),xsize(2),xsize(3),1, zero)
+    call derxx (td1,rho1,di1,sx,sfxp,ssxp,swxp,xsize(1),xsize(2),xsize(3),1, zero)
     td1(:,:,:) = td1(:,:,:) + te1(:,:,:)
 
     drhodt1_next(:,:,:) = drhodt1_next(:,:,:) - invpe * td1(:,:,:)
 
-  ENDSUBROUTINE birman_drhodt_corr
+  endsubroutine birman_drhodt_corr
 
   !-----------------------------------------------------------------------------!
   !  SUBROUTINE: test_varcoeff
