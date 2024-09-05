@@ -3,7 +3,9 @@
 !SPDX-License-Identifier: BSD 3-Clause
 
 module channel
-
+  
+  use decomp_2d_constants
+  use decomp_2d_mpi
   use decomp_2d
   use variables
   use param
@@ -24,8 +26,6 @@ contains
   subroutine init_channel (ux1,uy1,uz1,ep1,phi1)
 
     use decomp_2d_io
-    use variables
-    use param
     use MPI
 
     implicit none
@@ -152,10 +152,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine boundary_conditions_channel (ux,uy,uz,phi)
 
-    use param
     use var, only : di2
-    use variables
-    use decomp_2d
 
     implicit none
 
@@ -400,8 +397,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine geomcomplex_channel(epsi,nxi,nxf,ny,nyi,nyf,nzi,nzf,yp,remp)
 
-    use decomp_2d, only : mytype
-    use param, only : zero, one, two, ten
     use ibm
 
     implicit none

@@ -12,9 +12,12 @@
   !---------------------------------------------------------------------------!
   subroutine print_cf(ux,uz,phi)
   
-  use param
+  use decomp_2d_constants
+  use decomp_2d_mpi
   use decomp_2d
-  use variables,   only : nx,ny,nz,yp,numscalar,sc
+  
+  use param
+  use variables,     only : nx,ny,nz,yp,numscalar,sc
       
   implicit none
  
@@ -285,14 +288,15 @@
   !---------------------------------------------------------------------------!
   subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  
   use var,         only : ux2,uz2
   use var,         only : ta2,tc2,di2
   use ibm_param,   only : ubcx,ubcz
 
   use MPI
-  use decomp_2d,   only : mytype, real_type, nrank
-  use decomp_2d,   only : xsize, ysize
-  use decomp_2d,   only : transpose_x_to_y
 
   use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl
   use variables
@@ -393,10 +397,13 @@
   !---------------------------------------------------------------------------!
   subroutine spanwise_wall_oscillations(ux1,uz1)
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+
   use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
   use param,       only : a_wo, t_wo, ifeedback_control, in_phase
   use param,       only : two, xnu, pi
-  use decomp_2d,   only : xsize, mytype
 
   implicit none
 
@@ -433,15 +440,15 @@
   ! Calculate mean scalar gradient at the wall.
   !---------------------------------------------------------------------------!
   subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
+         
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d       
               
   use var,         only : td2,di2,phi2
   use param,       only : zero
       
-  use MPI
-  use decomp_2d,   only : mytype, real_type, nrank
-  use decomp_2d,   only : xsize, ysize
-  use decomp_2d,   only : transpose_x_to_y
-    
+  use MPI    
   use variables
     
   implicit none
@@ -496,8 +503,10 @@
   !---------------------------------------------------------------------------!
   subroutine calculate_ubulk(ux,uball)
   
-  use decomp_2d, only : mytype, real_type, nrank
-  use decomp_2d, only : xsize, zsize, xstart
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  
   use param
   use MPI
   use variables, only : ppy
@@ -534,11 +543,12 @@
   !---------------------------------------------------------------------------!
   subroutine calculate_bl_thick(ux,delta_99,counter)
   
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  
   use var,         only : ux2   
   use MPI
-  use decomp_2d,   only : mytype, real_type, nrank
-  use decomp_2d,   only : xsize, ysize
-  use decomp_2d,   only : transpose_x_to_y
     
   use param,       only : zpzeroone, zero
   use variables,   only : yp, nx, ny, nz
@@ -622,8 +632,11 @@
   subroutine write_scalar_plane_z(phi1,ux1,uz1,itime)
  
   use visu
+
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
   
-  use decomp_2d,    only : mytype, xsize, nrank
   use decomp_2d_io, only : decomp_2d_start_io
   use param,        only : ioutput_plane
   use variables,    only : numscalar
@@ -690,8 +703,10 @@
  
   use visu
   
-  use decomp_2d,    only : mytype, xsize, ysize, zsize, nrank
-  use decomp_2d,    only : transpose_x_to_y, transpose_y_to_z, transpose_z_to_y, transpose_y_to_x
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  
   use decomp_2d_io, only : decomp_2d_start_io
   use param,        only : ioutput_plane, zero
   use variables
