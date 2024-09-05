@@ -1814,6 +1814,7 @@ contains
     use derivX 
     use derivY 
     use derivZ
+    use decomp_2d_mpi, only : nrank
 
     implicit none
 
