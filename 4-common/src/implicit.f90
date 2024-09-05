@@ -4,11 +4,12 @@
 
 module ludecomp
 
-  use decomp_2d, only : mytype
+  use decomp_2d_constants, only : mytype
 
   implicit none
 
   private
+  
   public :: ludecomp7, ludecomp9
 
   !---------------------------------------------------------------------------!
@@ -36,7 +37,6 @@ contains
    !---------------------------------------------------------------------------!  
    subroutine ludecomp7_12(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,ny)
 
-    use decomp_2d, only : mytype
     use param
     
     implicit none
@@ -82,7 +82,6 @@ contains
    !---------------------------------------------------------------------------!   
    subroutine ludecomp7_0(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,ny)
 
-    use decomp_2d, only : mytype
     use param
     
     implicit none
@@ -205,7 +204,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine ludecomp9_12(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,ttm,uum,sssm,zzzm,ny)
 
-    use decomp_2d, only : mytype
     use param
 
     implicit none
@@ -264,7 +262,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine ludecomp9_0(aam,bbm,ccm,ddm,eem,qqm,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,ny)
 
-    use decomp_2d, only : mytype
     use param
     use MPI
 
@@ -297,7 +294,7 @@ end module ludecomp
 !---------------------------------------------------------------------------!
 module matinv
 
-  use decomp_2d, only : mytype
+  use decomp_2d_constants, only : mytype
 
   implicit none
 
@@ -328,8 +325,6 @@ contains
     ! Inverse septdiag matrix
     !---------------------------------------------------------------------------!
     subroutine septinv_12(xsol,bbb,ggm,hhm,ssm,rrm,vvm,wwm,zzm,nx,ny,nz)
-
-    use decomp_2d, only : mytype
 
     implicit none
 
@@ -385,8 +380,6 @@ contains
   ! Inverse septdiag cyclic matrix
   !---------------------------------------------------------------------------!
   subroutine septinv_0(xsol,bbb,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,nx,ny,nz)
-
-    use decomp_2d, only : mytype
 
     implicit none
 
@@ -452,8 +445,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine nonainv_12(xSol,bbb,ggm,hhm,ssm,sssm,ttm,zzzm,zzm,wwm,vvm,nx,ny,nz)
   
-    use decomp_2d, only : mytype
-
     implicit none
 
     integer :: i,j,k
@@ -499,7 +490,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine nonainv_0(xsol,bbb,ggm,hhm,ssm,rrm,vvm,wwm,zzm,l1m,l2m,l3m,u1m,u2m,u3m,nx,ny,nz)
 
-    use decomp_2d, only : mytype
     use MPI
     
     implicit none
@@ -2247,8 +2237,8 @@ end subroutine init_implicit
 !-----------------------------------------------------------------------------!
 subroutine init_implicit_coef(tab1d, tab2d)
 
-  use decomp_2d, only : mytype
-  use variables, only : ny, numscalar
+  use decomp_2d_constants, only : mytype
+  use variables,           only : ny, numscalar
 
   implicit none
 
