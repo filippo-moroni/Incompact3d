@@ -398,7 +398,6 @@ subroutine second_derivative(alsa1,as1,bs1,&
   use decomp_2d_mpi,       only : nrank
   use param
   use MPI
-  use param,     only : nu0nu,cnu
 
   implicit none
 
