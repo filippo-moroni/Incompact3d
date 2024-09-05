@@ -280,6 +280,9 @@ if post_mean:
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$U^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
+    # Description of .pdf file
+    description = 'Mean streamwise velocity profile. Reference data '
+    
     # TTBL
     if itype == 13:
     
@@ -292,12 +295,18 @@ if post_mean:
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
+            # Completing description
+            description += 'Lee & Moser (2015).'
+                        
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
         
             # Kozul et al. (2016)
-            ax.plot(y_plus_umean_kozul, mean_u_kozul, color='C1', linestyle='-', linewidth=pp.lw) 
-               
+            ax.plot(y_plus_umean_kozul, mean_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += 'Kozul et al. (2016).'
+                           
     # Channel    
     elif itype == 3:
 
@@ -306,6 +315,9 @@ if post_mean:
     
         # Lee & Moser (2015)
         ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += 'Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -315,13 +327,18 @@ if post_mean:
         
             # Yao et al. (2019)
             ax.scatter(y_plus_umean_yao, mean_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            
+            # Completing description, with slicing of the string (removing the final dot)
+            description = description[:-1]
+            
+            description += ', Yao et al. (2019).'
     
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
     
     # Save and show the figure
-    save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description='prova')
+    save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -329,6 +346,9 @@ if post_mean:
 
     # Mean spanwise velocity profile
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    
+    # Description of .pdf file
+    description = 'Mean spanwise velocity profile.'
 
     # TTBL
     if itype == 13:
@@ -371,7 +391,7 @@ if post_mean:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
+    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
     
     #!--------------------------------------------------------------------------------------!
 
@@ -384,6 +404,9 @@ if post_mean:
 
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Description of .pdf file
+    description = 'Streamwise velocity variance. Reference data '
 
     # TTBL
     if itype == 13:
@@ -396,12 +419,18 @@ if post_mean:
         
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += 'Lee & Moser (2015).'
         
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
         
             # Kozul et al. (2016)
-            ax.plot(y_plus_uvar_kozul, var_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)    
+            ax.plot(y_plus_uvar_kozul, var_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += 'Kozul et al. (2016).'    
                
     # Channel    
     elif itype == 3:
@@ -411,12 +440,20 @@ if post_mean:
     
         # Lee & Moser (2015)
         ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += 'Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
     
             # Yao et al. (2019)
             ax.scatter(y_plus_uvar_yao, var_u_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            
+            # Completing description, with slicing of the string (removing the final dot)
+            description = description[:-1]
+            
+            description += ', Yao et al. (2019).'
     
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -427,7 +464,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
+    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -440,6 +477,9 @@ if post_mean:
 
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Description of .pdf file
+    description = 'Wall-normal velocity variance. Reference data '
 
     # TTBL
     if itype == 13:
@@ -453,11 +493,17 @@ if post_mean:
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
+            # Completing description
+            description += 'Lee & Moser (2015).'
+            
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
         
             # Kozul et al. (2016)
-            ax.plot(y_plus_vvar_kozul, var_v_kozul, color='C1', linestyle='-', linewidth=pp.lw) 
+            ax.plot(y_plus_vvar_kozul, var_v_kozul, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += 'Kozul et al. (2016).'  
             
     # Channel    
     elif itype == 3:
@@ -467,12 +513,20 @@ if post_mean:
     
         # Lee & Moser (2015)
         ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += 'Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
     
             # Yao et al. (2019)
             ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            
+            # Completing description, with slicing of the string (removing the final dot)
+            description = description[:-1]
+            
+            description += ', Yao et al. (2019).'
     
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -483,7 +537,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
+    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
     
