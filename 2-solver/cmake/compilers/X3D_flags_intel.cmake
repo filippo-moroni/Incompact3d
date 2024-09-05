@@ -8,4 +8,5 @@ set(X3D_FFLAGS_DEV     "${X3D_FFLAGS_DEBUG} -warn all,noexternal")
 # 
 set(MKL_INTERFACE "lp64")
 set(MKL_THREADING "sequential")
-find_package(MKL CONFIG REQUIRED)
+
+#find_package(MKL CONFIG REQUIRED)
