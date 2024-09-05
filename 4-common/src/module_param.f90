@@ -130,7 +130,7 @@ module variables
   ! Interface for derivatives subroutines
   ABSTRACT INTERFACE
      SUBROUTINE DERIVATIVE_X(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-       use decomp_2d, only : mytype
+
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(ny,nz):: s
@@ -138,7 +138,7 @@ module variables
        real(mytype) :: lind
      END SUBROUTINE DERIVATIVE_X
      SUBROUTINE DERIVATIVE_Y(t,u,r,s,ff,fs,fw,pp,nx,ny,nz,npaire,lind)
-       use decomp_2d, only : mytype
+
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,nz):: s
@@ -146,7 +146,7 @@ module variables
        real(mytype) :: lind
      END SUBROUTINE DERIVATIVE_Y
      SUBROUTINE DERIVATIVE_YY(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-       use decomp_2d, only : mytype
+
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,nz):: s
@@ -154,7 +154,7 @@ module variables
        real(mytype) :: lind
      END SUBROUTINE DERIVATIVE_YY
      SUBROUTINE DERIVATIVE_Z(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-       use decomp_2d, only : mytype
+
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,ny):: s
@@ -164,14 +164,14 @@ module variables
      
      ! Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini)
      SUBROUTINE DERIVATIVE_Y_1D(t,u,r,s,ff,fs,fw,pp,ny,npaire)
-       use decomp_2d, only : mytype
+
        integer :: ny,npaire
        real(mytype), dimension(ny) :: t,u,r
        real(mytype) :: s
        real(mytype), dimension(ny):: ff,fs,fw,pp
      END SUBROUTINE DERIVATIVE_Y_1D
      SUBROUTINE DERIVATIVE_YY_1D(t,u,r,s,ff,fs,fw,ny,npaire)
-       use decomp_2d, only : mytype
+
        integer :: ny,npaire
        real(mytype), dimension(ny) :: t,u,r
        real(mytype) :: s
@@ -206,7 +206,7 @@ module variables
 
   ABSTRACT INTERFACE
      SUBROUTINE FILTER_X(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-       use decomp_2d, only : mytype
+
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(ny,nz):: s
@@ -214,7 +214,7 @@ module variables
        real(mytype) :: lind
      END SUBROUTINE FILTER_X
      SUBROUTINE FILTER_Y(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-       use decomp_2d, only : mytype
+
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,nz):: s
@@ -222,7 +222,7 @@ module variables
        real(mytype) :: lind
      END SUBROUTINE FILTER_Y
      SUBROUTINE FILTER_Z(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-       use decomp_2d, only : mytype
+     
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,ny):: s
