@@ -5,7 +5,8 @@
 module case
 
   use decomp_2d_constants
-  
+  use decomp_2d_mpi, only : nrank
+    
   use param
   use variables
   use var, only : nzmsize
