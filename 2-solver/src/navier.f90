@@ -1171,10 +1171,9 @@ contains
 !-----------------------------------------------------------------------------!
 subroutine avg3d (var, avg)
 
-  use decomp_2d, only: real_type, xsize, xend
   use param
   use variables, only: nx,ny,nz,nxm,nym,nzm
-  use mpi
+  use MPI
 
   implicit none
 
