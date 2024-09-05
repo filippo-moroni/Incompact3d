@@ -216,12 +216,12 @@ module variables
        derzz_00,derzz_11,derzz_12,derzz_21,derzz_22
   procedure (derivative_z), pointer :: derz,derzz,derzs,derzzs
   
-  ! Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini)
+  !--- Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini) ---!
   procedure (derivative_y_1d)  dery1D_00,dery1D_11,dery1D_12,dery1D_21,dery1D_22
   procedure (derivative_yy_1d) deryy1D_00,deryy1D_11,deryy1D_12,deryy1D_21,deryy1D_22
   
-  procedure (derivative_y_1d),  POINTER :: dery1D,deryS1D
-  procedure (derivative_yy_1d), POINTER :: deryy1D,deryyS1D
+  procedure (derivative_y_1d),  pointer :: dery1D,deryS1D
+  procedure (derivative_yy_1d), pointer :: deryy1D,deryyS1D
 
   ! O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype),allocatable,dimension(:) :: newsm,newtm,newsmt,newtmt
