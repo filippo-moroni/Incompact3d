@@ -5,13 +5,14 @@
 !-----------------------------------------------------------------------------!
 subroutine schemes()
 
-  USE param
-  USE derivX
-  USE derivY
-  USE derivZ
-  USE variables
-  USE var
-  USE ydiff_implicit, only : init_implicit, implicit_schemes
+  use decomp_2d_mpi
+  use param
+  use derivX
+  use derivY
+  use derivZ
+  use variables
+  use var
+  use ydiff_implicit, only : init_implicit, implicit_schemes
 
   implicit none
 
@@ -205,8 +206,8 @@ end subroutine schemes
 !-----------------------------------------------------------------------------!
 subroutine prepare (b,c,f,s,w,n)
 
-  use decomp_2d, only : mytype
-  use param, only : one
+  use decomp_2d_constants, only : mytype
+  use param,               only : one
 
   implicit none
 
@@ -234,7 +235,8 @@ subroutine first_derivative(alfa1,af1,bf1,cf1,df1,alfa2,af2,alfan,afn,bfn,&
      cfn,dfn,alfam,afm,alfai,afi,bfi,&
      ff,fs,fw,ffp,fsp,fwp,d,n,ncl1,ncln)
 
-  use decomp_2d, only : mytype, nrank
+  use decomp_2d_constants, only : mytype 
+  use decomp_2d_mpi,       only : nrank
   use param
   use MPI
 

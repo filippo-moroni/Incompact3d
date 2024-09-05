@@ -15,8 +15,10 @@ subroutine parameter(input_i3d)
   use param
   use variables
   use complex_geometry
-  use decomp_2d
   use ibm_param
+
+  use decomp_2d
+  use decomp_2d_mpi
 
   use visu,  only : output2D
   use tools, only : program_header
