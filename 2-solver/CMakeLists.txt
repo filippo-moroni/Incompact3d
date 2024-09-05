@@ -42,7 +42,13 @@ else (CMAKE_BUILD_TYPE MATCHES "NONE")
   message (FATAL_ERROR "Invalid build type, options are: NONE DEV DEBUG RELEASE.")
 endif (CMAKE_BUILD_TYPE MATCHES "NONE")
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_SOURCE_DIR}/cmake/compilers" "${CMAKE_SOURCE_DIR}/cmake/fft")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
+                     "${CMAKE_SOURCE_DIR}/cmake" 
+                     "${CMAKE_SOURCE_DIR}/cmake/compilers" 
+                     "${CMAKE_SOURCE_DIR}/cmake/fft"
+                     "${CMAKE_SOURCE_DIR}/../../5-external/2decomp-fft")
+
+
 find_package(DECOMP2D REQUIRED)
 
 # Despite IO is handled by 2DECOMP&FFT we need to set it
