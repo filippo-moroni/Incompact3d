@@ -45,6 +45,28 @@ endif (CMAKE_BUILD_TYPE MATCHES "NONE")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_SOURCE_DIR}/cmake/compilers" "${CMAKE_SOURCE_DIR}/cmake/fft")
 find_package(DECOMP2D REQUIRED)
 
+# Specify DECOMP2D paths
+set(DECOMP2D_LIB_PATH "${CMAKE_SOURCE_DIR}/../5-external/2decomp-fft/build/lib")
+set(DECOMP2D_INCLUDE_PATH "${CMAKE_SOURCE_DIR}/../5-external/2decomp-fft/include")
+
+# Print out the paths to verify
+message(STATUS "DECOMP2D_LIB_PATH: ${DECOMP2D_LIB_PATH}")
+message(STATUS "DECOMP2D_INCLUDE_PATH: ${DECOMP2D_INCLUDE_PATH}")
+
+# Include the DECOMP2D headers
+include_directories(${DECOMP2D_INCLUDE_PATH})
+
+# Add the static library to your target
+add_library(decomp2d STATIC IMPORTED)
+set_target_properties(decomp2d PROPERTIES
+    IMPORTED_LOCATION ${DECOMP2D_LIB_PATH}/libdecomp2d.a
+)
+
+# Link the library to your Fortran targets
+# Example: link to a Fortran executable or library target
+# Replace 'your_fortran_target' with your actual target name
+ target_link_libraries(Xcompact3d decomp2d)
+
 # Despite IO is handled by 2DECOMP&FFT we need to set it
 set (IO_BACKEND "mpi" CACHE STRING "Default IO backend (mpi (default) or adios2)")
 set_property(CACHE IO_BACKEND PROPERTY STRINGS mpi adios2)
