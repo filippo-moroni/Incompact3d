@@ -1073,6 +1073,7 @@ end module tools
 !-----------------------------------------------------------------------------!
 subroutine cfl_compute(uxmax,uymax,uzmax)
 
+  use decomp_2d_constants
   use param
   use variables
   use var
@@ -1127,10 +1128,12 @@ end subroutine cfl_compute
 !-----------------------------------------------------------------------------!
 subroutine stretching()
 
+  use decomp_2d
+  use decomp_2d_constants
   use variables
   use param
   use var
-  use mpi
+  use MPI
 
   implicit none
 
@@ -1266,6 +1269,8 @@ end subroutine stretching
 !-----------------------------------------------------------------------------!
 subroutine inversion5_v1(aaa_in,eee,spI)
 
+  use decomp_2d
+  use decomp_2d_constants
   use variables
   use param
   use var
@@ -1406,6 +1411,8 @@ end subroutine inversion5_v1
 !-----------------------------------------------------------------------------!
 subroutine inversion5_v2(aaa,eee,spI)
 
+  use decomp_2d
+  use decomp_2d_constants
   use variables
   use param
   use var
@@ -1579,7 +1586,9 @@ function cx(realpart,imaginarypart)
 end function cx
 !-----------------------------------------------------------------------------!
 subroutine calc_temp_eos(temp, rho, phi, mweight, xlen, ylen, zlen)
-
+  
+  use decomp_2d
+  use decomp_2d_constants
   use param, only : pressure0, imultispecies
   use var, only : numscalar
 
@@ -1606,6 +1615,8 @@ endsubroutine calc_temp_eos
 !-----------------------------------------------------------------------------!
 subroutine calc_rho_eos(rho, temp, phi, mweight, xlen, ylen, zlen)
 
+  use decomp_2d
+  use decomp_2d_constants
   use param, only : pressure0, imultispecies
   use var, only : numscalar
 
@@ -1632,6 +1643,8 @@ endsubroutine calc_rho_eos
 !-----------------------------------------------------------------------------!
 subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
 
+  use decomp_2d
+  use decomp_2d_constants
   use param, only : zero, one
   use param, only : massfrac, mol_weight
   use var, only : numscalar
@@ -1798,6 +1811,9 @@ subroutine test_min_max(name,text,array_tmp,i_size_array_tmp)
   use param
   use variables
   use MPI
+  use decomp_2d
+  use decomp_2d_constants
+  use decomp_2d_mpi
 
   implicit none
 
