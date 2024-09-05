@@ -52,10 +52,11 @@ module decomp_2d_poisson
 
   abstract interface
      subroutine poisson_xxx(rhs)
-       use decomp_2d, only : mytype
+       use decomp_2d_constants, only : mytype
        real(mytype), dimension(:,:,:), intent(inout) :: rhs
      end subroutine poisson_xxx
   end interface
+  
   procedure (poisson_xxx), pointer :: poisson
 
   public :: decomp_2d_poisson_init,decomp_2d_poisson_finalize,poisson
