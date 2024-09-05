@@ -130,7 +130,7 @@ module variables
   ! Interface for derivatives subroutines
   ABSTRACT INTERFACE
      SUBROUTINE DERIVATIVE_X(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-
+       implicit none
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(ny,nz):: s
