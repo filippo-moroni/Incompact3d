@@ -4,6 +4,7 @@
 
 module decomp_2d_poisson
 
+  use decomp_2d_constants
   use decomp_2d
   use decomp_2d_fft
 
@@ -213,37 +214,9 @@ contains
 #endif
 
     call waves()
+    
     if (bcy == 1 .and. istret /= 0) call matrice_refinement()
-    !write(*,*) 'POinit ii1 arl ', rl(a(1,1,1,1)),rl(a(1,1,1,2)),rl(a(1,1,1,3)),&
-    !                              rl(a(1,1,1,4)),rl(a(1,1,1,5))
-    !write(*,*) 'POinit ii1 aiy ', iy(a(1,1,1,1)),iy(a(1,1,1,2)),iy(a(1,1,1,3)),&
-    !                              iy(a(1,1,1,4)),iy(a(1,1,1,5))
-    !!                     
-    !write(*,*) 'POinit ii5 arl ', rl(a(5,5,5,1)),rl(a(5,5,5,2)),rl(a(5,5,5,3)),&
-    !                              rl(a(5,5,5,4)),rl(a(5,5,5,5))
-    !write(*,*) 'POinit ii5 aiy ', iy(a(5,5,5,1)),iy(a(5,5,5,2)),iy(a(5,5,5,3)),&
-    !                              iy(a(5,5,5,4)),iy(a(5,5,5,5))
-    !!!
-    !write(*,*) 'POinit ii1 a2rl ', rl(a2(1,1,1,1)),rl(a2(1,1,1,2)),rl(a2(1,1,1,3)),&
-    !                               rl(a2(1,1,1,4)),rl(a2(1,1,1,5))
-    !write(*,*) 'POinit ii1 a2iy ', iy(a2(1,1,1,1)),iy(a2(1,1,1,2)),iy(a2(1,1,1,3)),&
-    !                               iy(a2(1,1,1,4)),iy(a2(1,1,1,5))
-    !!                     
-    !write(*,*) 'POinit ii5 a2rl ', rl(a2(5,5,5,1)),rl(a2(5,5,5,2)),rl(a2(5,5,5,3)),&
-    !                               rl(a2(5,5,5,4)),rl(a2(5,5,5,5))
-    !write(*,*) 'POinit ii5 a2iy ', iy(a2(5,5,5,1)),iy(a2(5,5,5,2)),iy(a2(5,5,5,3)),&
-    !                               iy(a2(5,5,5,4)),iy(a2(5,5,5,5))
-    !!!
-    !write(*,*) 'POinit ii1 a3rl ', rl(a3(1,1,1,1)),rl(a3(1,1,1,2)),rl(a3(1,1,1,3)),&
-    !                               rl(a3(1,1,1,4)),rl(a3(1,1,1,5))
-    !write(*,*) 'POinit ii1 a3iy ', iy(a3(1,1,1,1)),iy(a3(1,1,1,2)),iy(a3(1,1,1,3)),&
-    !                               iy(a3(1,1,1,4)),iy(a3(1,1,1,5))
-    !!                     
-    !write(*,*) 'POinit ii5 a3rl ', rl(a3(5,5,5,1)),rl(a3(5,5,5,2)),rl(a3(5,5,5,3)),&
-    !                               rl(a3(5,5,5,4)),rl(a3(5,5,5,5))
-    !write(*,*) 'POinit ii5 a3iy ', iy(a3(5,5,5,1)),iy(a3(5,5,5,2)),iy(a3(5,5,5,3)),&
-    !                               iy(a3(5,5,5,4)),iy(a3(5,5,5,5))
-
+    
 #ifdef DEBG 
     if (nrank .eq. 0) write(*,*)'# decomp_2d_poisson_init end'
 #endif
