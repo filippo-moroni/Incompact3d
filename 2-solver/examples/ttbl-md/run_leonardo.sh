@@ -14,8 +14,10 @@
 # This is a .sh file for running with incompact3d in 
 # Leonardo Data Centric General Purpose (DCGP).
 
-# Loading of modules
-module load ...
+# Loading of modules (Intel)
+module load intel-oneapi-compilers/2023.2.1
+module load intel-oneapi-mpi/2021.10.0
+module load intel-oneapi-mkl/2023.2.0 
 
 # Calculate total number of tasks (verified that it works)
 TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
