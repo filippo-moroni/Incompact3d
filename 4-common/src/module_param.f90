@@ -127,116 +127,153 @@ module variables
   real(mytype), allocatable, target, dimension(:,:) :: aam211t,bbm211t,ccm211t,ddm211t,eem211t,ggm211t,hhm211t,wwm211t,zzm211t
   real(mytype), allocatable, target, dimension(:,:) :: rrm211t,qqm211t,vvm211t,ssm211t
 
-  ! Interface for derivatives subroutines
-  ABSTRACT INTERFACE
-     SUBROUTINE DERIVATIVE_X(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-       implicit none
+  ! interface for derivatives subroutines
+  abstract interface
+  
+     subroutine derivative_x(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
+       
+       use decomp_2d_constants, only : mytype
+       
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(ny,nz):: s
        real(mytype), dimension(nx):: ff,fs,fw
        real(mytype) :: lind
-     END SUBROUTINE DERIVATIVE_X
-     SUBROUTINE DERIVATIVE_Y(t,u,r,s,ff,fs,fw,pp,nx,ny,nz,npaire,lind)
-
+     
+     end subroutine derivative_x
+     
+     subroutine derivative_y(t,u,r,s,ff,fs,fw,pp,nx,ny,nz,npaire,lind)
+       
+       use decomp_2d_constants, only : mytype
+        
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,nz):: s
        real(mytype), dimension(ny):: ff,fs,fw,pp
        real(mytype) :: lind
-     END SUBROUTINE DERIVATIVE_Y
-     SUBROUTINE DERIVATIVE_YY(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-
+     
+     end subroutine derivative_y
+     
+     subroutine derivative_yy(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
+     
+     use decomp_2d_constants, only : mytype
+     
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,nz):: s
        real(mytype), dimension(ny):: ff,fs,fw
        real(mytype) :: lind
-     END SUBROUTINE DERIVATIVE_YY
-     SUBROUTINE DERIVATIVE_Z(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-
+     
+     end subroutine derivative_yy
+     
+     subroutine derivative_z(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
+     
+     use decomp_2d_constants, only : mytype
+     
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,ny):: s
        real(mytype), dimension(nz):: ff,fs,fw
        real(mytype) :: lind
-     END SUBROUTINE DERIVATIVE_Z
      
-     ! Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini)
-     SUBROUTINE DERIVATIVE_Y_1D(t,u,r,s,ff,fs,fw,pp,ny,npaire)
-
+     end subroutine derivative_z
+     
+     !--- Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini) ---!
+     subroutine derivative_y_1d(t,u,r,s,ff,fs,fw,pp,ny,npaire)
+     
+     use decomp_2d_constants, only : mytype
+     
        integer :: ny,npaire
        real(mytype), dimension(ny) :: t,u,r
        real(mytype) :: s
        real(mytype), dimension(ny):: ff,fs,fw,pp
-     END SUBROUTINE DERIVATIVE_Y_1D
-     SUBROUTINE DERIVATIVE_YY_1D(t,u,r,s,ff,fs,fw,ny,npaire)
-
+       
+     end subroutine derivative_y_1d
+     
+     subroutine derivative_yy_1d(t,u,r,s,ff,fs,fw,ny,npaire)
+     
+     use decomp_2d_constants, only : mytype
+     
        integer :: ny,npaire
        real(mytype), dimension(ny) :: t,u,r
        real(mytype) :: s
        real(mytype), dimension(ny):: ff,fs,fw
-     END SUBROUTINE DERIVATIVE_YY_1D
+       
+     end subroutine derivative_yy_1d
+     !----------------------------------------------------------------------------------------!
      
-  END INTERFACE
+  end interface
 
-  PROCEDURE (DERIVATIVE_X) derx_00,derx_11,derx_12,derx_21,derx_22,&
+  procedure (derivative_x) derx_00,derx_11,derx_12,derx_21,derx_22,&
        derxx_00,derxx_11,derxx_12,derxx_21,derxx_22
-  PROCEDURE (DERIVATIVE_X), POINTER :: derx,derxx,derxS,derxxS
-  PROCEDURE (DERIVATIVE_Y) dery_00,dery_11,dery_12,dery_21,dery_22
-  PROCEDURE (DERIVATIVE_Y), POINTER :: dery,deryS
-  PROCEDURE (DERIVATIVE_YY) &
+  procedure (derivative_x), pointer :: derx,derxx,derxs,derxxs
+  procedure (derivative_y) dery_00,dery_11,dery_12,dery_21,dery_22
+  procedure (derivative_y), pointer :: dery,derys
+  procedure (derivative_yy) &
        deryy_00,deryy_11,deryy_12,deryy_21,deryy_22
-  PROCEDURE (DERIVATIVE_YY), POINTER :: deryy,deryyS
-  PROCEDURE (DERIVATIVE_Z) derz_00,derz_11,derz_12,derz_21,derz_22,&
+  procedure (derivative_yy), pointer :: deryy,deryys
+  procedure (derivative_z) derz_00,derz_11,derz_12,derz_21,derz_22,&
        derzz_00,derzz_11,derzz_12,derzz_21,derzz_22
-  PROCEDURE (DERIVATIVE_Z), POINTER :: derz,derzz,derzS,derzzS
+  procedure (derivative_z), pointer :: derz,derzz,derzs,derzzs
   
   ! Additional subroutines for 1-dimensional derivatives in y-direction (R. Corsini)
-  PROCEDURE (DERIVATIVE_Y_1D) &
-       dery1D_00,dery1D_11,dery1D_12,dery1D_21,dery1D_22
-  PROCEDURE (DERIVATIVE_Y_1D), POINTER :: dery1D,deryS1D
-  PROCEDURE (DERIVATIVE_YY_1D) &
-       deryy1D_00,deryy1D_11,deryy1D_12,deryy1D_21,deryy1D_22
-  PROCEDURE (DERIVATIVE_YY_1D), POINTER :: deryy1D,deryyS1D
+  procedure (derivative_y_1d)  dery1D_00,dery1D_11,dery1D_12,dery1D_21,dery1D_22
+  procedure (derivative_yy_1d) deryy1D_00,deryy1D_11,deryy1D_12,deryy1D_21,deryy1D_22
+  
+  procedure (derivative_y_1d),  POINTER :: dery1D,deryS1D
+  procedure (derivative_yy_1d), POINTER :: deryy1D,deryyS1D
 
   ! O6SVV (Order 6th Spectral Vanishing Viscosity)
   real(mytype),allocatable,dimension(:) :: newsm,newtm,newsmt,newtmt
   real(mytype),allocatable,dimension(:) :: newrm,newrmt
 
-  ABSTRACT INTERFACE
-     SUBROUTINE FILTER_X(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-
+  abstract interface
+  
+     subroutine filter_x(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
+     
+     use decomp_2d_constants, only : mytype 
+     
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(ny,nz):: s
        real(mytype), dimension(nx):: ff,fs,fw
        real(mytype) :: lind
-     END SUBROUTINE FILTER_X
-     SUBROUTINE FILTER_Y(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
-
+       
+     end subroutine filter_x
+     
+     subroutine filter_y(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
+     
+     use decomp_2d_constants, only : mytype
+          
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,nz):: s
        real(mytype), dimension(ny):: ff,fs,fw
        real(mytype) :: lind
-     END SUBROUTINE FILTER_Y
-     SUBROUTINE FILTER_Z(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
+     
+     end subroutine filter_y
+     
+     subroutine filter_z(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
+     
+     use decomp_2d_constants, only : mytype
      
        integer :: nx,ny,nz,npaire
        real(mytype), dimension(nx,ny,nz) :: t,u,r
        real(mytype), dimension(nx,ny):: s
        real(mytype), dimension(nz):: ff,fs,fw
        real(mytype) :: lind
-     END SUBROUTINE FILTER_Z
-  END INTERFACE
+       
+     end subroutine filter_z
+  
+  end interface
 
-  PROCEDURE (FILTER_X) filx_00,filx_11, filx_12, filx_21, filx_22
-  PROCEDURE (FILTER_X), POINTER :: filx,filxS
-  PROCEDURE (FILTER_Y) fily_00,fily_11, fily_12, fily_21, fily_22
-  PROCEDURE (FILTER_Y), POINTER :: fily,filyS
-  PROCEDURE (FILTER_Z) filz_00,filz_11, filz_12, filz_21, filz_22
-  PROCEDURE (FILTER_Z), POINTER :: filz,filzS
+  procedure (filter_x) filx_00,filx_11, filx_12, filx_21, filx_22
+  procedure (filter_y) fily_00,fily_11, fily_12, fily_21, fily_22
+  procedure (filter_z) filz_00,filz_11, filz_12, filz_21, filz_22
+  
+  procedure (filter_x), pointer :: filx,filxs
+  procedure (filter_y), pointer :: fily,filys
+  procedure (filter_z), pointer :: filz,filzs
 
   ! module pressure
   real(mytype), save, allocatable, dimension(:,:) :: dpdyx1,dpdyxn,dpdzx1,dpdzxn
