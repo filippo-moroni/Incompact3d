@@ -1811,7 +1811,6 @@ contains
     use variables
     use param
     use var
-    use MPI
     use derivX 
     use derivY 
     use derivZ
