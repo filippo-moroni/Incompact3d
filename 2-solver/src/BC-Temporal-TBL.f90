@@ -32,7 +32,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine init_temporal_tbl (ux1,uy1,uz1,phi1)
 
-    use tools,       only : apply_spatial_filter 
+    use tools, only : apply_spatial_filter 
     use ibm_param
          
     implicit none

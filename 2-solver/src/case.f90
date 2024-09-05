@@ -4,12 +4,14 @@
 
 module case
 
+  use decomp_2d_constants
+  
   use param
-  use decomp_2d
   use variables
+  use var, only : nzmsize
+  
   use channel
   use temporal_tbl
-  use var, only : nzmsize
 
   implicit none
 
@@ -112,12 +114,9 @@ contains
   !---------------------------------------------------------------------------!
   subroutine preprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
-    use decomp_2d, only : mytype, xsize, ph1
+    use decomp_2d, only : xsize, ph1
     use visu,      only : write_snapshot
-
-    use var, only : nzmsize
-    use var, only : itime
-    use var, only : numscalar, nrhotime, npress
+    use var,       only : itime, numscalar, nrhotime, npress
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux1, uy1, uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
@@ -129,12 +128,9 @@ contains
   !---------------------------------------------------------------------------!
   subroutine postprocessing(rho1, ux1, uy1, uz1, pp3, phi1, ep1)
 
-    use decomp_2d,   only : mytype, xsize, ph1
+    use decomp_2d,   only : xsize, ph1
     use visu,        only : write_snapshot, end_snapshot
-
-    use var,         only : nzmsize
-    use var,         only : itime
-    use var,         only : numscalar, nrhotime, npress
+    use var,         only : itime, numscalar, nrhotime, npress
     
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux1, uy1, uz1
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi1
@@ -177,7 +173,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine postprocess_case(rho,ux,uy,uz,pp,phi,ep)
 
-    use var,   only : nzmsize
     use param, only : npress
 
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
@@ -224,7 +219,6 @@ contains
   !---------------------------------------------------------------------------!
   subroutine visu_case(rho1,ux1,uy1,uz1,pp3,phi1,ep1,num)
 
-    use var,   only : nzmsize
     use param, only : npress
 
     real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho1

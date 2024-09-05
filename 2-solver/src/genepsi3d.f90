@@ -4,15 +4,17 @@
 
 module genepsi
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+
   public
 
 contains
 
   subroutine epsi_init(ep1)
 
-    USE param, only : zero, one, dx, dz
-    USE decomp_2d, only : xstart, xend, xsize, mytype, nrank
-    !USE decomp_2d_io
+    USE param,     only : zero, one, dx, dz
+    USE decomp_2d, only : xstart, xend, xsize
     USE variables, only : yp, ny
 
     implicit none
@@ -44,23 +46,22 @@ contains
 !---------------------------------------------------------------------------!
   subroutine geomcomplex(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, dx, yp, dz, remp)
 
-    USE param, ONLY : itype, itype_channel
-    USE decomp_2d, ONLY : mytype
-    USE channel, ONLY : geomcomplex_channel
+    use param, only : itype, itype_channel
+    use channel, only : geomcomplex_channel
    
-    IMPLICIT NONE
+    implicit none
 
-    INTEGER :: nxi,nxf,ny,nyi,nyf,nzi,nzf
-    REAL(mytype),DIMENSION(nxi:nxf,nyi:nyf,nzi:nzf) :: epsi
-    REAL(mytype)               :: dx,dz
-    REAL(mytype),DIMENSION(ny) :: yp
-    REAL(mytype)               :: remp
+    integer :: nxi,nxf,ny,nyi,nyf,nzi,nzf
+    real(mytype),dimension(nxi:nxf,nyi:nyf,nzi:nzf) :: epsi
+    real(mytype)               :: dx,dz
+    real(mytype),dimension(ny) :: yp
+    real(mytype)               :: remp
 
-    IF (itype.EQ.itype_channel) THEN
+    if (itype.eq.itype_channel) then
 
-       CALL geomcomplex_channel(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, yp, remp)
+       call geomcomplex_channel(epsi, nxi, nxf, ny, nyi, nyf, nzi, nzf, yp, remp)
 
-    ENDIF
+    endif
 
   end subroutine geomcomplex
 !---------------------------------------------------------------------------!
@@ -124,7 +125,7 @@ contains
        xi,xf,yi,yf,zi,zf,nobjx,nobjy,nobjz,&
        nobjmax,yp,nraf)
     
-       use param, only : zero,half, one, two
+    use param, only : zero,half, one, two
     use decomp_2d
     use MPI
 
