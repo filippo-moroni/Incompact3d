@@ -43,13 +43,6 @@ else (CMAKE_BUILD_TYPE MATCHES "NONE")
 endif (CMAKE_BUILD_TYPE MATCHES "NONE")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_SOURCE_DIR}/cmake/compilers" "${CMAKE_SOURCE_DIR}/cmake/fft")
-
-# Set the path to DECOMP2D configuration files
-set(DECOMP2D_DIR "${CMAKE_SOURCE_DIR}/../5-external/2decomp-fft/")
-
-# Print out the path to verify
-message(STATUS "DECOMP2D_DIR: ${DECOMP2D_DIR}")
-
 find_package(DECOMP2D REQUIRED)
 
 # Despite IO is handled by 2DECOMP&FFT we need to set it
