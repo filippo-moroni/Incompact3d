@@ -56,7 +56,7 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
 import matplotlib.pyplot as plt
 
-def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None, subfolder=None):
+def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None, subfolder=None, description=None):
     
     """
     Saves and shows a plot with a given variable name and optional parameters.
@@ -100,8 +100,15 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     # Add .pdf extension to filename
     filename += '.pdf'
     
+    # Add metadata directly in savefig
+    metadata = {'Title': variable_name,
+                'Author': 'Your Name',
+                'Subject': 'Plot',
+                'Keywords': 'matplotlib, plot',
+                'Description': description} if description else None
+    
     # Save the figure and plot it
-    plt.savefig(filename, format='pdf', bbox_inches='tight', dpi=600)
+    plt.savefig(filename, format='pdf', bbox_inches='tight', dpi=600, metadata=metadata)
     plt.show()
 
 # Example usage:
