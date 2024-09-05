@@ -100,12 +100,11 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     # Add .pdf extension to filename
     filename += '.pdf'
     
-    # Add metadata directly in savefig
+    # Add metadata with supported fields
     metadata = {'Title': variable_name,
                 'Author': 'Your Name',
-                'Subject': 'Plot',
-                'Keywords': 'matplotlib, plot',
-                'Description': description} if description else None
+                'Subject': description if description else 'Plot',
+                'Keywords': 'matplotlib, plot'}  # Use 'Subject' or 'Keywords' for the description
     
     # Save the figure and plot it
     plt.savefig(filename, format='pdf', bbox_inches='tight', dpi=600, metadata=metadata)
