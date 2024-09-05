@@ -3,6 +3,10 @@
 !SPDX-License-Identifier: BSD 3-Clause
 
 module visu
+
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
   
   implicit none
 
@@ -41,7 +45,6 @@ contains
     use variables,    only : numscalar, prec
     use param,        only : ilmn, iscalar, ilast, ifirst, ioutput, istret
     use param,        only : dx, dy, dz, nvisu
-    use decomp_2d,    only : nrank, mytype, xszV, yszV, zszV, xsize, ysize, zsize
     use decomp_2d_io, only : decomp_2d_init_io, decomp_2d_open_io, decomp_2d_append_mode
     use decomp_2d_io, only : decomp_2d_register_variable
 
@@ -153,9 +156,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine write_snapshot(rho1, ux1, uy1, uz1, pp3, phi1, ep1, itime, num)
 
-    use decomp_2d,    only : transpose_z_to_y, transpose_y_to_x
-    use decomp_2d,    only : mytype, xsize, ysize, zsize
-    use decomp_2d,    only : nrank
     use decomp_2d_io, only : decomp_2d_start_io
 
     use param, only : nrhotime, ilmn, iscalar, ioutput, irestart
@@ -258,7 +258,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine end_snapshot(ux1, uz1, itime, num)
 
-    use decomp_2d,    only : nrank, mytype, xsize
     use decomp_2d_io, only : decomp_2d_end_io
     use param,        only : istret, xlx, yly, zlz
     use variables,    only : nx, ny, nz, beta
@@ -326,7 +325,6 @@ contains
 
     use variables, only : yp
     use param,     only : dx,dy,dz,istret,nvisu
-    use decomp_2d, only : mytype, nrank, xszV, yszV, zszV, ystV
 
     implicit none
 
@@ -431,7 +429,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine write_xdmf_footer(ux,uz)
 
-    use decomp_2d,   only : nrank, mytype, xsize
     use param
     
     implicit none
@@ -494,8 +491,6 @@ contains
     use var, only : zero, one
     use var, only : uvisu
     use param, only : iibm
-    use decomp_2d, only : mytype, xsize, xszV, yszV, zszV
-    use decomp_2d, only : nrank, fine_to_coarseV
     use decomp_2d_io, only : decomp_2d_write_one, decomp_2d_write_plane
 
     implicit none

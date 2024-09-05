@@ -252,20 +252,19 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine dynsmag(nut1,ux1,uy1,uz1,ep1)
 
-    USE param
-    USE variables
-    USE decomp_2d
-    USE decomp_2d_io
-    USE MPI
-    USE var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-    USE var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,di2
-    USE var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
-    USE var, only : sxx1,syy1,szz1,sxy1,sxz1,syz1,srt_smag
-    USE var, only : sxx2,syy2,szz2,sxy2,sxz2,syz2,srt_smag2,nut2
-    USE var, only : sxx3,syy3,szz3,sxy3,sxz3,syz3
+    use param
+    use variables
+    use decomp_2d
+    use decomp_2d_io
+    use mpi
+    use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+    use var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,di2
+    use var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
+    use var, only : sxx1,syy1,szz1,sxy1,sxz1,syz1,srt_smag
+    use var, only : sxx2,syy2,szz2,sxy2,sxz2,syz2,srt_smag2,nut2
+    use var, only : sxx3,syy3,szz3,sxy3,sxz3,syz3
     use tools, only : mean_plane_z
-    USE ibm_param
-    USE param, only : zero
+    use ibm_param
     
     implicit none
 
@@ -980,18 +979,17 @@ end subroutine wale
   !-----------------------------------------------------------------------------!
   subroutine sgs_mom_nonconservative(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,nut1,ep1)
 
-    USE param
-    USE variables
-    USE decomp_2d
-    USE var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-    USE var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
-    USE var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
-    USE var, only : sgsx2,sgsy2,sgsz2,nut2
-    USE var, only : sgsx3,sgsy3,sgsz3,nut3
-    USE var, only : sxx1,sxy1,sxz1,syy1,syz1,szz1
-    USE var, only : sxy2,syy2,syz2,sxz2,szz2,sxz3,syz3,szz3
-    USE param, only : mytype, zero
-    USE ibm_param
+    use param
+    use variables
+    use decomp_2d
+    use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+    use var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
+    use var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
+    use var, only : sgsx2,sgsy2,sgsz2,nut2
+    use var, only : sgsx3,sgsy3,sgsz3,nut3
+    use var, only : sxx1,sxy1,sxz1,syy1,syz1,szz1
+    use var, only : sxy2,syy2,syz2,sxz2,szz2,sxz3,syz3,szz3
+    use ibm_param
     
     implicit none
 
