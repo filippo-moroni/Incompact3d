@@ -4,6 +4,10 @@
 
 module tools
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+
   implicit none
 
   logical, save :: adios2_restart_initialised = .false.
@@ -36,9 +40,7 @@ contains
   ! Header of the program printed to the screen. !
   !----------------------------------------------!
   subroutine program_header()
-  
-  use decomp_2d, only : nrank
-  
+    
   implicit none
   
   if (nrank==0) then
@@ -63,11 +65,10 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine test_speed_min_max(ux,uy,uz)
 
-   use decomp_2d
    use variables
    use param
    use var
-   use mpi
+   use MPI
 
    implicit none
 
@@ -122,11 +123,10 @@ contains
  !-----------------------------------------------------------------------------!
   subroutine test_scalar_min_max(phi)
 
-    use decomp_2d
     use variables
     use param
     use var
-    use mpi
+    use MPI
 
     implicit none
 
@@ -171,7 +171,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine simu_stats(iwhen)
 
-    use decomp_2d
     use simulation_stats
     use var
     use MPI
@@ -240,7 +239,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine restart(ux1,uy1,uz1,dux1,duy1,duz1,ep1,pp3,phi1,dphi1,px1,py1,pz1,rho1,drho1,mu1,iresflg)
 
-    use decomp_2d
     use decomp_2d_io
     use variables
     use param
@@ -514,7 +512,6 @@ contains
 !-----------------------------------------------------------------------------! 
   subroutine init_restart_adios2()
 
-    use decomp_2d, only : mytype, phG
     use decomp_2d_io, only : decomp_2d_register_variable, decomp_2d_init_io
     use variables, only : numscalar
     use param, only : ilmn, nrhotime, ntime
@@ -581,7 +578,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine apply_spatial_filter(ux1,uy1,uz1,phi1)
 
-    use decomp_2d
     use param
     use var, only: uxf1,uyf1,uzf1,uxf2,uyf2,uzf2,uxf3,uyf3,uzf3,di1,di2,di3,phif1,phif2,phif3
     use variables
@@ -666,7 +662,6 @@ contains
      use param, only : xnu,dt,dx,dy,dz,istret
      use param, only : cfl_diff_sum, cfl_diff_x, cfl_diff_y, cfl_diff_z
      use variables, only : dyp
-     use decomp_2d, only : nrank
 
      implicit none
 
@@ -702,8 +697,7 @@ contains
   subroutine compute_cfl(ux,uy,uz)
     
     use param,       only : dx,dy,dz,dt,istret,cfl_limit,icfllim,t,itimescheme,cflmax
-    use decomp_2d,   only : nrank, mytype, xsize, xstart, xend, real_type
-    use mpi
+    use MPI
     use variables,   only : dyp
 
     implicit none
@@ -785,8 +779,7 @@ contains
   subroutine compute_reynolds_cell(ux,uy,uz)
     
     use param, only : dx,dy,dz,dt,istret,xnu
-    use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
-    use mpi
+    use MPI
     use variables, only : dyp
 
     implicit none
@@ -856,8 +849,7 @@ contains
   subroutine compute_stab_param(ux,uy,uz)
     
     use param, only : dt,xnu,two
-    use decomp_2d, only : nrank, mytype, xsize, xstart, xend, real_type
-    use mpi
+    use MPI
 
     implicit none
 
@@ -936,7 +928,6 @@ contains
   !-----------------------------------------------------------------------------!
   elemental subroutine rescale_pressure(pre1)
 
-    use decomp_2d, only : mytype
     use param, only : itimescheme, gdt
     
     implicit none
@@ -1015,7 +1006,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine avg3d (var, avg)
 
-    use decomp_2d, only: real_type, xsize, xend
     use param
     use variables, only: nx,ny,nz,nxm,nym,nzm
     use mpi
@@ -1137,7 +1127,6 @@ end subroutine cfl_compute
 !-----------------------------------------------------------------------------!
 subroutine stretching()
 
-  use decomp_2d
   use variables
   use param
   use var
@@ -1277,11 +1266,10 @@ end subroutine stretching
 !-----------------------------------------------------------------------------!
 subroutine inversion5_v1(aaa_in,eee,spI)
 
-  use decomp_2d
   use variables
   use param
   use var
-  use mpi
+  use MPI
 
   implicit none
 
@@ -1418,7 +1406,6 @@ end subroutine inversion5_v1
 !-----------------------------------------------------------------------------!
 subroutine inversion5_v2(aaa,eee,spI)
 
-  use decomp_2d
   use variables
   use param
   use var
@@ -1593,7 +1580,6 @@ end function cx
 !-----------------------------------------------------------------------------!
 subroutine calc_temp_eos(temp, rho, phi, mweight, xlen, ylen, zlen)
 
-  use decomp_2d
   use param, only : pressure0, imultispecies
   use var, only : numscalar
 
@@ -1620,7 +1606,6 @@ endsubroutine calc_temp_eos
 !-----------------------------------------------------------------------------!
 subroutine calc_rho_eos(rho, temp, phi, mweight, xlen, ylen, zlen)
 
-  use decomp_2d
   use param, only : pressure0, imultispecies
   use var, only : numscalar
 
@@ -1647,7 +1632,6 @@ endsubroutine calc_rho_eos
 !-----------------------------------------------------------------------------!
 subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
 
-  use decomp_2d
   use param, only : zero, one
   use param, only : massfrac, mol_weight
   use var, only : numscalar
@@ -1813,7 +1797,6 @@ subroutine test_min_max(name,text,array_tmp,i_size_array_tmp)
 
   use param
   use variables
-  use decomp_2d
   use MPI
 
   implicit none
