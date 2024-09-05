@@ -68,6 +68,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     - y_plus_in (float64, optional): The additional parameter to be included in the filename if we are plotting and saving correlation functions.
     - re_tau (int, optional):        Additional Friction Reynolds number value to add the the filename if we are saving a plot of a TTBL.
     - subfolder (str, optional):     Name of the subfolder in which we are saving the .pdf file.
+    - description (str, optional):   Description to be added to the PDF metadata.
     
     """
     
@@ -102,9 +103,8 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     
     # Add metadata with supported fields
     metadata = {'Title': variable_name,
-                'Author': 'Your Name',
-                'Subject': description if description else 'Plot',
-                'Keywords': 'matplotlib, plot'}  # Use 'Subject' or 'Keywords' for the description
+                'Author': 'Filippo Moroni',
+                'Subject': description}  
     
     # Save the figure and plot it
     plt.savefig(filename, format='pdf', bbox_inches='tight', dpi=600, metadata=metadata)
