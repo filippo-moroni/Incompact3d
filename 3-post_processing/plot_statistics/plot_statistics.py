@@ -766,22 +766,29 @@ if post_corz:
                   'kim_data': cuuz_kim,
                   'kim_rz_plus': rz_plus_cuuz_kim,
                   'ylabel': r'$C_{uu}(r_z^+)$',
+                  
                   # 'Local' description
-                  'descr': 'Auto-correlation coefficients for streamwise velocity components in spanwise direction.' 
+                  'descr': 'Auto-correlation coefficient for streamwise velocity component in spanwise direction.' 
                  },
                  {
                   'title': 'Cvvz',
                   'var': Rvvz,
                   'kim_data': cvvz_kim,
                   'kim_rz_plus': rz_plus_cvvz_kim,
-                  'ylabel': r'$C_{vv}(r_z^+)$'
+                  'ylabel': r'$C_{vv}(r_z^+)$',
+                  
+                  # 'Local' description
+                  'descr': 'Auto-correlation coefficient for wall-normal velocity component in spanwise direction.' 
                  },
                  {
                   'title': 'Cwwz',
                   'var': Rwwz,
                   'kim_data': cwwz_kim,
                   'kim_rz_plus': rz_plus_cwwz_kim,
-                  'ylabel': r'$C_{ww}(r_z^+)$'
+                  'ylabel': r'$C_{ww}(r_z^+)$',
+                  
+                  # 'Local' description
+                  'descr': 'Auto-correlation coefficient for spanwise velocity component in spanwise direction.' 
                  }
                 ]
 
