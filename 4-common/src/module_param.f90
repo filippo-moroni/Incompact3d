@@ -684,7 +684,7 @@ end module parfiX
 ! Describes the parameters for the discrete filters in y-pencils
 module parfiY
 
-  use decomp_2d, only : mytype
+  use decomp_2d_constants, only : mytype
   
   real(mytype) :: fial1y, fia1y, fib1y, fic1y, fid1y, fie1y, fif1y  ! Coefficients for filter at boundary point 1
   real(mytype) :: fial2y, fia2y, fib2y, fic2y, fid2y, fie2y, fif2y  ! Coefficients for filter at boundary point 2
@@ -699,7 +699,7 @@ end module parfiY
 ! Describes the parameters for the discrete filters in z-pencils
 module parfiZ
 
-  use decomp_2d, only : mytype
+  use decomp_2d_constants, only : mytype
   
   real(mytype) :: fial1z, fia1z, fib1z, fic1z, fid1z, fie1z, fif1z  ! Coefficients for filter at boundary point 1
   real(mytype) :: fial2z, fia2z, fib2z, fic2z, fid2z, fie2z, fif2z  ! Coefficients for filter at boundary point 2
