@@ -554,10 +554,10 @@ subroutine parameter_defaults()
 
   use param
   use variables
-  use decomp_2d
   use complex_geometry
 
-  use visu, only : output2D
+  use decomp_2d_constants, only : mytype
+  use visu,                only : output2D
   
   implicit none
 

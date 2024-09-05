@@ -394,7 +394,8 @@ subroutine second_derivative(alsa1,as1,bs1,&
      alsai,asi,bsi,csi,dsi,&
      sf,ss,sw,sfp,ssp,swp,d2,n,ncl1,ncln)
 
-  use decomp_2d, only : mytype, nrank
+  use decomp_2d_constants, only : mytype
+  use decomp_2d_mpi,       only : nrank
   use param
   use MPI
   use param,     only : nu0nu,cnu
@@ -649,9 +650,9 @@ subroutine interpolation(dx,nxm,nx,nclx1,nclxn,&
      cwi6,cifi6,cici6,cibi6,cifip6,&
      cisip6,ciwip6,cisi6,ciwi6)
 
-  use decomp_2d, only : mytype
-  use param, only : zero, half, one, two, three, four, nine, ten
-  use param, only : ipinter, ifirstder
+  use decomp_2d_constants, only : mytype
+  use param,               only : zero, half, one, two, three, four, nine, ten
+  use param,               only : ipinter, ifirstder
 
   implicit none
 
