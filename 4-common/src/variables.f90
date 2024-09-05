@@ -4,10 +4,12 @@
 
 module var
 
+  use decomp_2d_constants
   use decomp_2d
-  USE variables
-  USE param
-  USE complex_geometry
+  use decomp_2d_mpi
+  use variables
+  use param
+  use complex_geometry
   
   ! define all major arrays here
   real(mytype), save, allocatable, dimension(:,:,:)     :: ux1, ux2, ux3, po3, dv3

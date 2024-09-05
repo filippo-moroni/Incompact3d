@@ -111,9 +111,9 @@ subroutine init_xcompact3d()
   use MPI
   use decomp_2d
   use decomp_2d_io,      only : decomp_2d_io_init
-  USE decomp_2d_poisson, only : decomp_2d_poisson_init
+  use decomp_2d_poisson, only : decomp_2d_poisson_init
+  
   use case
-
   use var
 
   use navier, only : calc_divu_constraint

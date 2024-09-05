@@ -1046,7 +1046,6 @@ contains
     use decomp_2d
     use les
     use var, only : sgsphi1, nut1
-    use param, only : zero
 
     implicit none
 
