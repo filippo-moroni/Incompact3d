@@ -550,6 +550,9 @@ if post_mean:
 
     # <w'w'>
     ax.scatter(y_plus[:ny], var_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Description of .pdf file
+    description = 'Spanwise velocity variance. Reference data '
 
     # TTBL
     if itype == 13:
@@ -563,6 +566,9 @@ if post_mean:
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
+            # Completing description
+            description += 'Lee & Moser (2015).'
+            
     # Channel    
     elif itype == 3:
 
@@ -571,12 +577,20 @@ if post_mean:
     
         # Lee & Moser (2015)
         ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += 'Lee & Moser (2015).'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
     
             # Yao et al. (2019)
             ax.scatter(y_plus_wvar_yao, var_w_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            
+            # Completing description, with slicing of the string (removing the final dot)
+            description = description[:-1]
+            
+            description += ', Yao et al. (2019).'
     
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -587,7 +601,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
+    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -600,6 +614,9 @@ if post_mean:
 
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Description of .pdf file
+    description = 'Reynolds stress. Reference data '
     
     # TTBL
     if itype == 13:
@@ -616,11 +633,17 @@ if post_mean:
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
+            # Completing description
+            description += 'Lee & Moser (2015).'
+            
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
         
             # Kozul et al. (2016)
-            ax.plot(y_plus_uvmean_kozul, mean_uv_kozul, color='C1', linestyle='-', linewidth=pp.lw) 
+            ax.plot(y_plus_uvmean_kozul, mean_uv_kozul, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += 'Kozul et al. (2016).'   
             
     # Channel    
     elif itype == 3:
@@ -630,6 +653,9 @@ if post_mean:
         
         # Lee & Moser (2015)
         ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += 'Lee & Moser (2015).'
        
         # y-axis label
         ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -639,6 +665,11 @@ if post_mean:
     
             # Yao et al. (2019)
             ax.scatter(y_plus_uvmean_yao, mean_uv_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            
+            # Completing description, with slicing of the string (removing the final dot)
+            description = description[:-1]
+            
+            description += ', Yao et al. (2019).'
  
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -648,7 +679,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats')
+    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -734,7 +765,9 @@ if post_corz:
                   'var': Ruuz,
                   'kim_data': cuuz_kim,
                   'kim_rz_plus': rz_plus_cuuz_kim,
-                  'ylabel': r'$C_{uu}(r_z^+)$'
+                  'ylabel': r'$C_{uu}(r_z^+)$',
+                  # 'Local' description
+                  'descr': 'Auto-correlation coefficients for streamwise velocity components in spanwise direction.' 
                  },
                  {
                   'title': 'Cvvz',
@@ -776,6 +809,10 @@ if post_corz:
     
             # Kim et al. (1987) data
             ax.plot(plot['kim_rz_plus'], plot['kim_data'], color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Complete description            
+            plot['descr'] += ' Reference data Kim et al. (1987).'
+            
 
         # Plot horizontal line at C = 0
         ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
@@ -787,9 +824,9 @@ if post_corz:
         # Set the plot parameters using the function 'set_plot_settings'
         # Last argument is the switcher for semilog plot (1: yes, 0: no)
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
+        
         # Save and show the figure
-        save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations')
+        save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations', description=plot['descr'])
 
     #!--------------------------------------------------------------------------------------!
 
@@ -815,9 +852,12 @@ if post_corz:
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    
+    # Description of .pdf file
+    description = 'Correlation coefficient for streamwise and wall-normal velocity components in spanwise direction.'
 
     # Save and show the figure
-    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations')
+    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -845,9 +885,12 @@ if post_corz:
         # Set the plot parameters using the function 'set_plot_settings'
         # Last argument is the switcher for semilog plot (1: yes, 0: no)
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+        
+        # Description of .pdf file
+        description = 'Auto-correlation coefficient for scalar field in spanwise direction.'
 
         # Save and show the figure
-        save_and_show_plot('Cssz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations')
+        save_and_show_plot('Cssz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -874,6 +917,9 @@ if post_tke_eq:
     # P/eps of TKE
     ax.scatter(y_plus[:ny], p_eps_ratio_tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
+    # Description of .pdf file
+    description = 'Ratio of production over dissipation of turbulent kinetic energy (TKE). Reference data '
+    
     # TTBL
     if itype == 13:
 
@@ -881,6 +927,9 @@ if post_tke_eq:
         
         # Lee & Moser (2015)
         ax.plot(y_plus_lm1000, p_eps_ratio_lm1000 + 1.0, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += 'Lee & Moser (2015).'
                 
     # Channel    
     elif itype == 3:
@@ -889,6 +938,9 @@ if post_tke_eq:
         
         # Moser et al. (1999)
         ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += 'Moser et al. (1999).'
             
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
@@ -899,7 +951,7 @@ if post_tke_eq:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='tke_budget')
+    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='tke_budget', description=description)
     
     #!--------------------------------------------------------------------------------------!
 
