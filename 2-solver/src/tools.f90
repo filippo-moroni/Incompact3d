@@ -1074,6 +1074,7 @@ end module tools
 subroutine cfl_compute(uxmax,uymax,uzmax)
 
   use decomp_2d_constants
+  use decomp_2d_mpi, only : nrank
   use param
   use variables
   use var
@@ -1130,6 +1131,7 @@ subroutine stretching()
 
   use decomp_2d
   use decomp_2d_constants
+  use decomp_2d_mpi, only : nrank
   use variables
   use param
   use var
