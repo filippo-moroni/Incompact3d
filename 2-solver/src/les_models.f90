@@ -4,6 +4,10 @@
 
 module les
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+
   character(len=*), parameter :: io_turb  = "turb-io",  &
                                  turb_dir = "turb-data"
 contains
@@ -15,9 +19,8 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine init_explicit_les
 
-    USE param
-    USE variables
-    USE decomp_2d
+    use param
+    use variables
 
     implicit none
 
@@ -60,10 +63,9 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine Compute_SGS(sgsx1,sgsy1,sgsz1,ux1,uy1,uz1,phi1,ep1,iconservative)
 
-    USE param
-    USE variables
-    USE decomp_2d
-    USE decomp_2d_io
+    use param
+    use variables
+    use decomp_2d_io
     use var, only: nut1
     
     implicit none
@@ -109,20 +111,19 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine smag(nut1,ux1,uy1,uz1)
 
-    USE MPI
-    USE param
-    USE variables
-    USE decomp_2d
-    USE decomp_2d_io
-    USE var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-    USE var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,di2
-    USE var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
-    USE var, only : sxx1,syy1,szz1,sxy1,sxz1,syz1,srt_smag
-    USE var, only : gxx1,gyx1,gzx1,gxy2,gyy2,gzy2,gxz3,gyz3,gzz3
-    USE var, only : gxy1,gyy1,gzy1,gxz2,gyz2,gzz2,gxz1,gyz1,gzz1
-    USE var, only : sxx2,syy2,szz2,sxy2,sxz2,syz2,srt_smag2,nut2
-    USE var, only : sxx3,syy3,szz3,sxy3,sxz3,syz3
-    USE ibm_param
+    use mpi
+    use param
+    use variables
+    use decomp_2d_io
+    use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+    use var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,di2
+    use var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
+    use var, only : sxx1,syy1,szz1,sxy1,sxz1,syz1,srt_smag
+    use var, only : gxx1,gyx1,gzx1,gxy2,gyy2,gzy2,gxz3,gyz3,gzz3
+    use var, only : gxy1,gyy1,gzy1,gxz2,gyz2,gzz2,gxz1,gyz1,gzz1
+    use var, only : sxx2,syy2,szz2,sxy2,sxz2,syz2,srt_smag2,nut2
+    use var, only : sxx3,syy3,szz3,sxy3,sxz3,syz3
+    use ibm_param
 
     implicit none
 
@@ -254,7 +255,6 @@ contains
 
     use param
     use variables
-    use decomp_2d
     use decomp_2d_io
     use mpi
     use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
@@ -808,23 +808,22 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine wale(nut1,ux1,uy1,uz1)
 
-  USE param
-  USE variables
-  USE decomp_2d
-  USE decomp_2d_io
-  USE var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-  USE var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,di2
-  USE var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
-  USE var, only : sxx1,syy1,szz1,sxy1,sxz1,syz1
-  USE var, only : gxx1,gyx1,gzx1,gxy2,gyy2,gzy2,gxz3,gyz3,gzz3
-  USE var, only : gxy1,gyy1,gzy1,gxz2,gyz2,gzz2,gxz1,gyz1,gzz1
-  USE var, only : sxx2,syy2,szz2,sxy2,sxz2,syz2,srt_smag2,nut2
-  USE var, only : sxx3,syy3,szz3,sxy3,sxz3,syz3
-  USE var, only : sdxx1,sdyy1,sdzz1,sdxy1,sdxz1,sdyz1
-  USE var, only : sdxx2,sdyy2,sdzz2,sdxy2,sdxz2,sdyz2
-  USE var, only : sdxx3,sdyy3,sdzz3,sdxy3,sdxz3,sdyz3
-  USE var, only : srt_wale,srt_wale2,srt_wale3,srt_wale4
-  USE ibm_param
+  use param
+  use variables
+  use decomp_2d_io
+  use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+  use var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,di2
+  use var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
+  use var, only : sxx1,syy1,szz1,sxy1,sxz1,syz1
+  use var, only : gxx1,gyx1,gzx1,gxy2,gyy2,gzy2,gxz3,gyz3,gzz3
+  use var, only : gxy1,gyy1,gzy1,gxz2,gyz2,gzz2,gxz1,gyz1,gzz1
+  use var, only : sxx2,syy2,szz2,sxy2,sxz2,syz2,srt_smag2,nut2
+  use var, only : sxx3,syy3,szz3,sxy3,sxz3,syz3
+  use var, only : sdxx1,sdyy1,sdzz1,sdxy1,sdxz1,sdyz1
+  use var, only : sdxx2,sdyy2,sdzz2,sdxy2,sdxz2,sdyz2
+  use var, only : sdxx3,sdyy3,sdzz3,sdxy3,sdxz3,sdyz3
+  use var, only : srt_wale,srt_wale2,srt_wale3,srt_wale4
+  use ibm_param
   
   implicit none
 
@@ -981,7 +980,6 @@ end subroutine wale
 
     use param
     use variables
-    use decomp_2d
     use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
     use var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
     use var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
@@ -1132,10 +1130,9 @@ end subroutine wale
   !-----------------------------------------------------------------------------!
   subroutine sgs_scalar_nonconservative(sgsphi1,nut1,phi1,is)
 
-    USE param
-    USE variables
-    USE decomp_2d
-    USE var, only: di1,tb1,di2,tb2,di3,tb3,tc1,tc2,tc3
+    use param
+    use variables
+    use var, only: di1,tb1,di2,tb2,di3,tb3,tc1,tc2,tc3
  
     implicit none
 

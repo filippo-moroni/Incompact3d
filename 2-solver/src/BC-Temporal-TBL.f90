@@ -7,6 +7,8 @@
 
 module temporal_tbl
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
   use decomp_2d
   use variables
   use param
