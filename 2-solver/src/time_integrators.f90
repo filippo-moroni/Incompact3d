@@ -4,6 +4,10 @@
 
 module time_integrators
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+
   implicit none
 
   private 
@@ -19,7 +23,6 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine int_time(rho1, ux1, uy1, uz1, phi1, drho1, dux1, duy1, duz1, dphi1)
 
-    use decomp_2d, only : mytype, xsize, nrank
     use param,     only : zero, one
     use param,     only : ntime, nrhotime, ilmn, iscalar, ilmn_solve_temp,itimescheme
     use param,     only : iimplicit, sc_even
@@ -149,10 +152,9 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine int_time_momentum(ux1, uy1, uz1, dux1, duy1, duz1)
 
-    USE param
-    USE variables
-    USE var, ONLY: px1, py1, pz1
-    USE decomp_2d
+    use param
+    use variables
+    use var, only: px1, py1, pz1
 
     implicit none
 
@@ -199,9 +201,8 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine int_time_continuity(rho1, drho1)
 
-    USE param
-    USE variables
-    USE decomp_2d
+    use param
+    use variables
 
     implicit none
 
@@ -263,12 +264,11 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine int_time_temperature(rho1, drho1, dphi1, phi1)
 
-    USE param
-    USE variables
-    USE decomp_2d
+    use param
+    use variables
 
-    USE navier, ONLY : lmn_t_to_rho_trans
-    USE var, ONLY : tc1, tb1
+    use navier, only : lmn_t_to_rho_trans
+    use var, only : tc1, tb1
 
     implicit none
 
@@ -338,7 +338,6 @@ contains
    use MPI
    use param
    use variables
-   use decomp_2d
    use ydiff_implicit, only : inttimp
 
 #ifdef DEBG 
