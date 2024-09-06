@@ -657,6 +657,8 @@ end module post_processing
   ! Header of the program printed to the screen. !
   !----------------------------------------------!
   subroutine program_header()
+  
+  use decomp_2d_mpi, only : nrank
     
   implicit none
   
@@ -682,11 +684,12 @@ end module post_processing
   !-----------------------------------------------------------------------------!
   subroutine reading_input_file()
 
-  USE decomp_2d_io
-  USE variables
-  USE param
-  USE var
-  USE MPI
+  use decomp_2d_mpi, only : nrank
+  use decomp_2d_io
+  use variables
+  use param
+  use var
+  use MPI
   
   implicit none
   
