@@ -336,7 +336,6 @@ contains
     use variables
     use param
     use MPI
-    !use navier, only : gradp
 
     implicit none
 
