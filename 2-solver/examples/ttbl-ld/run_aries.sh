@@ -14,9 +14,10 @@
 #!--- Description ---!
 # This is a .sh file for running with incompact3d in ARIES.
 
-# Loading of modules (GNU compilers and Open MPI)
-module load gcc-12.1.1/gcc
-module load gcc-12.1.1/ompi-4.1.5_nccl
+# Loading of modules (Intel)
+module load intel-2023.1/intel_Comps-2023.1
+module load intel-2023.1/intel_MPI-2023.1
+module load intel-2023.1/intel_MKL-2023.1
 
 # Calculate total number of tasks (verified that it works)
 TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
