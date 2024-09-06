@@ -12,6 +12,7 @@ add_executable(post_incompact3d
                     ../../../4-common/src/ibm.f90
                     ../../../4-common/src/implicit.f90
                     ../../../4-common/src/module_param.f90
+                    ../../../4-common/src/navier.f90
                     ../../../4-common/src/parameters.f90
                     post.f90
                     post_processing_mod.f90

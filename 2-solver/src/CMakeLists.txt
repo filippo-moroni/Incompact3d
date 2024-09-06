@@ -17,7 +17,7 @@ add_executable(xcompact3d
                     ../../4-common/src/implicit.f90
                     les_models.f90
                     ../../4-common/src/module_param.f90
-                    navier.f90
+                    ../../4-common/src/navier.f90
                     ../../4-common/src/parameters.f90
                     poisson.f90
                     ../../4-common/src/schemes.f90
