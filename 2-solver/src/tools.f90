@@ -35,7 +35,7 @@ module tools
 
 contains
 
-
+  !-----------------------------------------------------------------------------!
   subroutine test_speed_min_max(ux,uy,uz)
 
    use variables
@@ -1027,7 +1027,6 @@ contains
     do k=1,xsize3
        do j=1,xsize2
           do i=1,xsize1
-             !dep=dep+var(i,j,k)**2
              dep=dep+var(i,j,k)
           enddo
        enddo
@@ -1039,66 +1038,6 @@ contains
 
   end subroutine avg3d
 end module tools
-
-!-----------------------------------------------------------------------------!
-! Subroutine for computing the local and global CFL
-! number, according to Lele 1992.
-!-----------------------------------------------------------------------------!
-subroutine cfl_compute(uxmax,uymax,uzmax)
-
-  use decomp_2d_constants
-  use decomp_2d_mpi, only : nrank
-  use param
-  use variables
-  use var
-
-  implicit none
-
-  real(mytype),intent(in) :: uxmax,uymax,uzmax
-  real(mytype) :: cfl_x_adv,cfl_x_diff,cfl_y_adv,cfl_y_diff,cfl_z_adv,cfl_z_diff
-  real(mytype) :: cfl_conv_lim, cfl_diff_lim
-  real(mytype) :: sigma_conv(3), sigma_diff(3)
-  real(mytype) :: visc
-
-  ! Set the constants (this is true for periodic boundaries)
-  sigma_conv=[zero, sqrt(three), 2.85_mytype]
-  sigma_diff=[two, 2.5_mytype, 2.9_mytype]
-
-  if(jles==0) then
-     visc=xnu
-  elseif (jles==1) then
-     visc=xnu
-  endif
-
-  ! This is considering 1D peridic boundaries
-  ! Do x-direction
-  cfl_x_adv =abs(uxmax) * dt / dx
-  cfl_x_diff = visc * dt / dx**2
-  ! Do y-direction
-  cfl_y_adv = abs(uymax) * dt / dy
-  cfl_y_diff = visc * dt / dy**2
-  ! Do z-direction
-  cfl_z_adv = abs(uzmax) * dt / dz
-  cfl_z_diff = visc * dt / dz**2
-
-  ! So far we will focus on uniform grids
-  if(nrank == 0) then
-     write(*,*) ' '
-     write(*,1002) cfl_x_adv, cfl_x_diff
-1002 format('CFL x-direction (Adv and Diff) =',F9.4,',',F9.4)
-     write(*,1003) cfl_y_adv, cfl_y_diff
-1003 format('CFL y-direction (Adv and Diff) =',F9.4,',',F9.4)
-     write(*,1004) cfl_z_adv, cfl_z_diff
-1004 format('CFL z-direction (Adv and Diff) =',F9.4,',',F9.4)
-     cfl_conv_lim = sigma_conv(itimescheme) / sqrt(three)
-     cfl_diff_lim = sigma_diff(itimescheme) / six
-     write(*,1005) cfl_conv_lim, cfl_diff_lim
-     write(*,*) ' '
-1005 format('CFL limits (Adv and Diff) : ',F9.4,',',F9.4)
-  endif
-
-end subroutine cfl_compute
-
 !-----------------------------------------------------------------------------!
 subroutine stretching()
 
@@ -1240,7 +1179,6 @@ subroutine stretching()
   endif
 
 end subroutine stretching
-
 !-----------------------------------------------------------------------------!
 subroutine inversion5_v1(aaa_in,eee,spI)
 
@@ -1382,7 +1320,6 @@ subroutine inversion5_v1(aaa_in,eee,spI)
   return
 
 end subroutine inversion5_v1
-
 !-----------------------------------------------------------------------------!
 subroutine inversion5_v2(aaa,eee,spI)
 
