@@ -47,9 +47,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                      "${CMAKE_SOURCE_DIR}/cmake/compilers" 
                      "${CMAKE_SOURCE_DIR}/cmake/fft")
                      
-     
+# Add relative path of 2decomp library     
 set(CMAKE_PREFIX_PATH "../5-external/2decomp-fft/build")
-                     
+
+# Find 2decomp library                     
 find_package(DECOMP2D REQUIRED)
 
 # Despite IO is handled by 2DECOMP&FFT we need to set it
