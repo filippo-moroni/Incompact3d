@@ -1,0 +1,39 @@
+ ===========================================================
+ =================== Decomp2D - log ========================
+ ===========================================================
+ Release 2.0
+ Git version        : v4.0-1605-g4a150f01
+ Total ranks            4
+ Global data size :           80         649          64
+ p_row, p_col :            2           2
+ Periodicity :  F F F
+ Number of bytes / float number :            8
+ ===========================================================
+ Compile flags detected :
+ Numerical precision: Double
+ Compiled with GCC version 11.4.0
+ Compiler options : -cpp -I /home/n286654/Desktop/Incompact3d/5-external/2decomp-fft/src -I /home/n286654/Desktop/Incompact3d/5-external/2decomp-fft/build/include -I /usr/lib/x86_64-linux-gnu/fortran/gfortran-mod-15/openmpi -I /usr/lib/x86_64-linux-gnu/openmpi/lib -imultiarch x86_64-linux-gnu -D DOUBLE_PREC -D VERSION="v4.0-1605-g4a150f01" -march=ivybridge -mmmx -mpopcnt -msse -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -mno-avx2 -mno-sse4a -mno-fma4 -mno-xop -mno-fma -mno-avx512f -mno-bmi -mno-bmi2 -maes -mpclmul -mno-avx512vl -mno-avx512bw -mno-avx512dq -mno-avx512cd -mno-avx512er -mno-avx512pf -mno-avx512vbmi -mno-avx512ifma -mno-avx5124vnniw -mno-avx5124fmaps -mno-avx512vpopcntdq -mno-avx512vbmi2 -mno-gfni -mno-vpclmulqdq -mno-avx512vnni -mno-avx512bitalg -mno-avx512bf16 -mno-avx512vp2intersect -mno-3dnow -mno-adx -mno-abm -mno-cldemote -mno-clflushopt -mno-clwb -mno-clzero -mcx16 -mno-enqcmd -mf16c -mfsgsbase -mfxsr -mno-hle -msahf -mno-lwp -mno-lzcnt -mno-movbe -mno-movdir64b -mno-movdiri -mno-mwaitx -mno-pconfig -mno-pku -mno-prefetchwt1 -mno-prfchw -mno-ptwrite -mno-rdpid -mrdrnd -mno-rdseed -mno-rtm -mno-serialize -mno-sgx -mno-sha -mno-shstk -mno-tbm -mno-tsxldtrk -mno-vaes -mno-waitpkg -mno-wbnoinvd -mxsave -mno-xsavec -mxsaveopt -mno-xsaves -mno-amx-tile -mno-amx-int8 -mno-amx-bf16 -mno-uintr -mno-hreset -mno-kl -mno-widekl -mno-avxvnni --param=l1-cache-size=32 --param=l1-cache-line-size=64 --param=l2-cache-size=8192 -mtune=ivybridge -O3 -std=f2008 -ffree-line-length-none -fallow-argument-mismatch -J ../include -fpre-include=/usr/include/finclude/math-vector-fortran.h
+ Version of the MPI library : 3.1
+ ===========================================================
+ Profiler id :            0
+ ===========================================================
+ Decomp_info : decomp_main
+    Global size :           80         649          64
+ Uninitialized decomp_info phG
+ Uninitialized decomp_info ph1
+ Uninitialized decomp_info ph2
+ Uninitialized decomp_info ph3
+ Uninitialized decomp_info ph4
+ ===========================================================
+ ===========================================================
+ 
+ ***** Using the generic FFT engine *****
+ 
+ Id of the backend :            0
+ Format : Physical in z
+ 
+ Decomp_info : ph
+    Global size :           80         648          64
+ Decomp_info : sp
+    Global size :           80         648          33
+ 
