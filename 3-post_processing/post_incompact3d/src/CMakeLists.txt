@@ -17,6 +17,7 @@ add_executable(post_incompact3d
                     post_processing_mod.f90
                     ../../../4-common/src/schemes.f90
                     statistics_subs.f90
+                    ../../../4-common/src/tools.f90
                     ../../../4-common/src/variables.f90
                     ../../../4-common/src/visu.f90)
 

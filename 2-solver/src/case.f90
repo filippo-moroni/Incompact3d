@@ -4,10 +4,7 @@
 
 module case
 
-  use decomp_2d_constants
-  use decomp_2d_mpi
-  use decomp_2d
-    
+  use decomp_2d_constants    
   use param
   use variables
   use var, only : nzmsize

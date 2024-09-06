@@ -22,7 +22,7 @@ add_executable(xcompact3d
                     poisson.f90
                     ../../4-common/src/schemes.f90
                     time_integrators.f90
-                    tools.f90
+                    ../../4-common/src/tools.f90
                     transeq.f90                 
                     ../../4-common/src/variables.f90
                     ../../4-common/src/visu.f90
