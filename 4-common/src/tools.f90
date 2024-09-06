@@ -17,7 +17,8 @@ module tools
   
   private
 
-  public :: test_speed_min_max,    &
+  public :: gradp,                 &
+            test_speed_min_max,    &
             test_scalar_min_max,   &
             simu_stats,            &
             restart,               &
@@ -35,6 +36,125 @@ module tools
 
 contains
 
+  !-----------------------------------------------------------------------------!
+  ! Computation of the pressure gradient from the pressure mesh to the
+  ! velocity mesh.
+  ! Saving pressure gradients on boundaries for correct imposition of
+  ! BCs on u* via the fractional step method (it is not possible to
+  ! impose BC after correction by pressure gradient otherwise lost of
+  ! incompressibility--> BCs are imposed on u*).
+  !
+  ! input: pp3 - pressure field (on pressure mesh)
+  ! output: px1, py1, pz1 - pressure gradients (on velocity mesh)
+  ! Written by SL 2018.
+  !-----------------------------------------------------------------------------!
+  subroutine gradp(px1,py1,pz1,pp3)
+
+    use param
+    use variables
+    use MPI
+    use var, only: pp1,pgy1,pgz1,di1,pp2,ppi2,pgy2,pgz2,pgzi2,dip2,&
+                   pgz3,ppi3,dip3,nxmsize,nymsize,nzmsize
+
+    implicit none
+
+    integer :: i,j,k
+
+    real(mytype),dimension(ph3%zst(1):ph3%zen(1),ph3%zst(2):ph3%zen(2),nzmsize) :: pp3
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: px1,py1,pz1
+
+    !WORK Z-PENCILS
+    call interzpv(ppi3,pp3,dip3,sz,cifip6z,cisip6z,ciwip6z,cifz6,cisz6,ciwz6,&
+         (ph3%zen(1)-ph3%zst(1)+1),(ph3%zen(2)-ph3%zst(2)+1),nzmsize,zsize(3),1)
+    call derzpv(pgz3,pp3,dip3,sz,cfip6z,csip6z,cwip6z,cfz6,csz6,cwz6,&
+         (ph3%zen(1)-ph3%zst(1)+1),(ph3%zen(2)-ph3%zst(2)+1),nzmsize,zsize(3),1)
+
+    !WORK Y-PENCILS
+    call transpose_z_to_y(pgz3,pgz2,ph3) !nxm nym nz
+    call transpose_z_to_y(ppi3,pp2,ph3)
+
+    call interypv(ppi2,pp2,dip2,sy,cifip6y,cisip6y,ciwip6y,cify6,cisy6,ciwy6,&
+         (ph3%yen(1)-ph3%yst(1)+1),nymsize,ysize(2),ysize(3),1)
+    call derypv(pgy2,pp2,dip2,sy,cfip6y,csip6y,cwip6y,cfy6,csy6,cwy6,ppy,&
+         (ph3%yen(1)-ph3%yst(1)+1),nymsize,ysize(2),ysize(3),1)
+    call interypv(pgzi2,pgz2,dip2,sy,cifip6y,cisip6y,ciwip6y,cify6,cisy6,ciwy6,&
+         (ph3%yen(1)-ph3%yst(1)+1),nymsize,ysize(2),ysize(3),1)
+
+    !WORK X-PENCILS
+
+    call transpose_y_to_x(ppi2,pp1,ph2) !nxm ny nz
+    call transpose_y_to_x(pgy2,pgy1,ph2)
+    call transpose_y_to_x(pgzi2,pgz1,ph2)
+
+    call derxpv(px1,pp1,di1,sx,cfip6,csip6,cwip6,cfx6,csx6,cwx6,&
+         nxmsize,xsize(1),xsize(2),xsize(3),1)
+    call interxpv(py1,pgy1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
+         nxmsize,xsize(1),xsize(2),xsize(3),1)
+    call interxpv(pz1,pgz1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
+         nxmsize,xsize(1),xsize(2),xsize(3),1)
+
+    !we are in X pencils:
+    if (nclx1.eq.2) then
+       do k=1,xsize(3)
+          do j=1,xsize(2)
+             dpdyx1(j,k)=py1(1,j,k)/gdt(itr)
+             dpdzx1(j,k)=pz1(1,j,k)/gdt(itr)
+          enddo
+       enddo
+    endif
+    if (nclxn.eq.2) then
+       do k=1,xsize(3)
+          do j=1,xsize(2)
+             dpdyxn(j,k)=py1(nx,j,k)/gdt(itr)
+             dpdzxn(j,k)=pz1(nx,j,k)/gdt(itr)
+          enddo
+       enddo
+    endif
+
+    if (ncly1.eq.2) then
+       if (xstart(2)==1) then
+          do k=1,xsize(3)
+             do i=1,xsize(1)
+                dpdxy1(i,k)=px1(i,1,k)/gdt(itr)
+                dpdzy1(i,k)=pz1(i,1,k)/gdt(itr)
+             enddo
+          enddo
+       endif
+    endif
+    if (nclyn.eq.2) then
+       if (xend(2)==ny) then
+          do k=1,xsize(3)
+             do i=1,xsize(1)
+                dpdxyn(i,k)=px1(i,xsize(2),k)/gdt(itr)
+                dpdzyn(i,k)=pz1(i,xsize(2),k)/gdt(itr)
+             enddo
+          enddo
+       endif
+    endif
+
+    if (nclz1.eq.2) then
+       if (xstart(3)==1) then
+          do j=1,xsize(2)
+             do i=1,xsize(1)
+                dpdxz1(i,j)=py1(i,j,1)/gdt(itr)
+                dpdyz1(i,j)=pz1(i,j,1)/gdt(itr)
+             enddo
+          enddo
+       endif
+    endif
+    if (nclzn.eq.2) then
+       if (xend(3)==nz) then
+          do j=1,xsize(2)
+             do i=1,xsize(1)
+                dpdxzn(i,j)=py1(i,j,xsize(3))/gdt(itr)
+                dpdyzn(i,j)=pz1(i,j,xsize(3))/gdt(itr)
+             enddo
+          enddo
+       endif
+    endif
+
+    return
+  end subroutine gradp
   !-----------------------------------------------------------------------------!
   subroutine test_speed_min_max(ux,uy,uz)
 
@@ -216,7 +336,7 @@ contains
     use variables
     use param
     use MPI
-    use navier, only : gradp
+    !use navier, only : gradp
 
     implicit none
 
