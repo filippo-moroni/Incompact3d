@@ -2,11 +2,12 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
-!-----------------------------------------------------------------------------!                                                                               !
+!-----------------------------------------------------------------------------!                                                                               
 !  SUBROUTINE: parameter                                                       
 ! DESCRIPTION: Reads the input.i3d file and sets the parameters of the         
 !              simulation.                                                     
-!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>                                                                                      
+!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk> 
+! MODIFIED BY: Filippo Moroni <filippo.moroni@unimore.it>                                                                                     
 !-----------------------------------------------------------------------------!
 subroutine parameter(input_i3d)
 
@@ -73,6 +74,7 @@ subroutine parameter(input_i3d)
   ! Program header with credits
   call program_header()
 
+  ! Define default value of parameters (subroutine below in this file)
   call parameter_defaults()
 
   ! Read parameters
@@ -547,7 +549,8 @@ end subroutine parameter
 !-----------------------------------------------------------------------------!
 !  SUBROUTINE: parameter_defaults                                          
 ! DESCRIPTION: Sets the default simulation parameters.                     
-!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>        
+!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>
+! MODIFIED BY: Filippo Moroni <filippo.moroni@unimore.it>                                                                                             
 !-----------------------------------------------------------------------------!
 subroutine parameter_defaults()
 
