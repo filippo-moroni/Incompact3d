@@ -15,7 +15,8 @@
 ! - 'implicit.f90'
 ! - 'module_param.f90'
 ! - 'parameters.f90'
-! - 'schemes.f90' 
+! - 'schemes.f90'
+! - 'tools.f90' 
 ! - 'variables.f90'
 ! - 'visu.f90'
 !----------------------------------------------------------!
