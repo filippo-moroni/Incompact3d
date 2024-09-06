@@ -320,6 +320,8 @@ end subroutine check_transients
 !----------------------------------------------!
 subroutine program_header()
     
+use decomp_2d_mpi, only : nrank
+
 implicit none
   
 if (nrank==0) then
