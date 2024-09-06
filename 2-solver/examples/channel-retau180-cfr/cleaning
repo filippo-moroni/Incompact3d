@@ -1,0 +1,3 @@
+# Cleaning of files generated from runs
+
+rm -rf data decomp* out* yp* slurm*
