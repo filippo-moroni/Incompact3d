@@ -12,10 +12,15 @@ module navier
 
   private
 
-  public :: solve_poisson, divergence, calc_divu_constraint
-  public :: pre_correc, cor_vel
-  public :: lmn_t_to_rho_trans, momentum_to_velocity, velocity_to_momentum
-
+  public :: solve_poisson,        &
+            lmn_t_to_rho_trans,   &
+            cor_vel,              &
+            divergence,           &
+            pre_correc,           &
+            velocity_to_momentum, &
+            momentum_to_velocity, &
+            calc_divu_constraint
+            
 contains
   !-----------------------------------------------------------------------------!
   !  SUBROUTINE: solve_poisson
