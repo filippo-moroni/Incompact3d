@@ -4,6 +4,8 @@
 !-----------------------------------------------------------------------------!
 module post_processing
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
   use decomp_2d
   use variables
   use param
@@ -647,7 +649,73 @@ contains
      
 end module post_processing
 !-----------------------------------------------------------------------------!
+! Additional subroutines used only by 'post_incompact3d'
+! (they are equivalent to the ones of the solver).
+!-----------------------------------------------------------------------------!
 
+  !----------------------------------------------!
+  ! Header of the program printed to the screen. !
+  !----------------------------------------------!
+  subroutine program_header()
+    
+  implicit none
+  
+  if (nrank==0) then
+     write(*,*) '!---------------------------------------------------------!'
+     write(*,*) '!                 ~  PostIncompact3D  ~                   !'
+     write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
+     write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
+     write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
+     write(*,*) '!  Sylvain Laizet, 2018                                   !'
+     write(*,*) '!                                                         !'
+     write(*,*) '!  Modified by Filippo Moroni & Roberto Corsini, 2024     !'
+     write(*,*) '!---------------------------------------------------------!'
+     
+#if defined(VERSION)
+     write(*,*)'Git version        : ', VERSION
+#else
+     write(*,*)'Git version        : unknown'
+#endif
+  endif
+  
+  end subroutine program_header
+  !-----------------------------------------------------------------------------!
+  subroutine reading_input_file()
+
+  USE decomp_2d_io
+  USE variables
+  USE param
+  USE var
+  USE MPI
+  
+  implicit none
+  
+  ! Variables to read the input.i3d file
+  integer :: nargin, FNLength, status, DecInd
+  logical :: back
+  character(len=80) :: InputFN, FNBase
+  
+  ! Reading of the input file as Xcompact3d does
+  nargin=command_argument_count()
+  if (nargin <1) then
+     InputFN='input.i3d'
+     if (nrank==0) write(*,*) 'PostIncompact3d is run with the default file -->', trim(InputFN)
+  elseif (nargin >= 1) then
+     call get_command_argument(1,InputFN,FNLength,status)
+     back=.true.
+     FNBase=inputFN((index(InputFN,'/',back)+1):len(InputFN))
+     DecInd=index(FNBase,'.',back)
+     if (DecInd >1) then
+        FNBase=FNBase(1:(DecInd-1))
+     end if
+     if (nrank==0) write(*,*) 'PostIncompact3d is run with the provided file -->', trim(InputFN)
+  endif
+  
+  ! Reading the input file for geometry and numerics
+  call parameter(InputFN)
+  
+  end subroutine reading_input_file
+  !-----------------------------------------------------------------------------!
 
 
 

@@ -17,8 +17,7 @@ module tools
   
   private
 
-  public :: program_header,        &
-            test_speed_min_max,    &
+  public :: test_speed_min_max,    &
             test_scalar_min_max,   &
             simu_stats,            &
             restart,               &
@@ -36,33 +35,7 @@ module tools
 
 contains
 
-  !----------------------------------------------!
-  ! Header of the program printed to the screen. !
-  !----------------------------------------------!
-  subroutine program_header()
-    
-  implicit none
-  
-  if (nrank==0) then
-     write(*,*) '!---------------------------------------------------------!'
-     write(*,*) '!                   ~  Incompact3D  ~                     !'
-     write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
-     write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
-     write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
-     write(*,*) '!  Sylvain Laizet, 2018                                   !'
-     write(*,*) '!                                                         !'
-     write(*,*) '!  Modified by Filippo Moroni, 2024                       !'
-     write(*,*) '!---------------------------------------------------------!'
-     
-#if defined(VERSION)
-     write(*,*)'Git version        : ', VERSION
-#else
-     write(*,*)'Git version        : unknown'
-#endif
-  endif
-  
-  end subroutine program_header
-  !-----------------------------------------------------------------------------!
+
   subroutine test_speed_min_max(ux,uy,uz)
 
    use variables
@@ -1670,181 +1643,6 @@ subroutine calc_mweight(mweight, phi, xlen, ylen, zlen)
 
 endsubroutine calc_mweight
 !-----------------------------------------------------------------------------!
-!  R8_RANDOM returns a pseudorandom number between 0 and 1.
-!
-!  Discussion:
-!
-!    This function returns a pseudo-random number rectangularly distributed
-!    between 0 and 1.   The cycle length is 6.95E+12.  (See page 123
-!    of Applied Statistics (1984) volume 33), not as claimed in the
-!    original article.
-!
-!  Licensing:
-!
-!    This code is distributed under the GNU LGPL license.
-!
-!  Modified:
-!
-!    08 July 2008
-!
-!  Author:
-!
-!    FORTRAN77 original version by Brian Wichman, David Hill.
-!    FORTRAN90 version by John Burkardt.
-!
-!  Reference:
-!
-!    Brian Wichman, David Hill,
-!    Algorithm AS 183: An Efficient and Portable Pseudo-Random
-!    Number Generator,
-!    Applied Statistics,
-!    Volume 31, Number 2, 1982, pages 188-190.
-!
-!  Parameters:
-!
-!    Input/output, integer ( kind = 4 ) S1, S2, S3, three values used as the
-!    seed for the sequence.  These values should be positive
-!    integers between 1 and 30,000.
-!
-!    Output, real ( kind = 8 ) R8_RANDOM, the next value in the sequence.
-!-----------------------------------------------------------------------------!
-function r8_random ( s1, s2, s3 )
 
-  implicit none
 
-  integer ( kind = 4 ) s1
-  integer ( kind = 4 ) s2
-  integer ( kind = 4 ) s3
-  real ( kind = 8 ) r8_random
 
-  s1 = mod ( 171 * s1, 30269 )
-  s2 = mod ( 172 * s2, 30307 )
-  s3 = mod ( 170 * s3, 30323 )
-
-  r8_random = mod ( real ( s1, kind = 8 ) / 30269.0D+00 &
-                  + real ( s2, kind = 8 ) / 30307.0D+00 &
-                  + real ( s3, kind = 8 ) / 30323.0D+00, 1.0D+00 )
-
-  return
-end
-!-----------------------------------------------------------------------------!
-function return_30k(x) result(y)
-
-  integer ( kind = 4 ), intent(in) :: x
-  integer ( kind = 4 )             :: y
-  integer ( kind = 4 ), parameter  :: xmax = 30000
-
-  y = iabs(x) - int(iabs(x)/xmax)*xmax
-end function return_30k
-!-----------------------------------------------------------------------------!
-!  R8_UNI returns a pseudorandom number between 0 and 1.
-!
-!  Discussion:
-!
-!    This function generates uniformly distributed pseudorandom numbers
-!    between 0 and 1, using the 32-bit generator from figure 3 of
-!    the article by L'Ecuyer.
-!
-!    The cycle length is claimed to be 2.30584E+18.
-!
-!  Licensing:
-!
-!    This code is distributed under the GNU LGPL license.
-!
-!  Modified:
-!
-!    08 July 2008
-!
-!  Author:
-!
-!    Original Pascal original version by Pierre L'Ecuyer
-!    FORTRAN90 version by John Burkardt
-!
-!  Reference:
-!
-!    Pierre LEcuyer,
-!    Efficient and Portable Combined Random Number Generators,
-!    Communications of the ACM,
-!    Volume 31, Number 6, June 1988, pages 742-751.
-!
-!  Parameters:
-!
-!    Input/output, integer ( kind = 4 ) S1, S2, two values used as the
-!    seed for the sequence.  On first call, the user should initialize
-!    S1 to a value between 1 and 2147483562;  S2 should be initialized
-!    to a value between 1 and 2147483398.
-!
-!    Output, real ( kind = 8 ) R8_UNI, the next value in the sequence.
-!-----------------------------------------------------------------------------!
-function r8_uni ( s1, s2 )
-
-  implicit none
-
-  integer ( kind = 4 ) k
-  real ( kind = 8 ) r8_uni
-  integer ( kind = 4 ) s1
-  integer ( kind = 4 ) s2
-  integer ( kind = 4 ) z
-
-  k = s1 / 53668
-  s1 = 40014 * ( s1 - k * 53668 ) - k * 12211
-  if ( s1 < 0 ) then
-    s1 = s1 + 2147483563
-  end if
-
-  k = s2 / 52774
-  s2 = 40692 * ( s2 - k * 52774 ) - k * 3791
-  if ( s2 < 0 ) then
-    s2 = s2 + 2147483399
-  end if
-
-  z = s1 - s2
-  if ( z < 1 ) then
-    z = z + 2147483562
-  end if
-
-  r8_uni = real ( z, kind = 8 ) / 2147483563.0D+00
-
-  return
-end
-!-----------------------------------------------------------------------------!
-subroutine test_min_max(name,text,array_tmp,i_size_array_tmp)
-
-  use param
-  use variables
-  use MPI
-  use decomp_2d
-  use decomp_2d_constants
-  use decomp_2d_mpi
-
-  implicit none
-
-  integer :: ierror, i, i_size_array_tmp
-  real(mytype) :: max_tmp, min_tmp, tot_tmp, max_tot, min_tot, tot_tot
-  real(mytype), dimension(i_size_array_tmp) :: array_tmp
-  character(len=5) :: name
-  character(len=15) :: text
-
-  max_tmp=-0.000000000000000001_mytype
-  tot_tmp=0._mytype
-  min_tmp=+1000000000000000000._mytype
-  do i=1,size(array_tmp)
-    max_tmp=max(max_tmp,array_tmp(i))
-    tot_tmp=tot_tmp + array_tmp(i)
-    min_tmp=min(min_tmp,array_tmp(i))
-  enddo
-  call MPI_ALLREDUCE(max_tmp,max_tot,1,real_type,MPI_MAX,MPI_COMM_WORLD,ierror)
-  call MPI_ALLREDUCE(min_tmp,min_tot,1,real_type,MPI_MIN,MPI_COMM_WORLD,ierror)
-  call MPI_ALLREDUCE(tot_tmp,tot_tot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierror)
-  if (nrank == 0) then
-     write(*,*) " "
-     write(*,*) trim(text)//' Max ',name,max_tot
-     write(*,*) trim(text)//' Tot ',name,tot_tot
-     write(*,*) trim(text)//' Min ',name,min_tot
-     write(*,*) " "
-     flush(6)
-  endif
-
-  return
-end subroutine test_min_max
-!-----------------------------------------------------------------------------!

@@ -313,3 +313,33 @@ subroutine check_transients()
   if (nrank == 0) write(*,*)'## Main duz1 ', avg_param
   
 end subroutine check_transients
+!-----------------------------------------------------------------------------!
+
+!----------------------------------------------!
+! Header of the program printed to the screen. !
+!----------------------------------------------!
+subroutine program_header()
+    
+implicit none
+  
+if (nrank==0) then
+   write(*,*) '!---------------------------------------------------------!'
+   write(*,*) '!                   ~  Incompact3D  ~                     !'
+   write(*,*) '!  Copyright (c) 2018 Eric Lamballais and Sylvain Laizet  !'
+   write(*,*) '!  Modified by Felipe Schuch and Ricardo Frantz           !'
+   write(*,*) '!  Modified by Paul Bartholomew, Georgios Deskos and      !'
+   write(*,*) '!  Sylvain Laizet, 2018                                   !'
+   write(*,*) '!                                                         !'
+   write(*,*) '!  Modified by Filippo Moroni, 2024                       !'
+   write(*,*) '!---------------------------------------------------------!'
+     
+#if defined(VERSION)
+   write(*,*)'Git version        : ', VERSION
+#else
+   write(*,*)'Git version        : unknown'
+#endif
+endif
+  
+end subroutine program_header
+!-----------------------------------------------------------------------------!
+

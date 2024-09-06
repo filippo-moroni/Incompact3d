@@ -21,7 +21,6 @@ subroutine parameter(input_i3d)
   use decomp_2d_mpi
 
   use visu,  only : output2D
-  use tools, only : program_header
 
   implicit none
 

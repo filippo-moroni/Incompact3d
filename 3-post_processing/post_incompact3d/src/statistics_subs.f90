@@ -25,11 +25,12 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
                      uvmean,uwmean,vwmean,pre1mean,pre2mean,vpremean, &
                      phi1mean,phi2mean,uphimean,vphimean,wphimean)
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
   use param
   use variables
-  use decomp_2d
-  use decomp_2d_io
-  
+
   implicit none
   
   ! Variables definition (velocity components, pressure and scalar field)
@@ -167,10 +168,11 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
                           mean_gradientp2,mean_gradientx2,mean_gradientz2, &
                           mean_gradphi2)   
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
   use param
   use variables
-  use decomp_2d
-  use decomp_2d_io
   
   implicit none
   
@@ -310,10 +312,11 @@ end subroutine stat_vorticity
 ! Calculate total dissipation
 subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
   use param
   use variables
-  use decomp_2d
-  use decomp_2d_io
   
   implicit none
   
@@ -392,8 +395,9 @@ end subroutine stat_dissipation
 ! Calculate the (auto) correlation functions Rii and Ruv in z-direction for velocity components
 subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
   use decomp_2d
-  use decomp_2d_io
   use variables,       only : numscalar
   use post_processing, only : read_phi
 
@@ -496,9 +500,11 @@ end subroutine stat_correlation_z
 !--------------------------------------------------------------------
 subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)   
 
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
   use param
   use variables
-  use decomp_2d
   
   implicit none
   
