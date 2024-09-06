@@ -44,7 +44,8 @@ endif (CMAKE_BUILD_TYPE MATCHES "NONE")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
                      "${CMAKE_SOURCE_DIR}/cmake" 
-                     "${CMAKE_SOURCE_DIR}/cmake/compilers")
+                     "${CMAKE_SOURCE_DIR}/cmake/compilers"
+                     "${CMAKE_SOURCE_DIR}/cmake/fft")
                      
 # Add relative path of 2decomp library     
 set(CMAKE_PREFIX_PATH "../../5-external/2decomp-fft/build")
