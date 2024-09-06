@@ -2,7 +2,7 @@
 
 #find_package(decomp2d PATHS ${CMAKE_SOURCE_DIR}/decomp2d/build)
 
-find_package(decomp2d PATHS ../../5-external/2decomp-fft/build)
+find_package(decomp2d ../../5-external/2decomp-fft/build)
 
 if (decomp2d_FOUND)
   message(STATUS "2decomp-fft FOUND")
