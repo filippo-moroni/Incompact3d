@@ -4,12 +4,12 @@
 
 subroutine filter(af)
   
-  USE param
-  USE parfiX
-  USE parfiY
-  USE parfiZ
-  USE variables
-  USE var
+  use param
+  use parfiX
+  use parfiY
+  use parfiZ
+  use variables
+  use var
 
   !---------------------------------------------------------------------------!
   ! Discrete low-pass filter according to Motheau & Abraham (2016)
@@ -1366,3 +1366,4 @@ subroutine filz_22(tz,uz,rz,fisz,fiffz,fifsz,fifwz,nx,ny,nz,npaire,lind)
 
 end subroutine filz_22
 !---------------------------------------------------------------------------!
+
