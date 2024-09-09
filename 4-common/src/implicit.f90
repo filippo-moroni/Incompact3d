@@ -2,6 +2,13 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This file contains three modules: ludecomp, matinv and
+!              ydiff_implicit, all used for (semi) implicit time integration
+!              in y-direction of diffusive terms. Implicit schemes available
+!              are backward Euler and Crank-Nicolson. 
+!-----------------------------------------------------------------------------!
+
 module ludecomp
 
   use decomp_2d_constants, only : mytype

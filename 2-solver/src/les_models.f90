@@ -2,14 +2,14 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This file contains the subroutines for various LES explicit 
 !              models. Our recommendation is to use an implicit approach for 
 !              LES but an explicit approach such as the dynamic Smagorinsky 
 !              model can be used for comparison. Note that these explicit 
 !              models are not supported and might only work for a limited 
 !              number of boundary conditions.
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 module les
 

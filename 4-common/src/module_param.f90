@@ -2,9 +2,14 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
-!-----------------------------------------------------------------------------!
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This file contains all the modules with 1D and 2D key 
+!              coefficients/arrays needed to run the code.
+!---------------------------------------------------------------------------!
+
+!---------------------------------------------------------------------------!
 ! This module stores (mainly) work variables.
-!-----------------------------------------------------------------------------!
+!---------------------------------------------------------------------------!
 module variables
     
   use decomp_2d_constants, only : mytype
@@ -318,10 +323,11 @@ module variables
   real(mytype) :: alpha,beta
 
 end module variables
-!-----------------------------------------------------------------------------!
+
+!---------------------------------------------------------------------------!
 ! This module stores (mainly) variables that do not change runtime
 ! (they are parameters, even if they are not in Fortran meaning).
-!-----------------------------------------------------------------------------!
+!---------------------------------------------------------------------------!
 module param
 
   use decomp_2d_constants, only : mytype

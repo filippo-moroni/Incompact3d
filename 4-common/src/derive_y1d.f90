@@ -1,14 +1,14 @@
 
 !This file is not part of standard Xcompact3d releases (xcompact3d.com).
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This file collects subroutines for derivatives in y-direction        
 !              of arrays of size 'ysize(2)'. Useful for derivatives of 
 !              averaged quantities, e.g. U = U (y) (mean velocity profile). 
 !              Adapted from default derivative subroutines of 'derive.f90' 
 !              of standard Incompact3d. 
 !   AUTHOR(s): Roberto Corsini <roberto.corsini@unimore.it> 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 subroutine dery1D_00(ty,uy,ry,sy,ffy,fsy,fwy,ppy,ny,npaire)
 

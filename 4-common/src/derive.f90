@@ -2,7 +2,7 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This file contains all the subroutines for first and second 
 !              derivatives and interpolations. Different options are 
 !              available depending on the boundary conditions and on the 
@@ -11,7 +11,7 @@
 !              A conventional Thomas algorithm is used to invert the 
 !              tri-diagonal matrices (as the spatial discretisation schemes 
 !              are implicit).
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 subroutine derx_00(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind) 
 

@@ -2,6 +2,13 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This file contains the subroutine 'parameter' which 
+!              effectively reads the input files. It also contains the 
+!              subroutine 'parameter_defaults' which initialises all the key 
+!              parameters of the code.
+!-----------------------------------------------------------------------------!
+
 !-----------------------------------------------------------------------------!                                                                               
 !  SUBROUTINE: parameter                                                       
 ! DESCRIPTION: Reads the input.i3d file and sets the parameters of the         
@@ -659,7 +666,5 @@ subroutine parameter_defaults()
   npress    = 1  ! By default only one pressure field is needed
 
 end subroutine parameter_defaults
-
-
-
+!-----------------------------------------------------------------------------!
 

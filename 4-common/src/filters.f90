@@ -2,6 +2,12 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This file contains subroutines for filtering data (to be used 
+!              for an LES approach for example). Different options are 
+!              possible depending on the boundary conditions.
+!-----------------------------------------------------------------------------!
+
 subroutine filter(af)
   
   use param
@@ -12,7 +18,7 @@ subroutine filter(af)
   use var
 
   !---------------------------------------------------------------------------!
-  ! Discrete low-pass filter according to Motheau & Abraham (2016)
+  ! Discrete low-pass filter according to Motheau & Abraham (2016).
   !---------------------------------------------------------------------------!
 
   implicit none

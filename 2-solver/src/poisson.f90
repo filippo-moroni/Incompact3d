@@ -2,7 +2,7 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This file contains the subroutine related to solving the 
 !              Poisson equation in the spectral space. The pressure field 
 !              is staggered by half a mesh with respect to the velocity 
@@ -18,7 +18,7 @@
 !              type of boundary conditions and stretching, different 
 !              matrices can be constructed and inverted when a stretching 
 !              is used.
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 module decomp_2d_poisson
 

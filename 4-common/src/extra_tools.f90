@@ -1,7 +1,7 @@
 
 !This file is not part of standard Xcompact3d releases (xcompact3d.com).
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This file is used to store useful subroutines for general 
 !              purpose, not present in standard Incompact3d releases:
 !              - 'print_cf' 
@@ -13,15 +13,15 @@
 !              - 'write_scalar_plane_z'
 !              - 'write_vortx_plane_x'.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Write shear velocities, skin friction coefficients, viscous 
 !              time unit, time unit, bulk velocity (channel only), boundary 
 !              layer thickness (delta_99) and Re_tau (TTBL only) and stores
 !              them in a .txt file (used for TTBLs and Channels).    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 subroutine print_cf(ux,uz,phi)
   
   use decomp_2d_constants
@@ -294,7 +294,7 @@ subroutine print_cf(ux,uz,phi)
                
 end subroutine print_cf
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate total shear velocity and its x and z components. 
 !              - Used in 'BC-Temporal-TBL.f90' and in 'BC-Channel-flow.f90'
 !                for the spanwise wall oscillations with feedback control 
@@ -302,7 +302,7 @@ end subroutine print_cf
 !              - Used to print cf coefficients and shear velocities to an 
 !                overall .txt file for time evolution check.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
 
   use decomp_2d_constants
@@ -403,7 +403,7 @@ subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
 
 end subroutine calculate_shear_velocity
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate the spanwise velocity at the wall due to the 
 !              imposed sinusoidal oscillations. Oscillation parameters 
 !              (A and T) are read from the input file. 
@@ -411,7 +411,7 @@ end subroutine calculate_shear_velocity
 !              With feedback control,    A and T are in viscous units, 
 !              (A^+, T^+).    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 subroutine spanwise_wall_oscillations(ux1,uz1)
 
   use decomp_2d_constants
@@ -453,10 +453,10 @@ subroutine spanwise_wall_oscillations(ux1,uz1)
 
 end subroutine spanwise_wall_oscillations
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate mean scalar gradient at the wall.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!  
+!-----------------------------------------------------------------------------!  
 subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
          
   use decomp_2d_constants
@@ -515,11 +515,11 @@ subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
       
 end subroutine calculate_scalar_grad_wall
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate bulk velocity for a channel.
 !              Adapted from 'channel_cfr' subroutine.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------! 
+!-----------------------------------------------------------------------------! 
 subroutine calculate_ubulk(ux,uball)
   
   use decomp_2d_constants
@@ -557,10 +557,10 @@ subroutine calculate_ubulk(ux,uball)
     
 end subroutine calculate_ubulk 
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate the boundary layer thickness (delta_99) for a TTBL.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!       
+!-----------------------------------------------------------------------------!       
 subroutine calculate_bl_thick(ux,delta_99,counter)
   
   use decomp_2d_constants
@@ -644,12 +644,12 @@ subroutine calculate_bl_thick(ux,delta_99,counter)
   
 end subroutine calculate_bl_thick
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Write an instantaneous plane with z-dir. normal of the scalar 
 !              field for visualization.
 !              Adapted from 'write_snapshot' and 'end_snapshot' subroutines.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------! 
+!-----------------------------------------------------------------------------! 
 subroutine write_scalar_plane_z(phi1,ux1,uz1,itime)
  
   use visu
@@ -717,12 +717,12 @@ subroutine write_scalar_plane_z(phi1,ux1,uz1,itime)
   
 end subroutine write_scalar_plane_z
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Write an instantaneous plane with x-dir. normal of  
 !              streamwise vorticity for visualization.
 !              Adapted from 'write_snapshot' and 'end_snapshot' subroutines.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!   
+!-----------------------------------------------------------------------------!   
 subroutine write_vortx_plane_x(ux1,uy1,uz1,itime)
  
   use visu
@@ -832,6 +832,6 @@ subroutine write_vortx_plane_x(ux1,uy1,uz1,itime)
   output2D = 0
   
 end subroutine write_vortx_plane_x
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 

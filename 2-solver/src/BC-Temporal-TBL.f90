@@ -1,13 +1,13 @@
 
 !This file is not part of standard Xcompact3d releases (xcompact3d.com).
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This module is used to perform temporal turbulent boundary
 !              layer simulations (TTBL) as Kozul et al. (2016).
 !              Derived from original Incompact3d file (v4.0)   
 !              'BC-Channel-flow.f90'.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 module temporal_tbl
 
@@ -30,10 +30,10 @@ module temporal_tbl
             visu_ttbl
 
 contains
-  !---------------------------------------------------------------------------!
+  !-----------------------------------------------------------------------------!
   ! Initial condition for a temporal turbulent boundary layer (TTBL) as
   ! Kozul et al. (2016).
-  !---------------------------------------------------------------------------!
+  !-----------------------------------------------------------------------------!
   subroutine init_temporal_tbl (ux1,uy1,uz1,phi1)
 
     use tools, only : apply_spatial_filter 
@@ -170,10 +170,10 @@ contains
        
     return
   end subroutine init_temporal_tbl
-  !---------------------------------------------------------------------------!
+  !-----------------------------------------------------------------------------!
   ! Boundary conditions for a temporal turbulent boundary layer (TTBL) with
   ! possibility of scalar field and spanwise wall oscillations.
-  !---------------------------------------------------------------------------!
+  !-----------------------------------------------------------------------------!
   subroutine boundary_conditions_ttbl(phi)
 
     implicit none
@@ -226,7 +226,7 @@ contains
     endif
       
   end subroutine boundary_conditions_ttbl
-  !---------------------------------------------------------------------------!
+  !-----------------------------------------------------------------------------!
   subroutine postprocess_ttbl(ux1,uy1,uz1,pp3,phi1,ep1)
 
     use var, only : nzmsize
@@ -238,7 +238,7 @@ contains
     real(mytype), intent(in), dimension(ph1%zst(1):ph1%zen(1),ph1%zst(2):ph1%zen(2),nzmsize,npress) :: pp3
 
   end subroutine postprocess_ttbl
-  !---------------------------------------------------------------------------!
+  !-----------------------------------------------------------------------------!
   subroutine visu_ttbl_init(visu_initialised)
 
     use decomp_2d_io, only : decomp_2d_register_variable
@@ -254,10 +254,10 @@ contains
     visu_initialised = .true.
     
   end subroutine visu_ttbl_init
-  !---------------------------------------------------------------------------!
+  !-----------------------------------------------------------------------------!
   ! Visualization of the instantaneous flow field is performed with
   ! the Q-criterion.
-  !---------------------------------------------------------------------------! 
+  !-----------------------------------------------------------------------------! 
   subroutine visu_ttbl(ux1, uy1, uz1, pp3, phi1, ep1, num)
 
     use var,  only : ux2, uy2, uz2, ux3, uy3, uz3

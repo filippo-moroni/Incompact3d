@@ -2,7 +2,7 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This files contains a series of subroutines related to 
 !              solving the Navier-Stokes equations via a fractional step 
 !              method. Two notable subroutines are “divergence” to compute 
@@ -19,7 +19,7 @@
 !              velocity field. Most of the other subroutines are related to 
 !              the compressible Navier-Stokes equations in the low Mach 
 !              number limit. 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 module navier
 

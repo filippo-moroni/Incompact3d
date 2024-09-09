@@ -2,14 +2,14 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: This file contains subroutines for time-advancement of the 
 !              Navier-Stokes equations via a fractional step method. 
 !              Typically, you would use an explicit time advancement 
 !              (Adams Bashforth / Runge Kutta). 
 !              For wall-bounded flows, it is possible to use a semi-implicit 
 !              approach for the viscous terms.
-!---------------------------------------------------------------------------!
+!-----------------------------------------------------------------------------!
 
 module time_integrators
 
