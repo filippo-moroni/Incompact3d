@@ -13,12 +13,14 @@
 !                 - vorticity and mean gradients 
 !                   (velocity parallel to the wall, x, z and scalar field)
 !                 - total dissipation rate
+!                 - terms of TKE equation that cannot be obtained by mean 
+!                   flow statistics. 
 !
 !              2) Two-points statistics:
 !                 - spanwise correlation functions for velocity components 
 !                   (Ruuz, Rvvz, Rwwz, Ruvz)
 !                 - spanwise correlation function for scalar field 
-!                   (Rssz)
+!                   (Rssz).
 !              Adapted from original Incompact3d file (v2.0) of R. Corsini. 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
 !              Roberto Corsini <roberto.corsini@unimore.it> 
