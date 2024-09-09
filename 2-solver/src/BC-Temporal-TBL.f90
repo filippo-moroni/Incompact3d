@@ -1,9 +1,10 @@
-!----------------------------------------------------------!
-!         This module is used to run temporal TBLs         !
-!                       simulations.                       !
-!      Adapted from original Incompact3d file (v4.0)       !
-!               for channel flow simulations.              !
-!----------------------------------------------------------!
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This module is used to perform temporal turbulent boundary
+!              layer simulations (TTBL) as Kozul et al. (2016).
+!              Derived from original Incompact3d file (v4.0)   
+!              'BC-Channel-flow.f90'.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!---------------------------------------------------------------------------!
 
 module temporal_tbl
 
@@ -324,6 +325,5 @@ contains
   end subroutine visu_ttbl
   !---------------------------------------------------------------------------!
 end module temporal_tbl
-
 
 

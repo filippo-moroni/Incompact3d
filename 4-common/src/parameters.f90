@@ -6,7 +6,7 @@
 !  SUBROUTINE: parameter                                                       
 ! DESCRIPTION: Reads the input.i3d file and sets the parameters of the         
 !              simulation.                                                     
-!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk> 
+!   AUTHOR(s): Paul Bartholomew <paul.bartholomew08@imperial.ac.uk> 
 ! MODIFIED BY: Filippo Moroni <filippo.moroni@unimore.it>                                                                                     
 !-----------------------------------------------------------------------------!
 subroutine parameter(input_i3d)
@@ -549,7 +549,7 @@ end subroutine parameter
 !-----------------------------------------------------------------------------!
 !  SUBROUTINE: parameter_defaults                                          
 ! DESCRIPTION: Sets the default simulation parameters.                     
-!      AUTHOR: Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>
+!   AUTHOR(s): Paul Bartholomew <paul.bartholomew08@imperial.ac.uk>
 ! MODIFIED BY: Filippo Moroni <filippo.moroni@unimore.it>                                                                                             
 !-----------------------------------------------------------------------------!
 subroutine parameter_defaults()
