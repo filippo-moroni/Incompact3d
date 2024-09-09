@@ -2,6 +2,12 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This file contains some of the subroutines for 
+!              post-processing data (e.g. save 2D/3D snapshots of the 
+!              computational domain).
+!-----------------------------------------------------------------------------!
+
 module visu
 
   use decomp_2d_constants
@@ -632,3 +638,5 @@ contains
   end function gen_filename2
     
 end module visu
+!-----------------------------------------------------------------------------!
+

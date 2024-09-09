@@ -2,6 +2,14 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This file contains a series of subroutines related to running 
+!              a simulation, such as the checkpointing procedure (to restart 
+!              a simulation), subroutines to invert penta, septa and nona 
+!              diagonal matrices, and subroutines to compute min and max 
+!              values of an array.
+!-----------------------------------------------------------------------------!
+
 module tools
 
   use decomp_2d_constants
@@ -13,7 +21,7 @@ module tools
   logical, save :: adios2_restart_initialised = .false.
 
   character(len=*), parameter :: io_restart = "restart-io"
-  character(len=*), parameter :: resfile = "checkpoint"
+  character(len=*), parameter :: resfile    = "checkpoint"
   
   private
 

@@ -3,6 +3,10 @@
 !SPDX-License-Identifier: BSD 3-Clause
 
 !-----------------------------------------------------------------------------!
+! DESCRIPTION: This files contains all the coefficients for the derivations 
+!              and interpolations performed in 'derive.f90' file.
+!-----------------------------------------------------------------------------!
+
 subroutine schemes()
 
   use decomp_2d_mpi

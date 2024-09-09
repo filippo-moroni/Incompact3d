@@ -2,11 +2,18 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This is where all the variables for a simulation are properly 
+!              defined (for instance the pressure field, the three components 
+!              of the velocity field and all the work arrays).
+!-----------------------------------------------------------------------------!
+
 module var
 
   use decomp_2d_constants
   use decomp_2d
   use decomp_2d_mpi
+  
   use variables
   use param
   use complex_geometry
