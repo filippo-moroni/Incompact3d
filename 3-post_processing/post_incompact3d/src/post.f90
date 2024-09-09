@@ -1,25 +1,28 @@
-!----------------------------------------------------------!
-!         This program is used for post-processing         !
-!                 of Incompact3d Snapshots.                !
-!      Adapted from original Incompact3d file (v2.0)       !
-!                    of R. Corsini                         !
-!----------------------------------------------------------!
-! This program has the following files that are 
-! shared with Incompact3d 'modified':
-!
-! - 'derive.f90'
-! - 'derive_y1d.f90'
-! - 'extra_tools.f90'
-! - 'filters.f90'
-! - 'ibm.f90'
-! - 'implicit.f90'
-! - 'module_param.f90'
-! - 'parameters.f90'
-! - 'schemes.f90'
-! - 'tools.f90' 
-! - 'variables.f90'
-! - 'visu.f90'
-!----------------------------------------------------------!
+
+!This file is not part of standard Xcompact3d releases (xcompact3d.com).
+
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This program is used for post-processing of Incompact3d 
+!              snapshots. Adapted from original Incompact3d file (v2.0)       
+!              of R. Corsini.
+!              This program has the following files that are 
+!              shared with Incompact3d 'modified':
+!              - 'derive.f90'
+!              - 'derive_y1d.f90'
+!              - 'extra_tools.f90'
+!              - 'filters.f90'
+!              - 'ibm.f90'
+!              - 'implicit.f90'
+!              - 'module_param.f90'
+!              - 'parameters.f90'
+!              - 'schemes.f90'
+!              - 'tools.f90' 
+!              - 'variables.f90'
+!              - 'visu.f90'. 
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!              Roberto Corsini <roberto.corsini@unimore.it> 
+!-----------------------------------------------------------------------------!
+
 program post
 
   use decomp_2d_constants
@@ -1068,8 +1071,5 @@ end if
   call MPI_FINALIZE(code)
 
 end program post
-
-
-
-
+!-----------------------------------------------------------------------------!
 

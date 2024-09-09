@@ -1,24 +1,35 @@
-!----------------------------------------------------------!
-!   This file contains subroutines for post-processing     !
-!                 of Incompact3d Snapshots.                !
-!      Adapted from original Incompact3d file (v2.0)       !
-!                    of R. Corsini                         !
-!----------------------------------------------------------!
 
-! This file contains subroutines for the calculation of the following statistics:
+!This file is not part of standard Xcompact3d releases (xcompact3d.com).
 
-! One-point statistics:
-! - average, variance, skewness and kurtosis of velocity components
-! - Reynolds stresses
-! - average and variance of pressure, scalar field and mixed fluctuations
-! - vorticity and mean gradients (velocity parallel to the wall, x, z and scalar field)
-! - total dissipation rate
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This file contains subroutines for the calculation of the 
+!              following statistics:
+!              1) One-point statistics:
+!                 - average, variance, skewness and kurtosis of velocity 
+!                   components
+!                 - Reynolds stresses
+!                 - average and variance of pressure, scalar field and mixed 
+!                   fluctuations
+!                 - vorticity and mean gradients 
+!                   (velocity parallel to the wall, x, z and scalar field)
+!                 - total dissipation rate
+!
+!              2) Two-points statistics:
+!                 - spanwise correlation functions for velocity components 
+!                   (Ruuz, Rvvz, Rwwz, Ruvz)
+!                 - spanwise correlation function for scalar field 
+!                   (Rssz)
+!              Adapted from original Incompact3d file (v2.0) of R. Corsini. 
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!              Roberto Corsini <roberto.corsini@unimore.it> 
+!-----------------------------------------------------------------------------!
 
-! Two-points statistics:
-! - spanwise correlation functions for velocity (Ruuz, Rvvz, Rwwz, Ruvz) 
-!----------------------------------------------------------!
-
-! Mean statistics (average, variance, skewness, kurtosis, Reynolds stresses and mixed fluctuations)
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculate mean statistics (average, variance, skewness, 
+!              kurtosis, Reynolds stresses and mixed fluctuations).
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!              Roberto Corsini <roberto.corsini@unimore.it> 
+!-----------------------------------------------------------------------------!
 subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
                      u1mean,v1mean,w1mean,u2mean,v2mean,w2mean,       &
                      u3mean,v3mean,w3mean,u4mean,v4mean,w4mean,       &
@@ -28,6 +39,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
+  
   use param
   use variables
 
@@ -161,8 +173,13 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
   endif
 
 end subroutine stat_mean
-!********************************************************************
-! Mean vorticity components and mean gradients (x, z, parallel and scalar field)
+
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Mean vorticity components and mean gradients 
+!              (x, z, parallel to the wall and scalar field).
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!              Roberto Corsini <roberto.corsini@unimore.it> 
+!-----------------------------------------------------------------------------!
 subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
                           vortxmean2,vortymean2,vortzmean2,                &
                           mean_gradientp2,mean_gradientx2,mean_gradientz2, &
@@ -171,6 +188,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
+  
   use param
   use variables
   
@@ -308,13 +326,17 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
    
 end subroutine stat_vorticity
 
-!********************************************************************
-! Calculate total dissipation
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculate total dissipation rate of kinetic energy.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!              Roberto Corsini <roberto.corsini@unimore.it> 
+!-----------------------------------------------------------------------------!
 subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
+  
   use param
   use variables
   
@@ -391,13 +413,18 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   
 end subroutine stat_dissipation
 
-!********************************************************************
-! Calculate the (auto) correlation functions Rii and Ruv in z-direction for velocity components
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculate the (auto) correlation functions Rii and Ruv in 
+!              z-direction for the velocity components.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!              Roberto Corsini <roberto.corsini@unimore.it> 
+!-----------------------------------------------------------------------------!
 subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
 
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
+  
   use variables,       only : numscalar
   use post_processing, only : read_phi
 
@@ -492,17 +519,20 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
 
 end subroutine stat_correlation_z
 
-!********************************************************************
-! Calculation of Turbulent Kinetic Energy (TKE) terms that cannot be obtained from mean flow statistics data.
-! Used for for Channels and TTBLs (statistical homogeneity in x and z directions).
-! All results obtained here are in y-pencils.
-! Results are later derived in y-direction.
-!--------------------------------------------------------------------
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculation of Turbulent Kinetic Energy (TKE) terms that cannot 
+!              be obtained from mean flow statistics data.
+!              Used for for Channels and TTBLs (statistical homogeneity 
+!              in x and z directions). All results obtained here are 
+!              in y-pencils. Results are later derived in y-direction.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!-----------------------------------------------------------------------------!
 subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)   
 
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
+  
   use param
   use variables
   
@@ -590,6 +620,6 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   pseudo_eps_tke_mean = pseudo_eps_tke_mean + di2/den
     
 end subroutine extra_terms_tke
-
+!-----------------------------------------------------------------------------!
 
 

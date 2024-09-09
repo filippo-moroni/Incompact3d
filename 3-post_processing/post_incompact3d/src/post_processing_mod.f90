@@ -1,7 +1,14 @@
+
+!This file is not part of standard Xcompact3d releases (xcompact3d.com).
+
 !-----------------------------------------------------------------------------!
-! Module to store the post-processing variables used in 'post_incompact3d'
-! and basic subroutines to allocate memory and to reset to zero arrays.
+! DESCRIPTION: This module is used to store post-processing variables used in 
+!              'post_incompact3d' and basic subroutines to allocate memory 
+!              and to reset to zero arrays. 
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+!              Roberto Corsini <roberto.corsini@unimore.it> 
 !-----------------------------------------------------------------------------!
+
 module post_processing
 
   use decomp_2d_constants
@@ -304,13 +311,14 @@ contains
     endif
   
   end subroutine init_post_variables
+  
   !-----------------------------------------------------------------------------!
-  ! Subroutine for allocating the memory for statistics arrays.
+  ! DESCRIPTION: Subroutine to allocate memory for statistics arrays.
+  !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+  !              Roberto Corsini <roberto.corsini@unimore.it> 
   !-----------------------------------------------------------------------------!
   subroutine init_statistics()
-  
-  USE MPI
-  
+    
   implicit none
       
     if (post_mean) then
@@ -512,12 +520,12 @@ contains
   end subroutine init_statistics
   
   !-----------------------------------------------------------------------------!
-  ! Subroutine to reset to zero the arrays of averages on each single point. 
+  ! DESCRIPTION: Subroutine to reset to zero the arrays of averages on 
+  !              each single mesh point. 
+  !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
   !-----------------------------------------------------------------------------!
   subroutine reset_averages()
-  
-  USE MPI
-  
+    
   implicit none
   
   if (post_mean) then
@@ -552,14 +560,12 @@ contains
   end subroutine reset_averages
 
   !-----------------------------------------------------------------------------!
-  ! Subroutine to reset to zero the arrays of averages on subdomains
-  ! and on total domain.
-  !-----------------------------------------------------------------------------!
-  
+  ! DESCRIPTION: Subroutine to reset to zero the arrays of averages on subdomains
+  !              and on total domain. 
+  !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+  !-----------------------------------------------------------------------------!  
   subroutine reset_subdomains_and_domain()
-  
-  USE MPI
-  
+    
   implicit none
   
   if (post_mean) then
@@ -648,6 +654,8 @@ contains
   end subroutine reset_subdomains_and_domain
      
 end module post_processing
+!-----------------------------------------------------------------------------!
+
 !-----------------------------------------------------------------------------!
 ! Additional subroutines used only by 'post_incompact3d'
 ! (they are equivalent to the ones of the solver).
