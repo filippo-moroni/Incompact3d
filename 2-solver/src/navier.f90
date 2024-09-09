@@ -2,6 +2,25 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This files contains a series of subroutines related to 
+!              solving the Navier-Stokes equations via a fractional step 
+!              method. Two notable subroutines are “divergence” to compute 
+!              the divergence of the velocity field on the staggered mesh 
+!              and “cor_vel” to correct the velocity by the pressure 
+!              gradient to obtain a divergence free field on the pressure 
+!              mesh. The subroutine pre_correc is important as this is where
+!              you can impose the boundary conditions on the intermediate 
+!              velocity field, before computing the Poisson equations. 
+!              Imposing the boundary conditions after the correction by the 
+!              pressure gradients (i.e., at the end of a time step), would 
+!              result in losing the divergence free condition. As a result, 
+!              the boundary conditions are imposed on the intermediate 
+!              velocity field. Most of the other subroutines are related to 
+!              the compressible Navier-Stokes equations in the low Mach 
+!              number limit. 
+!---------------------------------------------------------------------------!
+
 module navier
 
   use decomp_2d_constants

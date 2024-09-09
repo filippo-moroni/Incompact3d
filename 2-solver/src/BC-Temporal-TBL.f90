@@ -1,3 +1,6 @@
+
+!This file is not part of standard Xcompact3d releases (xcompact3d.com).
+
 !---------------------------------------------------------------------------!
 ! DESCRIPTION: This module is used to perform temporal turbulent boundary
 !              layer simulations (TTBL) as Kozul et al. (2016).

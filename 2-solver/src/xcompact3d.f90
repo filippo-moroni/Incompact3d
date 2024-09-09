@@ -2,6 +2,14 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This is the main file where the time advancement of the 
+!              Navier-Stokes equations is performed, as well as the 
+!              post-processing and checkpointing procedure. This file also 
+!              contains the subroutines for the initialisation and 
+!              finalisation of the code.
+!---------------------------------------------------------------------------!
+
 program xcompact3d
 
   use var

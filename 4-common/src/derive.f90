@@ -3,6 +3,16 @@
 !SPDX-License-Identifier: BSD 3-Clause
 
 !---------------------------------------------------------------------------!
+! DESCRIPTION: This file contains all the subroutines for first and second 
+!              derivatives and interpolations. Different options are 
+!              available depending on the boundary conditions and on the 
+!              mesh (velocity mesh to pressure mesh [pv], pressure mesh to 
+!              velocity mesh [vp] or velocity mesh to velocity mesh). 
+!              A conventional Thomas algorithm is used to invert the 
+!              tri-diagonal matrices (as the spatial discretisation schemes 
+!              are implicit).
+!---------------------------------------------------------------------------!
+
 subroutine derx_00(tx,ux,rx,sx,ffx,fsx,fwx,nx,ny,nz,npaire,lind) 
 
   use param

@@ -2,6 +2,15 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This file contains the subroutines for various LES explicit 
+!              models. Our recommendation is to use an implicit approach for 
+!              LES but an explicit approach such as the dynamic Smagorinsky 
+!              model can be used for comparison. Note that these explicit 
+!              models are not supported and might only work for a limited 
+!              number of boundary conditions.
+!---------------------------------------------------------------------------!
+
 module les
 
   use decomp_2d_constants
@@ -256,7 +265,7 @@ contains
     use param
     use variables
     use decomp_2d_io
-    use mpi
+    use MPI
     use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
     use var, only : ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,di2
     use var, only : ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3

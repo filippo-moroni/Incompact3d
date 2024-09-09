@@ -2,6 +2,14 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This file contains pointers to each of the different flow 
+!              configurations (the BC files) for the initialisation, 
+!              imposition of the boundary conditions, post-processing and 
+!              visualisation. It means that the bulk of the code does not 
+!              need to be changed for each flow configuration.
+!---------------------------------------------------------------------------!
+
 module case
 
   use decomp_2d_constants

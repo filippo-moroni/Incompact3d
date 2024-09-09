@@ -2,6 +2,24 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This file contains the subroutine related to solving the 
+!              Poisson equation in the spectral space. The pressure field 
+!              is staggered by half a mesh with respect to the velocity 
+!              field, hence the need of staggered Fast Fourier Transforms 
+!              (FFTs). The subroutines 'waves' and 'abxyz' are defining the 
+!              modified wave numbers and transfer functions. Different 
+!              Poisson solvers are available, depending on the type of 
+!              boundary conditions: (0,0,0), (1/2,0,0), (0,1/2,0), 
+!              (1/2,1/2,0) and (1/2,1/2,1/2). If a stretching is used in the 
+!              y-direction, then the pressure field can be obtained by 
+!              inverting a pentadiagonal matrix, hence the need for extra 
+!              subroutines such as 'matrice_refinement'. Depending on the 
+!              type of boundary conditions and stretching, different 
+!              matrices can be constructed and inverted when a stretching 
+!              is used.
+!---------------------------------------------------------------------------!
+
 module decomp_2d_poisson
 
   use MPI
@@ -1514,8 +1532,8 @@ contains
   ! ***********************************************************
   !
   subroutine waves ()
-    !
-    !***********************************************************
+  !
+  !***********************************************************
 
     use derivX 
     use derivY 

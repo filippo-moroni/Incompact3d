@@ -2,12 +2,23 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This file contains the subroutines related to the calculation 
+!              of the righ hand side terms of the Navier-Stokes equations. 
+!              Different options are available depending if you are solving 
+!              the incompressible Navier-Stokes equations or the 
+!              compressible Navier-Stokes equations in the low Mach number 
+!              limit. It is possible to use a DNS approach, 
+!              an explicit LES approach or an implicit LES approach.
+!---------------------------------------------------------------------------!
+
 module transeq
 
   use decomp_2d_constants
   use decomp_2d_mpi
 
   private
+  
   public :: calculate_transeq_rhs
 
 contains

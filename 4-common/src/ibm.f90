@@ -2,6 +2,14 @@
 !This file is part of Xcompact3d (xcompact3d.com)
 !SPDX-License-Identifier: BSD 3-Clause
 
+!---------------------------------------------------------------------------!
+! DESCRIPTION: This file contains the subroutines related to the various 
+!              immersed boundary methods implemented in the code. 
+!              Some of these methods are based on 1D reconstructions of the 
+!              velocity fields (one reconstruction per velocity component 
+!              per spatial direction).
+!---------------------------------------------------------------------------!
+
 module ibm
 
   use decomp_2d_constants
