@@ -3,7 +3,7 @@
 #SBATCH --account=fluids          # account name
 #SBATCH --partition=high          # partition name
 #SBATCH --time=23:59:59           # format HH : MM : SS
-#SBATCH --nodes=1                 # node number
+#SBATCH --nodes=2                 # node number
 #SBATCH --ntasks-per-node=52      # tasks out of 52
 #SBATCH --cpus-per-task=1         # CPUs per task
 #SBATCH --mem=490g                # memory per node
