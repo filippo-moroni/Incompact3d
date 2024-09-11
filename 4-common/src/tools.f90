@@ -372,7 +372,7 @@ contains
     NAMELIST /Time/ tfield, itime
     NAMELIST /NumParam/ nx, ny, nz, istret, beta, dt, itimescheme
 
-    write(filename,"('restart',I7.7)") itime
+    write(filename, "('restart',I7.7)") itime
     write(filestart,"('restart',I7.7)") ifirst-1
 
     ! Writing restart (restart flag)
@@ -383,7 +383,7 @@ contains
 
        if (nrank==0) then
           write(*,*) '===========================================================<<<<<'
-          write(*,*) 'Writing restart point ',filename !itime/icheckpoint
+          write(*,*) 'Writing restart point ',filename 
        endif
     end if
 
