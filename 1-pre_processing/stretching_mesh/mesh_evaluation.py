@@ -221,9 +221,9 @@ delta_nu_peak = nu / sh_vel_peak
 delta_y1 = yp[1] - yp[0]
 
 # Rescaling the mesh spacings with viscous unit at peak cf or at steady state
-delta_x_nd_peak  = round(delta_x  / delta_nu_peak, 1)
-delta_y1_nd_peak = round(delta_y1 / delta_nu_peak, 1)
-delta_z_nd_peak  = round(delta_z  / delta_nu_peak, 1)
+delta_x_nd_peak  = round(delta_x  / delta_nu_peak, 2)
+delta_y1_nd_peak = round(delta_y1 / delta_nu_peak, 2)
+delta_z_nd_peak  = round(delta_z  / delta_nu_peak, 2)
 
 # Non-dimensional domain dimensions at peak cf or at steady state (nd: non-dimensional)
 xlx_nd_peak = round(xlx / delta_nu_peak, 1)
@@ -232,12 +232,12 @@ zlz_nd_peak = round(zlz / delta_nu_peak, 1)
 
 #!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC or at steady state ---!
    
-CFL = round(uref * dt / delta_x,       1)      
-D =   round(nu   * dt / (delta_y1**2), 1)    
-Pe =  round(uref * delta_x / nu,       1)
+CFL = round(uref * dt / delta_x,       2)      
+D =   round(nu   * dt / (delta_y1**2), 2)    
+Pe =  round(uref * delta_x / nu,       2)
         
 # Stability parameter (S < 1) (see Thompson et al. (1985)) 
-S = round(((uref**2)*dt)/(2.0*nu), 1)
+S = round(((uref**2)*dt)/(2.0*nu), 2)
 
 #!--- Calculation of y-dir. geometric quantities ---!
 
@@ -294,14 +294,14 @@ if itype == 13:
     delta_nu_500  = nu / sh_vel_500
 
     # Mesh sizes at IC
-    delta_x_nd_ic  = round(delta_x  / delta_nu_ic, 1)
-    delta_y1_nd_ic = round(delta_y1 / delta_nu_ic, 1)
-    delta_z_nd_ic  = round(delta_z  / delta_nu_ic, 1)
+    delta_x_nd_ic  = round(delta_x  / delta_nu_ic, 2)
+    delta_y1_nd_ic = round(delta_y1 / delta_nu_ic, 2)
+    delta_z_nd_ic  = round(delta_z  / delta_nu_ic, 2)
     
     # Mesh sizes at Re_tau = 500
-    delta_x_nd_500  = round(delta_x  / delta_nu_500, 1)
-    delta_y1_nd_500 = round(delta_y1 / delta_nu_500, 1)
-    delta_z_nd_500  = round(delta_z  / delta_nu_500, 1)
+    delta_x_nd_500  = round(delta_x  / delta_nu_500, 2)
+    delta_y1_nd_500 = round(delta_y1 / delta_nu_500, 2)
+    delta_z_nd_500  = round(delta_z  / delta_nu_500, 2)
             
     # Non-dimensional domain dimensions at IC (nd: non-dimensional)  
     xlx_nd_ic = round(xlx / delta_nu_ic, 1)
