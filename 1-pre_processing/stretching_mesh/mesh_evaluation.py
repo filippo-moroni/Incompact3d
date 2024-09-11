@@ -252,8 +252,19 @@ for j in range(2,ny):
 # AR of the elements in xy plane (width / heigth)
 for j in range(1,ny):
     AR_xy[j] = delta_x / delta_y[j]
+    
+#!--- Estimation of memory requirements ---!
+
+# Calculate total number of snapshots
+# Last '+1' is to count also the 1st time step (that is saved)
+nsnap = (ilast - ifirst + 1) // ioutput + 1
+
+# Total memory requirements [GB]: we are assuming to save velocity, pressure and 
+# one scalar field in double precision.
+mem_tot = nsnap * n_tot * 5 * 8.0 * (10**-9)
 
 #!--------------------------------------------------!
+
 
 # This part is valid for TTBLs 
 if itype == 13:
@@ -469,8 +480,11 @@ if itype == 13:
 elif itype == 3:
     print('Mesh size y-direction at the channel center: delta_yc+ =', delta_yc_nd)
     
-print('Total number of points: ntot =', n_tot)
+print('Total number of points: n_tot =', n_tot)
 print()
+print('Total memory requirement [GB]: mem_tot =', mem_tot)
+print()
+
     
 #!-------------------------------------------------!
 
