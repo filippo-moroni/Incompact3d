@@ -72,14 +72,14 @@ if itype == 13:
     
     #!--- Ask the user to insert the domain dimensions based on TTBL thickness delta at Re_tau = 500 ---!
     print()
-    scalex = float(input("Enter the scale factor in x-dir. based on BL thickness delta: "))
+    scalex = float(input("Enter the scale factor for domain dimension in x-dir. based on BL thickness delta: "))
     print()
     
     # Common value for y-direction is 3.0 (Kozul et al. (2016), Cimarelli et al. (2024)), 
     # but values around 2.0 should still be enough to avoid confiment effects of upper boundary.
     scaley = 3.0
     
-    scalez = float(input("Enter the scale factor in z-dir. based on BL thickness delta: "))
+    scalez = float(input("Enter the scale factor for domain dimension in z-dir. based on BL thickness delta: "))
     print()
     
     # Domain dimensions
@@ -408,7 +408,7 @@ if itype == 3:
     
 elif itype == 13:
     print('Wall velocity, Uwall        = ', uwall)
-    print('Tripping wire diameter, twd = ', twd)
+    print('Trip wire diameter, twd     = ', twd)
     print()
     print('!--- Reference data according to Cimarelli et al. (2024): ---!')
     print()
@@ -482,7 +482,7 @@ elif itype == 3:
     
 print('Total number of points: n_tot =', n_tot)
 print()
-print('Total memory requirement [GB]: mem_tot =', mem_tot)
+print('Total memory requirement for snapshots [GB]: mem_tot =', mem_tot)
 print()
 
     
