@@ -24,7 +24,9 @@ def read_input_files(filename1,filename2):
         # Read all lines into a list
         lines = file.readlines()
     
-        # Extract itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, Re, dt, numscalar, iswitch_wo 
+        # Extract: itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, 
+        # Re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo 
+        
         # As always, index is 1 less of the line number (Python convention)
         itype      = lines[7]  
         nx         = lines[14]
@@ -37,7 +39,10 @@ def read_input_files(filename1,filename2):
         Lz         = lines[23]
         re         = lines[26]
         dt         = lines[29]
+        ifirst     = lines[30]
+        ilast      = lines[31]
         numscalar  = lines[35]
+        ioutput    = lines[73]
         iswitch_wo = lines[90]
     
         # Removing characters in front of the extracted strings and the comments:
@@ -77,8 +82,17 @@ def read_input_files(filename1,filename2):
         dt         = dt.split('!')[0]
         dt         = dt.split('=')[-1].strip()
         
+        ifirst     = ifirst.split('!')[0]
+        ifirst     = ifirst.split('=')[-1].strip()
+        
+        ilast      = ilast.split('!')[0]
+        ilast      = ilast.split('=')[-1].strip()
+        
         numscalar  = numscalar.split('!')[0]
         numscalar  = numscalar.split('=')[-1].strip()
+        
+        ioutput    = ioutput.split('!')[0]
+        ioutput    = ioutput.split('=')[-1].strip()
     
         iswitch_wo = iswitch_wo.split('!')[0]
         iswitch_wo = iswitch_wo.split('=')[-1].strip()
@@ -95,7 +109,10 @@ def read_input_files(filename1,filename2):
         Lz         = np.float64(Lz)
         re         = np.float64(re)
         dt         = np.float64(dt)
+        ifirst     = int(ifirst)
+        ilast      = int(ilast)
         numscalar  = int(numscalar)
+        ioutput    = int(ioutput)
         iswitch_wo = int(iswitch_wo)
     
     # Opening of 'post.prm' file
@@ -149,7 +166,8 @@ def read_input_files(filename1,filename2):
         ny = (ny - 1) // 2 + 1
         
     # Return to main program with extracted parameters
-    return itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq 
+    return (itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo, 
+            add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     
