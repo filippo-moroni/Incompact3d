@@ -83,9 +83,9 @@ if itype == 13:
     print()
     
     # Domain dimensions
-    xlx = scalex*bl_thickness   # domain dimension in x direction
-    yly = scaley*bl_thickness   # domain dimension in y direction
-    zlz = scalez*bl_thickness   # domain dimension in z direction           
+    xlx = round(scalex*bl_thickness, 3)   # domain dimension in x direction
+    yly = round(scaley*bl_thickness, 3)   # domain dimension in y direction
+    zlz = round(scalez*bl_thickness, 3)   # domain dimension in z direction           
 
 # Channel    
 elif itype == 3:
@@ -221,23 +221,23 @@ delta_nu_peak = nu / sh_vel_peak
 delta_y1 = yp[1] - yp[0]
 
 # Rescaling the mesh spacings with viscous unit at peak cf or at steady state
-delta_x_nd_peak  = delta_x  / delta_nu_peak
-delta_y1_nd_peak = delta_y1 / delta_nu_peak
-delta_z_nd_peak  = delta_z  / delta_nu_peak
+delta_x_nd_peak  = round(delta_x  / delta_nu_peak, 1)
+delta_y1_nd_peak = round(delta_y1 / delta_nu_peak, 1)
+delta_z_nd_peak  = round(delta_z  / delta_nu_peak, 1)
 
 # Non-dimensional domain dimensions at peak cf or at steady state (nd: non-dimensional)
-xlx_nd_peak = xlx / delta_nu_peak
-yly_nd_peak = yly / delta_nu_peak
-zlz_nd_peak = zlz / delta_nu_peak
+xlx_nd_peak = round(xlx / delta_nu_peak, 1)
+yly_nd_peak = round(yly / delta_nu_peak, 1)
+zlz_nd_peak = round(zlz / delta_nu_peak, 1)
 
 #!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC or at steady state ---!
    
-CFL = uref * dt / delta_x      
-D =   nu * dt / (delta_y1**2)    
-Pe =  uref * delta_x / nu
+CFL = round(uref * dt / delta_x,       1)      
+D =   round(nu   * dt / (delta_y1**2), 1)    
+Pe =  round(uref * delta_x / nu,       1)
         
 # Stability parameter (S < 1) (see Thompson et al. (1985)) 
-S = ((uref**2)*dt)/(2.0*nu)
+S = round(((uref**2)*dt)/(2.0*nu), 1)
 
 #!--- Calculation of y-dir. geometric quantities ---!
 
@@ -262,6 +262,7 @@ nsnap = (ilast - ifirst + 1) // ioutput + 1
 # Total memory requirements [GB]: we are assuming to save velocity, pressure and 
 # one scalar field in double precision.
 mem_tot = nsnap * n_tot * 5 * 8.0 * (10**-9)
+mem_tot = round(mem_tot, 3)
 
 #!--------------------------------------------------!
 
@@ -293,24 +294,24 @@ if itype == 13:
     delta_nu_500  = nu / sh_vel_500
 
     # Mesh sizes at IC
-    delta_x_nd_ic  = delta_x  / delta_nu_ic
-    delta_y1_nd_ic = delta_y1 / delta_nu_ic
-    delta_z_nd_ic  = delta_z  / delta_nu_ic
+    delta_x_nd_ic  = round(delta_x  / delta_nu_ic, 1)
+    delta_y1_nd_ic = round(delta_y1 / delta_nu_ic, 1)
+    delta_z_nd_ic  = round(delta_z  / delta_nu_ic, 1)
     
     # Mesh sizes at Re_tau = 500
-    delta_x_nd_500  = delta_x  / delta_nu_500
-    delta_y1_nd_500 = delta_y1 / delta_nu_500
-    delta_z_nd_500  = delta_z  / delta_nu_500
+    delta_x_nd_500  = round(delta_x  / delta_nu_500, 1)
+    delta_y1_nd_500 = round(delta_y1 / delta_nu_500, 1)
+    delta_z_nd_500  = round(delta_z  / delta_nu_500, 1)
             
     # Non-dimensional domain dimensions at IC (nd: non-dimensional)  
-    xlx_nd_ic = xlx / delta_nu_ic
-    yly_nd_ic = yly / delta_nu_ic
-    zlz_nd_ic = zlz / delta_nu_ic
+    xlx_nd_ic = round(xlx / delta_nu_ic, 1)
+    yly_nd_ic = round(yly / delta_nu_ic, 1)
+    zlz_nd_ic = round(zlz / delta_nu_ic, 1)
     
     # Non-dimensional domain dimensions at Re_tau = 500 (nd: non-dimensional)  
-    xlx_nd_500 = xlx / delta_nu_500
-    yly_nd_500 = yly / delta_nu_500
-    zlz_nd_500 = zlz / delta_nu_500
+    xlx_nd_500 = round(xlx / delta_nu_500, 1)
+    yly_nd_500 = round(yly / delta_nu_500, 1)
+    zlz_nd_500 = round(zlz / delta_nu_500, 1)
        
     #!-----------------------------------------------------------------------!
     
@@ -373,7 +374,7 @@ if itype == 13:
     delta_yd = yp[c] - yp[c-1]
        
     # BL edge
-    delta_yd_nd_500 = delta_yd / delta_nu_500
+    delta_yd_nd_500 = round(delta_yd / delta_nu_500, 1)
     
     #!---------------------------------------------!
 
@@ -426,13 +427,13 @@ if itype == 13:
     print('Domain dimension, Ly = ', yly)
     print('Domain dimension, Lz = ', zlz)
     print()
-    print('Length of the domain (Lx+) at IC:', xlx_nd_ic)
-    print('Height of the domain (Ly+) at IC:', yly_nd_ic)
-    print('Width  of the domain (Lz+) at IC:', zlz_nd_ic)
+    print('Length of the domain (Lx+) at IC:          ', xlx_nd_ic)
+    print('Height of the domain (Ly+) at IC:          ', yly_nd_ic)
+    print('Width  of the domain (Lz+) at IC:          ', zlz_nd_ic)
     print()
-    print('Length of the domain (Lx+) at peak cf:', xlx_nd_peak)
-    print('Height of the domain (Ly+) at peak cf:', yly_nd_peak)
-    print('Width  of the domain (Lz+) at peak cf:', zlz_nd_peak)
+    print('Length of the domain (Lx+) at peak cf:     ', xlx_nd_peak)
+    print('Height of the domain (Ly+) at peak cf:     ', yly_nd_peak)
+    print('Width  of the domain (Lz+) at peak cf:     ', zlz_nd_peak)
     print()
     print('Length of the domain (Lx+) at Re_tau = 500:', xlx_nd_500)
     print('Height of the domain (Ly+) at Re_tau = 500:', yly_nd_500)
@@ -583,8 +584,8 @@ if itype == 13:
             ]
            
     data4 = [
-             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500", "n_tot" ],
-             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,   n_tot  ],
+             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500", "n_tot", "mem_tot [GB]" ],
+             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,   n_tot,   mem_tot       ],
             ] 
 
     # Create the tables using tabulate
@@ -631,6 +632,7 @@ if itype == 13:
          f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")
          f.write("sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).\n")
          f.write("n_tot:         Total number of grid points.\n")
+         f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
          f.write("\n")
          f.write("!-------------------------------------!\n")
          f.write("\n")

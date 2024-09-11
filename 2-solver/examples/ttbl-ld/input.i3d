@@ -12,14 +12,14 @@ p_row=0               ! Row partition
 p_col=0               ! Column partition
 
 ! Mesh
-nx=960                ! X-direction nodes
+nx=1440               ! X-direction nodes
 ny=649                ! Y-direction nodes
 nz=960                ! Z-direction nodes
 istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 beta = 2.0            ! Refinement parameter (beta)
 
 ! Domain dimensions
-xlx = 265.2           ! Lx (Size of the box in x-direction)
+xlx = 397.8           ! Lx (Size of the box in x-direction)
 yly = 66.3            ! Ly (Size of the box in y-direction)
 zlz = 132.6           ! Lz (Size of the box in z-direction)
 
@@ -76,7 +76,7 @@ ioutput_cf = 200      ! Frequency for saving cf and related quantities
 ioutput_plane = 200   ! Frequency for saving planes for visualization
 ilist = 25            ! Frequency for writing to screen (out/log file)
 isnap = 1             ! Save snapshots (0: no, 1: yes)
-ivisu = 1             ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)      
+ivisu = 0             ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)      
 nvisu = 1             ! Size for visualisation collection (2: every 2 mesh nodes, 4: every 4 mesh nodes)
 output2D = 0          ! Writing snapshots on a plane (0: no, 1: x-dir, 2: y-dir, 3: z-dir)
 start_output = 1      ! Time-step at which we start (>=) to save snapshots (valid for both 3d and 2d snapshots) 
