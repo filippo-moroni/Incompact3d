@@ -47,10 +47,9 @@ from set_flow_parameters import set_flow_parameters
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
-(itype, nx, ny, nz, istret, beta, 
- Lx, Ly, Lz, re, dt, numscalar, iswitch_wo, 
- add_string, file1, filen, icrfile, nr, 
- post_mean, post_vort, post_diss, post_corz, post_tke_eq) = read_input_files('input.i3d','post.prm')
+(itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo,  
+ add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
+) = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
 

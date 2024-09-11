@@ -166,8 +166,13 @@ def read_input_files(filename1,filename2):
         ny = (ny - 1) // 2 + 1
         
     # Return to main program with extracted parameters
-    return (itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo, 
-            add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq) 
+    return (
+            # From 'input.i3d'
+            itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo,
+            
+            # From 'post.prm' 
+            add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
+           ) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
     
