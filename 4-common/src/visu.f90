@@ -124,7 +124,7 @@ contains
   ! subroutine doesn't do anything.
   ! XXX: Call after all visu initialisation (main visu + case visu)
   !-----------------------------------------------------------------------------!
-  subroutine visu_ready ()
+  subroutine visu_ready()
 
     use decomp_2d_io, only : decomp_2d_open_io, decomp_2d_append_mode, decomp_2d_write_mode
 
