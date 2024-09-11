@@ -14,9 +14,6 @@
 # This is a .sh file for running with incompact3d in 
 # Leonardo Data Centric General Purpose (DCGP).
 
-# Loading of cmake
-#module load cmake 
-
 # Loading of modules (Intel)
 module load intel-oneapi-compilers/2023.2.1
 module load intel-oneapi-mpi/2021.10.0
