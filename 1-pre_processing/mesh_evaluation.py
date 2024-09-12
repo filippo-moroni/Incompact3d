@@ -159,7 +159,7 @@ S = round(((uref**2)*dt)/(2.0*nu), 2)
 
 # Calculate total number of points, number of snapshots of a single flow realization, 
 # total memory requirement for all fields and estimated CPUh.
-(n_tot, snap, mem_tot, cpuh) = mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):    
+(n_tot, snap, mem_tot, cpuh) = mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz)   
     
 #!--------------------------------------------------!
 
