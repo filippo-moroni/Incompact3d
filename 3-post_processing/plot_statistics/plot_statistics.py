@@ -1,16 +1,22 @@
-#!---------------------------------------------------------!
-#! With this script, we perform plotting of statistics     !
-#! for TTBLs and channel flow simulations:                 !
-#!                                                         !
-#! - mean statistics (mean[u], var[u], etc.);              !
-#! - mean total dissipation (to be done);                  !
-#! - correlation coefficients for spanwise correlations.   !
-#!                                                         !
-#! Calculated and stored:                                  !
-#!                                                         !
-#! - non-dimensional grid spacings and domain dimensions.  !
-#!---------------------------------------------------------!
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we perform plotting of statistics for TTBLs 
+!              and channel flow simulations:                 
+!               
+!               - mean statistics (mean[u], var[u], etc.);              
+!               - mean total dissipation (to be done);                  
+!               - correlation coefficients for spanwise correlations.  
+!                                                         
+!              Calculated and stored:                                  
+!                                                         
+!               - non-dimensional grid spacings and domain dimensions.
+!                         
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+# Libraries
 import sys
 import os
 import numpy as np
