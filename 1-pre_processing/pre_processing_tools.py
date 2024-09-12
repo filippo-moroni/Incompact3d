@@ -71,7 +71,7 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
     cpuh = performance_index * n_tot * ilast * nrealiz * sf
     cpuh = round(cpuh, 1)
     
-    return(n_tot, snap, mem_tot, cpuh)
+    return(n_tot, nsnap, mem_tot, cpuh)
     
  
      
