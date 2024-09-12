@@ -1,10 +1,15 @@
-#!---------------------------------------------------------!
-#! With this script, we perform plotting of pre-multiplied !
-#! 1D energy spectra of correlation functions.             !
-#!                                                         !
-#! Inspired by 'spectra.py' by G. Boga.                    !
-#!---------------------------------------------------------!
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: In this script we perform plotting of 1D energy spectra of 
+!              correlation functions, with possibility to select between 
+!              pre-multiplied or standard spectrum and to specify the 
+!              y+ location.
+!              Inspired by 'spectra.py' by G. Boga.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
+# Libraries
 import sys
 import os
 import numpy as np
@@ -33,7 +38,7 @@ from set_flow_parameters import set_flow_parameters
 #!--------------------------------------------------------------------------------------!
 
 # Create folder to store plots
-os.makedirs('plots',     mode=0o777, exist_ok=True)
+os.makedirs('plots', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
