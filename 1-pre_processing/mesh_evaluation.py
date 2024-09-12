@@ -118,17 +118,19 @@ nyh = ((ny - 1) // 2) + 1
 yp   = np.zeros(ny)
 Uo   = np.zeros(ny)
 
-# Call external subroutine for stretching of the mesh
-yp = stretching_mesh_y(ny, yly, beta, istret)
 
-# Call external subroutine for printing geometric quantities of the mesh
-calculate_geometric_quantities(ny, yp)
 
 #!--- Calculations valid for both TTBL and Channel ---!
 
 # Calculate the spacings along x and z (uniform)
 delta_x = xlx / nx
 delta_z = zlz / nz
+
+# Call external subroutine for stretching of the mesh
+yp = stretching_mesh_y(ny, yly, beta, istret)
+
+# Call external subroutine for printing geometric quantities of the mesh
+calculate_geometric_quantities(ny, yp, delta_x)
 
 # Shear velocity at peak cf or at steady state 
 sh_vel_peak = np.sqrt((cf/2.0)) * uref

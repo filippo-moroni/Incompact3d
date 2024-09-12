@@ -130,7 +130,7 @@ def stretching_mesh_y(ny, yly, beta, istret):
 !-----------------------------------------------------------------------------!
 """
 
-def calculate_geometric_quantities(ny, yp):
+def calculate_geometric_quantities(ny, yp, delta_x):
 
     # Delta y
     delta_y = np.zeros(ny)
