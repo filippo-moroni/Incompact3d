@@ -58,11 +58,11 @@
 │      17 │    148 │      0.108 │     0.986644 │  0.00132782 │     0.0591608 │      0.04468 │
 ╘═════════╧════════╧════════════╧══════════════╧═════════════╧═══════════════╧══════════════╛
 !--- Memory (storage) requirement and CPUh ---!
-╒══════════╤════════════════╤═══════════╕
-│    n_tot │   mem_tot [GB] │   nrealiz │
-╞══════════╪════════════════╪═══════════╡
-│ 66457600 │         23.925 │         1 │
-╘══════════╧════════════════╧═══════════╛
+╒══════════╤════════════════╤═══════════╤═════════╕
+│    n_tot │   mem_tot [GB] │   nrealiz │    CPUh │
+╞══════════╪════════════════╪═══════════╪═════════╡
+│ 66457600 │         23.925 │         1 │ 13090.1 │
+╘══════════╧════════════════╧═══════════╧═════════╛
 
 !--- INFO: ---!
 We are employing 3 different cf values:
@@ -86,6 +86,7 @@ sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (20
 n_tot:         Total number of grid points.
 mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).
 nrealiz:       Number of flow realizations considered.
+CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).
 
 !-------------------------------------!
 
