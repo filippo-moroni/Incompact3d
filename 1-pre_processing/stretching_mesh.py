@@ -5,7 +5,11 @@
 !-----------------------------------------------------------------------------!
 """
 
+# Libraries
 import numpy as np
+
+# Import the plotting_params module
+import plot_params as pp
 
 def stretching_mesh_y(ny, yly, beta, istret):
 

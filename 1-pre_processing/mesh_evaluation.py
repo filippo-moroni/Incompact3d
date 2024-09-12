@@ -112,10 +112,11 @@ elif itype == 3:
 nyh = ((ny - 1) // 2) + 1
 
 # Work variables
+yp   = np.zeros(ny)
 Uo   = np.zeros(ny)
 
 # Call external subroutine for stretching of the mesh
-
+yp = stretching_mesh_y(ny, yly, beta, istret)
 
 #!--- Calculations valid for both TTBL and Channel ---!
 
