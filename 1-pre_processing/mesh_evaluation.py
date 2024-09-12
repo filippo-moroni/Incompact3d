@@ -38,7 +38,7 @@ from read_files import read_input_files
 from set_flow_parameters import set_flow_parameters
 
 # Import function to calculate stretching of the mesh
-from mesh_subs import stretching_mesh_y
+from mesh_subs import stretching_mesh_y, calculate_geometric_quantities
 
 #!--------------------------------------------------------------------------------------!
 
@@ -120,6 +120,9 @@ Uo   = np.zeros(ny)
 
 # Call external subroutine for stretching of the mesh
 yp = stretching_mesh_y(ny, yly, beta, istret)
+
+# Call external subroutine for printing geometric quantities of the mesh
+calculate_geometric_quantities(ny, yp)
 
 #!--- Calculations valid for both TTBL and Channel ---!
 

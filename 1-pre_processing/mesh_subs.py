@@ -1,3 +1,11 @@
+
+"""
+This file stores Python subroutines for the mesh of Incompact3d,
+used in the setup of simulations.
+
+"""
+
+
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Adaptation of original 'stretching' subroutine of Incompact3d. 
@@ -105,13 +113,25 @@ def stretching_mesh_y(ny, yly, beta, istret):
             yeta[j] = j*(1.0/ny)
             yp[j] = -beta * np.cos(pi*yeta[j]) / np.sin(yeta[j]*pi)
     
+    return yp
+
     #!-----------------------------------------------------------------------------!
-    
-    """
-    ! Calculate and write to .txt file geometric quantities to check against values
-    ! calculated by the default subroutine of Incompact3d.
-    
-    """
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculate and write to .txt file geometric quantities: 
+!               - y-coordinates of elements' faces (yp);
+!               - height of elements in y-direction (delta_y);
+!               - Growth-Rate in y-direction (GR_y);
+!               - Aspect-Ratio in xy plane (AR_xy).
+!              Used to check yp values with default ones of Incompact3d and
+!              to further analyse the geometric properties of the elements.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+def calculate_geometric_quantities(ny, yp):
+
     # Delta y
     delta_y = np.zeros(ny)
 
@@ -153,7 +173,5 @@ def stretching_mesh_y(ny, yly, beta, istret):
                     f"{AR_xy[j]:<{pp.c_w}}\n"   )
 
     #!-----------------------------------------------------------------------------!
-    return yp
-
 
 
