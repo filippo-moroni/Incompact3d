@@ -5,13 +5,7 @@ used in the setup of simulations.
 
 """
 
-
-"""
-!-----------------------------------------------------------------------------!
-! DESCRIPTION: Adaptation of original 'stretching' subroutine of Incompact3d. 
-!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!-----------------------------------------------------------------------------!
-"""
+#!-----------------------------------------------------------------------------!
 
 # Libraries
 import sys
@@ -27,6 +21,15 @@ sys.path.append(config_path)
 
 # Import the plotting_params module
 import plot_params as pp
+
+#!-----------------------------------------------------------------------------!
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Adaptation of original 'stretching' subroutine of Incompact3d. 
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 def stretching_mesh_y(ny, yly, beta, istret):
 
@@ -167,10 +170,10 @@ def calculate_geometric_quantities(ny, yp, delta_x):
                 f"{'AR_xy':<{pp.c_w}}\n"   )
             
         for j in range(0,ny):
-            f.write(f"{yp[j]:<{pp.c_w}}, "      +
-                    f"{delta_y[j]:<{pp.c_w}}, " + 
-                    f"{gr_y[j]:<{pp.c_w}}, "    +
-                    f"{AR_xy[j]:<{pp.c_w}}\n"   )
+            f.write(f"{yp[j]:{pp.fs}}, "      +
+                    f"{delta_y[j]:{pp.fs}}, " + 
+                    f"{gr_y[j]:{pp.fs}}, "    +
+                    f"{AR_xy[j]:{pp.fs}}\n"   )
 
     #!-----------------------------------------------------------------------------!
 

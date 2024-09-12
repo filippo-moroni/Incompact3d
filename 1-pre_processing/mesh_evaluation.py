@@ -114,12 +114,6 @@ elif itype == 3:
 # Number of points in the channel half (h: half)
 nyh = ((ny - 1) // 2) + 1
 
-# Work variables
-yp   = np.zeros(ny)
-Uo   = np.zeros(ny)
-
-
-
 #!--- Calculations valid for both TTBL and Channel ---!
 
 # Calculate the spacings along x and z (uniform)
@@ -245,6 +239,9 @@ if itype == 13:
     #!-----------------------------------------------------------------------!
     
     #!--- Check on the initial velocity profile ---!
+    
+    # Define the array
+    Uo = np.zeros(ny)
         
     # Initial velocity profile (tanh) (Kozul et al. (2016))
     for j in range(0, ny):
