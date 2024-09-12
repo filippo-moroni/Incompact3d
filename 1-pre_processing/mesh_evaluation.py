@@ -389,6 +389,8 @@ elif itype == 3:
     
 print('Total number of points: n_tot = ', n_tot)
 print()
+print('Number of snapshots for a single flow realization: nsnap = ', nsnap)
+print()
 print('Total memory requirement for snapshots [GB]: mem_tot = ', mem_tot)
 print()
 print('Estimated CPUh: cpuh = ', cpuh)
@@ -406,8 +408,8 @@ if itype == 13:
             ] 
    
     data2 = [
-             ["beta", "nu", "Uwall", "dt", "twd", "Re"],
-             [ beta,   nu,   uwall,   dt,   twd,   re ],
+             ["beta", "nu", "Uwall", "dt", "twd", "Re", "nrealiz"],
+             [ beta,   nu,   uwall,   dt,   twd,   re,   nrealiz ],
             ]
     
     data3 = [
@@ -459,8 +461,8 @@ if itype == 13:
             ]
             
     data5 = [
-             ["n_tot", "mem_tot [GB]", "nrealiz", "CPUh" ],
-             [ n_tot,   mem_tot,        nrealiz,   cpuh  ],                     
+             ["n_tot", "nsnap", "mem_tot [GB]",  "CPUh" ],
+             [ n_tot,   nsnap,   mem_tot,         cpuh  ],                     
             ] 
 
     # Create the tables using tabulate
@@ -511,6 +513,7 @@ if itype == 13:
          f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")
          f.write("sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).\n")
          f.write("n_tot:         Total number of grid points.\n")
+         f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
          f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
          f.write("nrealiz:       Number of flow realizations considered.\n")
          f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
@@ -520,7 +523,10 @@ if itype == 13:
          f.write("\n")
          f.write("\n")
          
-# File creation and saving for Channel         
+# File creation and saving for Channel
+
+#*** this must be completed ***
+         
 elif itype == 3:
     
     data = [
