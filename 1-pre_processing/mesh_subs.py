@@ -170,10 +170,10 @@ def calculate_geometric_quantities(ny, yp, delta_x):
                 f"{'AR_xy':<{pp.c_w}}\n"   )
             
         for j in range(0,ny):
-            f.write(f"{yp[j]:{pp.fs}}, "      +
-                    f"{delta_y[j]:{pp.fs}}, " + 
-                    f"{gr_y[j]:{pp.fs}}, "    +
-                    f"{AR_xy[j]:{pp.fs}}\n"   )
+            f.write(f"{yp[j]:{pp.fs6}}, "      +
+                    f"{delta_y[j]:{pp.fs6}}, " + 
+                    f"{gr_y[j]:{pp.fs6}}, "    +
+                    f"{AR_xy[j]:{pp.fs6}}\n"   )
 
     #!-----------------------------------------------------------------------------!
 

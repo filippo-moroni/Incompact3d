@@ -159,8 +159,23 @@ S = round(((uref**2)*dt)/(2.0*nu), 2)
 
 # Calculate total number of points, number of snapshots of a single flow realization, 
 # total memory requirement for all fields and estimated CPUh.
-(n_tot, snap, mem_tot, cpuh) = mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz)   
+(n_tot, snap, mem_tot, cpuh) = mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz)
+
+#!--------------------------------------------------!
+
+# Calculation of the number of mesh nodes in the viscous sublayer 
+# at cf peak or at steady state.
+npvis = 0     # number of points viscous sublayer
+height = 0.0  # cumulative height in viscous unit (y+)
     
+# Rescaling y-coordinates with viscous unit at peak cf
+yp_peak = yp / delta_nu_peak
+      
+for j in range(1, ny):
+    if height + yp_peak[j] - yp_peak[j-1] <= 5.0:
+        npvis += 1 
+    height += yp_peak[j] - yp_peak[j-1]
+        
 #!--------------------------------------------------!
 
 # This part is valid for TTBLs 
@@ -247,21 +262,7 @@ if itype == 13:
         height += yp_ic[j] - yp_ic[j-1]
     	
     #!---------------------------------------------!	
-    			 
-    # Calculation of the number of mesh nodes in the viscous sublayer at cf peak
-    npvis = 0     # number of points viscous sublayer
-    height = 0.0  # cumulative height in viscous unit (y+)
-    
-    # Rescaling y-coordinates with viscous unit at peak cf
-    yp_peak = yp / delta_nu_peak
-      
-    for j in range(1, ny):
-        if height + yp_peak[j] - yp_peak[j-1] <= 5.0:
-            npvis += 1 
-        height += yp_peak[j] - yp_peak[j-1]
-    
-    #!---------------------------------------------!
-        
+    			         
     # Delta y+ at the BL thickness (d: delta) at Re_tau = 500
     c = 0         # integer to store the index (c: counter)
     
