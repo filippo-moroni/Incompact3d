@@ -37,6 +37,9 @@ from read_files import read_input_files
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
+# Import function to calculate stretching of the mesh
+from mesh_subs import stretching_mesh_y
+
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
