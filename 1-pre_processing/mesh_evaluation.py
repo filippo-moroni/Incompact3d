@@ -22,7 +22,7 @@ from tabulate import tabulate
 current_dir = os.path.dirname(__file__)
 
 # Add the path to the 'python_common' directory relative to the current directory 
-config_path = os.path.abspath(os.path.join(current_dir, '../../', '3-post_processing/python_common'))
+config_path = os.path.abspath(os.path.join(current_dir, '../', '3-post_processing/python_common'))
 sys.path.append(config_path)
 
 # Import the plotting_params module
@@ -276,9 +276,12 @@ Reference from ARIES runs of TTBL simulations:
 # Ratio of CPUh and product of number of points and number of total time-steps
 performance_index = 13000.0 / (66.0 * (10**6) * 320000)  
 
+# Safety factor for estimation of total CPUh required
+sf = 1.0  
+
 # Estimated CPUh (if we assume at least 100'000 points per core)
-sf = 1.0  # safety factor
-cpuh_tot = performance_index * n_tot * ilast * nrealiz * sf 
+cpuh = performance_index * n_tot * ilast * nrealiz * sf
+cpuh = round(cpuh, 3) 
 
 #!--------------------------------------------------!
 
@@ -421,14 +424,14 @@ print('!--- Flow case specific info ---!')
 print()
 
 if itype == 3:
-    print('Reference velocity, U_ref is the bulk velocity, U_bulk)
+    print('Reference velocity, U_ref is the bulk velocity, U_bulk')
     print()
     print('Skin friction coefficient at steady state, cf = ', cf)
     print()
     print('Estimated friction Reynolds number, Re_tau ~ ', re_tau)
     
 elif itype == 13:
-    print('Reference velocity, U_ref is the wall velocity, Uwall)
+    print('Reference velocity, U_ref is the wall velocity, Uwall')
     print()
     print('Trip wire diameter, twd (or D) = ', twd)
     print()
