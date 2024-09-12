@@ -107,22 +107,12 @@ elif itype == 3:
     # Revert to total number of ny points for channel (they are halved in 'read_input_files')
     ny = (ny - 1) * 2 + 1          
 
-           
-
+          
 # Number of points in the channel half (h: half)
 nyh = ((ny - 1) // 2) + 1
 
 # Work variables
 Uo   = np.zeros(ny)
-
-# Delta y
-delta_y = np.zeros(ny)
-
-# Growth-Rate (GR) of grid elements in y-direction
-gr_y = np.zeros(ny)
-
-# AR xy-plane
-AR_xy = np.zeros(ny)
 
 # Call external subroutine for stretching of the mesh
 
@@ -160,20 +150,6 @@ Pe =  round(uref * delta_x / nu,       2)
         
 # Stability parameter (S < 1) (see Thompson et al. (1985)) 
 S = round(((uref**2)*dt)/(2.0*nu), 2)
-
-#!--- Calculation of y-dir. geometric quantities ---!
-
-# Delta y of grid elements
-for j in range(1,ny):
-    delta_y[j] = yp[j] - yp[j-1]
-            
-# Calculate the GR (Growth-Rate) of the elements in y-direction
-for j in range(2,ny):
-    gr_y[j] = delta_y[j]/delta_y[j-1]
-        
-# AR of the elements in xy plane (width / heigth)
-for j in range(1,ny):
-    AR_xy[j] = delta_x / delta_y[j]
     
 #!--- Estimation of memory requirements and CPUh ---!
 
@@ -439,25 +415,6 @@ print('Estimated CPUh: cpuh = ', cpuh)
 print()
 
 #!-------------------------------------------------!
-
-#!--- Writing the results to .txt files ---!
-
-"""  
-# Write yp, delta_y and GR_y in a .txt file
-# (checked, yp values are equal to the ones printed by Incompact3d)
-
-with open('mesh_y.txt', 'w') as f:
-    f.write(f"{'yp':<{pp.c_w}}, "      +
-            f"{'delta_y':<{pp.c_w}}, " +
-            f"{'gr_y':<{pp.c_w}}, "    +
-            f"{'AR_xy':<{pp.c_w}}\n"   )
-            
-    for j in range(0,ny):
-        f.write(f"{yp[j]:<{pp.c_w}}, "      +
-                f"{delta_y[j]:<{pp.c_w}}, " + 
-                f"{gr_y[j]:<{pp.c_w}}, "    +
-                f"{AR_xy[j]:<{pp.c_w}}\n"   )
-"""
     
 # File creation and saving for TTBL
 if itype == 13: 
