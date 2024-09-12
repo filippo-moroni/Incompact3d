@@ -1,20 +1,13 @@
-#!---------------------------------------------------------!
-#! mesh_evaluation.py:                                     !
-#! improved Python version of 'mesh_evaluation.f90'.       !
-#!                                                         !
-#! Info:                                                   !
-#!  - Same values are obtained from both codes (tested).   !
-#!  - y-coordinates at the center of mesh nodes are not    !
-#!    evaluated here.                                      !
-#!---------------------------------------------------------!
-
-#!------------------- Description: ------------------------!
-# 
-# In this script we calculate mesh, numerics and 
-# flow parameters for temporal TBL simulations and for
-# channel flow simulations
-# (see the related .pdf file for more details).
-#!---------------------------------------------------------!
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: In this script we calculate mesh, numerics and 
+!              flow parameters to setup the following flowcases:
+!              - Channel flow 
+!              - Temporal Turbulent Boundary Layer (TTBL)
+!              See the related .pdf file for more details.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 # Libraries
 import sys
@@ -41,7 +34,7 @@ from plot_subs import set_plot_settings, save_and_show_plot
 # Import functions to read 'input.i3d', 'post.prm' files
 from read_files import read_input_files
 
-# Import function to setup flow parameters (kinematic viscosity only at the moment)
+# Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!
@@ -51,10 +44,10 @@ from set_flow_parameters import set_flow_parameters
  add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
 ) = read_input_files('input.i3d','post.prm')
 
-#!--------------------------------------------------------------------------------------!
-
-#!--- Parameters ---!
+# Set flow parameters
 uwall, nu, twd = set_flow_parameters(itype, re)
+
+#!--------------------------------------------------------------------------------------!
 
 #!--- Distinguish between flow cases ---!
 

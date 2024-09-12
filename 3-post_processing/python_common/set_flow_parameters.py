@@ -1,8 +1,9 @@
-#!-------------------------------------------!
-#! Small Python function to set up           !
-#! flow parameters                           !
-#! (kinematic viscosity only at the moment). !
-#!-------------------------------------------!
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Small Python function to set up flow parameters.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 import numpy as np
 
