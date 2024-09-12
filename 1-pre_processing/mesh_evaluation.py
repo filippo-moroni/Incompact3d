@@ -57,7 +57,7 @@ if itype == 13:
     # Reference velocity (TTBL: wall velocity)
     uref = uwall
     
-    # Displacement thickness of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))  
+    # BL thickness delta_99 of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))  
     bl_thickness = 22.1*twd  
     
     # Maximum cf estimated at peak for TTBL (Cimarelli et al. (2024))
@@ -65,14 +65,14 @@ if itype == 13:
     
     #!--- Ask the user to insert the domain dimensions based on TTBL thickness delta at Re_tau = 500 ---!
     print()
-    scalex = float(input("Enter the scale factor for domain dimension in x-dir. based on BL thickness delta: "))
+    scalex = float(input("Enter the scale factor for domain dimension in x-dir. based on BL thickness delta_99: "))
     print()
     
     # Common value for y-direction is 3.0 (Kozul et al. (2016), Cimarelli et al. (2024)), 
     # but values around 2.0 should still be enough to avoid confiment effects of upper boundary.
     scaley = 3.0
     
-    scalez = float(input("Enter the scale factor for domain dimension in z-dir. based on BL thickness delta: "))
+    scalez = float(input("Enter the scale factor for domain dimension in z-dir. based on BL thickness delta_99: "))
     print()
     
     # Domain dimensions
@@ -96,12 +96,15 @@ elif itype == 3:
     # Steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004))
     cf = 0.00793
     
-    # Domain dimensions
-    xlx = Lx #xlx = 21.0               # domain dimension in x direction
-    yly = Ly #yly = 2.0                # domain dimension in y direction
-    zlz = Lz #zlz = 4.2                # domain dimension in z direction
+    # Domain dimensions (as an example, xlx is the quantity used for calculations, while Lx is the read variable from 'input.i3d'
+    xlx = Lx  # domain dimension in x direction
+    yly = Ly  # domain dimension in y direction
+    zlz = Lz  # domain dimension in z direction
     
-    # Revert to total number of ny points for channel (they are halved in read_input_files)
+    # Quadrio & Ricco (2004)
+    # xlx, yly, zlz = 21.0, 2.0, 4.2
+    
+    # Revert to total number of ny points for channel (they are halved in 'read_input_files')
     ny = (ny - 1) * 2 + 1          
 
 # If periodic BC is imposed along y, nym = ny, otherwise nym = ny - 1
@@ -127,10 +130,7 @@ gr_y = np.zeros(ny)
 # AR xy-plane
 AR_xy = np.zeros(ny)
 
-# Total number of points
-n_tot = nx*ny*nz
-
-# Start of calculations
+#!--- Start of calculations ---!
 yinf = -yly/2.0
 den = 2.0 * beta * yinf
 xnum = -yinf - np.sqrt(pi*pi*beta*beta + yinf*yinf)
@@ -250,7 +250,10 @@ for j in range(2,ny):
 for j in range(1,ny):
     AR_xy[j] = delta_x / delta_y[j]
     
-#!--- Estimation of memory requirements ---!
+#!--- Estimation of memory requirements and CPUh ---!
+
+# Total number of points
+n_tot = nx*ny*nz
 
 # Calculate total number of snapshots
 # Last '+1' is to count also the 1st time step (that is saved)
@@ -261,8 +264,23 @@ nsnap = (ilast - ifirst + 1) // ioutput + 1
 mem_tot = nsnap * n_tot * 5 * 8.0 * (10**-9) * nrealiz
 mem_tot = round(mem_tot, 3)
 
-#!--------------------------------------------------!
 
+"""
+Reference from ARIES runs of TTBL simulations:
+ - ntot ~ 66 mln points;
+ - CPUh ~ 13300;
+ - points / nranks ~ 600'000;
+ - ts_tot = 320'000.
+"""
+
+# Ratio of CPUh and product of number of points and number of total time-steps
+performance_index = 13000.0 / (66.0 * (10**6) * 320000)  
+
+# Estimated CPUh (if we assume at least 100'000 points per core)
+sf = 1.0  # safety factor
+cpuh_tot = performance_index * n_tot * ilast * nrealiz * sf 
+
+#!--------------------------------------------------!
 
 # This part is valid for TTBLs 
 if itype == 13:
@@ -270,7 +288,7 @@ if itype == 13:
     # Calculating the initial thickness of the shear layer (see Kozul et al. (2016))
     theta_sl = 54.0 * nu / uwall
     
-    # Mean gradient due to initial condition (analytical derivative)  
+    # Mean gradient due to initial condition (analytical derivative) (mg: mean gradient)  
     mg = - uwall / (4.0 * theta_sl) * (1.0 / np.cosh(twd / 2.0 / theta_sl))**2
     
     #!--- Extra shear velocities for TTBL (IC and Re_tau = 500): ---!
@@ -391,21 +409,27 @@ print('Number of mesh nodes in streamwise direction,  nx = ', nx)
 print('Number of mesh nodes in wall normal direction, ny = ', ny)
 print('Number of mesh nodes in spanwise direction,    nz = ', nz)
 print()
-print('Stretching switcher, istret    = ', istret)
-print('Beta parameter, beta           = ', beta)
-print('Kinematic viscosity, nu        = ', nu)
-print('Time step, dt                  = ', dt)
-print('Reynolds number (Re = 1/nu)    = ', re)
+print('Stretching switcher, istret          = ', istret)
+print('Beta parameter, beta                 = ', beta)
+print('Kinematic viscosity, nu              = ', nu)
+print('Time step, dt                        = ', dt)
+print('Reynolds number, Re = 1/nu           = ', re)
+print('Number of flow realizations, nrealiz = ', nrealiz)
+print('Reference velocity, U_ref            = ', uref)
+print()
+print('!--- Flow case specific info ---!')
+print()
 
 if itype == 3:
-    print('Reference velocity U_ref = ', uref)
+    print('Reference velocity, U_ref is the bulk velocity, U_bulk)
     print()
     print('Skin friction coefficient at steady state, cf = ', cf)
     print()
     print('Estimated friction Reynolds number, Re_tau ~ ', re_tau)
     
 elif itype == 13:
-    print('Wall velocity, Uwall           = ', uwall)
+    print('Reference velocity, U_ref is the wall velocity, Uwall)
+    print()
     print('Trip wire diameter, twd (or D) = ', twd)
     print()
     print('!--- Reference data according to Cimarelli et al. (2024): ---!')
@@ -481,16 +505,18 @@ elif itype == 3:
 print('Total number of points: n_tot = ', n_tot)
 print()
 print('Total memory requirement for snapshots [GB]: mem_tot = ', mem_tot)
-print('Number of flow realizations: nrealiz                 = ', nrealiz)
+print()
+print('Estimated CPUh: cpuh = ', cpuh)
 print()
 
-    
 #!-------------------------------------------------!
 
 #!--- Writing the results to .txt files ---!
 
 """  
 # Write yp, delta_y and GR_y in a .txt file
+# (checked, yp values are equal to the ones printed by Incompact3d)
+
 with open('mesh_y.txt', 'w') as f:
     f.write(f"{'yp':<{pp.c_w}}, "      +
             f"{'delta_y':<{pp.c_w}}, " +
@@ -504,47 +530,27 @@ with open('mesh_y.txt', 'w') as f:
                 f"{AR_xy[j]:<{pp.c_w}}\n"   )
 """
     
-# Create data arrays with inputs
-if itype == 13:
-    data = [
-            ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
-            [ nx,         xlx,        xlx/bl_thickness               ],
-            [ ny,         yly,        yly/bl_thickness               ],
-            [ nz,         zlz,        zlz/bl_thickness               ],
-           ] 
-
-    data2 = [
-             ["beta", "nu", "U_ref", "dt", "Re", "cf"],
-             [ beta,   nu,   uref,    dt,   re,   cf ],
-            ]
-            
-elif itype == 3:
-    data = [
-            ["nx/ny/nz", "Lx/Ly/Lz" ],
-            [ nx,       f"{xlx}h"   ],
-            [ ny,       f"{yly}h"   ],
-            [ nz,       f"{zlz}h"   ],
-           ] 
-
-    data2 = [
-             ["beta", "nu", "U_ref", "dt", "Re", "Re_tau", "cf"],
-             [ beta,   nu,   uref,    dt,   re,   re_tau,   cf ],
-            ]
-
-
 # File creation and saving for TTBL
-if itype == 13:    
+if itype == 13: 
+    data1 = [
+             ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
+             [ nx,         xlx,        xlx/bl_thickness               ],
+             [ ny,         yly,        yly/bl_thickness               ],
+             [ nz,         zlz,        zlz/bl_thickness               ],
+            ] 
+   
     data2 = [
-             ["beta", "nu", "uwall", "dt", "twd", "Re"],
+             ["beta", "nu", "Uwall", "dt", "twd", "Re"],
              [ beta,   nu,   uwall,   dt,   twd,   re ],
             ]
+    
     data3 = [
              ["bl_thickness", "cf_max"],
              [ bl_thickness,   cf     ],
             ]
                    
     # Create the tables using tabulate
-    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
+    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
     table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
     
@@ -553,20 +559,20 @@ if itype == 13:
          f.write("!----- Temporal TBL setting parameters -----!\n")
          f.write("\n")
          f.write("!----- Inputs: -----!\n")
-         f.write(table)
+         f.write(table1)
          f.write("\n")
          f.write(table2)
          f.write("\n")
-         f.write("!--- BL thickness @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!\n")
+         f.write("!--- BL thickness delta_99 (bl_t) @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!\n")
          f.write(table3)
                  
     # Create data arrays with outputs
-    data = [
-            ["Lx+/Ly+/Lz+ at IC", "Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at Re_tau = 500" ],
-            [ xlx_nd_ic,           xlx_nd_peak,              xlx_nd_500                   ],
-            [ yly_nd_ic,           yly_nd_peak,              yly_nd_500                   ],
-            [ zlz_nd_ic,           zlz_nd_peak,              zlz_nd_500                   ],
-           ]
+    data1 = [
+             ["Lx+/Ly+/Lz+ at IC", "Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at Re_tau = 500" ],
+             [ xlx_nd_ic,           xlx_nd_peak,              xlx_nd_500                   ],
+             [ yly_nd_ic,           yly_nd_peak,              yly_nd_500                   ],
+             [ zlz_nd_ic,           zlz_nd_peak,              zlz_nd_500                   ],
+            ]
            
     data2 = [
              ["CFL,x", "D,y", "Pé,x", "S,x"],
@@ -582,15 +588,21 @@ if itype == 13:
             ]
            
     data4 = [
-             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500", "n_tot", "mem_tot [GB]", "nrealiz" ],
-             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,   n_tot,   mem_tot,        nrealiz  ],                     
+             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500" ],
+             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500, ],                     
+            ]
+            
+    data5 = [
+             ["n_tot", "mem_tot [GB]", "nrealiz" ],
+             [ n_tot,   mem_tot,        nrealiz  ],                     
             ] 
 
     # Create the tables using tabulate
-    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
+    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
     table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
     table4 = tabulate(data4, headers="firstrow", tablefmt="fancy_grid")
+    table5 = tabulate(data5, headers="firstrow", tablefmt="fancy_grid")
 
     # Save the table as a text file and final informations
     with open("sim_settings.txt", "a") as f:
@@ -598,7 +610,7 @@ if itype == 13:
          f.write("!----- Outputs: -----!\n")
          f.write("\n")
          f.write("!--- Non-dimensional domain dimensions: ---!\n")
-         f.write(table) 
+         f.write(table1) 
          f.write("\n")
          f.write("!--- Numerics-related parameters: ---!\n")
          f.write(table2) 
@@ -608,6 +620,9 @@ if itype == 13:
          f.write("\n")
          f.write("!--- Miscellaneous ---!\n")
          f.write(table4) 
+         f.write("\n")
+         f.write("!--- Memory (storage) requirement and CPUh ---!\n")
+         f.write(table5) 
          f.write("\n")
          f.write("\n")
          f.write("!--- INFO: ---!\n")
@@ -638,7 +653,19 @@ if itype == 13:
          f.write("\n")
          
 # File creation and saving for Channel         
-else:
+elif itype == 3:
+    
+    data = [
+            ["nx/ny/nz", "Lx/Ly/Lz" ],
+            [ nx,       f"{xlx}h"   ],
+            [ ny,       f"{yly}h"   ],
+            [ nz,       f"{zlz}h"   ],
+           ] 
+
+    data2 = [
+             ["beta", "nu", "U_ref", "dt", "Re", "Re_tau", "cf"],
+             [ beta,   nu,   uref,    dt,   re,   re_tau,   cf ],
+            ]
 
     # Create the tables using tabulate
     table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
