@@ -40,6 +40,9 @@ from set_flow_parameters import set_flow_parameters
 # Import function to calculate stretching of the mesh
 from mesh_subs import stretching_mesh_y, calculate_geometric_quantities
 
+# Import function to calculate memory and CPUh of simulation
+from pre_processing_tools import mem_and_cpuh
+
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
@@ -153,41 +156,11 @@ Pe =  round(uref * delta_x / nu,       2)
         
 # Stability parameter (S < 1) (see Thompson et al. (1985)) 
 S = round(((uref**2)*dt)/(2.0*nu), 2)
+
+# Calculate total number of points, number of snapshots of a single flow realization, 
+# total memory requirement for all fields and estimated CPUh.
+(n_tot, snap, mem_tot, cpuh) = mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):    
     
-#!--- Estimation of memory requirements and CPUh ---!
-
-# Total number of points
-n_tot = nx*ny*nz
-
-# Calculate total number of snapshots
-# Last '+1' is to count also the 1st time step (that is saved)
-nsnap = (ilast - ifirst + 1) // ioutput + 1
-
-# Total memory requirements [GB]: we are assuming to save velocity, pressure and 
-# one scalar field in double precision.
-mem_tot = nsnap * n_tot * 5 * 8.0 * (10**-9) * nrealiz
-mem_tot = round(mem_tot, 3)
-
-
-"""
-Reference from ARIES runs of TTBL simulations:
- - ntot ~ 66 mln points;
- - CPUh ~ 13300;
- - points / nranks ~ 600'000;
- - ts_tot = 320'000.
-"""
-
-# Ratio of CPUh and product of number of points and number of total time-steps
-performance_index = 13000.0 / (66.0 * (10**6) * 320000)  
-
-# Safety factor for estimation of total CPUh required
-# In ARIES, clock-frequency is 2.20 GHz
-sf = 1.2  
-
-# Estimated CPUh (if we assume at least 100'000 points per core)
-cpuh = performance_index * n_tot * ilast * nrealiz * sf
-cpuh = round(cpuh, 1) 
-
 #!--------------------------------------------------!
 
 # This part is valid for TTBLs 
