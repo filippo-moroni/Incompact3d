@@ -19,9 +19,9 @@ istret = 3            ! y mesh refinement (0:no, 1:center, 2:both sides, 3:botto
 beta = 2.0            ! Refinement parameter (beta)
 
 ! Domain dimensions
-xlx = 86.8            ! Lx (Size of the box in x-direction)
-yly = 65.1            ! Ly (Size of the box in y-direction)
-zlz = 43.4            ! Lz (Size of the box in z-direction)
+xlx = 88.4            ! Lx (Size of the box in x-direction)
+yly = 66.3            ! Ly (Size of the box in y-direction)
+zlz = 44.2            ! Lz (Size of the box in z-direction)
 
 ! Flow parameters
 re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) (in this case it corresponds to Re_D) 
