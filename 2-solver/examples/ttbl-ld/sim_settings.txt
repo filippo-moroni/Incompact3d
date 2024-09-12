@@ -11,11 +11,11 @@
 │        960 │      132.6 │                               6 │
 ╘════════════╧════════════╧═════════════════════════════════╛
 ╒════════╤═══════╤═════════╤═══════╤═══════╤══════╕
-│   beta │    nu │   uwall │    dt │   twd │   Re │
+│   beta │    nu │   Uwall │    dt │   twd │   Re │
 ╞════════╪═══════╪═════════╪═══════╪═══════╪══════╡
 │      2 │ 0.002 │       1 │ 0.005 │     1 │  500 │
 ╘════════╧═══════╧═════════╧═══════╧═══════╧══════╛
-!--- BL thickness @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!
+!--- BL thickness delta_99 (bl_t) @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!
 ╒════════════════╤══════════╕
 │   bl_thickness │   cf_max │
 ╞════════════════╪══════════╡
@@ -52,11 +52,17 @@
 │ delta_yd+ │ /    │ /         │           6.1  │
 ╘═══════════╧══════╧═══════════╧════════════════╛
 !--- Miscellaneous ---!
-╒═════════╤════════╤════════════╤══════════════╤═════════════╤═══════════════╤══════════════╤═══════════╤════════════════╕
-│   npvis │   npsl │   theta_sl │   sl_99^+_IC │   sh_vel_IC │   sh_vel_peak │   sh_vel_500 │     n_tot │   mem_tot [GB] │
-╞═════════╪════════╪════════════╪══════════════╪═════════════╪═══════════════╪══════════════╪═══════════╪════════════════╡
-│      17 │    148 │      0.108 │     0.986644 │  0.00132782 │     0.0591608 │      0.04468 │ 897177600 │        322.984 │
-╘═════════╧════════╧════════════╧══════════════╧═════════════╧═══════════════╧══════════════╧═══════════╧════════════════╛
+╒═════════╤════════╤════════════╤══════════════╤═════════════╤═══════════════╤══════════════╕
+│   npvis │   npsl │   theta_sl │   sl_99^+_IC │   sh_vel_IC │   sh_vel_peak │   sh_vel_500 │
+╞═════════╪════════╪════════════╪══════════════╪═════════════╪═══════════════╪══════════════╡
+│      17 │    148 │      0.108 │     0.986644 │  0.00132782 │     0.0591608 │      0.04468 │
+╘═════════╧════════╧════════════╧══════════════╧═════════════╧═══════════════╧══════════════╛
+!--- Memory (storage) requirement and CPUh ---!
+╒═══════════╤════════════════╤═══════════╤════════╕
+│     n_tot │   mem_tot [GB] │   nrealiz │   CPUh │
+╞═══════════╪════════════════╪═══════════╪════════╡
+│ 897177600 │        1291.94 │         4 │ 706867 │
+╘═══════════╧════════════════╧═══════════╧════════╛
 
 !--- INFO: ---!
 We are employing 3 different cf values:
@@ -79,6 +85,9 @@ sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).
 sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).
 n_tot:         Total number of grid points.
 mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).
+nrealiz:       Number of flow realizations considered.
+CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).
+               Number of elements per CPU must be higher than 100'000 and a safety factor is included.
 
 !-------------------------------------!
 

@@ -277,7 +277,8 @@ Reference from ARIES runs of TTBL simulations:
 performance_index = 13000.0 / (66.0 * (10**6) * 320000)  
 
 # Safety factor for estimation of total CPUh required
-sf = 1.0  
+# In ARIES, clock-frequency is 2.20 GHz
+sf = 1.2  
 
 # Estimated CPUh (if we assume at least 100'000 points per core)
 cpuh = performance_index * n_tot * ilast * nrealiz * sf
