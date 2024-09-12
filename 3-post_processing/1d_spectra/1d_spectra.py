@@ -68,6 +68,7 @@ delta_nu = nu / sh_vel                    # viscous length
 y_plus   = y / delta_nu                   # y+
 Ly_plus  = Ly / delta_nu                  # Ly+
 
+# Spanwise mesh spacing
 delta_z  = Lz / nz
 
 # Valid only for TTBLs
