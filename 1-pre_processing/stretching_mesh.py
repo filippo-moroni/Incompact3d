@@ -8,6 +8,13 @@
 # Libraries
 import numpy as np
 
+# Get the current directory
+current_dir = os.path.dirname(__file__)
+
+# Add the path to the 'python_common' directory relative to the current directory 
+config_path = os.path.abspath(os.path.join(current_dir, '../', '3-post_processing/python_common'))
+sys.path.append(config_path)
+
 # Import the plotting_params module
 import plot_params as pp
 
