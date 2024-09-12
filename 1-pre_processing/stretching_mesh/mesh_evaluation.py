@@ -85,7 +85,11 @@ if itype == 13:
     # Domain dimensions
     xlx = round(scalex*bl_thickness, 3)   # domain dimension in x direction
     yly = round(scaley*bl_thickness, 3)   # domain dimension in y direction
-    zlz = round(scalez*bl_thickness, 3)   # domain dimension in z direction           
+    zlz = round(scalez*bl_thickness, 3)   # domain dimension in z direction
+    
+    # Ask the user the number of flow realizations
+    nrealiz = int(input("Enter the number of flow realizations: "))
+    print()           
 
 # Channel    
 elif itype == 3:
@@ -261,7 +265,7 @@ nsnap = (ilast - ifirst + 1) // ioutput + 1
 
 # Total memory requirements [GB]: we are assuming to save velocity, pressure and 
 # one scalar field in double precision.
-mem_tot = nsnap * n_tot * 5 * 8.0 * (10**-9)
+mem_tot = nsnap * n_tot * 5 * 8.0 * (10**-9) * nrealiz
 mem_tot = round(mem_tot, 3)
 
 #!--------------------------------------------------!
@@ -427,63 +431,64 @@ if itype == 13:
     print('Domain dimension, Ly/D = ', yly)
     print('Domain dimension, Lz/D = ', zlz)
     print()
-    print('Length of the domain (Lx+) at IC:          ', xlx_nd_ic)
-    print('Height of the domain (Ly+) at IC:          ', yly_nd_ic)
-    print('Width  of the domain (Lz+) at IC:          ', zlz_nd_ic)
+    print('Length of the domain (Lx+) at IC:           ', xlx_nd_ic)
+    print('Height of the domain (Ly+) at IC:           ', yly_nd_ic)
+    print('Width  of the domain (Lz+) at IC:           ', zlz_nd_ic)
     print()
-    print('Length of the domain (Lx+) at peak cf:     ', xlx_nd_peak)
-    print('Height of the domain (Ly+) at peak cf:     ', yly_nd_peak)
-    print('Width  of the domain (Lz+) at peak cf:     ', zlz_nd_peak)
+    print('Length of the domain (Lx+) at peak cf:      ', xlx_nd_peak)
+    print('Height of the domain (Ly+) at peak cf:      ', yly_nd_peak)
+    print('Width  of the domain (Lz+) at peak cf:      ', zlz_nd_peak)
     print()
-    print('Length of the domain (Lx+) at Re_tau = 500:', xlx_nd_500)
-    print('Height of the domain (Ly+) at Re_tau = 500:', yly_nd_500)
-    print('Width  of the domain (Lz+) at Re_tau = 500:', zlz_nd_500)
+    print('Length of the domain (Lx+) at Re_tau = 500: ', xlx_nd_500)
+    print('Height of the domain (Ly+) at Re_tau = 500: ', yly_nd_500)
+    print('Width  of the domain (Lz+) at Re_tau = 500: ', zlz_nd_500)
     print()
 
 if itype == 3:
-    print('Length of the domain (Lx+) at steady state:', xlx_nd_peak)
-    print('Height of the domain (Ly+) at steady state:', yly_nd_peak)
-    print('Width  of the domain (Lz+) at steady state:', zlz_nd_peak)
+    print('Length of the domain (Lx+) at steady state: ', xlx_nd_peak)
+    print('Height of the domain (Ly+) at steady state: ', yly_nd_peak)
+    print('Width  of the domain (Lz+) at steady state: ', zlz_nd_peak)
     print()
 
 print('!--- Numerics-related parameters based on reference velocity U_ref: ---!')
 print()
-print('Estimated CFL,x:', CFL)
-print('Estimated D,y  :', D)
-print('Estimated Pé,x :', Pe)
-print('Estimated stability parameter S,x:', S)
+print('Estimated CFL,x: ', CFL)
+print('Estimated D,y  : ', D)
+print('Estimated Pé,x : ', Pe)
+print('Estimated stability parameter S,x: ', S)
 print()
 print('!--- Mesh sizes at peak cf or at steady state ---!')
 print()
-print('Mesh size x-direction: delta_x+ =', delta_x_nd_peak)
-print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_peak)
-print('Mesh size z-direction: delta_z+ =', delta_z_nd_peak)
+print('Mesh size x-direction: delta_x+ = ', delta_x_nd_peak)
+print('Mesh size y-direction at the first element near the wall: delta_y1+ = ', delta_y1_nd_peak)
+print('Mesh size z-direction: delta_z+ = ', delta_z_nd_peak)
 print()
 
 if itype == 13:
     print('!--- Mesh sizes at Re_tau = 500 (Cimarelli et al. (2024)) ---!')
     print()
-    print('Mesh size x-direction: delta_x+ =', delta_x_nd_500)
-    print('Mesh size y-direction at the first element near the wall: delta_y1+ =', delta_y1_nd_500)
-    print('Mesh size z-direction: delta_z+ =', delta_z_nd_500)
+    print('Mesh size x-direction: delta_x+ = ', delta_x_nd_500)
+    print('Mesh size y-direction at the first element near the wall: delta_y1+ = ', delta_y1_nd_500)
+    print('Mesh size z-direction: delta_z+ = ', delta_z_nd_500)
     print()
-    print('Mesh size (y) at the estimated BL edge @ Re_tau = 500: delta_yd+ =', delta_yd_nd_500)
+    print('Mesh size (y) at the estimated BL edge @ Re_tau = 500: delta_yd+ = ', delta_yd_nd_500)
     print()
     print('!--- Number of discretization points ---!')
     print()
-    print('Number of mesh nodes in the viscous sublayer at cf peak:', npvis)
-    print('Number of mesh nodes in the initial shear layer:', npsl)
+    print('Number of mesh nodes in the viscous sublayer at cf peak: ', npvis)
+    print('Number of mesh nodes in the initial shear layer: ', npsl)
     print()
     
     #print('Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional): theta_sl =', theta_sl)
     #print('Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional): sl_99^+_IC =', sl_99_ic)
 
 elif itype == 3:
-    print('Mesh size y-direction at the channel center: delta_yc+ =', delta_yc_nd)
+    print('Mesh size y-direction at the channel center: delta_yc+ = ', delta_yc_nd)
     
-print('Total number of points: n_tot =', n_tot)
+print('Total number of points: n_tot = ', n_tot)
 print()
-print('Total memory requirement for snapshots [GB]: mem_tot =', mem_tot)
+print('Total memory requirement for snapshots [GB]: mem_tot = ', mem_tot)
+print('Number of flow realizations: nrealiz                 = ', nrealiz)
 print()
 
     
@@ -584,8 +589,8 @@ if itype == 13:
             ]
            
     data4 = [
-             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500", "n_tot", "mem_tot [GB]" ],
-             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,   n_tot,   mem_tot       ],
+             ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500", "n_tot", "mem_tot [GB]", "nrealiz" ],
+             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500,   n_tot,   mem_tot,        nrealiz  ],                     
             ] 
 
     # Create the tables using tabulate
@@ -633,6 +638,7 @@ if itype == 13:
          f.write("sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).\n")
          f.write("n_tot:         Total number of grid points.\n")
          f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
+         f.write("nrealiz:       Number of flow realizations considered.\n")
          f.write("\n")
          f.write("!-------------------------------------!\n")
          f.write("\n")
