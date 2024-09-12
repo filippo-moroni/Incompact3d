@@ -10,11 +10,11 @@
 ├────────────┼────────────┼─────────────────────────────────┤
 │        320 │       44.2 │                               2 │
 ╘════════════╧════════════╧═════════════════════════════════╛
-╒════════╤═══════╤═════════╤═══════╤═══════╤══════╕
-│   beta │    nu │   Uwall │    dt │   twd │   Re │
-╞════════╪═══════╪═════════╪═══════╪═══════╪══════╡
-│      2 │ 0.002 │       1 │ 0.005 │     1 │  500 │
-╘════════╧═══════╧═════════╧═══════╧═══════╧══════╛
+╒════════╤═══════╤═════════╤═══════╤═══════╤══════╤═══════════╕
+│   beta │    nu │   Uwall │    dt │   twd │   Re │   nrealiz │
+╞════════╪═══════╪═════════╪═══════╪═══════╪══════╪═══════════╡
+│      2 │ 0.002 │       1 │ 0.005 │     1 │  500 │         1 │
+╘════════╧═══════╧═════════╧═══════╧═══════╧══════╧═══════════╛
 !--- BL thickness delta_99 (bl_t) @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!
 ╒════════════════╤══════════╕
 │   bl_thickness │   cf_max │
@@ -58,11 +58,11 @@
 │      17 │    148 │      0.108 │     0.986644 │  0.00132782 │     0.0591608 │      0.04468 │
 ╘═════════╧════════╧════════════╧══════════════╧═════════════╧═══════════════╧══════════════╛
 !--- Memory (storage) requirement and CPUh ---!
-╒══════════╤════════════════╤═══════════╤═════════╕
-│    n_tot │   mem_tot [GB] │   nrealiz │    CPUh │
-╞══════════╪════════════════╪═══════════╪═════════╡
-│ 66457600 │         23.925 │         1 │ 15708.2 │
-╘══════════╧════════════════╧═══════════╧═════════╛
+╒══════════╤═════════╤════════════════╤═════════╕
+│    n_tot │   nsnap │   mem_tot [GB] │    CPUh │
+╞══════════╪═════════╪════════════════╪═════════╡
+│ 66457600 │       9 │         23.925 │ 15708.2 │
+╘══════════╧═════════╧════════════════╧═════════╛
 
 !--- INFO: ---!
 We are employing 3 different cf values:
@@ -84,6 +84,7 @@ sh_vel_IC:     Shear velocity of the initial condition.
 sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).
 sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).
 n_tot:         Total number of grid points.
+nsnap:         Number of snapshots for a single flow realization.
 mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).
 nrealiz:       Number of flow realizations considered.
 CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).
