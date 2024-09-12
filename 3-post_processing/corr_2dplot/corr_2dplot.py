@@ -1,9 +1,14 @@
-#!------------------------------------------------------!
-#! With this script, we perform plotting of correlation !
-#! functions in 2d plots as function of                 !
-#! y+ and spanwise separation variable rz^+.            !
-#!------------------------------------------------------!
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we perform plotting of spanwise correlation 
+!              functions in 2d plots as function of y+ and 
+!              spanwise separation variable rz^+.            
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+# Libraries
 import sys
 import os
 import numpy as np

@@ -1,12 +1,17 @@
-#!------------------------------------------------------------!
-#! With this script, we perform:                              !
-#! - plotting of streamwise friction coefficient vs time      ! 
-#!   and its mean value calculation (Channel).                !
-#! - plotting of streamwise friction coefficient vs time,     !
-#!   friction Reynolds number vs time and streamwise          !
-#!   friction coefficient vs friction Reynolds number (TTBL). !
-#!------------------------------------------------------------!
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we perform:                              
+!              - plotting of streamwise friction coefficient vs time       
+!                and its mean value calculation (Channel).                
+!              - plotting of streamwise friction coefficient vs time,     
+!                friction Reynolds number vs time and streamwise          
+!                friction coefficient vs friction Reynolds number (TTBL). 
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+# Libraries
 import sys
 import os
 import numpy as np

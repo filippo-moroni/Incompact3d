@@ -1,9 +1,12 @@
-#!------------------------------------------------------!
-#! With this script, we perform plotting of a generic   !
-#! correlation function in a 2d plot as function of     !
-#! y+ and spanwise separation variable rz^+.            !
-#!------------------------------------------------------!
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Subroutine used by 'corr_2plot.py'.            
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+# Libraries
 import sys
 import os
 import numpy as np
@@ -43,6 +46,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     """
     print(f"Index of maximum value (flat): {max_index_flat}")
     print(f"Index of maximum value (2D): {max_index_2d}")                       
+    
     """
   
     # Calculate friction quantities and adimensionalize

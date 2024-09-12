@@ -1,11 +1,15 @@
-#!---------------------------------------------------------!
-#! With this script, we perform plotting and saving of     !
-#! instantaneous planes of scalar field or of streamwise   !
-#! vorticity.                                              !
-#!                                                         !
-#! Inspired by 'snap2png.py' by R. Corsini.                !
-#!---------------------------------------------------------!
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we perform plotting and saving of     
+!              instantaneous planes of scalar field or of streamwise   
+!              vorticity.                                                                                         
+!              Inspired by 'snap2png.py' by R. Corsini.            
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+# Libraries
 import sys
 import os
 import numpy as np

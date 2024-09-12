@@ -1,3 +1,4 @@
+
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: In this script we perform plotting of 1D energy spectra of 
