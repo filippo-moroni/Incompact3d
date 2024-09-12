@@ -281,7 +281,7 @@ sf = 1.0
 
 # Estimated CPUh (if we assume at least 100'000 points per core)
 cpuh = performance_index * n_tot * ilast * nrealiz * sf
-cpuh = round(cpuh, 3) 
+cpuh = round(cpuh, 1) 
 
 #!--------------------------------------------------!
 
@@ -596,8 +596,8 @@ if itype == 13:
             ]
             
     data5 = [
-             ["n_tot", "mem_tot [GB]", "nrealiz" ],
-             [ n_tot,   mem_tot,        nrealiz  ],                     
+             ["n_tot", "mem_tot [GB]", "nrealiz", "CPUh" ],
+             [ n_tot,   mem_tot,        nrealiz,   cpuh  ],                     
             ] 
 
     # Create the tables using tabulate
@@ -650,6 +650,7 @@ if itype == 13:
          f.write("n_tot:         Total number of grid points.\n")
          f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
          f.write("nrealiz:       Number of flow realizations considered.\n")
+         f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
          f.write("\n")
          f.write("!-------------------------------------!\n")
          f.write("\n")
