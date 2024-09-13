@@ -26,14 +26,16 @@ import plot_params as pp
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Calculation and estimation of:
+! DESCRIPTION: Calculation of:
 !               - total number of points, n_tot;
 !               - total number of snapshots, nsnap;
 !               - total memory requirement [GB], in order to save velocity,
 !                 pressure and 1 scalar field in double precision, accounting
-!                 for all snapshots and all flow realizations;
-!               - estimated total CPUh for the simulations
-!                 (with points per CPU > 100'000).                  
+!                 for all snapshots and all flow realizations.
+!              Estimation of:
+!               - total CPUh for the simulations (considering different
+!                 flow realizations if present) assuming number of points 
+!                 per CPU > 100'000.                  
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """

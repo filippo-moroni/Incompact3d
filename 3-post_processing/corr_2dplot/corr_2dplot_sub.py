@@ -1,7 +1,7 @@
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Subroutine used by 'corr_2plot.py'.            
+! DESCRIPTION: Subroutine used by 'corr_2dplot.py'.            
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
