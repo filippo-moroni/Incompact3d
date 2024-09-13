@@ -178,4 +178,4 @@ def get_ref_mean_vel_profile(itype,pp.iswitch):
     y_plus_k = np.linspace(5, 180, 175)
     u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
-    return(y_plus_vsl,u_plus_vsl,y_plus_k,u_plus_k)
+    return (y_plus_vsl,u_plus_vsl,y_plus_k,u_plus_k)
