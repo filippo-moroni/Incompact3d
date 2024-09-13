@@ -33,8 +33,9 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plot_params as pp
 
-# Import function to setting up, save and show plots 
-from plot_subs import set_plot_settings, save_and_show_plot
+# Import functions to setting up, save and show plots and to get 
+# reference mean streamwise velocity profile  
+from plot_subs import set_plot_settings, save_and_show_plot, get_ref_mean_vel_profile
 
 # Import functions to read 'input.i3d', 'post.prm' files, statistics data and reference data
 from read_files import read_input_files, read_data, read_ref_data
@@ -142,18 +143,22 @@ Lx_plus = Lx / delta_nu
 Ly_plus = Ly / delta_nu 
 Lz_plus = Lz / delta_nu
 
-mean_u  /= sh_vel
-var_u   /= sh_vel ** 2
-var_v   /= sh_vel ** 2
-var_w   /= sh_vel ** 2
-mean_uv /= sh_vel ** 2
+# Rescale mean flow statistics
+if post_mean:
+    mean_u  /= sh_vel
+    var_u   /= sh_vel ** 2
+    var_v   /= sh_vel ** 2
+    var_w   /= sh_vel ** 2
+    mean_uv /= sh_vel ** 2
 
-# Spanwise velocity is not overwritten since for a channel it is plotted in external units 
-mean_w_plus  = mean_w / sh_vel
+    # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
+    mean_w_plus  = mean_w / sh_vel
 
-vort_x *= t_nu
-vort_y *= t_nu
-vort_z *= t_nu
+# Rescale vorticity
+if post_vort:
+    vort_x *= t_nu
+    vort_y *= t_nu
+    vort_z *= t_nu
 
 # Friction Reynolds number
 re_tau = None
@@ -229,43 +234,13 @@ if post_diss:
 
 #!--------------------------------------------------------------------------------------!
 
-#!--- Reference mean profiles ---!
-
-# Viscous sub-layer
-y_plus_vsl = np.linspace(1, 15, 15)
-u_plus_vsl = y_plus_vsl
-
-# Log law constants based on specific flow case
-if itype == 13:
-   
-    # Kozul et al. (2016)
-    k = 0.384
-    B = 4.173
-        
-elif itype == 3:
-
-    if pp.iswitch == 0:
-    
-        # Lee and Moser (2015)
-        k = 0.384
-        B = 4.27
-    
-    elif pp.iswitch == 1:
-        
-        # Cimarelli ('Turbulence' lecture notes)
-        k = 0.37
-        B = 5.2
-
-# Von Karman law
-y_plus_k = np.linspace(5, 180, 175)
-u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
-
-#!--------------------------------------------------------------------------------------!
-
 #!--- Plotting mean statistics ---!
 if post_mean:
-        
+
     #!--- Mean streamwise velocity profile ---!
+
+    # Get reference mean streamwise velocity profile
+    (y_plus_vsl,u_plus_vsl,y_plus_k,u_plus_k) = get_ref_mean_vel_profile(itype,pp.iswitch)
 
     # Mean velocity profile
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)

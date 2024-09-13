@@ -236,14 +236,15 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             mean_uv = M[:,12]
     
         # Reading of vorticity components and mean gradient
-        if post_vort:
-            M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
-            vort_x = M[:,0]
-            vort_y = M[:,1]
-            vort_z = M[:,2]
-            mg_tot = M[:,3]
-            mg_x   = M[:,4]
-            mg_z   = M[:,5]
+        # (always performed since we need the mean gradient to calculate
+        # shear velocity).
+        M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        vort_x = M[:,0]
+        vort_y = M[:,1]
+        vort_z = M[:,2]
+        mg_tot = M[:,3]
+        mg_x   = M[:,4]
+        mg_z   = M[:,5]
     
         # Reading of the mean total dissipation
         if post_diss:

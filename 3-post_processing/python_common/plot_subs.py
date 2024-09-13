@@ -1,14 +1,35 @@
-#!-----------------------------------------------!
-#! In this file, we store useful subroutines     !
-#! for plotting with Python matplotlib.          !
-#!-----------------------------------------------!
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: In this file, we store useful subroutines for plotting with 
+!              Python matplotlib.
+!                         
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
-#!-----------------------------------------------!
-#! This is a small function to setting up plots. !
-#!-----------------------------------------------!
-
+# Common libraries
+import sys
+import os
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
+
+# Get the current directory
+current_dir = os.path.dirname(__file__)
+
+# Add the path to the 'python_common' directory relative to the current directory 
+config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
+sys.path.append(config_path)
+
+# Import the plotting_params module
+import plot_params as pp
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This is a small function to setting up plots. 
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 
@@ -49,12 +70,13 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
  
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!   
 
-#!-------------------------------------------------!
-#! With this script, we close the plot section for !
-#! statistics plotting.                            !
-#!-------------------------------------------------! 
-
-import matplotlib.pyplot as plt
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we close the plot section for statistics 
+!              plotting.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None, subfolder=None, description=None):
     
@@ -114,5 +136,46 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
 # save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
 # save_and_show_plot('Cuuz', add_string=add_string, y_plus_in=y_plus_in)
     
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we setup the mean streamwise velocity
+!              profile as reference for plotting. Different log law constants
+!              are employed depending on the flowcase.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
+def get_ref_mean_vel_profile(itype,pp.iswitch):
+
+    # Viscous sub-layer
+    y_plus_vsl = np.linspace(1, 15, 15)
+    u_plus_vsl = y_plus_vsl
+
+    # Log law constants based on specific flow case
+    if itype == 13:
+   
+        # Kozul et al. (2016)
+        k = 0.384
+        B = 4.173
+        
+    elif itype == 3:
+
+        if pp.iswitch == 0:
+    
+            # Lee and Moser (2015)
+            k = 0.384
+            B = 4.27
+    
+        elif pp.iswitch == 1:
+        
+            # Cimarelli ('Turbulence' lecture notes)
+            k = 0.37
+            B = 5.2
+
+    # Von Karman law
+    y_plus_k = np.linspace(5, 180, 175)
+    u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
+
+    return(y_plus_vsl,u_plus_vsl,y_plus_k,u_plus_k)
