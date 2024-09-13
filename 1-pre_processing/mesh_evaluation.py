@@ -524,17 +524,14 @@ if itype == 13:
          f.write("\n")
          
 # File creation and saving for Channel
-
-#*** this must be completed ***
-         
 elif itype == 3:
     
-    data = [
-            ["nx/ny/nz", "Lx/Ly/Lz" ],
-            [ nx,       f"{xlx}h"   ],
-            [ ny,       f"{yly}h"   ],
-            [ nz,       f"{zlz}h"   ],
-           ] 
+    data1 = [
+             ["nx/ny/nz", "Lx/Ly/Lz" ],
+             [ nx,       f"{xlx}h"   ],
+             [ ny,       f"{yly}h"   ],
+             [ nz,       f"{zlz}h"   ],
+            ] 
 
     data2 = [
              ["beta", "nu", "U_ref", "dt", "Re", "Re_tau", "cf"],
@@ -542,7 +539,7 @@ elif itype == 3:
             ]
 
     # Create the tables using tabulate
-    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
+    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
     
     # Save the tables as a text file 
@@ -550,18 +547,18 @@ elif itype == 3:
          f.write("!----- Channel setting parameters -----!\n")
          f.write("\n")
          f.write("!----- Inputs: -----!\n")
-         f.write(table)
+         f.write(table1)
          f.write("\n")
          f.write(table2)
     
     # Create data arrays with outputs
-    data = [
-            ["Lx+/Ly+/Lz+", "dx+/dyw+/dz+/dyc+" ],
-            [ xlx_nd_peak,   delta_x_nd_peak    ],
-            [ yly_nd_peak,   delta_y1_nd_peak   ],
-            [ zlz_nd_peak,   delta_z_nd_peak    ],
-            ["/",            delta_yc_nd        ],
-           ]
+    data1 = [
+             ["Lx+/Ly+/Lz+", "dx+/dyw+/dz+/dyc+" ],
+             [ xlx_nd_peak,   delta_x_nd_peak    ],
+             [ yly_nd_peak,   delta_y1_nd_peak   ],
+             [ zlz_nd_peak,   delta_z_nd_peak    ],
+             ["/",            delta_yc_nd        ],
+            ]
            
     data2 = [
              ["CFL,x", "D,y", "Pé,x", "S,x"],
@@ -569,12 +566,12 @@ elif itype == 3:
             ]
                        
     data3 = [
-             ["sh_vel",    "n_tot" ],
-             [ sh_vel_peak, n_tot  ],
+             ["sh_vel",    "n_tot", "nsnap", "mem_tot [GB]",  "CPUh" ],
+             [ sh_vel_peak, n_tot,   nsnap,   mem_tot,         cpuh  ],
             ]
             
     # Create the tables using tabulate
-    table  = tabulate(data,  headers="firstrow", tablefmt="fancy_grid")
+    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
     table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
     
@@ -584,12 +581,12 @@ elif itype == 3:
          f.write("!----- Outputs: -----!\n")
          f.write("\n")
          f.write("!--- Non-dimensional domain dimensions and grid spacings: ---!\n")
-         f.write(table) 
+         f.write(table1) 
          f.write("\n")
          f.write("!--- Numerics-related parameters: ---!\n")
          f.write(table2) 
          f.write("\n")
-         f.write("!--- Shear velocity and total number of points: ---!\n")
+         f.write("!--- Miscellaneous ---!\n")
          f.write(table3) 
          f.write("\n")
          f.write("!-------------------------------------!\n")
