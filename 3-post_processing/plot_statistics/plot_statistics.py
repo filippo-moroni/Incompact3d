@@ -52,6 +52,8 @@ from set_flow_parameters import set_flow_parameters
 os.makedirs('data_post',          mode=0o777, exist_ok=True)
 os.makedirs('plots',              mode=0o777, exist_ok=True)
 os.makedirs('plots/mean_stats',   mode=0o777, exist_ok=True)
+os.makedirs('plots/vort_stats',   mode=0o777, exist_ok=True)
+os.makedirs('plots/diss_stats',   mode=0o777, exist_ok=True)
 os.makedirs('plots/correlations', mode=0o777, exist_ok=True)
 os.makedirs('plots/tke_budget',   mode=0o777, exist_ok=True)
 
@@ -181,9 +183,10 @@ if itype == 13:
 print("Viscous time unit, t_nu = ", t_nu)
 print()
 
-# y+ at the centerline or at the BL edge
+# y+ at the centerline or at the BL edge and halving Ly+ in case of Channel
 if itype == 3:
     delta_yd_plus = y_plus[ny-1] - y_plus[ny-2]
+    Ly_plus = Ly_plus / 2.0
 elif itype == 13:
     delta_yd_plus = y_plus[j] - y_plus[j-1] 
 
@@ -230,7 +233,36 @@ if post_diss:
                 f"{'min tau_eta':<{pp.c_w}}\n" )  
 
         f.write(f"{t_nu:{pp.fs}}, "            +
-                f"{tau_eta:{pp.fs}}\n"         )      
+                f"{tau_eta:{pp.fs}}\n"         )
+
+    #!--- Total dissipation ---!
+
+    # Total dissipation
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    
+    # Description of .pdf file
+    description = 'Total dissipation.'
+
+    # Total dissipation
+    ax.scatter(y_plus, eps, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Limits for axes
+    xliminf = 0.1
+    xlimsup = Ly_plus
+    yliminf = min(eps)*1.2    
+    ylimsup = max(eps)*1.2
+    
+    # Axes labels
+    ax.set_xlabel(r'$y^+$',              fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$varepsilon_{tot}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+    # Save and show the figure
+    save_and_show_plot('eps_tot', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='diss_stats', description=description)
+          
 
 #!--------------------------------------------------------------------------------------!
 
