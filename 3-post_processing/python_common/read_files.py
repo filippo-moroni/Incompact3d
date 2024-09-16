@@ -208,7 +208,6 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     Ruvz = np.zeros((ny,nz), dtype=np.float64, order='F')
     Rssz = np.zeros((ny,nz), dtype=np.float64, order='F')
     
-    tke_conv    = 0.0
     tke_turbt   = 0.0   
     tke_pstrain = 0.0     
     tke_difft   = 0.0
@@ -265,12 +264,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         # Read of TKE 
         if post_tke_eq:
             M = np.loadtxt('data_post/tke_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
-            tke_conv    = M[:,0]
-            tke_turbt   = M[:,1]   
-            tke_pstrain = M[:,2]     
-            tke_difft   = M[:,3]
-            tke_prod    = M[:,4]
-            tke_pseps   = M[:,5]
+            tke_turbt   = M[:,0]   
+            tke_pstrain = M[:,1]     
+            tke_difft   = M[:,2]
+            tke_prod    = M[:,3]
+            tke_pseps   = M[:,4]
         
     # TTBL
     elif itype == 13:
@@ -323,12 +321,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         # Read of TKE
         if post_tke_eq: 
             M = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-            tke_conv    = M[:,0]
-            tke_turbt   = M[:,1]   
-            tke_pstrain = M[:,2]     
-            tke_difft   = M[:,3]
-            tke_prod    = M[:,4]
-            tke_pseps   = M[:,5]
+            tke_turbt   = M[:,0]   
+            tke_pstrain = M[:,1]     
+            tke_difft   = M[:,2]
+            tke_prod    = M[:,3]
+            tke_pseps   = M[:,4]
 
     print()
  
@@ -336,7 +333,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
     vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
-    tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
+    tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps,
     snap_numb
     )
 
