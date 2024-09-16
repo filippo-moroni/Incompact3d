@@ -1,6 +1,10 @@
-#!-------------------------------------------------------------!
-#! This is a small module to store Python plotting parameters. !
-#!-------------------------------------------------------------!
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This is a small module to store Python plotting parameters.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,8 +25,6 @@ plt.rcParams.update({
      
 # Filter warnings
 warnings.filterwarnings("error")
-
-#!--------------------------------------------------------------------------------------!
 
 # Parameters for plotting
 lw           = 0.6             # linewidth for plots
@@ -48,8 +50,6 @@ grey = [0.5, 0.5, 0.5]
 # Parameter to switch between Lee & Moser reference or Cimarelli, 'Turbulence' lecture notes for the log law
 iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 
-#!--------------------------------------------------------------------------------------!
-
 # Column width for writing to .txt file
 c_w = 16 
 
@@ -58,12 +58,10 @@ fs  = f"<{c_w}.3f"   # 3 decimal digits
 fs6 = f"<{c_w}.6f"   # 6 decimal digits
 fs8 = f"<{c_w}.8f"   # 8 decimal digits (used mainly for cf)
 
-#!--------------------------------------------------------------------------------------!
-
 # Parameters for contourf plots
 nlvl = 256         # number of isolevels
 pad_cbar_lab = -8  # padding of label of colorbar (cbar)
 
-
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
 
 

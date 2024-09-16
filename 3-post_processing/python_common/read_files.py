@@ -1,20 +1,29 @@
-#!------------------------------------------------------------!
-#! In this file, we store Python functions to read .txt files !
-#! for post-processing and plots:                             !
-#! - read_input_files: to read 'input.i3d' and 'post.prm';    !
-#! - read_data:        to read statistics data;               !
-#! - read_ref_data:    to read reference data.                !
-#!------------------------------------------------------------!
 
-#!-------------------------------------!
-#! Function to read Incompact3d files: !
-#! 'input.i3d' and 'post.prm'.         !
-#!-------------------------------------!
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: In this file, we store Python functions to read .txt files 
+!              for post-processing and plots:                             
+!               - read_input_files:        to read 'input.i3d' and 
+!                                          'post.prm';    
+!               - read_data:               to read statistics data;               
+!               - read_ref_data:           to read reference data;
+!               - read_ref_data_temp_evol: to read TTBL temporal evolution 
+!                                          quantities.  
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
+# Common libraries
 import numpy as np
+import os
 
-# Define 'read_input_files' function, that reads parameters of simulation 
-# from 'input.i3d' and 'post.prm' files.
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Function to read Incompact3d files:
+!              'input.i3d' and 'post.prm'.   
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 def read_input_files(filename1,filename2):
       
@@ -175,13 +184,15 @@ def read_input_files(filename1,filename2):
            ) 
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Python function to read statistics data, obtained from
+!              'post_incompact3d'.   
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
     
-#!------------------------------------------!
-#! Python function to read statistics data. !
-#!------------------------------------------!
-
-import numpy as np
-
 def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq, ny, nz, snap_numb=None):
 
     # Initialize variables
@@ -340,12 +351,12 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!    
 
-#!-----------------------------------------!
-#! Python function to read reference data. !
-#!-----------------------------------------!
-
-import numpy as np
-import os
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Python function to read reference data.  
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 def read_ref_data():
 
@@ -538,11 +549,14 @@ def read_ref_data():
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!      
   
-#!------------------------------------------------------------------!
-#! Python function to read reference evolution quantities for TTBL. !
-#!------------------------------------------------------------------!
-
-import numpy as np
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Python function to read reference evolution quantities 
+!              for TTBL. Reference data from G. Boga
+!              (Cimarelli et al. (2024a)).  
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 def read_ref_data_temp_evol():
 
