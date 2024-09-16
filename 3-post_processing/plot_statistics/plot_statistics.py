@@ -60,7 +60,7 @@ os.makedirs('plots/mean_stats',   mode=0o777, exist_ok=True)
 os.makedirs('plots/vort_stats',   mode=0o777, exist_ok=True)
 os.makedirs('plots/diss_stats',   mode=0o777, exist_ok=True)
 os.makedirs('plots/correlations', mode=0o777, exist_ok=True)
-os.makedirs('plots/tke_budget',   mode=0o777, exist_ok=True)
+os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -918,11 +918,19 @@ if post_corz:
 #!--- Turbulent Kinetic Energy (TKE) budgets ---!
 if post_tke_eq:
 
-    # Ratio between turbulent production and dissipation
+    """ 
+    Ratio between turbulent production and dissipation;
+    resizing of arrays.
+    
+    """
     p_eps_ratio_tke = np.zeros(ny)
 
-    tke_prod  = tke_prod  [:ny]
-    tke_pseps = tke_pseps [:ny]
+    tke_turbt  = tke_turbt [:ny]
+    tke_presst = tke_presst[:ny]
+    tke_difft  = tke_difft [:ny]
+    tke_prod   = tke_prod  [:ny]
+    tke_pseps  = tke_pseps [:ny]
+    
     p_eps_ratio_tke = np.divide(tke_prod,tke_pseps)
 
     #!--------------------------------------------------------------------------------------!
@@ -939,7 +947,7 @@ if post_tke_eq:
     ax.scatter(y_plus[:ny], p_eps_ratio_tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Description of .pdf file
-    description = 'Ratio of production over dissipation of turbulent kinetic energy (TKE). Reference data '
+    description = 'Ratio of production over dissipation of Turbulent Kinetic Energy (TKE). Reference data '
     
     # TTBL
     if itype == 13:
@@ -972,7 +980,41 @@ if post_tke_eq:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='tke_budget', description=description)
+    save_and_show_plot('p_eps_ratio_tke', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='tke_stats', description=description)
+    
+    #!--------------------------------------------------------------------------------------!
+    
+    # TKE budget terms
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # Limits for axes
+    xliminf =  0.1
+    xlimsup = y_plus[ny]*1.5
+    yliminf = -0.2
+    ylimsup =  0.2
+    
+    # Description of .pdf file
+    description = 'Budget terms for Turbulent Kinetic Energy (TKE) equation. Reference data Mansour et al. (1988).'
+
+    # Transport terms
+    ax.scatter(y_plus[:ny],  tke_turbt [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny],  tke_presst[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C1')
+    ax.scatter(y_plus[:ny],  tke_difft [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
+    ax.scatter(y_plus[:ny],  tke_prod  [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C3')
+    ax.scatter(y_plus[:ny], -tke_pseps [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C4')
+
+    # Mansour et al. (1988)            
+    ax.plot(, color='C0', linestyle='-', linewidth=pp.lw)
+                    
+    # Axes labels
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+    # Save and show the figure
+    save_and_show_plot('tke_budget', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='tke_stats', description=description)
     
     #!--------------------------------------------------------------------------------------!
 
