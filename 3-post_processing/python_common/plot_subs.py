@@ -1,8 +1,8 @@
+
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: In this file, we store useful subroutines for plotting with 
-!              Python matplotlib.
-!                         
+!              Python matplotlib.                         
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -179,3 +179,7 @@ def get_ref_mean_vel_profile(itype,iswitch):
     u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
     return (y_plus_vsl,u_plus_vsl,y_plus_k,u_plus_k)
+    
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+
+
