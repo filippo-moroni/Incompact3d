@@ -104,14 +104,8 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
                                                                                                                                    
-# Valid only for Channel
-if itype == 3:
-    
-    # Change sign for Reynolds stresses
-    mean_uv =  - mean_uv
-
 # Valid only for TTBLs
-elif itype == 13:
+if itype == 13:
     
     # Initialize the index
     j = 0

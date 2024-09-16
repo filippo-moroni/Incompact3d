@@ -236,18 +236,21 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         snap_numb = None
 
         # Reading of mean statistics
-        if post_mean:
+        if post_mean:        
             M = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
-            mean_u  = M[:,0]
-            mean_w  = M[:,2]   
-            var_u   = M[:,3]
-            var_v   = M[:,4]
-            var_w   = M[:,5]
-            mean_uv = M[:,12]
+            mean_u  =   M[:,0]
+            mean_w  =   M[:,2]   
+            var_u   =   M[:,3]
+            var_v   =   M[:,4]
+            var_w   =   M[:,5]
+            mean_uv = - M[:,12]  # Change sign for Reynolds stress <u'v'> for a Channel
     
-        # Reading of vorticity components and mean gradient
-        # (always performed since we need the mean gradient to calculate
-        # shear velocity).
+        """
+        Reading of vorticity components and mean gradients
+        (always performed since we need the mean gradient to calculate
+        shear velocity).
+        
+        """
         M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
         vort_x = M[:,0]
         vort_y = M[:,1]
@@ -292,20 +295,27 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     
         # Pad with zeros to match snapshots' naming  
         snap_numb = snap_numb.zfill(4)
-             
-        # Reading of mean statistics
-        if post_mean:
-            M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-            mean_u  = M[:,0]
-            mean_w  = M[:,2]   
-            var_u   = M[:,3]
-            var_v   = M[:,4]
-            var_w   = M[:,5]
-            mean_uv = M[:,12]
+                     
+        """
+        Reading of mean statistics. For a TTBL it is always done since 
+        we need to calculate the boundary layer thickness delta_99 to display
+        friction Reynolds number.
+        
+        """
+        M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        mean_u  = M[:,0]
+        mean_w  = M[:,2]   
+        var_u   = M[:,3]
+        var_v   = M[:,4]
+        var_w   = M[:,5]
+        mean_uv = M[:,12]
     
-        # Reading of vorticity components and mean gradient
-        # (always performed since we need the mean gradient to calculate
-        # shear velocity).
+        """
+        Reading of vorticity components and mean gradients
+        (always performed since we need the mean gradient to calculate
+        shear velocity).
+        
+        """
         M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
         vort_x = M[:,0]
         vort_y = M[:,1]
