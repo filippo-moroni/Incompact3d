@@ -382,6 +382,40 @@ contains
 
   end subroutine test_flow
   !-----------------------------------------------------------------------------!
+  
+  ! to do Hwang & Bengana (2016) implementation
+  
+  !---------------------------------------------------------------------------!
+  !  SUBROUTINE: momentum_forcing
+  !      AUTHOR: Paul Bartholomew
+  ! DESCRIPTION: Applies rotation for t < spinup_time.
+  !---------------------------------------------------------------------------!
+  !subroutine momentum_forcing_channel(dux1, duy1, duz1, ux1, uy1, uz1)
+
+  !  implicit none
+
+  !  real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1
+  !  real(mytype), dimension(xsize(1), xsize(2), xsize(3), ntime) :: dux1, duy1, duz1
+
+  !  if (cpg) then
+  !      ! fcpg: add constant pressure gradient in streamwise direction
+  !      if (idir_stream == 1) then
+  !         dux1(:,:,:,1) = dux1(:,:,:,1) + fcpg !* (re/re_cent)**2
+  !      else
+  !         duz1(:,:,:,1) = duz1(:,:,:,1) + fcpg !* (re/re_cent)**2
+  !      endif
+  !  endif
+
+  !  ! To update to take into account possible flow in z dir
+  !  if (itime < spinup_time .and. iin <= 2) then
+  !     if (nrank == 0 .and. (mod(itime, ilist) == 0 .or. itime == ifirst .or. itime == ilast)) &
+  !        write(*,*) 'Rotating turbulent channel at speed ',wrotation
+  !     dux1(:,:,:,1) = dux1(:,:,:,1) - wrotation*uy1(:,:,:)
+  !     duy1(:,:,:,1) = duy1(:,:,:,1) + wrotation*ux1(:,:,:)
+  !  endif
+  !
+  ! end subroutine momentum_forcing_channel
+  
 end module case
 
 
