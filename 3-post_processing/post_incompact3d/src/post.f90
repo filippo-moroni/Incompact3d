@@ -578,7 +578,7 @@ end if
                         
           kvprime_meanHT = temp_dery
           
-          !--- Pressure-velocity coupling term (pressure-strain) (assuming unitary density) ---!
+          !--- Pressure-velocity coupling term (pressure transport) (assuming unitary density) ---!
           
           ! 1D derivative in y          
           call dery1D(temp_dery,vpremeanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
@@ -923,7 +923,7 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Header 
-        write(iunit, '(5(A13, A1, 1X))') 'tke_turbt' , ',', 'tke_pstrain', ',', 'tke_difft', ',', &
+        write(iunit, '(5(A13, A1, 1X))') 'tke_turbt' , ',', 'tke_presst', ',', 'tke_difft', ',', &
                                          'tke_prod'  , ',', 'tke_pseps' 
                
         do j = 1, ysize(2) 
@@ -1048,7 +1048,7 @@ end if
      write(*,*) 'The following statistics have been saved in'
      write(*,*) '"tke_stats" file(s):'
      write(*,*) ' '
-     write(*,*) 'tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps'
+     write(*,*) 'tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps'
      write(*,*) ' '  
      endif
 
