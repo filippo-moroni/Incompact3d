@@ -10,6 +10,7 @@ import warnings
 # Set Numpy
 np.seterr(divide='ignore', invalid='ignore')
 
+"""
 # Set Latex 
 plt.rcdefaults() 
 plt.rcParams.update({ 
@@ -18,6 +19,10 @@ plt.rcParams.update({
     "font.serif": "Computer Modern",
     "figure.autolayout": True,
 })
+ 
+"""
+
+matplotlib.rcParams['text.usetex'] = True
     
 # Filter warnings
 warnings.filterwarnings("error")
