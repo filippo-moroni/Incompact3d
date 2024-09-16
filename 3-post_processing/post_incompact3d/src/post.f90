@@ -563,24 +563,14 @@ end if
             
       if(post_tke_eq) then
           do j=1,ysize(2)
-                    
-              !--- Convective term ---!
-              tke_convHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)*u1meanHT(j)
-                                          
+                                                              
               !--- Diffusive transport of TKE ---!
               tke_diffHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)
                                                              
           enddo
                     
-          !--- Perform derivatives ---!
-          
-          !--- Convective term ---!
-          
-          ! 1D derivative in y          
-          call dery1D(temp_dery,tke_convHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
-              
-          tke_convHT = temp_dery
-          
+          !----- Perform derivatives -----!
+                    
           !--- Turbulent transport term ---!
               
           ! 1D derivative in y          
@@ -597,9 +587,9 @@ end if
           
           !--- Diffusive transport of TKE ---!
                                    
-          ! 1D derivative in y          
-          call dery1D(temp_dery,tke_diffHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
-               
+          ! 1D derivative in y (2 times)          
+          call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfyp,ssyp,swyp,ysize(2),1)
+                         
           tke_diffHT = - xnu * temp_dery
           
           !--- Production term ---!
@@ -933,13 +923,12 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Header 
-        write(iunit, '(6(A13, A1, 1X))') 'tke_conv' , ',', 'tke_turbt' , ',', 'tke_pstrain', ',', &
-                                         'tke_difft', ',', 'tke_prod'  , ',', 'tke_pseps' 
+        write(iunit, '(5(A13, A1, 1X))') 'tke_turbt' , ',', 'tke_pstrain', ',', 'tke_difft', ',', &
+                                         'tke_prod'  , ',', 'tke_pseps' 
                
         do j = 1, ysize(2) 
        
-            write(iunit, '(6(F13.9, A1, 1X))') tke_convHT(j),           ',', &
-                                               kvprime_meanHT(j),       ',', &       
+            write(iunit, '(5(F13.9, A1, 1X))') kvprime_meanHT(j),       ',', &       
                                                vpremeanHT(j),           ',', &
                                                tke_diffHT(j),           ',', &
                                                tke_prodHT(j),           ',', &
@@ -1059,7 +1048,7 @@ end if
      write(*,*) 'The following statistics have been saved in'
      write(*,*) '"tke_stats" file(s):'
      write(*,*) ' '
-     write(*,*) 'tke_conv, tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps'
+     write(*,*) 'tke_turbt, tke_pstrain, tke_difft, tke_prod, tke_pseps'
      write(*,*) ' '  
      endif
 

@@ -111,7 +111,6 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: kvprime_meanHT,pseudo_eps_tke_meanHT
   
   !--- Arrays for TKE equation ---!
-  real(mytype), save, allocatable, dimension(:)     :: tke_convHT      ! convective term: d(<k> U) / dy
   real(mytype), save, allocatable, dimension(:)     :: tke_diffHT      ! diffusive transport term: -nu * d^2 (<k>) / dy^2
   real(mytype), save, allocatable, dimension(:)     :: tke_prodHT      ! production term: - <u'v'> dU/dy
   
