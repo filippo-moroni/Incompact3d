@@ -253,8 +253,8 @@ if post_diss:
     ylimsup = max(eps)*1.2
     
     # Axes labels
-    ax.set_xlabel(r'$y^+$',              fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$varepsilon_{tot}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_xlabel(r'$y^+$',               fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\varepsilon_{tot}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
