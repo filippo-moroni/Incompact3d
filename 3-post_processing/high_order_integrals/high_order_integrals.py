@@ -5,13 +5,12 @@
 !              of thickness parameters (delta_99, displacement thickness, 
 !              momentum thickness), related Reynolds numbers, streamwise 
 !              shear velocity, streamwise friction coefficient and analogy 
-!              factor for a TTBL.                       
+!              factor for a TTBL.
+! ANNOTATIONS: We are assuming unitary molecular Prandtl number for the 
+!              calculation of the analogy factor of the Reynolds analogy.                        
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
-
-# We are assuming unitary molecular Prandtl number for the calculation
-# of the analogy factor of the Reynolds analogy. 
 
 # Libraries
 import sys

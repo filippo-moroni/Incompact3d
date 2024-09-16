@@ -4,9 +4,14 @@
 ! DESCRIPTION: With this script, we perform plotting of statistics for TTBLs 
 !              and channel flow simulations:                 
 !               
-!               - mean statistics (mean[u], var[u], etc.);              
-!               - mean total dissipation (to be done);                  
-!               - correlation coefficients for spanwise correlations.  
+!               - mean statistics (mean[u], mean[w], 
+!                                  var[u], var[v], var[w],
+!                                  mean[uv], );              
+!               - mean total dissipation;                  
+!               - correlation coefficients (Cuu, Cvv, Cww, Cuv, Css) for 
+!                 spanwise correlations;
+!               - Turbulent Kinetic Energy (TKE) budget and production
+!                 over dissipation ratio.  
 !                                                         
 !              Calculated and stored:                                  
 !                                                         
@@ -212,58 +217,6 @@ with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as 
             f"{Lz_plus:{pp.fs}}, "        +
             f"{delta_yd_plus:{pp.fs}}\n"  ) 
             
-#!--------------------------------------------------------------------------------------!
-
-#!--- Total dissipation section ---!
-if post_diss:
-
-    # Find the maximum of mean total dissipation
-    eps_max = max(eps)
-
-    # Minimum Kolmogorov time scale and print it
-    tau_eta = np.sqrt(nu/eps_max)
-    print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
-    print()
-
-    #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
-            
-    # Create the file and write 
-    with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
-        f.write(f"{'t_nu':<{pp.c_w}}, "        +
-                f"{'min tau_eta':<{pp.c_w}}\n" )  
-
-        f.write(f"{t_nu:{pp.fs}}, "            +
-                f"{tau_eta:{pp.fs}}\n"         )
-
-    #!--- Total dissipation ---!
-
-    # Total dissipation
-    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-    
-    # Description of .pdf file
-    description = 'Total dissipation.'
-
-    # Total dissipation
-    ax.scatter(y_plus, eps, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-    
-    # Limits for axes
-    xliminf = 0.1
-    xlimsup = Ly_plus
-    yliminf = min(eps)*1.2    
-    ylimsup = max(eps)*1.2
-    
-    # Axes labels
-    ax.set_xlabel(r'$y^+$',               fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$\varepsilon_{tot}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    
-    # Set the plot parameters using the function 'set_plot_settings'
-    # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
-
-    # Save and show the figure
-    save_and_show_plot('eps_tot', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='diss_stats', description=description)
-          
-
 #!--------------------------------------------------------------------------------------!
 
 #!--- Plotting mean statistics ---!
@@ -692,6 +645,57 @@ if post_mean:
 
     # Save and show the figure
     save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+
+    #!--------------------------------------------------------------------------------------!
+
+#!--- Total dissipation section ---!
+if post_diss:
+
+    # Find the maximum of mean total dissipation
+    eps_max = max(eps)
+
+    # Minimum Kolmogorov time scale and print it
+    tau_eta = np.sqrt(nu/eps_max)
+    print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
+    print()
+
+    #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
+            
+    # Create the file and write 
+    with open(f'data_post/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
+        f.write(f"{'t_nu':<{pp.c_w}}, "        +
+                f"{'min tau_eta':<{pp.c_w}}\n" )  
+
+        f.write(f"{t_nu:{pp.fs}}, "            +
+                f"{tau_eta:{pp.fs}}\n"         )
+
+    #!--- Total dissipation ---!
+
+    # Total dissipation
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    
+    # Description of .pdf file
+    description = 'Total dissipation.'
+
+    # Total dissipation
+    ax.scatter(y_plus, eps, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Limits for axes
+    xliminf = 0.1
+    xlimsup = Ly_plus
+    yliminf = min(eps)*1.2    
+    ylimsup = max(eps)*1.2
+    
+    # Axes labels
+    ax.set_xlabel(r'$y^+$',               fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\varepsilon_{tot}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+    # Save and show the figure
+    save_and_show_plot('eps_tot', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='diss_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
