@@ -12,13 +12,20 @@ np.seterr(divide='ignore', invalid='ignore')
 
 # Set Latex 
 plt.rcdefaults() 
+
+"""
 plt.rcParams.update({ 
     "text.usetex": True,  
     "font.family": "serif",
     "font.sans-serif": "Computer Modern",
     "figure.autolayout": True,
 })
-
+"""
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "Helvetica"
+    })
+    
 # Filter warnings
 warnings.filterwarnings("error")
 
