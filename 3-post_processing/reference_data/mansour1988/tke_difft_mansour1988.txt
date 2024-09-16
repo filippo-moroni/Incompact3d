@@ -1,7 +1,8 @@
 !------------------------------------!
-Kozul et al. (1988)
+Mansour et al. (1988)
 Based on data from Kim et al. (1987)
 Diffusive transport of TKE.
+
 !------------------------------------!
 
 y^+,      difft(k)

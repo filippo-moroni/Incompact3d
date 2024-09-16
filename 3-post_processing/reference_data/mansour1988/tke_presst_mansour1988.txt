@@ -1,7 +1,8 @@
 !------------------------------------!
-Kozul et al. (1988)
+Mansour et al. (1988)
 Based on data from Kim et al. (1987)
-Pressure-velocity coupling term of TKE equation ( (1/rho) d/dy <p'v'>) (pressure transport).
+Pressure-velocity coupling term of TKE equation,
+(1/rho) d/dy <p'v'>, pressure transport.
 !------------------------------------!
 
 y^+,      presst(k)
