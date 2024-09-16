@@ -1,8 +1,11 @@
-#!------------------------------------------------------!
-#! With this script, we read the friction               !
-#! Reynolds number Re_tau from .xdmf files of snapshots !
-#! of TTBL simulations.                                 !
-#!------------------------------------------------------!
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we read the friction Reynolds number Re_tau 
+!              from .xdmf files of snapshots of TTBL simulations.    
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
 
 from lxml import etree
 
