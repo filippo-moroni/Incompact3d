@@ -151,10 +151,10 @@ Lz_plus = Lz / delta_nu
 # Rescale mean flow statistics
 if post_mean:
     mean_u  /= sh_vel
-    var_u   /= sh_vel ** 2
-    var_v   /= sh_vel ** 2
-    var_w   /= sh_vel ** 2
-    mean_uv /= sh_vel ** 2
+    var_u   /= sh_vel**2
+    var_v   /= sh_vel**2
+    var_w   /= sh_vel**2
+    mean_uv /= sh_vel**2
 
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
     mean_w_plus  = mean_w / sh_vel
@@ -164,6 +164,14 @@ if post_vort:
     vort_x *= t_nu
     vort_y *= t_nu
     vort_z *= t_nu
+
+# Rescale TKE terms    
+if post_tke_eq:
+    tke_turbt  /= sh_vel**2
+    tke_presst /= sh_vel**2
+    tke_difft  /= sh_vel**2
+    tke_prod   /= sh_vel**2
+    tke_pseps  /= sh_vel**2
 
 # Friction Reynolds number
 re_tau = None
