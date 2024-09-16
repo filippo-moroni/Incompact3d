@@ -383,7 +383,8 @@ contains
   end subroutine test_flow
   !-----------------------------------------------------------------------------!
   
-  ! to do Hwang & Bengana (2016) implementation
+  ! Here is where we can try to apply the same approach as Hwang & Bengana (2016) 
+  ! As reference, it is possible to take inspiration from 'momentum_forcing' subroutine
   
   !---------------------------------------------------------------------------!
   !  SUBROUTINE: momentum_forcing
