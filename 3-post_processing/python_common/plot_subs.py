@@ -147,7 +147,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
 !-----------------------------------------------------------------------------!
 """
 
-def get_ref_mean_vel_profile(itype,pp.iswitch):
+def get_ref_mean_vel_profile(itype,iswitch):
 
     # Viscous sub-layer
     y_plus_vsl = np.linspace(1, 15, 15)
@@ -162,13 +162,13 @@ def get_ref_mean_vel_profile(itype,pp.iswitch):
         
     elif itype == 3:
 
-        if pp.iswitch == 0:
+        if iswitch == 0:
     
             # Lee and Moser (2015)
             k = 0.384
             B = 4.27
     
-        elif pp.iswitch == 1:
+        elif iswitch == 1:
         
             # Cimarelli ('Turbulence' lecture notes)
             k = 0.37
