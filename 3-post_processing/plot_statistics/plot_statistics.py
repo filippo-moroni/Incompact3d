@@ -989,9 +989,9 @@ if post_tke_eq:
 
     # Limits for axes
     xliminf =  0.1
-    xlimsup = y_plus[ny]*1.5
+    xlimsup = y_plus[ny-1]*1.5
     yliminf = -0.2
-    ylimsup =  0.2
+    ylimsup =  0.4
     
     # Description of .pdf file
     description = 'Budget terms for Turbulent Kinetic Energy (TKE) equation. Reference data Mansour et al. (1988).'
