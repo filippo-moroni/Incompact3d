@@ -156,15 +156,14 @@ contains
   !---------------------------------------------------------------------------!
   subroutine boundary_conditions_channel (ux,uy,uz,phi)
 
-    use var, only : di2
-
     implicit none
 
     integer :: i,j,k
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
 
-    if (.not. cpg ) then  ! if not constant pressure gradient
+    ! If not constant pressure gradient
+    if (.not. cpg ) then  
        if (idir_stream == 1) then
           call channel_cfr(ux,two/three)
        else
@@ -380,8 +379,9 @@ contains
     real(mytype), intent(in), dimension(xsize(1), xsize(2), xsize(3)) :: ux1, uy1, uz1
     real(mytype), dimension(xsize(1), xsize(2), xsize(3), ntime) :: dux1, duy1, duz1
 
+    ! fcpg (favourable constant pressure gradient): 
+    ! add constant pressure gradient in streamwise direction
     if (cpg) then
-        ! fcpg: add constant pressure gradient in streamwise direction
         if (idir_stream == 1) then
            dux1(:,:,:,1) = dux1(:,:,:,1) + fcpg !* (re/re_cent)**2
         else

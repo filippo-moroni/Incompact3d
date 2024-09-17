@@ -659,7 +659,6 @@ subroutine parameter_defaults()
   cfl_limit = 0.95  ! CFL limit to adjust time-step 
   
   !--- Additional parameters not present in namelists ---!                  
-  itime0    = 0
   t0        = zero
   pressure0 = one
   itest     = 1

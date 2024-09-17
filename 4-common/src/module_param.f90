@@ -350,7 +350,6 @@ module param
   
   ! How many (sub)timestpeps do we need to store?
   integer :: ntime 
-  integer :: itime0
   integer :: iscalar,iadvance_time
   
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,t0

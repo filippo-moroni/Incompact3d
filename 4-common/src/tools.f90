@@ -574,16 +574,15 @@ contains
        write(filename,"('data/restart_info/restart',I7.7,'.info')") ifirst-1
        inquire(file=filename, exist=fexists)
        if (nrank==0) write(*,*) filename
+       
        ! Check if file exists
        if (fexists) then
          open(111, file=filename)
          read(111, nml=Time)
          close(111)
          t0 = tfield
-         itime0 = 0
        else
          t0 = zero
-         itime0 = ifirst-1
        end if
        
     endif
