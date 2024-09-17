@@ -46,7 +46,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
                      "${CMAKE_SOURCE_DIR}/cmake" 
                      "${CMAKE_SOURCE_DIR}/cmake/compilers"
                      "${CMAKE_SOURCE_DIR}/cmake/fft")
-                     
+
+# Add option for TTBL post-processing
+option(TTBL_MODE "Enable TTBL post-processing" ON)
+if(TTBL_MODE)
+  message(STATUS "TTBL_MODE: ${TTBL_MODE}")
+  add_definitions("-DTTBL_MODE")
+else(TTBL_MODE)
+  message(STATUS "TTBL_MODE: ${TTBL_MODE}")
+endif()
+
 # Add relative path of 2decomp library     
 set(CMAKE_PREFIX_PATH "../../5-external/2decomp-fft/build")
 
@@ -60,15 +69,6 @@ set_property(CACHE IO_BACKEND PROPERTY STRINGS mpi adios2)
 include(X3D_MPI)
 
 include(X3D_Compilers)
-
-# Add option for TTBL post-processing
-option(TTBL_MODE "Enable TTBL post-processing" ON)
-if(TTBL_MODE)
-  message(STATUS "TTBL_MODE: ${TTBL_MODE}")
-  add_definitions("-DTTBL_MODE")
-else(TTBL_MODE)
-  message(STATUS "TTBL_MODE: ${TTBL_MODE}")
-endif()
 
 # Add the sources
 add_subdirectory(src)
