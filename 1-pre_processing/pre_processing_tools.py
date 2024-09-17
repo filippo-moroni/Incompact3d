@@ -127,6 +127,7 @@ def plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic):
             npsl += 1 
         height += yp_ic[j] - yp_ic[j-1]
 
+    """
     #!--- Plot section ---!
 
     # Plotting of the initial velocity profile in wall units, first 50 points
@@ -154,6 +155,8 @@ def plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic):
 
     # Save and show the figure
     save_and_show_plot('init_umean', subfolder='pre_processing', description=description)
+    
+    """
     
     # Return calculated quantities
     return(sl_99_ic,npsl)

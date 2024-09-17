@@ -232,6 +232,8 @@ if itype == 13:
      - the shear layer delta_99 thickness at IC (sl_99_ic);
      - number of mesh nodes in the initial shear layer (npsl).
     """
+
+    # At the moment, the plot section is commented, only calculations happen
     (sl_99_ic,npsl) = plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic)
 
     # Delta y+ at the BL thickness (d: delta) at Re_tau = 500
