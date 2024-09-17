@@ -3,6 +3,11 @@
 This file stores Python subroutines for the mesh of Incompact3d,
 used in the setup of simulations.
 
+Subroutines list:
+
+ - stretching_mesh_y
+ - calculate_geometric_quantities
+
 """
 
 #!-----------------------------------------------------------------------------!

@@ -2,6 +2,11 @@
 """
 This file stores Python subroutines for the pre-processing 
 of Incompact3d simulations. 
+
+Subroutines list:
+
+ - mem_and_cpuh
+ - plot_initial_vel_profile
  
 """
 
