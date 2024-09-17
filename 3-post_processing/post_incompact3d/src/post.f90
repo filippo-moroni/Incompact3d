@@ -591,7 +591,7 @@ end if
           
           call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfy,ssy,swy,ysize(2),0)
                          
-          tke_diffHT = temp_dery
+          tke_diffHT = xnu*temp_dery
           
           !--- Production term ---!
                         
