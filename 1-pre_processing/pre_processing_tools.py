@@ -98,8 +98,9 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
 
 def plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic):
 
-    # Create folder to store later results
-    os.makedirs('plots', mode=0o777, exist_ok=True)
+    # Create folders to store later results
+    os.makedirs('plots',                mode=0o777, exist_ok=True)
+    os.makedirs('plots/pre_processing', mode=0o777, exist_ok=True)
 
     # Define the array
     Uo = np.zeros(ny)
