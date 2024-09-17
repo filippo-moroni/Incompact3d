@@ -140,7 +140,7 @@ def plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic):
     
     # Limits for axes
     xliminf = 0.0
-    xlimsup = yp_ic*1.2
+    xlimsup = max(yp_ic)*1.2
     yliminf = min(Uo)*1.2
     ylimsup = max(Uo)*1.2
     
