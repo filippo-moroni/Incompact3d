@@ -100,7 +100,7 @@ contains
                    uy1(i,j,k)=zero
                    uz1(i,j,k)=sin(real(i-1,mytype)*dx)+cos(real(k-1,mytype)*dz)
                 else
-                        print *,'test'
+                   print *,'test'
                    uz1(i,j,k)=one-y*y
                    uy1(i,j,k)=zero
                    ux1(i,j,k)=zero
