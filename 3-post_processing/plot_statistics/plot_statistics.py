@@ -164,11 +164,11 @@ if post_vort:
 
 # Rescale TKE terms (as Mansour et al. (1988))
 if post_tke_eq:
-    tke_turbt  /= sh_vel**3
-    tke_presst /= sh_vel**3
-    tke_difft  /= sh_vel**3
-    tke_prod   /= sh_vel**3
-    tke_pseps  /= sh_vel**3
+    tke_turbt  /= sh_vel**2
+    tke_presst /= sh_vel**2
+    tke_difft  /= sh_vel**2
+    tke_prod   /= sh_vel**2
+    tke_pseps  /= sh_vel**2
 
 # Friction Reynolds number
 re_tau = None
