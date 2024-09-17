@@ -472,7 +472,7 @@ contains
     
     if (post_tke_eq) then
        
-        ! Fluctuating terms for TKE equation
+        ! Fluctuating terms for TKE equation (turbulent transport and pseudo dissipation)
         allocate(kvprime_mean       (ysize(1),ysize(2),ysize(3))); kvprime_mean        = zero
         allocate(pseudo_eps_tke_mean(ysize(1),ysize(2),ysize(3))); pseudo_eps_tke_mean = zero
         
@@ -483,7 +483,6 @@ contains
         allocate(pseudo_eps_tke_meanHT(ysize(2))); pseudo_eps_tke_meanHT = zero
         
         ! All other terms
-        allocate(tke_convHT   (ysize(2))); tke_convHT = zero
         allocate(tke_diffHT   (ysize(2))); tke_diffHT = zero     
         allocate(tke_prodHT   (ysize(2))); tke_prodHT = zero
         allocate(temp_dery    (ysize(2))); temp_dery  = zero
@@ -528,32 +527,33 @@ contains
   implicit none
   
   if (post_mean) then
-      u1mean=zero;v1mean=zero;w1mean=zero
-      u2mean=zero;v2mean=zero;w2mean=zero
-      u3mean=zero;v3mean=zero;w3mean=zero
-      u4mean=zero;v4mean=zero;w4mean=zero
-      uvmean=zero;uwmean=zero;vwmean=zero
-      pre1mean=zero;pre2mean=zero
-      vpremean=zero
+      u1mean   = zero; v1mean   = zero; w1mean   = zero
+      u2mean   = zero; v2mean   = zero; w2mean   = zero
+      u3mean   = zero; v3mean   = zero; w3mean   = zero
+      u4mean   = zero; v4mean   = zero; w4mean   = zero
+      
+      uvmean   = zero; uwmean   = zero; vwmean   = zero
+      pre1mean = zero; pre2mean = zero; vpremean = zero
   
       ! Scalar field
-      phi1mean=zero;phi2mean=zero
-      uphimean=zero;vphimean=zero;wphimean=zero
+      phi1mean = zero; phi2mean = zero
+      uphimean = zero; vphimean = zero; wphimean = zero
       
   end if
   
   if (post_vort) then
-      vortxmean=zero; vortymean=zero; vortzmean=zero
-      mean_gradientp=zero; mean_gradientx=zero; mean_gradientz=zero
-      mean_gradphi=zero
+      vortxmean      = zero; vortymean      = zero; vortzmean      = zero
+      mean_gradientp = zero; mean_gradientx = zero; mean_gradientz = zero
+      mean_gradphi   = zero
   end if
   
   if (post_diss) then
-      epsmean=zero
+      epsmean = zero
   end if
   
   if(post_tke_eq) then
-      kvprime_mean=zero;pseudo_eps_tke_mean=zero
+      kvprime_mean        = zero
+      pseudo_eps_tke_mean = zero
   end if
      
   end subroutine reset_averages
@@ -570,79 +570,80 @@ contains
   if (post_mean) then
   
       ! Subdomains   
-      u1meanH1=zero;v1meanH1=zero;w1meanH1=zero
-      u2meanH1=zero;v2meanH1=zero;w2meanH1=zero
-      u3meanH1=zero;v3meanH1=zero;w3meanH1=zero
-      u4meanH1=zero;v4meanH1=zero;w4meanH1=zero
-      uvmeanH1=zero;uwmeanH1=zero;vwmeanH1=zero
-      pre1meanH1=zero;pre2meanH1=zero
-      vpremeanH1=zero
+      u1meanH1   = zero; v1meanH1   = zero; w1meanH1 = zero
+      u2meanH1   = zero; v2meanH1   = zero; w2meanH1 = zero
+      u3meanH1   = zero; v3meanH1   = zero; w3meanH1 = zero
+      u4meanH1   = zero; v4meanH1   = zero; w4meanH1 = zero
+      
+      uvmeanH1   = zero; uwmeanH1   = zero; vwmeanH1 = zero
+      pre1meanH1 = zero; pre2meanH1 = zero
+      vpremeanH1 = zero
       
       ! Total domain
-      u1meanHT=zero;v1meanHT=zero;w1meanHT=zero
-      u2meanHT=zero;v2meanHT=zero;w2meanHT=zero
-      u3meanHT=zero;v3meanHT=zero;w3meanHT=zero
-      u4meanHT=zero;v4meanHT=zero;w4meanHT=zero
-      uvmeanHT=zero;uwmeanHT=zero;vwmeanHT=zero
-      pre1meanHT=zero;pre2meanHT=zero
-      vpremeanHT=zero
+      u1meanHT   = zero; v1meanHT   = zero; w1meanHT = zero
+      u2meanHT   = zero; v2meanHT   = zero; w2meanHT = zero
+      u3meanHT   = zero; v3meanHT   = zero; w3meanHT = zero
+      u4meanHT   = zero; v4meanHT   = zero; w4meanHT = zero
+      
+      uvmeanHT   = zero; uwmeanHT   = zero; vwmeanHT = zero
+      pre1meanHT = zero; pre2meanHT = zero
+      vpremeanHT = zero
             
       ! Scalar field
             
       ! Subdomains   
-      phi1meanH1=zero;phi2meanH1=zero
-      uphimeanH1=zero;vphimeanH1=zero;wphimeanH1=zero
+      phi1meanH1 = zero; phi2meanH1 = zero
+      uphimeanH1 = zero; vphimeanH1 = zero; wphimeanH1 = zero
       
       ! Total domain
-      phi1meanHT=zero;phi2meanHT=zero
-      uphimeanHT=zero;vphimeanHT=zero;wphimeanHT=zero
+      phi1meanHT = zero; phi2meanHT = zero
+      uphimeanHT = zero; vphimeanHT = zero; wphimeanHT = zero
            
   end if
   
   if (post_vort) then
   
       ! Subdomains
-      vortxmeanH1=zero; vortymeanH1=zero; vortzmeanH1=zero
-      mean_gradientpH1=zero; mean_gradientxH1=zero; mean_gradientzH1=zero
-      mean_gradphiH1=zero
+      vortxmeanH1      = zero; vortymeanH1      = zero; vortzmeanH1      = zero
+      mean_gradientpH1 = zero; mean_gradientxH1 = zero; mean_gradientzH1 = zero
+      mean_gradphiH1 = zero
   
       ! Total domain
-      vortxmeanHT=zero; vortymeanHT=zero; vortzmeanHT=zero
-      mean_gradientpHT=zero; mean_gradientxHT=zero; mean_gradientzHT=zero
-      mean_gradphiHT=zero
+      vortxmeanHT      = zero; vortymeanHT      = zero; vortzmeanHT      = zero
+      mean_gradientpHT = zero; mean_gradientxHT = zero; mean_gradientzHT = zero
+      mean_gradphiHT   = zero
   
   end if
   
   if (post_diss) then
   
       ! Subdomains
-      epsmeanH1=zero
+      epsmeanH1 = zero
   
       ! Total domain
-      epsmeanHT=zero
+      epsmeanHT = zero
   
   end if
   
   if (post_corz) then
   
       ! Subdomains
-      RuuzH1=zero;RvvzH1=zero;RwwzH1=zero;RuvzH1=zero;RsszH1=zero
+      RuuzH1 = zero; RvvzH1 = zero; RwwzH1 = zero; RuvzH1 = zero; RsszH1 = zero
   
       ! Total domain
-      RuuzHT=zero;RvvzHT=zero;RwwzHT=zero;RuvzHT=zero;RsszHT=zero
+      RuuzHT = zero; RvvzHT = zero; RwwzHT = zero; RuvzHT = zero; RsszHT = zero
   
   end if
   
   if(post_tke_eq) then
   
       ! Subdomains
-      kvprime_meanH1=zero;pseudo_eps_tke_meanH1=zero
+      kvprime_meanH1 = zero; pseudo_eps_tke_meanH1 = zero
   
       ! Total domain
-      kvprime_meanHT=zero;pseudo_eps_tke_meanHT=zero
+      kvprime_meanHT = zero; pseudo_eps_tke_meanHT = zero
       
       ! All the other terms are only in total domain
-      tke_convHT = zero
       tke_diffHT = zero     
       tke_prodHT = zero
       temp_dery  = zero
