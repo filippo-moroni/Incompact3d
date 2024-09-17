@@ -124,7 +124,7 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine init_post_variables
 
-    USE var
+    use var
     
     integer :: i,j,k
 
