@@ -166,7 +166,7 @@ if post_vort:
 if post_tke_eq:
     tke_turbt  /= sh_vel**2
     tke_presst /= sh_vel**2
-    tke_difft   = tke_difft / sh_vel**2 * nu
+    tke_difft   = tke_difft / sh_vel**4 * nu
     tke_prod   /= sh_vel**2
     tke_pseps  /= sh_vel**2
 
