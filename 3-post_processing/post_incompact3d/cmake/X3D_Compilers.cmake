@@ -63,16 +63,21 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 add_definitions("-DVERSION=\"${GIT_VERSION}\"")
-option(DOUBLE_PRECISION "Build Xcompact with double precision" ON)
+
+# Options for double precision calculations and single precision saving.
+# Checkpoints are saved in the same precision as the calculations.
+
+option(DOUBLE_PRECISION "Build post-incompact3d with double precision" ON)
 if (DOUBLE_PRECISION)
+  message(STATUS "Double precision: ${DOUBLE_PRECISION}")
   add_definitions("-DDOUBLE_PREC")
 endif()
 
-option(SINGLE_PRECISION_OUTPUT "Build XCompact with output in single precision" OFF)
+option(SINGLE_PRECISION_OUTPUT "Build post-incompact3d with output in single precision" OFF)
 if (SINGLE_PRECISION_OUTPUT)
+  message(STATUS "Single precision output: ${SINGLE_PRECISION_OUTPUT}")
   add_definitions("-DSAVE_SINGLE")
 endif()
-
 
 if (IO_BACKEND MATCHES "mpi")
   message(STATUS "Using mpi (default) IO backend")
