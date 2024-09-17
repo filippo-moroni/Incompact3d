@@ -153,7 +153,7 @@ def plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic):
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('init_umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='pre_processing', description=description)
+    save_and_show_plot('init_umean', subfolder='pre_processing', description=description)
     
     # Return calculated quantities
     return(sl_99_ic,npsl)
