@@ -166,7 +166,7 @@ if post_vort:
 if post_tke_eq:
     tke_turbt  /= sh_vel**2
     tke_presst /= sh_vel**2
-    tke_difft   = tke_difft / sh_vel**3 * nu
+    tke_difft   = tke_difft / sh_vel**2 * nu**2
     tke_prod   /= sh_vel**2
     tke_pseps  /= sh_vel**2
 
@@ -1004,14 +1004,14 @@ if post_tke_eq:
     # Transport terms
     ax.scatter(y_plus[:ny],  tke_turbt [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus[:ny],  tke_presst[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C1')
-    ax.scatter(y_plus[:ny],  tke_difft [:ny]*1000, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
+    ax.scatter(y_plus[:ny],  tke_difft [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
     ax.scatter(y_plus[:ny],  tke_prod  [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C3')
     ax.scatter(y_plus[:ny], -tke_pseps [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C4')
 
     # Mansour et al. (1988)            
     ax.plot(y_plus_tke_turbt_mansour,  -tke_turbt_mansour,  color='C0', linestyle='-', linewidth=pp.lw)
     ax.plot(y_plus_tke_presst_mansour, -tke_presst_mansour, color='C1', linestyle='-', linewidth=pp.lw)
-    ax.plot(y_plus_tke_difft_mansour,   tke_difft_mansour,  color='C2', linestyle='-', linewidth=pp.lw)
+    ax.plot(y_plus_tke_difft_mansour,  -tke_difft_mansour,  color='C2', linestyle='-', linewidth=pp.lw)
     ax.plot(y_plus_tke_prod_mansour,    tke_prod_mansour,   color='C3', linestyle='-', linewidth=pp.lw)
     ax.plot(y_plus_tke_pseps_mansour,   tke_pseps_mansour,  color='C4', linestyle='-', linewidth=pp.lw)
                    
