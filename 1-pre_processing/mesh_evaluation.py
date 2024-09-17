@@ -40,8 +40,9 @@ from set_flow_parameters import set_flow_parameters
 # Import function to calculate stretching of the mesh
 from mesh_subs import stretching_mesh_y, calculate_geometric_quantities
 
-# Import function to calculate memory and CPUh of simulation
-from pre_processing_tools import mem_and_cpuh
+# Import functions to calculate memory and CPUh of simulation and to show 
+# initial velocity profile
+from pre_processing_tools import mem_and_cpuh, plot_initial_vel_profile
 
 #!--------------------------------------------------------------------------------------!
 
@@ -226,43 +227,13 @@ if itype == 13:
        
     #!-----------------------------------------------------------------------!
     
-    #!--- Check on the initial velocity profile ---!
-    
-    # Define the array
-    Uo = np.zeros(ny)
-        
-    # Initial velocity profile (tanh) (Kozul et al. (2016))
-    for j in range(0, ny):
-    	Uo[j] = uwall * (0.5 + 0.5 * (math.tanh((twd/2.0/theta_sl)*(1.0 - yp[j]/twd))))
-    
-    # Rescaling the initial velocity profile and the y-coordinates
-    Uo = Uo / sh_vel_ic
-    yp_ic = yp / delta_nu_ic
-        
-    # Plotting of the initial velocity profile in wall units, first 50 points
-    #plt.scatter(yp_ic[0:50], Uo[0:50])
-    #plt.title("Initial velocity profile near the wall", fontsize=30)
-    #plt.xlabel("$y^+$", fontsize=30)
-    #plt.ylabel("$U_o^+$", fontsize=30)
-    #plt.show()
-        
-    # Calculate the thickness delta99^+ of the initial shear layer
-    j = 0
-    while j <= ny - 1 and Uo[j] > Uo[0]*0.01:
-        sl_99_ic = yp_ic[j]
-        j = j + 1
-    	
-    # Calculation of the number of mesh nodes in the initial shear layer
-    npsl = 0      # number of points shear layer
-    height = 0.0  # cumulative height in viscous unit (y+)
-  
-    for j in range(1, ny):
-        if height + yp_ic[j] - yp_ic[j-1] <= sl_99_ic:
-            npsl += 1 
-        height += yp_ic[j] - yp_ic[j-1]
-    	
-    #!---------------------------------------------!	
-    			         
+    """"
+    Plot the initial velocity profile and calculate: 
+     - the shear layer delta_99 thickness at IC (sl_99_ic);
+     - number of mesh nodes in the initial shear layer (npsl).
+    """
+    (sl_99_ic,npsl) = plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic)
+
     # Delta y+ at the BL thickness (d: delta) at Re_tau = 500
     c = 0         # integer to store the index (c: counter)
     

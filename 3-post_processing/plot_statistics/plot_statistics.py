@@ -45,9 +45,6 @@ from plot_subs import set_plot_settings, save_and_show_plot, get_ref_mean_vel_pr
 # Import functions to read 'input.i3d', 'post.prm' files, statistics data and reference data
 from read_files import read_input_files, read_data, read_ref_data
 
-# Import function to read friction Reynolds number Re_tau from .xdmf files
-from read_retau import extract_re_tau_value
-
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 

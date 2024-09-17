@@ -11,6 +11,7 @@ of Incompact3d simulations.
 import sys
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -21,6 +22,9 @@ sys.path.append(config_path)
 
 # Import the plotting_params module
 import plot_params as pp
+
+# Import functions to setting up, save and show plots 
+from plot_subs import set_plot_settings, save_and_show_plot
 
 #!-----------------------------------------------------------------------------!
 
@@ -74,6 +78,80 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
     cpuh = round(cpuh, 1)
     
     return(n_tot, nsnap, mem_tot, cpuh)
+
+#!-----------------------------------------------------------------------------!
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Plot of the first 50 points of the initial velocity profile
+!              of the tanh initialization as Kozul et al. (2016). Calculate
+!              the shear layer initial thickness and the number of points
+!              contained in it.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+def plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic):
+
+    # Create folders to store later results
+    os.makedirs('pre_processing', mode=0o777, exist_ok=True)
+
+    # Define the array
+    Uo = np.zeros(ny)
+        
+    # Initial velocity profile (tanh) (Kozul et al. (2016))
+    for j in range(0, ny):
+        Uo[j] = uwall * (0.5 + 0.5 * (np.tanh((twd/2.0/theta_sl)*(1.0 - yp[j]/twd))))
     
- 
-     
+    # Rescaling the initial velocity profile and the y-coordinates
+    Uo = Uo / sh_vel_ic
+    yp_ic = yp / delta_nu_ic
+
+    # Calculate the thickness delta99^+ of the initial shear layer
+    j = 0
+    while j <= ny - 1 and Uo[j] > Uo[0]*0.01:
+        sl_99_ic = yp_ic[j]
+        j = j + 1
+    	
+    # Calculation of the number of mesh nodes in the initial shear layer
+    npsl = 0      # number of points shear layer
+    height = 0.0  # cumulative height in viscous unit (y+)
+  
+    for j in range(1, ny):
+        if height + yp_ic[j] - yp_ic[j-1] <= sl_99_ic:
+            npsl += 1 
+        height += yp_ic[j] - yp_ic[j-1]
+
+    #!--- Plot section ---!
+
+    # Plotting of the initial velocity profile in wall units, first 50 points
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+    
+    # Description of .pdf file
+    description = 'Initial streamwise velocity profile in wall units, as Kozul et al. (2016).'
+
+    # Streamwise initial velocity profile
+    ax.scatter(yp_ic[0:49], Uo[0:49], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Limits for axes
+    xliminf = 0.0
+    xlimsup = yp_ic[49]*1.2
+    yliminf = min(Uo)*1.2
+    ylimsup = max(Uo)*1.2
+    
+    # Axes labels
+    ax.set_xlabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$U_o^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+
+    # Save and show the figure
+    save_and_show_plot('init_umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='pre_processing', description=description)
+    
+    # Return calculated quantities
+    return(sl_99_ic,npsl)
+
+
+
