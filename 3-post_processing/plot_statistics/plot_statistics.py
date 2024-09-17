@@ -1004,7 +1004,7 @@ if post_tke_eq:
     # Transport terms
     ax.scatter(y_plus[:ny],  tke_turbt [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus[:ny],  tke_presst[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C1')
-    ax.scatter(y_plus[:ny],  tke_difft [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
+    ax.scatter(y_plus[:ny],  tke_difft [:ny]*1000, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
     ax.scatter(y_plus[:ny],  tke_prod  [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C3')
     ax.scatter(y_plus[:ny], -tke_pseps [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C4')
 
