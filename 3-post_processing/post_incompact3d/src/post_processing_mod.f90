@@ -29,6 +29,12 @@ module post_processing
   logical, save :: read_vel,read_pre,read_phi 
 
   !--- Arrays for statistic collection ---!
+
+  ! Explanation of nomenclature:
+  ! - mean:   simple arithmetic mean of data at the same (x,y,z) location across different
+  !           flow realizations and / or time units;
+  ! - meanH1: sum over homogeneous directions, on a single processor ('1') ('H': Homogeneous);
+  ! - meanHT: sum over different processors (through MPI) (T: Total).
   
   ! Point-value  
   real(mytype), save, allocatable, dimension(:,:,:) :: u1mean,v1mean,w1mean
