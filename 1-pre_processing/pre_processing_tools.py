@@ -88,10 +88,9 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Plot of the first 50 points of the initial velocity profile
-!              of the tanh initialization as Kozul et al. (2016). Calculate
-!              the shear layer initial thickness and the number of points
-!              contained in it.
+! DESCRIPTION: Plot the initial velocity profile of the tanh initialization 
+!              as Kozul et al. (2016). Calculate the shear layer initial 
+!              thickness and the number of points contained in it.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -137,11 +136,11 @@ def plot_initial_vel_profile(ny,uwall,twd,theta_sl,yp,sh_vel_ic,delta_nu_ic):
     description = 'Initial streamwise velocity profile in wall units, as Kozul et al. (2016).'
 
     # Streamwise initial velocity profile
-    ax.scatter(yp_ic[0:49], Uo[0:49], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(yp_ic, Uo, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Limits for axes
     xliminf = 0.0
-    xlimsup = yp_ic[49]*1.2
+    xlimsup = yp_ic*1.2
     yliminf = min(Uo)*1.2
     ylimsup = max(Uo)*1.2
     
