@@ -204,13 +204,13 @@ elif itype == 13:
           
 # Create the file and write  
 with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
-    f.write(f"{'delta_x^+':<{pp.c_w}}, "  +
-            f"{'delta_y1^+':<{pp.c_w}}, " +
-            f"{'delta_z^+':<{pp.c_w}}, "  +
-            f"{'Lx^+':<{pp.c_w}}, "       +
-            f"{'Ly^+':<{pp.c_w}}, "       +
-            f"{'Lz^+':<{pp.c_w}}, "       +
-            f"{'delta_yd^+':<{pp.c_w}}\n" )
+    f.write(f"{'delta_x^+':>{pp.c_w}}, "  +
+            f"{'delta_y1^+':>{pp.c_w}}, " +
+            f"{'delta_z^+':>{pp.c_w}}, "  +
+            f"{'Lx^+':>{pp.c_w}}, "       +
+            f"{'Ly^+':>{pp.c_w}}, "       +
+            f"{'Lz^+':>{pp.c_w}}, "       +
+            f"{'delta_yd^+':>{pp.c_w}}\n" )
 
     f.write(f"{delta_x_plus:{pp.fs}}, "   +
             f"{y_plus[1]:{pp.fs}}, "      +

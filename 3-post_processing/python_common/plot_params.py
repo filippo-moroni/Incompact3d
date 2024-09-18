@@ -53,10 +53,13 @@ iswitch = 1 # (0: Lee & Moser, 1: Cimarelli)
 # Column width for writing to .txt file
 c_w = 16 
 
+"""
 # Format for numbers when written as strings (f: format, s: string)
-fs  = f"<{c_w}.3f"   # 3 decimal digits
-fs6 = f"<{c_w}.6f"   # 6 decimal digits
-fs8 = f"<{c_w}.8f"   # 8 decimal digits (used mainly for cf)
+(>: right-adjust, <: left-adjust).
+"""
+fs  = f">{c_w}.3f"   # 3 decimal digits
+fs6 = f">{c_w}.6f"   # 6 decimal digits
+fs8 = f">{c_w}.8f"   # 8 decimal digits (used mainly for cf)
 
 # Parameters for contourf plots
 nlvl = 256         # number of isolevels
