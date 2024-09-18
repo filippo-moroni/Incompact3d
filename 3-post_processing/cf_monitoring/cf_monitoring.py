@@ -28,8 +28,8 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plot_params as pp
 
-# Import function to set plots
-from plot_subs import set_plot_settings
+# Import functions to setting up, save and show plots a
+from plot_subs import set_plot_settings, save_and_show_plot
 
 # Import function to read 'input.i3d' and 'post.prm' files and reference data
 from read_files import read_input_files, read_ref_data_temp_evol
@@ -40,8 +40,9 @@ from set_flow_parameters import set_flow_parameters
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. cf_mean and plot)
-os.makedirs('data_post', mode=0o777, exist_ok=True)
-os.makedirs('plots',     mode=0o777, exist_ok=True)
+os.makedirs('data_post',            mode=0o777, exist_ok=True)
+os.makedirs('plots',                mode=0o777, exist_ok=True)
+os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -292,15 +293,17 @@ elif itype == 3:
                 f"{n_snap:{pp.fs}}\n"       )
 
 # y-axis label
-ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)            
-               
+ax.set_ylabel(r'$c_{f x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+# Description
+description = 'Time evolution of streamwise friction coefficient.'
+    
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-# Saving the figure and show it
-plt.savefig(f'plots/cf_vs_time_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-plt.show()
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+# Save and show the figure
+save_and_show_plot('cfx_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -329,13 +332,16 @@ if itype == 13:
     yliminf = np.min(re_tau) * 0.0
     ylimsup = np.max(re_tau) * 1.2 
               
+    # Description
+    description  = 'Time evolution of (streamwise) friction Reynolds number. '
+    description += 'Reference data Cimarelli et al. (2024a).'
+    
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-    # Saving the figure and show it
-    plt.savefig(f'plots/retau_vs_time_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-    plt.show()
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+    # Save and show the figure
+    save_and_show_plot('retaux_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
     
     #!--- Plot streamwise friction coefficient as function of friction Reynolds number ---!
 
@@ -359,13 +365,17 @@ if itype == 13:
     yliminf = np.min(cfx) * 0.0
     ylimsup = np.max(cfx) * 1.2 
               
+    # Description
+    description  = 'Time evolution of streamwise friction coefficient against \ 
+                   (streamwise) friction Reynolds number. '
+    description += 'Reference data Cimarelli et al. (2024a).'
+    
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
-
-    # Saving the figure and show it
-    plt.savefig(f'plots/cfx_vs_retau_{add_string}.pdf', format='pdf', bbox_inches='tight', dpi=600)
-    plt.show()
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    
+    # Save and show the figure
+    save_and_show_plot('cfx_vs_retaux', add_string=add_string, subfolder='time_evolution', description=description)
 
 #!--------------------------------------------------------------------------------------!
 
