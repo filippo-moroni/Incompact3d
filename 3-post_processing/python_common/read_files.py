@@ -17,6 +17,15 @@
 import numpy as np
 import os
 
+# Get environment variable for Desktop path
+base_path = os.getenv('desktop')
+
+if base_path is None:
+    raise EnvironmentError("Please set the Desktop environment variable.")
+
+# Directory where reference data are stored
+dirname = os.path.join(base_path, 'Incompact3d/3-post_processing/reference_data')
+
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Function to read Incompact3d files:
@@ -370,15 +379,6 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
 
 def read_ref_data():
 
-    # Get environment variable for Desktop path
-    base_path = os.getenv('desktop')
-
-    if base_path is None:
-        raise EnvironmentError("Please set the Desktop environment variable.")
-
-    # Directory where reference data are stored
-    dirname = os.path.join(base_path, 'Incompact3d/3-post_processing/reference_data')
-
     #!--- Initialize reference data ---!
     
     # Lee & Moser (2015), Channel Re_tau = 180
@@ -619,11 +619,8 @@ def read_ref_data_temp_evol():
     delta_99_gboga      = 0.0
     disp_t_gboga        = 0.0
     cf_gboga            = 0.0
-    
-    # Directory where reference data are stored
-    dirname = '/home/n286654/Desktop/Incompact3d/3-post_processing/reference_data'
-    
-    # Reading of G. Boga data
+        
+    # Reading of G. Boga data (Cimarelli et al. (2024a))
     M = np.loadtxt(dirname + '/gboga/retau500/Re_tau500_time_largettblnr4_boga.dat', skiprows=1, dtype=np.float64)
     t_gboga             = M[:,0]
     retau_vs_time_gboga = M[:,1]
