@@ -255,7 +255,7 @@ if itype == 3:
 #!--------------------------------------------------------------------------------------!
 
 print()
-print(">>> Plotting streamwise friction coefficient.")
+print(">>> Plotting streamwise friction coefficient as function of time.")
 print()
 
 # Axes ranges
@@ -326,6 +326,7 @@ if itype == 13:
 
     print()
     print(">>> Plotting friction Reynolds number as function of time.")
+    print(">>> Reference data Cimarelli et al. (2024a).")
     print()
 
     # Subplots environment
@@ -363,6 +364,7 @@ if itype == 13:
 
     print()
     print(">>> Plotting streamwise friction coefficient as function of friction Reynolds number.")
+    print(">>> Reference data Cimarelli et al. (2024a).")
     print()
 
     # Subplots environment
