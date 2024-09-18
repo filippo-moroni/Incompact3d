@@ -239,7 +239,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     # Channel
     if itype == 3:
     
-        print("!--- Plotting of statistics for a channel ---!")
+        print(">>> Plotting of statistics for a channel.")
 
         # Setting 'snap_numb' to an empty string
         snap_numb = None
@@ -296,11 +296,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     # TTBL
     elif itype == 13:
 
-        print("!--- Plotting of statistics for a TTBL ---!")
+        print(">>> Plotting of statistics for a TTBL.")
         print()
     
         # Asking to the user the specific snapshot to show
-        snap_numb = input("Enter the snapshot number to show: ")
+        snap_numb = input(">>> Enter the snapshot number to show: ")
     
         # Pad with zeros to match snapshots' naming  
         snap_numb = snap_numb.zfill(4)

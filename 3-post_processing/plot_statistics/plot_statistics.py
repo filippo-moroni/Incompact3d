@@ -182,15 +182,15 @@ if itype == 13:
     re_tau = int(re_tau)
     
     # Print friction Reynolds number and boundary layer thickness
-    print("Friction Reynolds number, Re_tau = ", re_tau)
+    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
     print()
-    print("Boundary layer thickness, delta_99 = ", bl_thick)
+    print(">>> Boundary layer thickness, delta_99 = ", bl_thick)
     print()
-    print("Domain height in wall units, Ly+ = ", Ly_plus)
+    print(">>> Domain height in wall units, Ly+ = ", Ly_plus)
     print()
 
 # Print viscous time unit
-print("Viscous time unit, t_nu = ", t_nu)
+print(">>> Viscous time unit, t_nu = ", t_nu)
 print()
 
 # y+ at the centerline or at the BL edge and halving Ly+ in case of Channel
@@ -203,7 +203,12 @@ elif itype == 13:
 #!--------------------------------------------------------------------------------------!
     
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
-          
+
+print(">>> Saving in 'grid_spacings_post' non-dimensional grid spacings")
+print(">>> and domain dimensions.")
+print(">>> Folder: data_post/plot_statistics/.")
+print()
+
 # Create the file and write  
 with open(f'data_post/plot_statistics/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'delta_x^+':>{pp.c_w}}, "  +
@@ -227,7 +232,9 @@ with open(f'data_post/plot_statistics/grid_spacings_post-{snap_numb}_{add_string
 #!--- Plotting mean statistics ---!
 if post_mean:
 
-    #!--- Mean streamwise velocity profile ---!
+    print(">>> Plotting mean streamwise velocity profile.")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
 
     # Get reference mean streamwise velocity profile
     (y_plus_vsl,u_plus_vsl,y_plus_k,u_plus_k) = get_ref_mean_vel_profile(itype,pp.iswitch)
@@ -312,7 +319,9 @@ if post_mean:
 
     #!--------------------------------------------------------------------------------------!
 
-    #!--- Mean spanwise velocity profile ---!
+    print(">>> Plotting mean spanwise velocity profile.")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
 
     # Mean spanwise velocity profile
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -364,6 +373,10 @@ if post_mean:
     save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
     
     #!--------------------------------------------------------------------------------------!
+
+    print(">>> Plotting streamwise velocity variance.")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
 
     # <u'u'>
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -438,6 +451,10 @@ if post_mean:
 
     #!--------------------------------------------------------------------------------------!
 
+    print(">>> Plotting wall-normal velocity variance.")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
+
     # <v'v'>
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
@@ -511,6 +528,10 @@ if post_mean:
 
     #!--------------------------------------------------------------------------------------!
     
+    print(">>> Plotting spanwise velocity variance.")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
+
     # <w'w'>
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
@@ -574,6 +595,10 @@ if post_mean:
     save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
+
+    print(">>> Plotting Reynolds stress <u'v'>.")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
 
     # <u'v'>
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -665,6 +690,10 @@ if post_diss:
     print()
 
     #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
+    print(">>> Saving in 'time_scales' viscous time unit and")
+    print(">>> Kolmogorov time scale.")
+    print(">>> Folder: data_post/plot_statistics/.")
+    print()
             
     # Create the file and write 
     with open(f'data_post/plot_statistics/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
@@ -674,7 +703,9 @@ if post_diss:
         f.write(f"{t_nu:{pp.fs}}, "            +
                 f"{tau_eta:{pp.fs}}\n"         )
 
-    #!--- Total dissipation ---!
+    print(">>> Plotting total dissipation.")
+    print(">>> Folder: plots/diss_stats/.")
+    print()
 
     # Total dissipation
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -710,7 +741,7 @@ if post_corz:
     #!--- Calculations for correlations ---!
 
     # Select the height at which correlations are plotted
-    y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
+    y_plus_in = np.float64(input(">>> Enter y+ value for correlations plotting: "))
     print()
 
     # Search for the index corresponding to the target y+ for correlations
@@ -719,11 +750,11 @@ if post_corz:
         if y_plus[j] < y_plus_in: c = c + 1
 
     # Print the actual y+ value selected
-    print("Actual y+ value selected = ", y_plus[c])
+    print(">>> Actual y+ value selected = ", y_plus[c])
     print()
 
     # Print the corresponding j-th index
-    print("Corresponding j-th index = ", c)
+    print(">>> Corresponding j-th index = ", c)
     print()
 
     # Take the correlation functions value at rz = 0 and rescale to obtain correlation coefficients
@@ -774,7 +805,7 @@ if post_corz:
     lambda_z = lambda_z / delta_nu
 
     # Print the integral length scale value
-    print("Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
+    print(">>> Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
     print()
     
     #!--------------------------------------------------------------------------------------!
@@ -812,6 +843,10 @@ if post_corz:
                   'descr': 'Auto-correlation coefficient for spanwise velocity component in spanwise direction.' 
                  }
                 ]
+    
+    print(">>> Plotting spanwise velocity auto-correlation coefficients Cii(rz).")
+    print(">>> Folder: plots/correlations/.")
+    print()
 
     # Loop through each plot's data and create the plots
     for plot in cii_plots:
@@ -858,6 +893,10 @@ if post_corz:
 
     #!--------------------------------------------------------------------------------------!
 
+    print(">>> Plotting spanwise velocity correlation coefficient Cuv(rz).")
+    print(">>> Folder: plots/correlations/.")
+    print()
+
     # Cuvz
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
@@ -890,6 +929,10 @@ if post_corz:
     #!--------------------------------------------------------------------------------------!
 
     if numscalar == 1:
+
+        print(">>> Plotting spanwise scalar auto-correlation coefficient Css(rz).")
+        print(">>> Folder: plots/correlations/.")
+        print()
 
         # Cssz
         fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -942,6 +985,10 @@ if post_tke_eq:
 
     #!--------------------------------------------------------------------------------------!
 
+    print(">>> Plotting ratio of production over dissipation of TKE.")
+    print(">>> Folder: plots/tke_stats/.")
+    print()
+
     # Ratio of production over dissipation of TKE
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
@@ -991,6 +1038,10 @@ if post_tke_eq:
     
     #!--------------------------------------------------------------------------------------!
     
+    print(">>> Plotting TKE budget terms.")
+    print(">>> Folder: plots/tke_stats/.")
+    print()
+
     # TKE budget terms
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
@@ -1002,6 +1053,11 @@ if post_tke_eq:
     
     # Description of .pdf file
     description = 'Budget terms for Turbulent Kinetic Energy (TKE) equation. Reference data Mansour et al. (1988).'
+
+    # Temporary: ask the user a rescale factor for tke_difft
+    scale_factor = np.float64(input(">>> Scale factor for TKE diffusion: "))
+
+    tke_difft = tke_difft*scale_factor
 
     # Transport terms
     ax.scatter(y_plus[:ny], -tke_turbt [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
