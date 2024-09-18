@@ -192,9 +192,9 @@ elif itype == 13:
 
     # Write and save to .txt file 
     with open('data_post/max_grid_spacings.txt', 'w') as f:
-        f.write('Non-dimensional grid spacings.')
-        f.write('tot: rescaling with total shear velocity.')
-        f.write('x:   rescaling with streamwise shear velocity.')
+        f.write('Non-dimensional grid spacings.\n')
+        f.write('tot: rescaling with total shear velocity.\n')
+        f.write('x:   rescaling with streamwise shear velocity.\n')
         f.write(' ')
         f.write(f"{'delta_x+_tot':<{pp.c_w}}, "  +
                 f"{'delta_yw+_tot':<{pp.c_w}}, " +
@@ -357,7 +357,7 @@ if itype == 13:
     
     # Axes labels
     ax.set_xlabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$c_{f,x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$c_{f x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Axes ranges
     xliminf = np.min(re_tau)
