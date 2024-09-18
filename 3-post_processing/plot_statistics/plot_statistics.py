@@ -6,7 +6,7 @@
 !               
 !               - mean statistics (mean[u], mean[w], 
 !                                  var[u], var[v], var[w],
-!                                  mean[uv], );              
+!                                  mean[uv]);              
 !               - mean total dissipation;                  
 !               - correlation coefficients (Cuu, Cvv, Cww, Cuv, Css) for 
 !                 spanwise correlations;
@@ -15,7 +15,8 @@
 !                                                         
 !              Calculated and stored:                                  
 !                                                         
-!               - non-dimensional grid spacings and domain dimensions.
+!               - non-dimensional grid spacings and domain dimensions;
+!               - time-scales (viscous time and Kolmogorov time scale).
 !                         
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!

@@ -193,7 +193,7 @@ elif itype == 13:
 
     """
     Non-dimensional mesh spacings 
-    (p: plus, tot: total shear velocity, x: streamwise shear velocity)
+    (p: plus, tot: total shear velocity, x: streamwise shear velocity).
     """
     delta_x_p_tot  = delta_x  / delta_nu_tot
     delta_yw_p_tot = delta_yw / delta_nu_tot
