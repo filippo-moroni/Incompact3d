@@ -78,13 +78,10 @@ program post
   ! Reading of input.i3d file
   call reading_input_file()
 
-  write(*,"(' iimplicit           : ',I1)") iimplicit
-
-  ! Manually setting explicit time-integration to avoid problems with
-  ! schemes of derivatives.
+  ! Manually setting explicit time-integration and scheme for 2nd order derivate
+  !to avoid problems with schemes of derivatives.
   iimplicit = 0
-
-  write(*,"(' iimplicit           : ',I1)") iimplicit
+  isecondder = 1
 
   ! Imposing decomposition in slabs
   p_row=nproc; p_col=1
