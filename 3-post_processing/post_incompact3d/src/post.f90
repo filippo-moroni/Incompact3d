@@ -79,9 +79,9 @@ program post
   call reading_input_file()
 
   ! Manually setting explicit time-integration and scheme for 2nd order derivate
-  !to avoid problems with schemes of derivatives.
+  ! to avoid problems with schemes of derivatives.
   iimplicit = 0
-  isecondder = 1
+  isecondder = 4
 
   ! Imposing decomposition in slabs
   p_row=nproc; p_col=1

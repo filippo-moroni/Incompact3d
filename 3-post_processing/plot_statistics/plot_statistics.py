@@ -168,7 +168,10 @@ if post_vort:
 if post_tke_eq:
     tke_turbt  /= sh_vel**2
     tke_presst /= sh_vel**2
-    tke_difft   = (tke_difft/sh_vel**2) 
+    
+    # For TKE diffusion, we need to rescale by domain height
+    # This is something that needs further verification.
+    tke_difft   = (tke_difft/sh_vel**2) * Ly
     tke_prod   /= sh_vel**2
     tke_pseps  /= sh_vel**2
 
