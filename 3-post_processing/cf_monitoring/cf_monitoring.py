@@ -88,8 +88,7 @@ if itype == 3:
 elif itype == 13:
 
     print()
-    print("! Averaging 'cf_history.txt' files over different flow realizations.")
-    print()
+    print(">>> Averaging 'cf_history.txt' files over different flow realizations.")
 
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
@@ -146,9 +145,12 @@ elif itype == 13:
     
     # Calculate longitudinal friction coefficient
     cfx = 2.0 * (sh_velx / uwall)**2
-    
+
+    print(">>> Saving 'cf_history_realiz.txt' in data_post/cf_monitoring/.")
+    print()
+
     # Create the file and write  
-    with open('data_post/cf_monitoring/cf_monitoring_realiz.txt', 'w') as f:
+    with open('data_post/cf_monitoring/cf_history_realiz.txt', 'w') as f:
         f.write(f"{'sh_veltot (O(6))':>{pp.c_w}}, " +
                 f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
@@ -171,8 +173,7 @@ elif itype == 13:
     #!--- Section on check of mesh spacings ---!
 
     print()
-    print("! Calculating grid spacings at maximum cf.")
-    print()
+    print(">>> Calculating grid spacings at maximum cf.")
 
     # Maximum total and streamwise shear velocities
     max_sh_veltot = np.max(sh_veltot)
@@ -198,6 +199,9 @@ elif itype == 13:
     delta_x_p_x  = delta_x  / delta_nu_x
     delta_yw_p_x = delta_yw / delta_nu_x
     delta_z_p_x  = delta_z  / delta_nu_x
+
+    print(">>> Saving 'max_grid_spacings.txt' in data_post/cf_monitoring/.")
+    print()
 
     # Write and save to .txt file 
     with open('data_post/cf_monitoring/max_grid_spacings.txt', 'w') as f:
@@ -251,7 +255,7 @@ if itype == 3:
 #!--------------------------------------------------------------------------------------!
 
 print()
-print("! Plotting streamwise friction coefficient.")
+print(">>> Plotting streamwise friction coefficient.")
 print()
 
 # Axes ranges
@@ -321,7 +325,7 @@ save_and_show_plot('cfx_vs_time', add_string=add_string, subfolder='time_evoluti
 if itype == 13:
 
     print()
-    print("! Plotting friction Reynolds number as function of time.")
+    print(">>> Plotting friction Reynolds number as function of time.")
     print()
 
     # Subplots environment
@@ -358,7 +362,7 @@ if itype == 13:
     #!--------------------------------------------------------------------------------------!
 
     print()
-    print("! Plotting streamwise friction coefficient as function of friction Reynolds number.")
+    print(">>> Plotting streamwise friction coefficient as function of friction Reynolds number.")
     print()
 
     # Subplots environment
@@ -396,7 +400,7 @@ if itype == 13:
 #!--------------------------------------------------------------------------------------!
 
 print()
-print("! End.")
+print(">>> End.")
 print()
 
 
