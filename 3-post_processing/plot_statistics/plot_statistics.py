@@ -1054,15 +1054,10 @@ if post_tke_eq:
     # Description of .pdf file
     description = 'Budget terms for Turbulent Kinetic Energy (TKE) equation. Reference data Mansour et al. (1988).'
 
-    # Temporary: ask the user a rescale factor for tke_difft
-    scale_factor = np.float64(input(">>> Scale factor for TKE diffusion: "))
-
-    tke_difft = tke_difft*scale_factor
-
     # Transport terms
     ax.scatter(y_plus[:ny], -tke_turbt [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.scatter(y_plus[:ny], -tke_presst[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C1')
-    ax.scatter(y_plus[:ny], -tke_difft [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
+    ax.scatter(y_plus[:ny],  tke_difft [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
     ax.scatter(y_plus[:ny],  tke_prod  [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C3')
     ax.scatter(y_plus[:ny], -tke_pseps [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C4')
 

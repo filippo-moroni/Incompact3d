@@ -558,13 +558,13 @@ end if
               vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
               wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
           enddo      
-      endif
+      endif    
             
       if(post_tke_eq) then
           do j=1,ysize(2)
                                                               
-              !--- Diffusive transport of TKE ---!
-              tke_diffHT(j) = zpfive*(u2meanHT(j)**2 + v2meanHT(j)**2 + w2meanHT(j)**2)
+              !--- Diffusive transport of TKE (this is TKE only at the moment) ---!
+              tke_diffHT(j) = zpfive*(u2meanHT(j) + v2meanHT(j) + w2meanHT(j))
                                                              
           enddo
                     
