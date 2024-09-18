@@ -300,7 +300,7 @@ description = 'Time evolution of streamwise friction coefficient.'
     
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
-set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
     
 # Save and show the figure
 save_and_show_plot('cfx_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
@@ -338,7 +338,7 @@ if itype == 13:
     
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
     
     # Save and show the figure
     save_and_show_plot('retaux_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
@@ -372,7 +372,7 @@ if itype == 13:
     
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
     
     # Save and show the figure
     save_and_show_plot('cfx_vs_retaux', add_string=add_string, subfolder='time_evolution', description=description)
