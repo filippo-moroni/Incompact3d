@@ -69,6 +69,9 @@ uwall, nu, twd = set_flow_parameters(itype, re)
                          
 #!--- Reading of files section ---!
 
+# Reading of grid points
+y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
+
 # Channel (only 1 realization generally)
 if itype == 3:
    
@@ -89,21 +92,29 @@ elif itype == 13:
         M1 = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
         # Extracting quantities from the full matrix
+        sh_veltot = M1[:,0]
         sh_velx   = M1[:,1]
         time_unit = M1[:,7]
         delta_99  = M1[:,9]
         power_in  = M1[:,11]
         a_fact    = M1[:,12]
         
-        # Initialize sh_velxsq_sum array (sum of the square of the longitudinal shear velocity) 
-        # (streamwise gradient multiplied by kinematic viscosity)
+        """
+        Initialize arrays for sum
+        Shear velocities, sq_sum: sum of the square, gradient multiplied by kinematic viscosity.
+        This is made in order to recover the exact arithmetic average (that is between gradients).
+        """
         if i == 1:
-                
-            sh_velxsq_sum = np.zeros(len(time_unit))
-            delta_99_sum  = np.zeros(len(time_unit))
-            power_in_sum  = np.zeros(len(time_unit))
-            a_fact_sum    = np.zeros(len(time_unit))
-            
+
+            sh_veltotsq_sum = np.zeros(len(time_unit))    
+            sh_velxsq_sum   = np.zeros(len(time_unit))
+            delta_99_sum    = np.zeros(len(time_unit))
+            power_in_sum    = np.zeros(len(time_unit))
+            a_fact_sum      = np.zeros(len(time_unit))
+
+        # Average the square of the total shear velocity over the realizations 
+        sh_veltotsq_sum = sh_veltotsq_sum + (sh_veltot**2 / nr)
+
         # Average the square of the longitudinal shear velocity over the realizations 
         sh_velxsq_sum = sh_velxsq_sum + (sh_velx**2 / nr)
         
@@ -118,12 +129,13 @@ elif itype == 13:
         a_fact_sum = a_fact_sum + a_fact / nr  
 
     # Finalize the averages
-    sh_velx  = np.sqrt(sh_velxsq_sum)
-    delta_99 = delta_99_sum
-    power_in = power_in_sum
-    a_fact   = a_fact_sum
+    sh_veltot = np.sqrt(sh_veltotsq_sum)
+    sh_velx   = np.sqrt(sh_velxsq_sum)
+    delta_99  = delta_99_sum
+    power_in  = power_in_sum
+    a_fact    = a_fact_sum
 
-    # Calculate friction Reynolds number (averaged over the realizations)
+    # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
     re_tau   = sh_velx * delta_99 / nu
     
     # Calculate longitudinal friction coefficient
@@ -131,22 +143,71 @@ elif itype == 13:
     
     # Create the file and write  
     with open('data_post/cf_monitoring_realiz.txt', 'w') as f:
-        f.write(f"{'sh_velx (O(6))':<{pp.c_w}}, "  +
-                f"{'cfx (O(6))':<{pp.c_w}}, "      +
-                f"{'delta_99':<{pp.c_w}}, " +
-                f"{'Re_tau':<{pp.c_w}}, " +
-                f"{'P_in':<{pp.c_w}}, "     +
-                f"{'A_fact':<{pp.c_w}}, "   +
-                f"{'time_unit':<{pp.c_w}}\n"         )
+        f.write(f"{'sh_veltot (O(6))':<{pp.c_w}}, " +
+                f"{'sh_velx (O(6))':<{pp.c_w}}, "   +
+                f"{'cfx (O(6))':<{pp.c_w}}, "       +
+                f"{'delta_99':<{pp.c_w}}, "         +
+                f"{'Re_tau':<{pp.c_w}}, "           +
+                f"{'P_in':<{pp.c_w}}, "             +
+                f"{'A_fact':<{pp.c_w}}, "           +
+                f"{'time_unit':<{pp.c_w}}\n"        )
 
         for j in range(0, len(time_unit)):
-            f.write(f"{sh_velx[j]:{pp.fs6}}, "       +
-                    f"{cfx[j]:{pp.fs8}}, "           +
-                    f"{delta_99[j]:{pp.fs}}, "       +
-                    f"{re_tau[j]:{pp.fs}}, "         +
-                    f"{power_in[j]:{pp.fs6}}, "      +
-                    f"{a_fact[j]:{pp.fs}}, "         +
-                    f"{time_unit[j]:{pp.fs}}\n"      ) 
+            f.write(f"{sh_veltot[j]:{pp.fs6}}, "    +
+                    f"{sh_velx[j]:{pp.fs6}}, "      +
+                    f"{cfx[j]:{pp.fs8}}, "          +
+                    f"{delta_99[j]:{pp.fs}}, "      +
+                    f"{re_tau[j]:{pp.fs}}, "        +
+                    f"{power_in[j]:{pp.fs6}}, "     +
+                    f"{a_fact[j]:{pp.fs}}, "        +
+                    f"{time_unit[j]:{pp.fs}}\n"     )
+
+    #!--- Section on check of mesh spacings ---!
+
+    # Maximum total and streamwise shear velocities
+    max_sh_veltot = np.max(sh_veltot)
+    max_sh_velx   = np.max(sh_velx)
+
+    # Related viscous lengths
+    delta_nu_tot = nu / max_sh_veltot
+    delta_nu_x   = nu / max_sh_velx
+
+    # Mesh spacings
+    delta_x = Lx / nx
+    delta_yw = y[1]  
+    delta_z = Lz / nz
+
+    """
+    Non-dimensional mesh spacings 
+    (p: plus, tot: total shear velocity, x: streamwise shear velocity)
+    """
+    delta_x_p_tot  = delta_x  / delta_nu_tot
+    delta_yw_p_tot = delta_yw / delta_nu_tot
+    delta_z_p_tot  = delta_z  / delta_nu_tot
+
+    delta_x_p_x  = delta_x  / delta_nu_x
+    delta_yw_p_x = delta_yw / delta_nu_x
+    delta_z_p_x  = delta_z  / delta_nu_x
+
+    # Write and save to .txt file 
+    with open('data_post/max_grid_spacings.txt', 'w') as f:
+        f.write('Non-dimensional grid spacings.')
+        f.write('tot: rescaling with total shear velocity.')
+        f.write('x:   rescaling with streamwise shear velocity.')
+        f.write(' ')
+        f.write(f"{'delta_x+_tot':<{pp.c_w}}, "  +
+                f"{'delta_yw+_tot':<{pp.c_w}}, " +
+                f"{'delta_z+_tot':<{pp.c_w}}"    + 
+                f"{'delta_x+_x':<{pp.c_w}}, "    +
+                f"{'delta_yw+_x':<{pp.c_w}}, "   +
+                f"{'delta_z+_x':<{pp.c_w}}\n"    )
+        
+        f.write(f"{delta_x_p_tot:{pp.fs6}}, "    +
+                f"{delta_yw_p_tot:{pp.fs6}}, "   +
+                f"{delta_z_p_tot:{pp.fs6}}, "    +
+                f"{delta_x_p_x:{pp.fs6}}, "      +
+                f"{delta_yw_p_x:{pp.fs6}}, "     +
+                f"{delta_z_p_x:{pp.fs6}}\n"      )
 
 #!--------------------------------------------------------------------------------------!
 
