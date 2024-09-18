@@ -366,8 +366,8 @@ if itype == 13:
     ylimsup = np.max(cfx) * 1.2 
               
     # Description
-    description  = 'Time evolution of streamwise friction coefficient against \ 
-                   (streamwise) friction Reynolds number. '
+    description  = 'Time evolution of streamwise friction coefficient against '\
+                   '(streamwise) friction Reynolds number. '
     description += 'Reference data Cimarelli et al. (2024a).'
     
     # Set the plot parameters using the function 'set_plot_settings'
