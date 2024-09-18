@@ -176,7 +176,7 @@ elif itype == 13:
     print(">>> Calculating grid spacings at maximum cf.")
 
     # Maximum total and streamwise shear velocities
-    max_sh_veltot = np.max(sh_veltot)
+    max_sh_veltot = np.max(sh_veltot[4:])  # excluding first 4 savings to avoid the IC peak
     max_sh_velx   = np.max(sh_velx)
 
     # Related viscous lengths
