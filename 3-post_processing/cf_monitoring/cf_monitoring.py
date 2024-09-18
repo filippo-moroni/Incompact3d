@@ -40,9 +40,10 @@ from set_flow_parameters import set_flow_parameters
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. cf_mean and plot)
-os.makedirs('data_post',            mode=0o777, exist_ok=True)
-os.makedirs('plots',                mode=0o777, exist_ok=True)
-os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
+os.makedirs('data_post',               mode=0o777, exist_ok=True)
+os.makedirs('data_post/cf_monitoring', mode=0o777, exist_ok=True)
+os.makedirs('plots',                   mode=0o777, exist_ok=True)
+os.makedirs('plots/time_evolution',    mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -143,7 +144,7 @@ elif itype == 13:
     cfx = 2.0 * (sh_velx / uwall)**2
     
     # Create the file and write  
-    with open('data_post/cf_monitoring_realiz.txt', 'w') as f:
+    with open('data_post/cf_monitoring/cf_monitoring_realiz.txt', 'w') as f:
         f.write(f"{'sh_veltot (O(6))':>{pp.c_w}}, " +
                 f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
@@ -191,17 +192,17 @@ elif itype == 13:
     delta_z_p_x  = delta_z  / delta_nu_x
 
     # Write and save to .txt file 
-    with open('data_post/max_grid_spacings.txt', 'w') as f:
+    with open('data_post/cf_monitoring/max_grid_spacings.txt', 'w') as f:
         f.write('Non-dimensional grid spacings.\n')
         f.write('tot: rescaling with total shear velocity.\n')
         f.write('x:   rescaling with streamwise shear velocity.\n')
         f.write('\n')
-        f.write(f"{'delta_x+_tot':<{pp.c_w}}, "  +
-                f"{'delta_yw+_tot':<{pp.c_w}}, " +
-                f"{'delta_z+_tot':<{pp.c_w}}"    + 
-                f"{'delta_x+_x':<{pp.c_w}}, "    +
-                f"{'delta_yw+_x':<{pp.c_w}}, "   +
-                f"{'delta_z+_x':<{pp.c_w}}\n"    )
+        f.write(f"{'delta_x+_tot':>{pp.c_w}}, "  +
+                f"{'delta_yw+_tot':>{pp.c_w}}, " +
+                f"{'delta_z+_tot':>{pp.c_w}}"    + 
+                f"{'delta_x+_x':>{pp.c_w}}, "    +
+                f"{'delta_yw+_x':>{pp.c_w}}, "   +
+                f"{'delta_z+_x':>{pp.c_w}}\n"    )
         
         f.write(f"{delta_x_p_tot:{pp.fs6}}, "    +
                 f"{delta_yw_p_tot:{pp.fs6}}, "   +
@@ -281,7 +282,7 @@ elif itype == 3:
     ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
                
     # Create the file and write  
-    with open('data_post/cf_mean.txt', 'w') as f:
+    with open('data_post/cf_monitoring/cf_mean.txt', 'w') as f:
         f.write(f"{'cf_mean':<{pp.c_w}}, "  +
                 f"{'t_tot':<{pp.c_w}}, "    +
                 f"{'delta_TU':<{pp.c_w}}, " +

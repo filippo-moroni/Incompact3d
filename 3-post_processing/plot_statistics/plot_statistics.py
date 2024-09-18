@@ -51,13 +51,14 @@ from set_flow_parameters import set_flow_parameters
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
-os.makedirs('data_post',          mode=0o777, exist_ok=True)
-os.makedirs('plots',              mode=0o777, exist_ok=True)
-os.makedirs('plots/mean_stats',   mode=0o777, exist_ok=True)
-os.makedirs('plots/vort_stats',   mode=0o777, exist_ok=True)
-os.makedirs('plots/diss_stats',   mode=0o777, exist_ok=True)
-os.makedirs('plots/correlations', mode=0o777, exist_ok=True)
-os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
+os.makedirs('data_post',                 mode=0o777, exist_ok=True)
+os.makedirs('data_post/plot_statistics', mode=0o777, exist_ok=True)
+os.makedirs('plots',                     mode=0o777, exist_ok=True)
+os.makedirs('plots/mean_stats',          mode=0o777, exist_ok=True)
+os.makedirs('plots/vort_stats',          mode=0o777, exist_ok=True)
+os.makedirs('plots/diss_stats',          mode=0o777, exist_ok=True)
+os.makedirs('plots/correlations',        mode=0o777, exist_ok=True)
+os.makedirs('plots/tke_stats',           mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -203,7 +204,7 @@ elif itype == 13:
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
           
 # Create the file and write  
-with open(f'data_post/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
+with open(f'data_post/plot_statistics/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'delta_x^+':>{pp.c_w}}, "  +
             f"{'delta_y1^+':>{pp.c_w}}, " +
             f"{'delta_z^+':>{pp.c_w}}, "  +
