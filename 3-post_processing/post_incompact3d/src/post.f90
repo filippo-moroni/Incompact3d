@@ -77,6 +77,10 @@ program post
   
   ! Reading of input.i3d file
   call reading_input_file()
+
+  ! Manually setting explicit time-integration to avoid problems with
+  ! schemes of derivatives.
+  iimplicit = 0
   
   ! Imposing decomposition in slabs
   p_row=nproc; p_col=1
@@ -586,9 +590,9 @@ end if
           
           !--- Diffusive transport of TKE ---!
                                    
-          ! 1D derivative in y (2 times)          
+          ! 1D derivative in y (2 times) (same as R. Corsini)
           call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfyp,ssyp,swyp,ysize(2),1)
-          
+                    
           tke_diffHT = xnu * temp_dery
           
           !--- Production term ---!
