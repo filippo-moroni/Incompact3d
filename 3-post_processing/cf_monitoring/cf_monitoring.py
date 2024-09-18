@@ -195,7 +195,7 @@ elif itype == 13:
         f.write('Non-dimensional grid spacings.\n')
         f.write('tot: rescaling with total shear velocity.\n')
         f.write('x:   rescaling with streamwise shear velocity.\n')
-        f.write(' ')
+        f.write('\n')
         f.write(f"{'delta_x+_tot':<{pp.c_w}}, "  +
                 f"{'delta_yw+_tot':<{pp.c_w}}, " +
                 f"{'delta_z+_tot':<{pp.c_w}}"    + 
