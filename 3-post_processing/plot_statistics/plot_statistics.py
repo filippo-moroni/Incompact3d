@@ -162,12 +162,10 @@ if post_vort:
     vort_y *= t_nu
     vort_z *= t_nu
 
-# Rescale TKE terms (as Mansour et al. (1988))
+# Rescale TKE terms
 if post_tke_eq:
     tke_turbt  /= sh_vel**2
     tke_presst /= sh_vel**2
-    # Check the calculations for diffusive transport in post.f90 
-    # (maybe there is an error in the derivative yy-1d)
     tke_difft  /= sh_vel**2
     tke_prod   /= sh_vel**2
     tke_pseps  /= sh_vel**2

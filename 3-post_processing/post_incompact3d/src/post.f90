@@ -79,7 +79,7 @@ program post
   call reading_input_file()
 
   ! Imposing manually 2nd order derivative scheme
-  isecondder = 4
+  isecondder = 1
   
   ! Imposing decomposition in slabs
   p_row=nproc; p_col=1
