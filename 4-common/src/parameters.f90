@@ -233,6 +233,7 @@ subroutine parameter(input_i3d)
   dy2 = dy * dy
   dz2 = dz * dz
 
+  ! Kinematic viscosity
   xnu = one/re
   
   ! Calculation of correct viscosity and Re numbers for a channel flow case
@@ -355,10 +356,9 @@ subroutine parameter(input_i3d)
          write(*,"(' fcpg                          : ',F17.8)") fcpg
        end if
      else
-       write(*,"(' Reynolds number Re              : ',F17.3)") re
+       write(*,"(' Reynolds number Re     : ',F17.3)") re
      endif
-     
-     write(*,"(' xnu                           : ',F17.8)") xnu
+     write(*,"(' xnu                    : ',F17.8)") xnu
      
      ! Displaying if we are using wall oscillations and if open or closed loop strategy
      if (iswitch_wo .eq. 1) then
@@ -522,7 +522,11 @@ subroutine parameter(input_i3d)
      write(*,*) 'Numerical precision: Single'
 #endif
      write(*,*) '==========================================================='
-     write(*,"(' Gravity vector     : (gx, gy, gz)=(',F15.8,',',F15.8,',',F15.8,')')") gravx, gravy, gravz
+     write(*,"(' Gravity vector')")
+     write(*,"(' gx                 : (',F15.8,')')") gravx
+     write(*,"(' gy                 : (',F15.8,')')") gravy
+     write(*,"(' gz                 : (',F15.8,')')") gravz
+
      if (ilmn) then
         write(*,*)  "LMN                : Enabled"
         if (ivarcoeff) then
