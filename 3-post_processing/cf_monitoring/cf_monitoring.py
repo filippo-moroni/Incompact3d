@@ -87,6 +87,10 @@ if itype == 3:
 # TTBL
 elif itype == 13:
 
+    print()
+    print("! Averaging 'cf_history.txt' files over different flow realizations.")
+    print()
+
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
 
@@ -166,6 +170,10 @@ elif itype == 13:
 
     #!--- Section on check of mesh spacings ---!
 
+    print()
+    print("! Calculating grid spacings at maximum cf.")
+    print()
+
     # Maximum total and streamwise shear velocities
     max_sh_veltot = np.max(sh_veltot)
     max_sh_velx   = np.max(sh_velx)
@@ -239,17 +247,18 @@ if itype == 3:
     last_index = len(time_unit) 
     n_snap = last_index - lower_index
     t_tot = (n_snap - 1)*delta
-    
+
+#!--------------------------------------------------------------------------------------!
+
+print()
+print("! Plotting streamwise friction coefficient.")
+print()
+
 # Axes ranges
 xliminf = time_unit[0]
 xlimsup = time_unit[-1]
 yliminf = np.min(cfx) * 0.0
 ylimsup = np.max(cfx) * 1.2 
-
-#!--- Plot section, streamwise friction coefficient ---!
-print()
-print("!--- Plotting of streamwise friction coefficient ---!")
-print()
 
 # Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -311,7 +320,9 @@ save_and_show_plot('cfx_vs_time', add_string=add_string, subfolder='time_evoluti
 # TTBL only
 if itype == 13:
 
-    #!--- Plot friction Reynolds number as function of time ---!
+    print()
+    print("! Plotting friction Reynolds number as function of time.")
+    print()
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -320,7 +331,7 @@ if itype == 13:
     #ax.scatter(time_unit, re_tau, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.plot(time_unit, re_tau, color='C0', linestyle='-', linewidth=pp.lw)
     
-    # G. Boga 
+    # G. Boga (Cimarelli et al. (2024a))
     ax.plot(t_gboga, retau_vs_time_gboga, color='C1', linestyle='-', linewidth=pp.lw)
     
     # Axes labels
@@ -344,7 +355,11 @@ if itype == 13:
     # Save and show the figure
     save_and_show_plot('retaux_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
     
-    #!--- Plot streamwise friction coefficient as function of friction Reynolds number ---!
+    #!--------------------------------------------------------------------------------------!
+
+    print()
+    print("! Plotting streamwise friction coefficient as function of friction Reynolds number.")
+    print()
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -353,7 +368,7 @@ if itype == 13:
     #ax.scatter(re_tau, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
     
-    # G. Boga 
+    # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
     
     # Axes labels
@@ -380,6 +395,9 @@ if itype == 13:
 
 #!--------------------------------------------------------------------------------------!
 
+print()
+print("! End.")
+print()
 
 
 

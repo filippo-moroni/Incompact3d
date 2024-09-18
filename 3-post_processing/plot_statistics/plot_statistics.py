@@ -667,8 +667,8 @@ if post_diss:
             
     # Create the file and write 
     with open(f'data_post/plot_statistics/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
-        f.write(f"{'t_nu':<{pp.c_w}}, "        +
-                f"{'min tau_eta':<{pp.c_w}}\n" )  
+        f.write(f"{'t_nu':>{pp.c_w}}, "        +
+                f"{'min tau_eta':>{pp.c_w}}\n" )  
 
         f.write(f"{t_nu:{pp.fs}}, "            +
                 f"{tau_eta:{pp.fs}}\n"         )
