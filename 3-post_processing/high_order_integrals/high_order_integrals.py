@@ -196,16 +196,16 @@ print()
 
 # Create the file and write  
 with open('data_post/integral_statistics/integral_statistics.txt', 'w') as f:
-    f.write(f"{'delta_99 O(6)':<{pp.c_w}}, " +
-            f"{'disp_t O(6)':<{pp.c_w}}, "   +
-            f"{'mom_t O(6)':<{pp.c_w}}, "    +
-            f"{'Re_tau O(6)':<{pp.c_w}}, "   +
-            f"{'Re_ds O(6)':<{pp.c_w}}, "    +
-            f"{'Re_theta O(6)':<{pp.c_w}}, " +
-            f"{'sh_velx O(6)':<{pp.c_w}}, "  +
-            f"{'cfx O(6)':<{pp.c_w}}, "      +
-            f"{'A_fact O(6)':<{pp.c_w}}, "   +
-            f"{'time_unit':<{pp.c_w}}\n"     )
+    f.write(f"{'delta_99 O(6)':>{pp.c_w}}, " +
+            f"{'disp_t O(6)':>{pp.c_w}}, "   +
+            f"{'mom_t O(6)':>{pp.c_w}}, "    +
+            f"{'Re_tau O(6)':>{pp.c_w}}, "   +
+            f"{'Re_ds O(6)':>{pp.c_w}}, "    +
+            f"{'Re_theta O(6)':>{pp.c_w}}, " +
+            f"{'sh_velx O(6)':>{pp.c_w}}, "  +
+            f"{'cfx O(6)':>{pp.c_w}}, "      +
+            f"{'A_fact O(6)':>{pp.c_w}}, "   +
+            f"{'time_unit':>{pp.c_w}}\n"     )
 
     for j in range(0, ii):
         f.write(f"{delta_99[j]:{pp.fs}}, "   +
