@@ -42,7 +42,8 @@ from ttbl_subs import calculate_ttbl_delta_99
 #!--------------------------------------------------------------------------------------!
 
 # Create folder to store plots
-os.makedirs('plots', mode=0o777, exist_ok=True)
+os.makedirs('plots',         mode=0o777, exist_ok=True)
+os.makedirs('plots/spectra', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -89,13 +90,14 @@ if itype == 13:
     # Friction Reynolds number
     re_tau = sh_vel * bl_thick / nu
     re_tau = int(re_tau)
-    
-    # Print friction Reynolds number and boundary layer thickness
-    print(">>> Friction Reynolds number, re_tau = ", re_tau)
+
+    # Print friction Reynolds number, boundary layer thickness and
+    # domain height in viscous units
+    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
     print()
-    print(">>> Boundary layer thickness, delta_99 = ", bl_thick)
+    print(">>> Boundary layer thickness, delta_99 = ", round(bl_thick,1))
     print()
-    print(">>> Domain height in wall units, Ly+ = ", Ly_plus)
+    print(">>> Domain height in wall units, Ly+ = ", round(Ly_plus,1))
     print()
 
 #!-------------------------------!
@@ -166,10 +168,13 @@ if i_premult == 1:
 #!--- Plot section ---!
 
 # List of variables and labels
-variables = [('Euuz', 'E_{uu}^+(z)'), ('Evvz', 'E_{vv}^+(z)'), ('Ewwz', 'E_{ww}^+(z)'), ('Euvz', 'E_{uv}^+(z)')]
+variables = [('Euuz', 'E_{uu}^+(z)', 'streamwise velocity auto-correlation in spanwise direction.'       ), 
+             ('Evvz', 'E_{vv}^+(z)', 'wall-normal velocity auto-correlation in spanwise direction.'      ), 
+             ('Ewwz', 'E_{ww}^+(z)', 'spanwise velocity auto-correlation in spanwise direction.'         ), 
+             ('Euvz', 'E_{uv}^+(z)', "streamwise/wall-normal velocity correlation in spanwise direction.")]
 
 # Iterate over the variables to create plots
-for var, ylabel in variables:
+for var, ylabel, descr in variables:
 
     # Subplot environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches, pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -201,9 +206,13 @@ for var, ylabel in variables:
         
         # y-axis label
         ax.set_ylabel(r'$k_z^+{}$'.format(ylabel), fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+        # Description of .pdf file
+        description = 'Pre-multiplied spectrum of ' + descr
         
         # Save and show the figure
-        save_and_show_plot(f'kz{var}', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
+        save_and_show_plot(f'kz{var}', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='spectra', description=description)
+    
     else:
     
         # y-axis label
@@ -211,9 +220,12 @@ for var, ylabel in variables:
         
         # Logarithmic y-axis (only in case of a standard spectrum Eij)
         ax.set_yscale('log')
+
+        # Description of .pdf file
+        description = 'Spectrum of ' + descr
         
         # Save and show the figure
-        save_and_show_plot(var, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in)
+        save_and_show_plot(var, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='spectra', description=description)
 
 #!------------------------------------------------------------------------------------------------------------------------------!
 

@@ -82,11 +82,11 @@ if itype == 13:
     # Friction Reynolds number
     re_tau = sh_vel * bl_thick / nu
     re_tau = int(re_tau)
-    
+
     # Print friction Reynolds number and boundary layer thickness
-    print(">>> Friction Reynolds number, re_tau = ", re_tau)
+    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
     print()
-    print(">>> Boundary layer thickness, delta_99 = ", bl_thick)
+    print(">>> Boundary layer thickness, delta_99 = ", round(bl_thick,1))
     print()
 
 # Plot 2-dimensional plots for correlation functions

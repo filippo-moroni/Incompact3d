@@ -602,7 +602,7 @@ end if
           ! 1D derivative in y          
           call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
               
-          ! Reynolds stress <u'v'> time mean streamwise velocity gradient dU/dy
+          ! Reynolds stress <u'v'> times mean streamwise velocity gradient dU/dy
           tke_prodHT = - uvmeanHT * temp_dery 
                 
       endif
