@@ -64,7 +64,7 @@ print()
 #!--------------------------------------------------------------------------------------!
 
 # Create the folder to store the results
-os.makedirs('integral_statistics', mode=0o777, exist_ok=True)
+os.makedirs('data_post/integral_statistics', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
