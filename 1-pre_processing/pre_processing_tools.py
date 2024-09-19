@@ -75,7 +75,7 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
     performance_index = 13000.0 / (66.0 * (10**6) * 320000)  
 
     # Safety factor for estimation of total CPUh required
-    # In ARIES, clock-frequency is 2.20 GHz
+    # In ARIES, clock-frequency is 2.20 GHz.
     sf = 1.2  
 
     # Estimated CPUh (if we assume at least 100'000 points per core,
