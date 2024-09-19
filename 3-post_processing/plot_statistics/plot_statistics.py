@@ -754,6 +754,9 @@ if post_corz:
     print(">>> Actual y+ value selected = ", y_plus[c])
     print()
 
+    # Store this value in a new variable for naming the different .pdf files
+    y_plus_name = int(y_plus[c])
+
     # Print the corresponding j-th index
     print(">>> Corresponding j-th index = ", c)
     print()
@@ -890,7 +893,7 @@ if post_corz:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
         
         # Save and show the figure
-        save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations', description=plot['descr'])
+        save_and_show_plot(plot['title'], snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_name, subfolder='correlations', description=plot['descr'])
 
     #!--------------------------------------------------------------------------------------!
 
@@ -925,7 +928,7 @@ if post_corz:
     description = 'Correlation coefficient for streamwise and wall-normal velocity components in spanwise direction.'
 
     # Save and show the figure
-    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations', description=description)
+    save_and_show_plot('Cuvz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_name, subfolder='correlations', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -962,7 +965,7 @@ if post_corz:
         description = 'Auto-correlation coefficient for scalar field in spanwise direction.'
 
         # Save and show the figure
-        save_and_show_plot('Cssz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='correlations', description=description)
+        save_and_show_plot('Cssz', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_name, subfolder='correlations', description=description)
 
     #!--------------------------------------------------------------------------------------!
 

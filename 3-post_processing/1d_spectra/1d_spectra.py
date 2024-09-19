@@ -121,6 +121,9 @@ for j in range(0, ny-1, 1):
 print(">>> Actual y+ value selected = ", y_plus[c])
 print()
 
+# Store this value in a new variable for naming the different .pdf files
+y_plus_name = int(y_plus[c])
+
 # Print the corresponding j-th index
 print(">>> Corresponding j-th index = ", c)
 print()
@@ -168,10 +171,10 @@ if i_premult == 1:
 #!--- Plot section ---!
 
 # List of variables and labels
-variables = [('Euuz', 'E_{uu}^+(z)', 'streamwise velocity auto-correlation in spanwise direction.'       ), 
-             ('Evvz', 'E_{vv}^+(z)', 'wall-normal velocity auto-correlation in spanwise direction.'      ), 
-             ('Ewwz', 'E_{ww}^+(z)', 'spanwise velocity auto-correlation in spanwise direction.'         ), 
-             ('Euvz', 'E_{uv}^+(z)', "streamwise/wall-normal velocity correlation in spanwise direction.")]
+variables = [('Euuz', 'E_{uu}^+(z)', 'streamwise velocity auto-correlation in spanwise direction'       ), 
+             ('Evvz', 'E_{vv}^+(z)', 'wall-normal velocity auto-correlation in spanwise direction'      ), 
+             ('Ewwz', 'E_{ww}^+(z)', 'spanwise velocity auto-correlation in spanwise direction'         ), 
+             ('Euvz', 'E_{uv}^+(z)', 'streamwise/wall-normal velocity correlation in spanwise direction')]
 
 # Iterate over the variables to create plots
 for var, ylabel, descr in variables:
@@ -208,10 +211,10 @@ for var, ylabel, descr in variables:
         ax.set_ylabel(r'$k_z^+{}$'.format(ylabel), fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
         # Description of .pdf file
-        description = 'Pre-multiplied spectrum of ' + descr
+        description = 'Pre-multiplied spectrum of ' + descr + ' at y+ =' + f'{y_plus_name}' + '.'
         
         # Save and show the figure
-        save_and_show_plot(f'kz{var}', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='spectra', description=description)
+        save_and_show_plot(f'kz{var}', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_name, subfolder='spectra', description=description)
     
     else:
     
@@ -222,10 +225,10 @@ for var, ylabel, descr in variables:
         ax.set_yscale('log')
 
         # Description of .pdf file
-        description = 'Spectrum of ' + descr
+        description = 'Spectrum of ' + descr + ' at y+ =' + f'{y_plus_name}' + '.'
         
         # Save and show the figure
-        save_and_show_plot(var, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_in, subfolder='spectra', description=description)
+        save_and_show_plot(var, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, y_plus_in=y_plus_name, subfolder='spectra', description=description)
 
 #!------------------------------------------------------------------------------------------------------------------------------!
 
