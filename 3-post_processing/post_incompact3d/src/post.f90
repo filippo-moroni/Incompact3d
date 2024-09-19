@@ -78,8 +78,9 @@ program post
   ! Reading of input.i3d file
   call reading_input_file()
 
-  ! Manually setting explicit time-integration and scheme for 2nd order derivate
-  ! to avoid problems with schemes of derivatives.
+  ! Manually setting explicit time-integration and 6th order 
+  ! accurate compact scheme for 2nd order derivate
+  ! to avoid problems with calculation of derivatives.
   iimplicit = 0
   isecondder = 4
 
