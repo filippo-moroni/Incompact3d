@@ -12,8 +12,6 @@
 import sys
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -21,12 +19,6 @@ current_dir = os.path.dirname(__file__)
 # Add the path to the 'python_common' directory relative to the current directory 
 config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
 sys.path.append(config_path)
-
-# Import the plotting_params module
-import plot_params as pp
-
-# Import function to setting up, save and show plots 
-from plot_subs import set_plot_settings, save_and_show_plot
 
 # Import functions to read 'input.i3d', 'post.prm' files and statistics data
 from read_files import read_input_files, read_data
@@ -37,13 +29,16 @@ from set_flow_parameters import set_flow_parameters
 # Import function to plot the correlation functions in 2d plots
 from corr_2dplot_sub import corr_2dplot
 
+# Import function to calculate boundary layer thickness delta_99 for a TTBL
+from ttbl_subs import calculate_ttbl_delta_99
+
 #!--------------------------------------------------------------------------------------!
 #! Main program
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
-os.makedirs('data_post', mode=0o777, exist_ok=True)
 os.makedirs('plots',     mode=0o777, exist_ok=True)
+os.makedirs('plots/correlations',        mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -81,17 +76,8 @@ sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise 
 # Valid only for TTBLs
 if itype == 13:
     
-    # Initialize the index
-    j = 0
-    
-    # Calculate the index at which the BL thickness delta99 is and delta_99 itself
-    while mean_u[j] > mean_u[0]*0.01: 
-        
-        # Boundary layer thickness delta_99
-        bl_thick = y[j]
-        
-        # Increment the index
-        j = j + 1
+    # Calculate BL thickness delta_99 for a TTBL and its related index
+    (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
     
     # Friction Reynolds number
     re_tau = sh_vel * bl_thick / nu

@@ -148,7 +148,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     ax.set_ylabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     
     # Save and show the figure
-    save_and_show_plot(field_name, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau)
+    save_and_show_plot(field_name, snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='correlations')
     
     
     

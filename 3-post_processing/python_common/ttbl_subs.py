@@ -2,6 +2,9 @@
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: In this file, we store useful subroutines for post-processing
 !              of Temporal Turbulent Boundary Layer (TTBL) simulations.
+!              List of subroutines:
+!               - extract_re_tau_value;
+!               - calculate_ttbl_delta_99.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -57,7 +60,7 @@ def extract_re_tau_value(file_path):
 !-----------------------------------------------------------------------------!
 """
 
-def calculate_ttbl_delta_99(y,mean_u):
+def calculate_ttbl_delta_99(mean_u,y):
 
     # Initialize the index
     j = 0
@@ -76,3 +79,5 @@ def calculate_ttbl_delta_99(y,mean_u):
     
     # Return to main program with bl_thickness and its related j index
     return (bl_thick, bl_thick_j)
+
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!

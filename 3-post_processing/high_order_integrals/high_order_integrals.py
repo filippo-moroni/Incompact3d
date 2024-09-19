@@ -36,6 +36,9 @@ from read_files import read_input_files
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
+# Import function to calculate boundary layer thickness delta_99 for a TTBL
+from ttbl_subs import calculate_ttbl_delta_99
+
 #!--------------------------------------------------------------------------------------!
 
 # Print to screen what the program does
@@ -138,11 +141,11 @@ for i in range(file1, filen + icrfile, icrfile):
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
     umean = data[:, 0]
     
-    # Calculate the BL thickness delta99
-    j = 0
-    while umean[j] > umean[0]*0.01:
-        delta_99[ii] = yp[j]
-        j = j + 1 
+    # Calculate BL thickness delta_99 for a TTBL and its related index
+    (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(umean, yp) 
+    
+    # Copy the result in the temporal array
+    delta_99[ii] = bl_thick
 
     # Calculate the displacement thickness delta*
     int1 = umean/uwall  # 'integrand 1' 

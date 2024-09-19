@@ -36,6 +36,9 @@ from read_files import read_input_files, read_data
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
+# Import function to calculate boundary layer thickness delta_99 for a TTBL
+from ttbl_subs import calculate_ttbl_delta_99
+
 #!--------------------------------------------------------------------------------------!
 
 # Create folder to store plots
@@ -80,17 +83,8 @@ delta_z  = Lz / nz
 # Valid only for TTBLs
 if itype == 13:
     
-    # Initialize the index
-    j = 0
-    
-    # Calculate the index at which the BL thickness delta99 is and delta_99 itself
-    while mean_u[j] > mean_u[0]*0.01: 
-        
-        # Boundary layer thickness delta_99
-        bl_thick = y[j]
-        
-        # Increment the index
-        j = j + 1
+    # Calculate BL thickness delta_99 for a TTBL and its related index
+    (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
     
     # Friction Reynolds number
     re_tau = sh_vel * bl_thick / nu

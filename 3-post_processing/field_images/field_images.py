@@ -38,7 +38,7 @@ from plot_subs import set_plot_settings
 from read_files import read_input_files
 
 # Import function to read friction Reynolds number Re_tau from .xdmf files
-from read_retau import extract_re_tau_value 
+from ttbl_subs import extract_re_tau_value 
 
 #!--------------------------------------------------------------------------------------!
 
