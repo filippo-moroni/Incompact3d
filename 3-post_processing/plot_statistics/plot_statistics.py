@@ -158,20 +158,17 @@ elif itype == 13:
 
     # Friction Reynolds number
     re_tau = sh_vel * bl_thick / nu
-    
-    # Remove decimal digits
-    re_tau = int(re_tau)
-    
+        
     # Print friction Reynolds number and boundary layer thickness
-    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
+    print(">>> Friction Reynolds number, Re_tau = ", round(re_tau,0))
     print()
-    print(">>> Boundary layer thickness, delta_99 = ", bl_thick)
+    print(">>> Boundary layer thickness, delta_99 = ", round(bl_thick,1))
     print()
-    print(">>> Domain height in wall units, Ly+ = ", Ly_plus)
+    print(">>> Domain height in wall units, Ly+ = ", round(Ly_plus,1))
     print()
 
 # Print viscous time unit
-print(">>> Viscous time unit, t_nu = ", t_nu)
+print(">>> Viscous time unit, t_nu = ", round(t_nu,1))
 print()
 
 # Rescale mean flow statistics
