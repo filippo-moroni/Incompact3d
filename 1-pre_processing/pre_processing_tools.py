@@ -78,7 +78,8 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
     # In ARIES, clock-frequency is 2.20 GHz
     sf = 1.2  
 
-    # Estimated CPUh (if we assume at least 100'000 points per core)
+    # Estimated CPUh (if we assume at least 100'000 points per core,
+    # see 'Incompact3d user guide v1.1').
     cpuh = performance_index * n_tot * ilast * nrealiz * sf
     cpuh = round(cpuh, 1)
     
