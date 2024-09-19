@@ -1,7 +1,7 @@
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: With this script, we perform plotting and saving of     
+! DESCRIPTION: With this script, we perform saving of images from 
 !              instantaneous planes of scalar field or of streamwise   
 !              vorticity.                                                                                         
 !              Inspired by 'snap2png.py' by R. Corsini.            
@@ -39,6 +39,19 @@ from read_files import read_input_files
 
 # Import function to read friction Reynolds number Re_tau from .xdmf files
 from ttbl_subs import extract_re_tau_value 
+
+#!--------------------------------------------------------------------------------------!
+
+# Print to screen what the program does
+
+print("!--- 'field_images.py' ---!")
+print()
+print(" Creation and saving of .png images from instantaneous")
+print(" planes of scalar field or of streamwise vorticity.")
+print()
+print(" It has a recursive nature, thus it can be used to create")
+print(" several images for creation of videos for flow visualization.")
+print()
 
 #!--------------------------------------------------------------------------------------!
 

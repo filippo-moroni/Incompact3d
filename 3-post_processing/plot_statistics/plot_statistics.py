@@ -754,7 +754,7 @@ if post_corz:
     print(">>> Actual y+ value selected = ", y_plus[c])
     print()
 
-    # Store this value in a new variable for naming the different .pdf files
+    # Store this value in an integer for naming the different .pdf files
     y_plus_name = int(y_plus[c])
 
     # Print the corresponding j-th index

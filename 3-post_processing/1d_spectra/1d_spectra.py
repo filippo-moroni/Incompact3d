@@ -10,6 +10,8 @@
 !-----------------------------------------------------------------------------!
 """
 
+# To be done: plotting of spectrum for scalar field correlations.
+
 # Libraries
 import sys
 import os
@@ -38,6 +40,17 @@ from set_flow_parameters import set_flow_parameters
 
 # Import function to calculate boundary layer thickness delta_99 for a TTBL
 from ttbl_subs import calculate_ttbl_delta_99
+
+#!--------------------------------------------------------------------------------------!
+
+# Print to screen what the program does
+
+print("!--- '1d_spectra.py' ---!")
+print()
+print(" Calculation and plotting of spectra of correlation coefficients")
+print(" in spanwise direction at a certain y+ (selected from the user).")
+print(" It is possible to plot pre-multiplied spectra if requested.")
+print()
 
 #!--------------------------------------------------------------------------------------!
 
@@ -121,7 +134,7 @@ for j in range(0, ny-1, 1):
 print(">>> Actual y+ value selected = ", y_plus[c])
 print()
 
-# Store this value in a new variable for naming the different .pdf files
+# Store this value in an integer for naming the different .pdf files
 y_plus_name = int(y_plus[c])
 
 # Print the corresponding j-th index
@@ -132,7 +145,7 @@ print()
 
 # Define angular wavenumber in spanwise direction (z)
 # Since we have periodicity in z, the largest wavenumber is pi / delta_z 
-# (smallest harmonic that can be represented (quarter of a sine, still a periodic function)
+# (smallest harmonic that can be represented (quarter of a sine, still a periodic function).
 kz = np.zeros(nz)
 for i in range(len(kz)):
     kz[i] = (i+1)*(2*np.pi/Lz)

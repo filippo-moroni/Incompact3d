@@ -39,6 +39,24 @@ from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!
 
+# Print to screen what the program does
+
+print("!--- 'cf_monitoring.py' ---!")
+print()
+print(" Calculation and plotting of:")
+print()
+print(" Channel: ")
+print(" - streamwise friction coefficient vs time ")
+print("   and its mean value calculation.         ")
+print()
+print(" TTBL: ")
+print(" - streamwise friction coefficient vs time;")
+print(" - friction Reynolds number vs time;       ")
+print(" - streamwise friction coefficient vs friction Reynolds number.")                
+print()
+
+#!--------------------------------------------------------------------------------------!
+
 # Create folders to store later results (e.g. cf_mean and plot)
 os.makedirs('data_post',               mode=0o777, exist_ok=True)
 os.makedirs('data_post/cf_monitoring', mode=0o777, exist_ok=True)
