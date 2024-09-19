@@ -57,6 +57,9 @@ print()
 print(" The mean velocity profile is interpolated with a spline of order 5")
 print(" that is constrained to the calculated values.")
 print()
+print(" This function requires at least one realization folder with")
+print(" snapshots' headers in order to read time unit t.")
+print()
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
