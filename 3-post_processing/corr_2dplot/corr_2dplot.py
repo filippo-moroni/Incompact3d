@@ -40,7 +40,7 @@ from ttbl_subs import calculate_ttbl_delta_99
 
 print("!--- 'corr_2dplot.py' ---!")
 print()
-print(" Program that plots spanwise correlation functions in 2d plots")
+print(" This program allows to visualize spanwise correlation functions in 2d plots")
 print(" as function of y+ and spanwise separation variable rz^+.")
 print() 
 
