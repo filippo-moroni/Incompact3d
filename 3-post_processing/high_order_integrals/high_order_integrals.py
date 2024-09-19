@@ -38,6 +38,24 @@ from set_flow_parameters import set_flow_parameters
 
 #!--------------------------------------------------------------------------------------!
 
+# Print to screen what the program does
+
+print("!--- 'high_order_integrals.py' ---!")
+print()
+print(" Calculation of:")
+print("  - delta_99;")
+print("  - displacement thickness, delta*;")
+print("  - momentum thickness, theta;")
+print("  - related Re numbers;")
+print("  - (streamwise) shear velocity, sh_velx;")
+print("  - (streanwise) friction coefficient, cfx;")
+print("  - Reynolds analogy factor, A_fact.")
+print()
+print(" The mean velocity profile is interpolated with a spline of order 5")
+print(" that is constrained to the calculated values.")
+print()
+#!--------------------------------------------------------------------------------------!
+
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
 (itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo,  
  add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
@@ -61,8 +79,8 @@ ns    = (filen - file1)//icrfile + 1  # Number of snapshots
 delta_99  = np.zeros(ns)
 disp_t    = np.zeros(ns)
 mom_t     = np.zeros(ns)
-sh_vel    = np.zeros(ns)
-cf        = np.zeros(ns)
+sh_velx   = np.zeros(ns)
+cfx       = np.zeros(ns)
 a_fact    = np.zeros(ns)
 time_unit = np.zeros(ns)
 
@@ -86,7 +104,7 @@ else:
 
     # Asking the user the realization folder to use (if TTBL)
     print()
-    realiz = int(input("Specify the realization folder to read time units 't': "))
+    realiz = int(input(">>> Specify the realization folder to read time units 't': "))
     print()
     data_path = f'data_r{realiz}'
     
@@ -94,6 +112,9 @@ else:
 # Calculations start here, we are employing a Python 
 # spline function that passes through all provided points.
 #!---------------------------------------------------------!
+
+print(">>> Calculations start now.")
+print()
 
 # Do loop over different time units
 for i in range(file1, filen + icrfile, icrfile):
@@ -146,11 +167,11 @@ for i in range(file1, filen + icrfile, icrfile):
     mgx   = data[:, 4]  # mean streamwise gradient 
     mgphi = data[:, 6]  # mean scalar gradient
         
-    # Shear velocity
-    sh_vel[ii] = np.sqrt(nu * (np.absolute(mgx[0])))
+    # Streamwise shear velocity
+    sh_velx[ii] = np.sqrt(nu * (np.absolute(mgx[0])))
     
-    # Friction coefficient in x-dir.
-    cf[ii] = (2.0 * ((sh_vel[ii] / uwall)**2))
+    # Streamwise friction coefficient
+    cfx[ii] = (2.0 * ((sh_velx[ii] / uwall)**2))
             
     # Analogy factor, ratio between mean gradient parallel to the wall of velocity and mean scalar gradient
     a_fact[ii] = np.abs(mgphi[0] / mgpar[0])
@@ -160,12 +181,15 @@ for i in range(file1, filen + icrfile, icrfile):
 
 
 # Related Reynolds numbers
-re_tau   = delta_99*sh_vel*re
+re_tau   = delta_99*sh_velx*re
 re_ds    = disp_t*uwall*re
 re_theta = mom_t*uwall*re
 
+print(">>> Writing to .txt file.")
+print()
+
 # Create the file and write  
-with open('integral_statistics/integral_statistics.txt', 'w') as f:
+with open('data_post/integral_statistics/integral_statistics.txt', 'w') as f:
     f.write(f"{'delta_99 O(6)':<{pp.c_w}}, " +
             f"{'disp_t O(6)':<{pp.c_w}}, "   +
             f"{'mom_t O(6)':<{pp.c_w}}, "    +
@@ -173,7 +197,7 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
             f"{'Re_ds O(6)':<{pp.c_w}}, "    +
             f"{'Re_theta O(6)':<{pp.c_w}}, " +
             f"{'sh_velx O(6)':<{pp.c_w}}, "  +
-            f"{'cf,x O(6)':<{pp.c_w}}, "     +
+            f"{'cfx O(6)':<{pp.c_w}}, "      +
             f"{'A_fact O(6)':<{pp.c_w}}, "   +
             f"{'time_unit':<{pp.c_w}}\n"     )
 
@@ -184,15 +208,15 @@ with open('integral_statistics/integral_statistics.txt', 'w') as f:
                 f"{re_tau[j]:{pp.fs}}, "     +
                 f"{re_ds[j]:{pp.fs}}, "      +
                 f"{re_theta[j]:{pp.fs}}, "   +
-                f"{sh_vel[j]:{pp.fs6}}, "    +
-                f"{cf[j]:{pp.fs8}}, "        +
+                f"{sh_velx[j]:{pp.fs6}}, "   +
+                f"{cfx[j]:{pp.fs8}}, "       +
                 f"{a_fact[j]:{pp.fs}}, "     +
                 f"{time_unit[j]:{pp.fs}}\n"  )
             
 # Print that calculations have been completed
-print("Done!")
+print(">>> Done!")
 print()
-print("Results saved in: integral_statistics/integral_statistics.txt.")
+print(">>> Results saved in: data_post/integral_statistics/integral_statistics.txt.")
 print()
            
 #!---------------------------------------------------------!

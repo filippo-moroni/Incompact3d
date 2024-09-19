@@ -97,23 +97,23 @@ if itype == 13:
     re_tau = int(re_tau)
     
     # Print friction Reynolds number and boundary layer thickness
-    print("Friction Reynolds number, re_tau = ", re_tau)
+    print(">>> Friction Reynolds number, re_tau = ", re_tau)
     print()
-    print("Boundary layer thickness, delta_99 = ", bl_thick)
+    print(">>> Boundary layer thickness, delta_99 = ", bl_thick)
     print()
-    print("Domain height in wall units, Ly+ = ", Ly_plus)
+    print(">>> Domain height in wall units, Ly+ = ", Ly_plus)
     print()
 
 #!-------------------------------!
 
 # Select between spectra and pre-multiplied spectra
-i_premult = int(input("Would you like to plot pre-multiplied spectra? (0: no, 1: yes) "))
+i_premult = int(input(">>> Plot pre-multiplied spectra? (0: no, 1: yes) "))
 print()
 
 #!--- y+ input for 1D spectra ---!
 
 # Select the height at which correlations are plotted
-y_plus_in = np.float64(input("Enter y+ value for correlations plotting: "))
+y_plus_in = np.float64(input(">>> Enter y+ value for correlations plotting: "))
 print()
 
 # Search for the index corresponding to the target y+ for correlations
@@ -122,11 +122,11 @@ for j in range(0, ny-1, 1):
     if y_plus[j] < y_plus_in: c = c + 1
 
 # Print the actual y+ value selected
-print("Actual y+ value selected = ", y_plus[c])
+print(">>> Actual y+ value selected = ", y_plus[c])
 print()
 
 # Print the corresponding j-th index
-print("Corresponding j-th index = ", c)
+print(">>> Corresponding j-th index = ", c)
 print()
 
 #!-------------------------------!

@@ -591,7 +591,7 @@ end if
           
           !--- Diffusive transport of TKE ---!
                                    
-          ! 1D derivative in y (2 times) (same as R. Corsini)
+          ! 1D derivative in y (2 times) 
           call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfyp,ssyp,swyp,ysize(2),1)
                     
           tke_diffHT = xnu * temp_dery
@@ -1045,7 +1045,7 @@ end if
      write(*,*) ' '    
      endif
      
-     ! Turbulent Kinetic Energy equation
+     ! Turbulent Kinetic Energy (TKE) equation
      if (post_tke_eq) then
      write(*,*) '==========================================================='
      write(*,*)

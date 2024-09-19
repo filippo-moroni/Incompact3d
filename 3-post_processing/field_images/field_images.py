@@ -56,13 +56,13 @@ os.makedirs('images', mode=0o777, exist_ok=True)
 
 # Asking the user what he wants to plot (scalar field, streamwise vorticity)
 print()
-switcher = int(input("Specify the selector for plotting (0: scalar field, 1: streamwise vorticity): "))
+switcher = int(input(">>> Select a field (0: scalar field, 1: streamwise vorticity): "))
 print()
 
 # Asking the user the realization folder to use (if TTBL)
 if itype == 13:
 
-    realiz = int(input("Specify the realization folder to use: "))
+    realiz = int(input(">>> Specify the realization folder to use: "))
     print()
 
 # Scalar field
@@ -148,7 +148,7 @@ while True:
         break  
     
     # Inform on current state
-    print(f"We are processing file:", file_path)
+    print(f">>> We are processing file:", file_path)
     
     # Read the instantaneous field binary file into a numpy array
     with open(file_path, 'rb') as file:
@@ -166,9 +166,9 @@ while True:
     
     # Print to screen the extracted value
     if re_tau is not None:
-        print(f"Re_tau = {re_tau}")
+        print(f">>> Re_tau = {re_tau}")
     else:
-        print("Re_tau value could not be extracted.")
+        print(">>> Re_tau value could not be extracted.")
 
     # Convert to string 
     re_tau = str(re_tau)
@@ -237,7 +237,7 @@ while True:
     # Move to the next file index
     i += 1  
 
-print(f"Reached file index {i:04d} which does not exist. Stopping.")
+print(f">>> Reached file index {i:04d} which does not exist. Stopping.")
 
 #!--------------------------------------------------------------------------------------!
 
