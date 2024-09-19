@@ -158,10 +158,11 @@ elif itype == 13:
 
     # Friction Reynolds number
     re_tau = sh_vel * bl_thick / nu
+    re_tau = int(re_tau)
         
     # Print friction Reynolds number, boundary layer thickness and
     # domain height in viscous units
-    print(">>> Friction Reynolds number, Re_tau = ", round(re_tau,0))
+    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
     print()
     print(">>> Boundary layer thickness, delta_99 = ", round(bl_thick,1))
     print()
