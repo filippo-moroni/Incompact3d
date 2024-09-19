@@ -36,6 +36,16 @@ from ttbl_subs import calculate_ttbl_delta_99
 #! Main program
 #!--------------------------------------------------------------------------------------!
 
+# Print to screen what the program does
+
+print("!--- 'corr_2dplot.py' ---!")
+print()
+print(" Program that plots spanwise correlation functions in 2d plots")
+print(" as function of y+ and spanwise separation variable rz^+.")
+print() 
+
+#!--------------------------------------------------------------------------------------!
+
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
 os.makedirs('plots',     mode=0o777, exist_ok=True)
 os.makedirs('plots/correlations',        mode=0o777, exist_ok=True)
