@@ -49,6 +49,9 @@ from read_files import read_input_files, read_data, read_ref_data
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
+# Import function to calculate boundary layer thickness delta_99 for a TTBL
+from ttbl_subs import calculate_ttbl_delta_99
+
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
@@ -107,24 +110,6 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                         post_corz, post_tke_eq, ny, nz)
                                                                                                                                    
-# Valid only for TTBLs
-if itype == 13:
-    
-    # Initialize the index
-    j = 0
-    
-    # Calculate the index at which the BL thickness delta99 is and delta_99 itself
-    while mean_u[j] > mean_u[0]*0.01: 
-        
-        # Boundary layer thickness delta_99
-        bl_thick = y[j]
-        
-        # Increment the index
-        j = j + 1
-        
-    # Shift due to the translating wall
-    mean_u = uwall - mean_u
-
 #!--------------------------------------------------------------------------------------!
 
 #!--- Calculations ---!
@@ -146,6 +131,48 @@ y_plus       = y       / delta_nu
 Lx_plus = Lx / delta_nu
 Ly_plus = Ly / delta_nu 
 Lz_plus = Lz / delta_nu
+
+# Friction Reynolds number
+re_tau = None
+
+# Channel only
+if itype == 3:
+
+    # Delta y+ at the Channel centerline 
+    delta_yd_plus = y_plus[ny-1] - y_plus[ny-2]
+    
+    # Halving Ly+
+    Ly_plus = Ly_plus / 2.0
+
+# TTBL only
+elif itype == 13:
+
+    # Calculate BL thickness delta_99 for a TTBL and its related index
+    (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
+
+    # Delta y+ at the BL edge
+    delta_yd_plus = y_plus[bl_thick_j] - y_plus[bl_thick_j-1]
+
+    # Shift of mean streamwise velocity profile due to the translating wall
+    mean_u = uwall - mean_u
+
+    # Friction Reynolds number
+    re_tau = sh_vel * bl_thick / nu
+    
+    # Remove decimal digits
+    re_tau = int(re_tau)
+    
+    # Print friction Reynolds number and boundary layer thickness
+    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
+    print()
+    print(">>> Boundary layer thickness, delta_99 = ", bl_thick)
+    print()
+    print(">>> Domain height in wall units, Ly+ = ", Ly_plus)
+    print()
+
+# Print viscous time unit
+print(">>> Viscous time unit, t_nu = ", t_nu)
+print()
 
 # Rescale mean flow statistics
 if post_mean:
@@ -175,34 +202,6 @@ if post_tke_eq:
     
     tke_prod   /= sh_vel**2
     tke_pseps  /= sh_vel**2
-
-# Friction Reynolds number
-re_tau = None
-
-if itype == 13:
-    re_tau = sh_vel * bl_thick / nu
-    
-    # Remove decimal digits
-    re_tau = int(re_tau)
-    
-    # Print friction Reynolds number and boundary layer thickness
-    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
-    print()
-    print(">>> Boundary layer thickness, delta_99 = ", bl_thick)
-    print()
-    print(">>> Domain height in wall units, Ly+ = ", Ly_plus)
-    print()
-
-# Print viscous time unit
-print(">>> Viscous time unit, t_nu = ", t_nu)
-print()
-
-# y+ at the centerline or at the BL edge and halving Ly+ in case of Channel
-if itype == 3:
-    delta_yd_plus = y_plus[ny-1] - y_plus[ny-2]
-    Ly_plus = Ly_plus / 2.0
-elif itype == 13:
-    delta_yd_plus = y_plus[j] - y_plus[j-1] 
 
 #!--------------------------------------------------------------------------------------!
     
@@ -1057,11 +1056,6 @@ if post_tke_eq:
     
     # Description of .pdf file
     description = 'Budget terms for Turbulent Kinetic Energy (TKE) equation. Reference data Mansour et al. (1988).'
-
-    # Temporary: ask the user a rescale factor for tke_difft
-    scale_factor = np.float64(input(">>> Scale factor for TKE diffusion: "))
-
-    tke_difft = tke_difft*scale_factor
 
     # Transport terms
     ax.scatter(y_plus[:ny], -tke_turbt [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
