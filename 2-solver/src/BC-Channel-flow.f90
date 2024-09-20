@@ -269,7 +269,7 @@ contains
   !---------------------------------------------------------------------------!
   subroutine postprocess_channel(ux1,uy1,uz1,pp3,phi1,ep1)
 
-    use var, ONLY : nzmsize
+    use var, only : nzmsize
 
     implicit none
 
@@ -501,7 +501,7 @@ contains
               vpr = vpr * sqrt(volsemini/nsemini)
               wpr = wpr * sqrt(volsemini/nsemini)
               ! 
-              um  = one-(y-yly*half)**2 ! we can use a better arroximation 
+              um  = one-(y-yly*half)**2 ! we can use a better approximation 
               if (idir_stream == 1) then
                  ux1(i,j,k)=upr*sqrt(two/three*init_noise*um) + um
                  uy1(i,j,k)=vpr*sqrt(two/three*init_noise*um)
