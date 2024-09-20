@@ -7,7 +7,8 @@
 !              shear velocity, streamwise friction coefficient and analogy 
 !              factor for a TTBL.
 !              We are also calculating non-dimensional grid spacings and 
-!              domain dimensions at each snapshots' saving.
+!              domain dimensions at each snapshots' saving. Finally, we 
+!              calculate minimum Kolmogorov time scale and viscous time unit.
 ! ANNOTATIONS: We are assuming unitary molecular Prandtl number for the 
 !              calculation of the analogy factor of the Reynolds analogy.                        
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
@@ -260,6 +261,7 @@ for i in range(file1, filen + icrfile, icrfile):
     # Viscous time unit
     t_nu[ii] = nu / (sh_velx[ii] ** 2)
     
+    #!-----!
     
     # Index to advance in time along different snapshots
     ii = ii + 1
