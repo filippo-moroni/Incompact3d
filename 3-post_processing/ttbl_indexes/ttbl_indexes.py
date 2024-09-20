@@ -47,7 +47,7 @@ from ttbl_subs import calculate_ttbl_delta_99
 
 print("!--- 'ttbl_indexes.py' ---!")
 print()
-print(" Calculation of:")
+print(" File 'thickness_params.txt':")
 print("  - delta_99;")
 print("  - displacement thickness, delta*;")
 print("  - momentum thickness, theta;")
@@ -62,6 +62,12 @@ print()
 print(" This function requires at least one realization folder with")
 print(" snapshots' headers in order to read time unit t.")
 print()
+print()
+print(" File 'nd_mesh_evolution.txt':")
+print("  - non-dimensional mesh spacings;")
+print("  - non-dimensional domain dimensions.")
+print()
+
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
@@ -105,6 +111,10 @@ Lx_plus       = np.zeros(ns)
 Ly_plus       = np.zeros(ns)
 Lz_plus       = np.zeros(ns)
 
+# Arrays for Kolmogorov time scale and viscous time unit
+tau_eta       = np.zeros(ns)
+t_nu          = np.zeros(ns)
+
 # Reading of yp coordinates
 yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 y0 = yp[0]   # First element of yp vector (y = 0)
@@ -128,11 +138,14 @@ else:
     realiz = int(input(">>> Specify the realization folder to read time units 't': "))
     print()
     data_path = f'data_r{realiz}'
+
     
-#!---------------------------------------------------------!
-# Calculations start here, we are employing a Python 
-# spline function that passes through all provided points.
-#!---------------------------------------------------------!
+"""
+Calculations start here, for the calculation of TTBL thickness
+parameters, we are employing a SciPy spline function that passes 
+through all provided points.
+
+"""
 
 print(">>> Calculations start now.")
 print()
@@ -222,6 +235,29 @@ for i in range(file1, filen + icrfile, icrfile):
     Lz_plus[ii] = Lz / delta_nu
     
     
+    """
+    Extra section to calculate time scales: 
+    minimum Kolmogorov time scale and viscous time unit.
+    
+    """
+    
+    # Reading of total dissipation
+    file_path = f"data_post/diss_stats-{i:04d}.txt"
+    
+    data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
+    
+    eps = data[:, 0]  # total dissipation
+    
+    # Find the maximum of mean total dissipation
+    eps_max = max(eps)
+
+    # Minimum Kolmogorov time scale
+    tau_eta[ii] = np.sqrt(nu/eps_max)
+    
+    # Viscous time unit
+    t_nu[ii] = nu / (sh_velx[ii] ** 2)
+    
+    
     # Index to advance in time along different snapshots
     ii = ii + 1
     
@@ -237,7 +273,19 @@ print()
 #!--- Create the files and write ---!
 
 # Integral statistics and flow indexes
-with open('data_post/ttbl_indexes/thickness_params.txt', 'w') as f:
+with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
+    f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) thickness parameters and\n')    
+    f.write('shear quantities using data from snapshots.\n')        
+    f.write('Quantities in this file:\n')
+    f.write(' - thickness delta_99: delta_99;\n')
+    f.write(' - displacement thickness: disp_t;\n')
+    f.write(' - momentum thickness: mom_t;\n')
+    f.write(' - related Re numbers;\n')
+    f.write(' - streamwise shear velocity: sh_velx;\n')
+    f.write(' - streamwise friction coefficient: cfx;\n')
+    f.write(' - Reynolds analogy factor: A_fact;\n')
+    f.write(' - (outer) time unit: time_unit.\n')
+    f.write('\n')
     f.write(f"{'delta_99 O(6)':>{pp.c_w}}, " +
             f"{'disp_t O(6)':>{pp.c_w}}, "   +
             f"{'mom_t O(6)':>{pp.c_w}}, "    +
@@ -263,6 +311,17 @@ with open('data_post/ttbl_indexes/thickness_params.txt', 'w') as f:
                 
 # Non-dimensional grid spacings and domain dimensions (nd: non-dimensional)
 with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
+    f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) non-dimensional\n')    
+    f.write('grid spacings and domain dimensions. Adimensionalization in viscous units (^+).\n')        
+    f.write('Abbreviations:\n')
+    f.write(' - x: streamwise direction;\n')
+    f.write(' - y: wall-normal direction;\n')
+    f.write(' - z: spanwise direction;\n')
+    f.write(' - delta: mesh spacing;\n')
+    f.write(' - L: domain dimension;\n')
+    f.write(' - d: boundary layer interface (d: small letter delta);\n')
+    f.write(' - Re_tau: friction Reynolds number.\n')
+    f.write('\n')
     f.write(f"{'delta_x^+':>{pp.c_w}}, "   +
             f"{'delta_yw^+':>{pp.c_w}}, "  +
             f"{'delta_yd^+':>{pp.c_w}}, "  +
@@ -281,6 +340,25 @@ with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
                 f"{Ly_plus[j]:{pp.fs}}, "       +
                 f"{Lz_plus[j]:{pp.fs}}, "       +
                 f"{re_tau[j]:{pp.fs}}\n"        )
+                
+# Time scales (minimum Kolmogorov time scale and viscous time unit)
+with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
+    f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) minimum\n')    
+    f.write('Kolmogorov time scale and viscous time unit.\n')        
+    f.write('Abbreviations:\n')
+    f.write(' - tau_eta: (minimum) Kolmogorov time scale;\n')
+    f.write(' - t_nu: viscous time unit.\n')
+    f.write(' - Re_tau: friction Reynolds number.\n')
+    f.write('\n')
+    f.write(f"{'tau_eta':>{pp.c_w}}, "     +
+            f"{'t_nu':>{pp.c_w}}, "        +
+            f"{'Re_tau O(6)':>{pp.c_w}}\n" )  
+
+    for j in range(0, ii):
+        f.write(f"{tau_eta[j]:{pp.fs}}, " +
+                f"{t_nu[j]:{pp.fs}}, "    +
+                f"{re_tau[j]:{pp.fs}}\n"  )
+
             
 # Print that calculations have been completed
 print(">>> Done!")
