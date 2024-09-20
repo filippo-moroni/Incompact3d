@@ -55,14 +55,16 @@ from ttbl_subs import calculate_ttbl_delta_99
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
-os.makedirs('data_post',                 mode=0o777, exist_ok=True)
-os.makedirs('data_post/plot_statistics', mode=0o777, exist_ok=True)
-os.makedirs('plots',                     mode=0o777, exist_ok=True)
-os.makedirs('plots/mean_stats',          mode=0o777, exist_ok=True)
-os.makedirs('plots/vort_stats',          mode=0o777, exist_ok=True)
-os.makedirs('plots/diss_stats',          mode=0o777, exist_ok=True)
-os.makedirs('plots/correlations',        mode=0o777, exist_ok=True)
-os.makedirs('plots/tke_stats',           mode=0o777, exist_ok=True)
+os.makedirs('data_post',                               mode=0o777, exist_ok=True)
+os.makedirs('data_post/plot_statistics',               mode=0o777, exist_ok=True)
+os.makedirs('data_post/plot_statistics/grid_spacings', mode=0o777, exist_ok=True)
+os.makedirs('data_post/plot_statistics/time_scales',   mode=0o777, exist_ok=True)
+os.makedirs('plots',                                   mode=0o777, exist_ok=True)
+os.makedirs('plots/mean_stats',                        mode=0o777, exist_ok=True)
+os.makedirs('plots/vort_stats',                        mode=0o777, exist_ok=True)
+os.makedirs('plots/diss_stats',                        mode=0o777, exist_ok=True)
+os.makedirs('plots/correlations',                      mode=0o777, exist_ok=True)
+os.makedirs('plots/tke_stats',                         mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -208,11 +210,18 @@ if post_tke_eq:
 
 print(">>> Saving in 'grid_spacings_post' non-dimensional grid spacings")
 print(">>> and domain dimensions.")
-print(">>> Folder: data_post/plot_statistics/.")
+print(">>> Folder: data_post/plot_statistics/grid_spacings.")
 print()
 
+# TTBL only
+if itype == 13:
+
+    print(">>> For a comprehensive file for grid_spacings evolution,")
+    print(">>> run 'ttbl_indexes.py'.")
+    print()
+
 # Create the file and write  
-with open(f'data_post/plot_statistics/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
+with open(f'data_post/plot_statistics/grid_spacings/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'delta_x^+':>{pp.c_w}}, "  +
             f"{'delta_yw^+':>{pp.c_w}}, " +
             f"{'delta_z^+':>{pp.c_w}}, "  +
@@ -694,11 +703,18 @@ if post_diss:
     #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
     print(">>> Saving in 'time_scales' viscous time unit and")
     print(">>> Kolmogorov time scale.")
-    print(">>> Folder: data_post/plot_statistics/.")
+    print(">>> Folder: data_post/plot_statistics/time_scales.")
     print()
+    
+    # TTBL only
+    if itype == 13:
+
+        print(">>> For a comprehensive file for time_scales evolution,")
+        print(">>> run 'ttbl_indexes.py'.")
+        print()
             
     # Create the file and write 
-    with open(f'data_post/plot_statistics/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
+    with open(f'data_post/plot_statistics/time_scales/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
         f.write(f"{'t_nu':>{pp.c_w}}, "        +
                 f"{'min tau_eta':>{pp.c_w}}\n" )  
 

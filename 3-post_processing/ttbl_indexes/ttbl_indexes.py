@@ -6,6 +6,8 @@
 !              momentum thickness), related Reynolds numbers, streamwise 
 !              shear velocity, streamwise friction coefficient and analogy 
 !              factor for a TTBL.
+!              We are also calculating non-dimensional grid spacings and 
+!              domain dimensions at each snapshots' saving.
 ! ANNOTATIONS: We are assuming unitary molecular Prandtl number for the 
 !              calculation of the analogy factor of the Reynolds analogy.                        
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
@@ -43,7 +45,7 @@ from ttbl_subs import calculate_ttbl_delta_99
 
 # Print to screen what the program does
 
-print("!--- 'high_order_integrals.py' ---!")
+print("!--- 'ttbl_indexes.py' ---!")
 print()
 print(" Calculation of:")
 print("  - delta_99;")
@@ -70,7 +72,7 @@ print()
 #!--------------------------------------------------------------------------------------!
 
 # Create the folder to store the results
-os.makedirs('data_post/integral_statistics', mode=0o777, exist_ok=True)
+os.makedirs('data_post/ttbl_indexes', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -85,7 +87,7 @@ delta_z = Lz / nz
 ii    = 0                             # Index for BL thickness parameters vectors 
 ns    = (filen - file1)//icrfile + 1  # Number of snapshots
 
-# Work arrays
+# TTBL thickness parameters and shear quantities
 delta_99  = np.zeros(ns)
 disp_t    = np.zeros(ns)
 mom_t     = np.zeros(ns)
@@ -96,7 +98,7 @@ time_unit = np.zeros(ns)
 
 # Arrays for non-dimensional grid spacings and domain dimensions
 delta_x_plus  = np.zeros(ns)
-delta_y1_plus = np.zeros(ns)
+delta_yw_plus = np.zeros(ns)
 delta_yd_plus = np.zeros(ns)
 delta_z_plus  = np.zeros(ns)
 Lx_plus       = np.zeros(ns)
@@ -195,8 +197,6 @@ for i in range(file1, filen + icrfile, icrfile):
     # Analogy factor, ratio between mean gradient parallel to the wall of velocity and mean scalar gradient
     a_fact[ii] = np.abs(mgphi[0] / mgpar[0])
     
-    # Index for BL thickness parameters vectors
-    ii = ii + 1
     
     """
     Extra section for calculations of grid spacings.
@@ -212,7 +212,7 @@ for i in range(file1, filen + icrfile, icrfile):
     
     y_plus           = yp      / delta_nu
     
-    delta_y1_plus[ii] = y_plus[1]
+    delta_yw_plus[ii] = y_plus[1]
     
     # Delta y+ at the BL edge
     delta_yd_plus[ii] = y_plus[bl_thick_j] - y_plus[bl_thick_j-1] 
@@ -220,6 +220,10 @@ for i in range(file1, filen + icrfile, icrfile):
     Lx_plus[ii] = Lx / delta_nu
     Ly_plus[ii] = Ly / delta_nu 
     Lz_plus[ii] = Lz / delta_nu
+    
+    
+    # Index to advance in time along different snapshots
+    ii = ii + 1
     
                    
 # Related Reynolds numbers
@@ -233,7 +237,7 @@ print()
 #!--- Create the files and write ---!
 
 # Integral statistics and flow indexes
-with open('data_post/integral_statistics/integral_statistics.txt', 'w') as f:
+with open('data_post/ttbl_indexes/thickness_params.txt', 'w') as f:
     f.write(f"{'delta_99 O(6)':>{pp.c_w}}, " +
             f"{'disp_t O(6)':>{pp.c_w}}, "   +
             f"{'mom_t O(6)':>{pp.c_w}}, "    +
@@ -258,7 +262,7 @@ with open('data_post/integral_statistics/integral_statistics.txt', 'w') as f:
                 f"{time_unit[j]:{pp.fs}}\n"  )
                 
 # Non-dimensional grid spacings and domain dimensions (nd: non-dimensional)
-with open('data_post/integral_statistics/nd_mesh_evolution.txt', 'w') as f:
+with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
     f.write(f"{'delta_x^+':>{pp.c_w}}, "   +
             f"{'delta_yw^+':>{pp.c_w}}, "  +
             f"{'delta_yd^+':>{pp.c_w}}, "  +
@@ -266,7 +270,7 @@ with open('data_post/integral_statistics/nd_mesh_evolution.txt', 'w') as f:
             f"{'Lx^+':>{pp.c_w}}, "        +
             f"{'Ly^+':>{pp.c_w}}, "        +
             f"{'Lz^+':>{pp.c_w}}, "        +
-            f"{'Re_tau O(6)':>{pp.c_w}}\n"   
+            f"{'Re_tau O(6)':>{pp.c_w}}\n" )  
 
     for j in range(0, ii):
         f.write(f"{delta_x_plus[j]:{pp.fs}}, "  +
@@ -276,12 +280,12 @@ with open('data_post/integral_statistics/nd_mesh_evolution.txt', 'w') as f:
                 f"{Lx_plus[j]:{pp.fs}}, "       +
                 f"{Ly_plus[j]:{pp.fs}}, "       +
                 f"{Lz_plus[j]:{pp.fs}}, "       +
-                f"{re_tau[j]:{pp.fs}}\n"    
+                f"{re_tau[j]:{pp.fs}}\n"        )
             
 # Print that calculations have been completed
 print(">>> Done!")
 print()
-print(">>> Results saved in: data_post/integral_statistics/integral_statistics.txt.")
+print(">>> Results saved in: data_post/ttbl_indexes.")
 print()
            
 #!---------------------------------------------------------!
