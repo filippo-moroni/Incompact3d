@@ -24,7 +24,7 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 current_dir = os.path.dirname(__file__)
 
 # Add the path to the 'python_common' directory relative to the current directory 
-config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
+config_path = os.path.abspath(os.path.join(current_dir, '../../4-common', 'python_common'))
 sys.path.append(config_path)
 
 # Import the plotting_params module
