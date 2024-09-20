@@ -100,13 +100,14 @@ ii    = 0                             # Index for BL thickness parameters vector
 ns    = (filen - file1)//icrfile + 1  # Number of snapshots
 
 # TTBL thickness parameters and shear quantities
-delta_99  = np.zeros(ns)
-disp_t    = np.zeros(ns)
-mom_t     = np.zeros(ns)
-sh_velx   = np.zeros(ns)
-cfx       = np.zeros(ns)
-a_fact    = np.zeros(ns)
-time_unit = np.zeros(ns)
+delta_99   = np.zeros(ns)
+disp_t     = np.zeros(ns)
+mom_t      = np.zeros(ns)
+sh_velx    = np.zeros(ns)
+sh_vel_tot = np.zeros(ns)
+cfx        = np.zeros(ns)
+a_fact     = np.zeros(ns)
+time_unit  = np.zeros(ns)
 
 # Arrays for non-dimensional grid spacings and domain dimensions
 delta_x_plus  = np.zeros(ns)
