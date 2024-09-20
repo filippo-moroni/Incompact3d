@@ -223,6 +223,12 @@ elif itype == 13:
     
     t_nu_x   = nu / max_sh_velx**2
     t_nu_tot = nu / max_sh_veltot**2
+    
+    # Minimum viscous time unit
+    t_nu_min = np.min(t_nu_tot)
+    
+    # Ratio of time-step dt and minimum viscous time unit
+    dt_plus = dt / t_nu_min
 
     # Saving "num_resolutions.txt" (num: numerical)
     print(">>> Saving 'num_resolutions.txt' in data_post/cf_monitoring/.")
@@ -234,9 +240,11 @@ elif itype == 13:
         f.write('tot: rescaling with total shear velocity.\n')
         f.write('x:   rescaling with streamwise shear velocity.\n')
         f.write('\n')
+        f.write(f'Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
+        f.write('\n')
         f.write(f"{'delta_x+_tot':>{pp.c_w}}, "  +
                 f"{'delta_yw+_tot':>{pp.c_w}}, " +
-                f"{'delta_z+_tot':>{pp.c_w}}"    + 
+                f"{'delta_z+_tot':>{pp.c_w}}, "  + 
                 f"{'delta_x+_x':>{pp.c_w}}, "    +
                 f"{'delta_yw+_x':>{pp.c_w}}, "   +
                 f"{'delta_z+_x':>{pp.c_w}}, "    +
