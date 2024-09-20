@@ -222,8 +222,11 @@ for i in range(file1, filen + icrfile, icrfile):
         
     """
     
+    # Total shear velocity
+    sh_vel_tot[ii] = np.sqrt(nu * (np.absolute(mgpar[0])))
+    
     # Viscous length
-    delta_nu = nu / sh_velx[ii]
+    delta_nu = nu / sh_vel_tot[ii]
     
     # Rescaling variables through wall units
     delta_x_plus[ii] = delta_x / delta_nu
@@ -259,7 +262,7 @@ for i in range(file1, filen + icrfile, icrfile):
     tau_eta[ii] = np.sqrt(nu/eps_max)
     
     # Viscous time unit
-    t_nu[ii] = nu / (sh_velx[ii] ** 2)
+    t_nu[ii] = nu / (sh_vel_tot[ii] ** 2)
     
     #!-----!
     
@@ -268,7 +271,8 @@ for i in range(file1, filen + icrfile, icrfile):
     
                    
 # Related Reynolds numbers
-re_tau   = delta_99*sh_velx*re
+re_tau_x = delta_99*sh_velx*re
+re_tau   = delta_99*sh_vel_tot*re
 re_ds    = disp_t*uwall*re
 re_theta = mom_t*uwall*re
 
@@ -297,7 +301,8 @@ with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
     f.write(f"{'delta_99 O(6)':>{pp.c_w}}, " +
             f"{'disp_t O(6)':>{pp.c_w}}, "   +
             f"{'mom_t O(6)':>{pp.c_w}}, "    +
-            f"{'Re_tau O(6)':>{pp.c_w}}, "   +
+            f"{'Re_tau_x O(6)':>{pp.c_w}}, " +
+            f"{'Re_tau O(6)':>{pp.c_w}}, "   +    
             f"{'Re_ds O(6)':>{pp.c_w}}, "    +
             f"{'Re_theta O(6)':>{pp.c_w}}, " +
             f"{'sh_velx O(6)':>{pp.c_w}}, "  +
@@ -309,6 +314,7 @@ with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
         f.write(f"{delta_99[j]:{pp.fs}}, "   +
                 f"{disp_t[j]:{pp.fs}}, "     +
                 f"{mom_t[j]:{pp.fs}}, "      +
+                f"{re_tau_x[j]:{pp.fs}}, "   +
                 f"{re_tau[j]:{pp.fs}}, "     +
                 f"{re_ds[j]:{pp.fs}}, "      +
                 f"{re_theta[j]:{pp.fs}}, "   +
@@ -325,22 +331,24 @@ with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
     f.write(f'Flowcase: {add_string}.\n')
     f.write('\n') 
     f.write('Abbreviations:\n')
-    f.write(' - x:      streamwise direction;\n')
-    f.write(' - y:      wall-normal direction;\n')
-    f.write(' - z:      spanwise direction;\n')
-    f.write(' - delta:  mesh spacing;\n')
-    f.write(' - L:      domain dimension;\n')
-    f.write(' - d:      boundary layer interface (d: small letter greek delta);\n')
-    f.write(' - Re_tau: friction Reynolds number.\n')
+    f.write(' - x:        streamwise direction;\n')
+    f.write(' - y:        wall-normal direction;\n')
+    f.write(' - z:        spanwise direction;\n')
+    f.write(' - delta:    mesh spacing;\n')
+    f.write(' - L:        domain dimension;\n')
+    f.write(' - d:        boundary layer interface (d: small letter greek delta);\n')
+    f.write(' - Re_tau_x: streamwise friction Reynolds number.\n')
+    f.write(' - Re_tau:   (total) friction Reynolds number.\n')
     f.write('\n')
-    f.write(f"{'delta_x^+':>{pp.c_w}}, "   +
-            f"{'delta_yw^+':>{pp.c_w}}, "  +
-            f"{'delta_yd^+':>{pp.c_w}}, "  +
-            f"{'delta_z^+':>{pp.c_w}}, "   +
-            f"{'Lx^+':>{pp.c_w}}, "        +
-            f"{'Ly^+':>{pp.c_w}}, "        +
-            f"{'Lz^+':>{pp.c_w}}, "        +
-            f"{'Re_tau O(6)':>{pp.c_w}}\n" )  
+    f.write(f"{'delta_x^+':>{pp.c_w}}, "     +
+            f"{'delta_yw^+':>{pp.c_w}}, "    +
+            f"{'delta_yd^+':>{pp.c_w}}, "    +
+            f"{'delta_z^+':>{pp.c_w}}, "     +
+            f"{'Lx^+':>{pp.c_w}}, "          +
+            f"{'Ly^+':>{pp.c_w}}, "          +
+            f"{'Lz^+':>{pp.c_w}}, "          +
+            f"{'Re_tau_x O(6)':>{pp.c_w}}, " +   
+            f"{'Re_tau O(6)':>{pp.c_w}}\n"   )  
 
     for j in range(0, ii):
         f.write(f"{delta_x_plus[j]:{pp.fs}}, "  +
@@ -350,6 +358,7 @@ with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
                 f"{Lx_plus[j]:{pp.fs}}, "       +
                 f"{Ly_plus[j]:{pp.fs}}, "       +
                 f"{Lz_plus[j]:{pp.fs}}, "       +
+                f"{re_tau_x[j]:{pp.fs}}, "      +
                 f"{re_tau[j]:{pp.fs}}\n"        )
                 
 # Time scales (minimum Kolmogorov time scale and viscous time unit)
@@ -360,20 +369,23 @@ with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
     f.write(f'Flowcase: {add_string}.\n')
     f.write('\n') 
     f.write('Abbreviations:\n')
-    f.write(' - tau_eta: (minimum) Kolmogorov time scale;\n')
+    f.write(' - tau_eta:  (minimum) Kolmogorov time scale;\n')
     f.write(' - t_nu:     viscous time unit.\n')
-    f.write(' - Re_tau:   friction Reynolds number.\n')
+    f.write(' - Re_tau_x: streamwise friction Reynolds number.\n')
+    f.write(' - Re_tau:   (total) friction Reynolds number.\n')
     f.write('\n')
     f.write(f'For reference, time-step dt = {dt}.\n')
     f.write('\n')
-    f.write(f"{'tau_eta':>{pp.c_w}}, "     +
-            f"{'t_nu':>{pp.c_w}}, "        +
-            f"{'Re_tau O(6)':>{pp.c_w}}\n" )  
+    f.write(f"{'tau_eta':>{pp.c_w}}, "       +
+            f"{'t_nu':>{pp.c_w}}, "          +
+            f"{'Re_tau_x O(6)':>{pp.c_w}}, " +   
+            f"{'Re_tau O(6)':>{pp.c_w}}\n"   )  
 
     for j in range(0, ii):
-        f.write(f"{tau_eta[j]:{pp.fs}}, " +
-                f"{t_nu[j]:{pp.fs}}, "    +
-                f"{re_tau[j]:{pp.fs}}\n"  )
+        f.write(f"{tau_eta[j]:{pp.fs}}, "  +
+                f"{t_nu[j]:{pp.fs}}, "     +
+                f"{re_tau_x[j]:{pp.fs}}, " +
+                f"{re_tau[j]:{pp.fs}}\n"   )
 
             
 # Print that calculations have been completed
