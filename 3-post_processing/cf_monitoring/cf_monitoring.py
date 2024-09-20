@@ -228,7 +228,7 @@ elif itype == 13:
     t_nu_min = np.min(t_nu_tot)
     
     # Ratio of time-step dt and minimum viscous time unit
-    dt_plus = dt / t_nu_min
+    dt_plus = round(dt / t_nu_min, 4)
 
     # Saving "num_resolutions.txt" (num: numerical)
     print(">>> Saving 'num_resolutions.txt' in data_post/cf_monitoring/.")
