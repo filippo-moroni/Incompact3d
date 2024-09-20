@@ -77,6 +77,10 @@ os.makedirs('data_post/integral_statistics', mode=0o777, exist_ok=True)
 #!--- Parameters ---!
 uwall, nu, twd = set_flow_parameters(itype, re)
 
+# Mesh spacings
+delta_x = Lx / nx
+delta_z = Lz / nz
+
 # Local variables
 ii    = 0                             # Index for BL thickness parameters vectors 
 ns    = (filen - file1)//icrfile + 1  # Number of snapshots
@@ -89,6 +93,15 @@ sh_velx   = np.zeros(ns)
 cfx       = np.zeros(ns)
 a_fact    = np.zeros(ns)
 time_unit = np.zeros(ns)
+
+# Arrays for non-dimensional grid spacings and domain dimensions
+delta_x_plus  = np.zeros(ns)
+delta_y1_plus = np.zeros(ns)
+delta_yd_plus = np.zeros(ns)
+delta_z_plus  = np.zeros(ns)
+Lx_plus       = np.zeros(ns)
+Ly_plus       = np.zeros(ns)
+Lz_plus       = np.zeros(ns)
 
 # Reading of yp coordinates
 yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
@@ -184,8 +197,31 @@ for i in range(file1, filen + icrfile, icrfile):
     
     # Index for BL thickness parameters vectors
     ii = ii + 1
-
-
+    
+    """
+    Extra section for calculations of grid spacings.
+        
+    """
+    
+    # Viscous length
+    delta_nu = nu / sh_velx[ii]
+    
+    # Rescaling variables through wall units
+    delta_x_plus[ii] = delta_x / delta_nu
+    delta_z_plus[ii] = delta_z / delta_nu
+    
+    y_plus           = yp      / delta_nu
+    
+    delta_y1_plus[ii] = y_plus[1]
+    
+    # Delta y+ at the BL edge
+    delta_yd_plus[ii] = y_plus[bl_thick_j] - y_plus[bl_thick_j-1] 
+ 
+    Lx_plus[ii] = Lx / delta_nu
+    Ly_plus[ii] = Ly / delta_nu 
+    Lz_plus[ii] = Lz / delta_nu
+    
+                   
 # Related Reynolds numbers
 re_tau   = delta_99*sh_velx*re
 re_ds    = disp_t*uwall*re
@@ -194,7 +230,9 @@ re_theta = mom_t*uwall*re
 print(">>> Writing to .txt file.")
 print()
 
-# Create the file and write  
+#!--- Create the files and write ---!
+
+# Integral statistics and flow indexes
 with open('data_post/integral_statistics/integral_statistics.txt', 'w') as f:
     f.write(f"{'delta_99 O(6)':>{pp.c_w}}, " +
             f"{'disp_t O(6)':>{pp.c_w}}, "   +
@@ -218,6 +256,27 @@ with open('data_post/integral_statistics/integral_statistics.txt', 'w') as f:
                 f"{cfx[j]:{pp.fs8}}, "       +
                 f"{a_fact[j]:{pp.fs}}, "     +
                 f"{time_unit[j]:{pp.fs}}\n"  )
+                
+# Non-dimensional grid spacings and domain dimensions (nd: non-dimensional)
+with open('data_post/integral_statistics/nd_mesh_evolution.txt', 'w') as f:
+    f.write(f"{'delta_x^+':>{pp.c_w}}, "   +
+            f"{'delta_yw^+':>{pp.c_w}}, "  +
+            f"{'delta_yd^+':>{pp.c_w}}, "  +
+            f"{'delta_z^+':>{pp.c_w}}, "   +
+            f"{'Lx^+':>{pp.c_w}}, "        +
+            f"{'Ly^+':>{pp.c_w}}, "        +
+            f"{'Lz^+':>{pp.c_w}}, "        +
+            f"{'Re_tau O(6)':>{pp.c_w}}\n"   
+
+    for j in range(0, ii):
+        f.write(f"{delta_x_plus[j]:{pp.fs}}, "  +
+                f"{delta_yw_plus[j]:{pp.fs}}, " +
+                f"{delta_yd_plus[j]:{pp.fs}}, " +
+                f"{delta_z_plus[j]:{pp.fs}}, "  +
+                f"{Lx_plus[j]:{pp.fs}}, "       +
+                f"{Ly_plus[j]:{pp.fs}}, "       +
+                f"{Lz_plus[j]:{pp.fs}}, "       +
+                f"{re_tau[j]:{pp.fs}}\n"    
             
 # Print that calculations have been completed
 print(">>> Done!")

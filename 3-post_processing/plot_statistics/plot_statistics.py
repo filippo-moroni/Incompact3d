@@ -214,7 +214,7 @@ print()
 # Create the file and write  
 with open(f'data_post/plot_statistics/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
     f.write(f"{'delta_x^+':>{pp.c_w}}, "  +
-            f"{'delta_y1^+':>{pp.c_w}}, " +
+            f"{'delta_yw^+':>{pp.c_w}}, " +
             f"{'delta_z^+':>{pp.c_w}}, "  +
             f"{'Lx^+':>{pp.c_w}}, "       +
             f"{'Ly^+':>{pp.c_w}}, "       +
