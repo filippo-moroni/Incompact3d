@@ -191,7 +191,7 @@ elif itype == 13:
     #!--- Section on check of mesh spacings ---!
 
     print()
-    print(">>> Calculating grid spacings at maximum cf.")
+    print(">>> Calculating grid spacings and viscous time scale at maximum cf.")
 
     """
     Maximum total and streamwise shear velocities
@@ -204,13 +204,13 @@ elif itype == 13:
     delta_nu_tot = nu / max_sh_veltot
     delta_nu_x   = nu / max_sh_velx
 
-    # Mesh spacings
+    # Mesh spacings (dimensional)
     delta_x = Lx / nx
     delta_yw = y[1]  
     delta_z = Lz / nz
 
     """
-    Non-dimensional mesh spacings 
+    Non-dimensional mesh spacings and viscous time unit
     (p: plus, tot: total shear velocity, x: streamwise shear velocity).
     """
     delta_x_p_tot  = delta_x  / delta_nu_tot
@@ -220,13 +220,17 @@ elif itype == 13:
     delta_x_p_x  = delta_x  / delta_nu_x
     delta_yw_p_x = delta_yw / delta_nu_x
     delta_z_p_x  = delta_z  / delta_nu_x
+    
+    t_nu_x   = nu / max_sh_velx**2
+    t_nu_tot = nu / max_sh_veltot**2
 
-    print(">>> Saving 'max_grid_spacings.txt' in data_post/cf_monitoring/.")
+    # Saving "num_resolutions.txt" (num: numerical)
+    print(">>> Saving 'num_resolutions.txt' in data_post/cf_monitoring/.")
     print()
 
     # Write and save to .txt file 
-    with open('data_post/cf_monitoring/max_grid_spacings.txt', 'w') as f:
-        f.write('Non-dimensional grid spacings.\n')
+    with open('data_post/cf_monitoring/num_resolutions.txt', 'w') as f:
+        f.write('Maximum non-dimensional grid spacings and minimum viscous time scale.\n')
         f.write('tot: rescaling with total shear velocity.\n')
         f.write('x:   rescaling with streamwise shear velocity.\n')
         f.write('\n')
@@ -235,14 +239,18 @@ elif itype == 13:
                 f"{'delta_z+_tot':>{pp.c_w}}"    + 
                 f"{'delta_x+_x':>{pp.c_w}}, "    +
                 f"{'delta_yw+_x':>{pp.c_w}}, "   +
-                f"{'delta_z+_x':>{pp.c_w}}\n"    )
+                f"{'delta_z+_x':>{pp.c_w}}, "    +
+                f"{'t_nu_x':>{pp.c_w}}, "        +
+                f"{'t_nu_tot':>{pp.c_w}}\n"      )
         
         f.write(f"{delta_x_p_tot:{pp.fs6}}, "    +
                 f"{delta_yw_p_tot:{pp.fs6}}, "   +
                 f"{delta_z_p_tot:{pp.fs6}}, "    +
                 f"{delta_x_p_x:{pp.fs6}}, "      +
                 f"{delta_yw_p_x:{pp.fs6}}, "     +
-                f"{delta_z_p_x:{pp.fs6}}\n"      )
+                f"{delta_z_p_x:{pp.fs6}}, "      +
+                f"{t_nu_x:{pp.fs6}}, "           +
+                f"{t_nu_tot:{pp.fs6}}\n"         )
 
 #!--------------------------------------------------------------------------------------!
 

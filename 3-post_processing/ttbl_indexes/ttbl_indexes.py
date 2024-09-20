@@ -277,10 +277,10 @@ re_tau   = delta_99*sh_vel_tot*re
 re_ds    = disp_t*uwall*re
 re_theta = mom_t*uwall*re
 
+#!--- Create the files and write ---!
+
 print(">>> Writing to .txt file.")
 print()
-
-#!--- Create the files and write ---!
 
 # Integral statistics and flow indexes
 with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
@@ -376,6 +376,7 @@ with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
     f.write(' - Re_tau:   (total) friction Reynolds number.\n')
     f.write('\n')
     f.write(f'For reference, time-step dt = {dt}.\n')
+    
     f.write('\n')
     f.write(f"{'tau_eta':>{pp.c_w}}, "       +
             f"{'t_nu':>{pp.c_w}}, "          +
