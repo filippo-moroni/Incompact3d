@@ -277,8 +277,8 @@ print()
 
 # Integral statistics and flow indexes
 with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
-    f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) thickness parameters and\n')    
-    f.write('shear quantities using data from snapshots.\n')        
+    f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) thickness parameters, \n')    
+    f.write('shear quantities and Reynolds analogy factor.\n')        
     f.write('Quantities in this file:\n')
     f.write(' - thickness delta_99: delta_99;\n')
     f.write(' - displacement thickness: disp_t;\n')
@@ -352,6 +352,8 @@ with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
     f.write(' - tau_eta: (minimum) Kolmogorov time scale;\n')
     f.write(' - t_nu: viscous time unit.\n')
     f.write(' - Re_tau: friction Reynolds number.\n')
+    f.write('\n')
+    f.write(f'For reference, time-step dt = {dt}.\n')
     f.write('\n')
     f.write(f"{'tau_eta':>{pp.c_w}}, "     +
             f"{'t_nu':>{pp.c_w}}, "        +
