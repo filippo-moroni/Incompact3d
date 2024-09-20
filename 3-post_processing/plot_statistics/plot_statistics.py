@@ -293,7 +293,7 @@ if post_mean:
             ax.plot(y_plus_umean_kozul, mean_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Kozul et al. (2016).'
+            description += ' Reference data Kozul et al. (2016), Re_tau ~ 425.'
                            
     # Channel    
     elif itype == 3:
@@ -424,7 +424,7 @@ if post_mean:
             ax.plot(y_plus_uvar_kozul, var_u_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Kozul et al. (2016).'    
+            description += ' Reference data Kozul et al. (2016), Re_tau ~ 425.'    
                
     # Channel    
     elif itype == 3:
@@ -501,7 +501,7 @@ if post_mean:
             ax.plot(y_plus_vvar_kozul, var_v_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Kozul et al. (2016).'  
+            description += ' Reference data Kozul et al. (2016), Re_tau ~ 425.'  
             
     # Channel    
     elif itype == 3:
@@ -649,7 +649,7 @@ if post_mean:
             ax.plot(y_plus_uvmean_kozul, mean_uv_kozul, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Kozul et al. (2016).'   
+            description += ' Reference data Kozul et al. (2016), Re_tau ~ 425.'   
             
     # Channel    
     elif itype == 3:
