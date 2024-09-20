@@ -114,7 +114,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
   
     # Add re_tau if it is provided
     if re_tau is not None:
-        filename += f'_retau={re_tau}'
+        filename += f'_retaux={re_tau}'
     
     # Add y+ location of correlations if provided
     if y_plus_in is not None:
