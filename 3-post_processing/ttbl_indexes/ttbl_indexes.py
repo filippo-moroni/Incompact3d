@@ -47,7 +47,7 @@ from ttbl_subs import calculate_ttbl_delta_99
 
 print("!--- 'ttbl_indexes.py' ---!")
 print()
-print(" File 'thickness_params.txt':")
+print(" File 'data_post/ttbl_indexes/thickness_params_evolution.txt':")
 print("  - delta_99;")
 print("  - displacement thickness, delta*;")
 print("  - momentum thickness, theta;")
@@ -63,9 +63,14 @@ print(" This function requires at least one realization folder with")
 print(" snapshots' headers in order to read time unit t.")
 print()
 print()
-print(" File 'nd_mesh_evolution.txt':")
+print(" File 'data_post/ttbl_indexes/nd_mesh_evolution.txt':")
 print("  - non-dimensional mesh spacings;")
 print("  - non-dimensional domain dimensions.")
+print()
+print()
+print(" File 'data_post/ttbl_indexes/time_scales_evolution.txt':")
+print("  - minimum Kolmogorov time scale;")
+print("  - viscous time unit.")
 print()
 
 #!--------------------------------------------------------------------------------------!
@@ -244,10 +249,8 @@ for i in range(file1, filen + icrfile, icrfile):
     # Reading of total dissipation
     file_path = f"data_post/diss_stats-{i:04d}.txt"
     
-    data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
-    
-    eps = data[:, 0]  # total dissipation
-    
+    eps = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
+        
     # Find the maximum of mean total dissipation
     eps_max = max(eps)
 
@@ -319,7 +322,7 @@ with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
     f.write(' - z: spanwise direction;\n')
     f.write(' - delta: mesh spacing;\n')
     f.write(' - L: domain dimension;\n')
-    f.write(' - d: boundary layer interface (d: small letter delta);\n')
+    f.write(' - d: boundary layer interface (d: small letter greek delta);\n')
     f.write(' - Re_tau: friction Reynolds number.\n')
     f.write('\n')
     f.write(f"{'delta_x^+':>{pp.c_w}}, "   +
