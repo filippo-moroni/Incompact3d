@@ -1,7 +1,6 @@
 1-pre_processing/__pycache__
 2-solver/build
 3-post_processing/post_incompact3d/build
-3-post_processing/python_common/__pycache__
 3-post_processing/corr_2dplot/__pycache__
+4-common/python_common/__pycache__
 5-external/2decomp-fft/build
-5-external/fftw-3.3.10/build
