@@ -180,7 +180,7 @@ elif itype == 13:
     print()
 
 # Print viscous time unit
-print(">>> Viscous time unit, t_nu = ", round(t_nu,1))
+print(">>> Viscous time unit, t_nu = ", round(t_nu_tot,1))
 print()
 
 # Rescale mean flow statistics through 'streamwise' shear velocity
@@ -776,7 +776,7 @@ if post_diss:
         f.write(f"{'t_nu':>{pp.c_w}}, "        +
                 f"{'min tau_eta':>{pp.c_w}}\n" )  
 
-        f.write(f"{t_nu:{pp.fs}}, "            +
+        f.write(f"{t_nu_tot:{pp.fs}}, "        +
                 f"{tau_eta:{pp.fs}}\n"         )
 
     print(">>> Plotting total dissipation.")
