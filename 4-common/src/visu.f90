@@ -456,7 +456,7 @@ contains
       
         if(nrank .eq. 0) then
         
-            ! Calculate friction Re number for a TBL, based on longitudinal shear velocity
+            ! Calculate friction Re number for a TTBL, based on longitudinal shear velocity
             re_tau_tbl = delta_99 * sh_velx / xnu
           
             ! Convert Re_tau and BL thickness from real to character
@@ -475,7 +475,7 @@ contains
       ! Add Re_tau to a TTBL .xdmf footer
       if(itype .eq. itype_ttbl) then
           write(ioxdmf,*)'<!-- Additional information -->'
-          write(ioxdmf,*)'<!-- Friction Reynolds number, Re_tau = '// trim(adjustl(char_value1)) //' -->'
+          write(ioxdmf,*)'<!-- (Streamwise) Friction Reynolds number, Re_tau = '// trim(adjustl(char_value1)) //' -->'
           write(ioxdmf,*)'<!-- Boundary layer thickness, delta_99 = '// trim(adjustl(char_value2)) //' -->'
           write(ioxdmf,*)'<!--                        -->'
       end if
