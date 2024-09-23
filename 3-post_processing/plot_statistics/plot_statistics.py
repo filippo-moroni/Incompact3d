@@ -868,7 +868,7 @@ if post_corz:
     rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
 
     # Rescale separation variable by viscous unit
-    rz = rz / delta_nu
+    rz = rz / delta_nu_x
     
     #!--- Calculate the integral length scale lambda z ---!
 
@@ -881,7 +881,7 @@ if post_corz:
     lambda_z = spl.integral(rz0, rzstar)
 
     # Rescale in wall units
-    lambda_z = lambda_z / delta_nu
+    lambda_z = lambda_z / delta_nu_x
 
     # Print the integral length scale value
     print(">>> Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
