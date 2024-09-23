@@ -166,8 +166,8 @@ elif itype == 13:
     # Shift of mean streamwise velocity profile due to the translating wall
     mean_u = uwall - mean_u
 
-    # Friction Reynolds number
-    re_tau = sh_vel * bl_thick / nu
+    # (Streamwise) friction Reynolds number
+    re_tau = sh_vel_x * bl_thick / nu
     re_tau = int(re_tau)
         
     # Print friction Reynolds number, boundary layer thickness and
