@@ -124,8 +124,8 @@ delta_z = Lz / nz
 sh_vel_x   = np.sqrt(nu * np.abs(mg_x[0]))    # streamwise shear velocity (based on streamwise mean gradient)  
 sh_vel_tot = np.sqrt(nu * np.abs(mg_tot[0]))  # total shear velocity (based on total mean gradient)  
 
-delta_nu_x   = nu / sh_velx                   # viscous length based on streamwise shear velocity
-delta_nu_tot = nu / sh_veltot                 # viscous length based on total shear velocity
+delta_nu_x   = nu / sh_vel_x                  # viscous length based on streamwise shear velocity
+delta_nu_tot = nu / sh_vel_tot                # viscous length based on total shear velocity
 
 t_nu_x      = nu / (sh_vel_x ** 2)            # viscous time based on streamwise shear velocity
 t_nu_tot    = nu / (sh_vel_tot ** 2)          # viscous time based on total shear velocity
