@@ -121,18 +121,26 @@ delta_x = Lx / nx
 delta_z = Lz / nz
            
 # Shear quantities
-sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
-delta_nu = nu / sh_vel                    # viscous length
-t_nu     = nu / (sh_vel ** 2)             # viscous time
-  
-# Rescaling variables through wall units
-delta_x_plus = delta_x / delta_nu
-delta_z_plus = delta_z / delta_nu
-y_plus       = y       / delta_nu 
+sh_vel_x   = np.sqrt(nu * np.abs(mg_x[0]))    # streamwise shear velocity (based on streamwise mean gradient)  
+sh_vel_tot = np.sqrt(nu * np.abs(mg_tot[0]))  # total shear velocity (based on total mean gradient)  
 
-Lx_plus = Lx / delta_nu
-Ly_plus = Ly / delta_nu 
-Lz_plus = Lz / delta_nu
+delta_nu_x   = nu / sh_velx                   # viscous length based on streamwise shear velocity
+delta_nu_tot = nu / sh_veltot                 # viscous length based on total shear velocity
+
+t_nu_x      = nu / (sh_vel_x ** 2)            # viscous time based on streamwise shear velocity
+t_nu_tot    = nu / (sh_vel_tot ** 2)          # viscous time based on total shear velocity
+  
+# Rescaling grid spacings and domain dimensions through 'total' viscous length
+delta_x_plus = delta_x / delta_nu_tot
+delta_z_plus = delta_z / delta_nu_tot
+y_plus_tot   = y       / delta_nu_tot
+
+# y+ rescaling with 'streamwise' viscous length for plotting
+y_plus       = y / delta_nu_x
+
+Lx_plus = Lx / delta_nu_tot
+Ly_plus = Ly / delta_nu_tot 
+Lz_plus = Lz / delta_nu_tot
 
 # Friction Reynolds number
 re_tau = None
@@ -141,7 +149,7 @@ re_tau = None
 if itype == 3:
 
     # Delta y+ at the Channel centerline 
-    delta_yd_plus = y_plus[ny-1] - y_plus[ny-2]
+    delta_yd_plus = y_plus_tot[ny-1] - y_plus_tot[ny-2]
     
     # Halving Ly+
     Ly_plus = Ly_plus / 2.0
@@ -153,7 +161,7 @@ elif itype == 13:
     (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
 
     # Delta y+ at the BL edge
-    delta_yd_plus = y_plus[bl_thick_j] - y_plus[bl_thick_j-1]
+    delta_yd_plus = y_plus_tot[bl_thick_j] - y_plus_tot[bl_thick_j-1]
 
     # Shift of mean streamwise velocity profile due to the translating wall
     mean_u = uwall - mean_u
@@ -175,34 +183,34 @@ elif itype == 13:
 print(">>> Viscous time unit, t_nu = ", round(t_nu,1))
 print()
 
-# Rescale mean flow statistics
+# Rescale mean flow statistics through 'streamwise' shear velocity
 if post_mean:
-    mean_u  /= sh_vel
-    var_u   /= sh_vel**2
-    var_v   /= sh_vel**2
-    var_w   /= sh_vel**2
-    mean_uv /= sh_vel**2
+    mean_u  /= sh_vel_x
+    var_u   /= sh_vel_x**2
+    var_v   /= sh_vel_x**2
+    var_w   /= sh_vel_x**2
+    mean_uv /= sh_vel_x**2
 
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
-    mean_w_plus  = mean_w / sh_vel
+    mean_w_plus  = mean_w / sh_vel_x
 
-# Rescale vorticity
+# Rescale vorticity through 'total' viscous time unit
 if post_vort:
-    vort_x *= t_nu
-    vort_y *= t_nu
-    vort_z *= t_nu
+    vort_x *= t_nu_tot
+    vort_y *= t_nu_tot
+    vort_z *= t_nu_tot
 
 # Rescale TKE terms
 if post_tke_eq:
-    tke_turbt  /= sh_vel**2
-    tke_presst /= sh_vel**2
+    tke_turbt  /= sh_vel_x**2
+    tke_presst /= sh_vel_x**2
     
     # For TKE diffusion, we need to rescale by domain height
     # This is something that needs further verification.
-    tke_difft   = (tke_difft/sh_vel**2) * Ly
+    tke_difft   = (tke_difft/sh_vel_x**2) * Ly
     
-    tke_prod   /= sh_vel**2
-    tke_pseps  /= sh_vel**2
+    tke_prod   /= sh_vel_x**2
+    tke_pseps  /= sh_vel_x**2
 
 #!--------------------------------------------------------------------------------------!
     
@@ -220,8 +228,34 @@ if itype == 13:
     print(">>> run 'ttbl_indexes.py'.")
     print()
 
-# Create the file and write  
-with open(f'data_post/plot_statistics/grid_spacings/grid_spacings_post-{snap_numb}_{add_string}.txt', 'w') as f:
+# Create the file and write
+filename = f'data_post/plot_statistics/grid_spacings/grid_spacings_post'
+
+# Add snap_numb if it is provided
+if snap_numb is not None:
+    filename += f'-{snap_numb}'
+
+# Add add_string if it is provided
+if add_string is not None:
+    filename += f'_{add_string}'
+
+# Add .txt extension to filename
+filename += '.txt'
+  
+with open(filename, 'w') as f:
+    f.write('Grid spacings and domain dimensions. Adimensionalization in viscous units (^+),\n')        
+    f.write('with total shear velocity (based on total mean gradient).\n')        
+    f.write('\n')
+    f.write(f'Flowcase: {add_string}.\n')
+    f.write('\n') 
+    f.write('Abbreviations:\n')
+    f.write(' - x:        streamwise direction;\n')
+    f.write(' - y:        wall-normal direction;\n')
+    f.write(' - z:        spanwise direction;\n')
+    f.write(' - delta:    mesh spacing;\n')
+    f.write(' - L:        domain dimension;\n')
+    f.write(' - d:        boundary layer interface/channel centerline (d: small letter greek delta);\n')
+    f.write('\n')
     f.write(f"{'delta_x^+':>{pp.c_w}}, "  +
             f"{'delta_yw^+':>{pp.c_w}}, " +
             f"{'delta_z^+':>{pp.c_w}}, "  +
@@ -712,9 +746,33 @@ if post_diss:
         print(">>> For a comprehensive file for time_scales evolution,")
         print(">>> run 'ttbl_indexes.py'.")
         print()
-            
+        
+    # Create the file and write
+    filename = f'data_post/plot_statistics/time_scales/time_scales'
+
+    # Add snap_numb if it is provided
+    if snap_numb is not None:
+        filename += f'-{snap_numb}'
+
+    # Add add_string if it is provided
+    if add_string is not None:
+        filename += f'_{add_string}'
+
+    # Add .txt extension to filename
+    filename += '.txt'
+              
     # Create the file and write 
-    with open(f'data_post/plot_statistics/time_scales/time_scales-{snap_numb}_{add_string}.txt', 'w') as f:
+    with open(filename, 'w') as f:  
+        f.write('Kolmogorov time scale and viscous time unit.\n')        
+        f.write('\n')
+        f.write(f'Flowcase: {add_string}.\n')
+        f.write('\n') 
+        f.write('Abbreviations:\n')
+        f.write(' - tau_eta:  (minimum) Kolmogorov time scale;\n')
+        f.write(' - t_nu:     viscous time unit.\n')
+        f.write('\n')
+        f.write(f'For reference, time-step dt = {dt}.\n')
+        f.write('\n')
         f.write(f"{'t_nu':>{pp.c_w}}, "        +
                 f"{'min tau_eta':>{pp.c_w}}\n" )  
 

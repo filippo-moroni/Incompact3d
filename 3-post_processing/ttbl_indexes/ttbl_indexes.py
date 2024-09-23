@@ -376,7 +376,6 @@ with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
     f.write(' - Re_tau:   (total) friction Reynolds number.\n')
     f.write('\n')
     f.write(f'For reference, time-step dt = {dt}.\n')
-    
     f.write('\n')
     f.write(f"{'tau_eta':>{pp.c_w}}, "       +
             f"{'t_nu':>{pp.c_w}}, "          +

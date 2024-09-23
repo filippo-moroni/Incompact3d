@@ -200,7 +200,7 @@ subroutine print_cf(ux,uz,phi)
       ! Write filename
       write(filename,"('data/monitoring/grid_spacings.txt')") 
    
-      ! Calculate viscous unit
+      ! Calculate viscous unit with total shear velocity
       delta_nu = xnu / sh_vel 
    
       ! Calculate non-dimensional grid spacings
