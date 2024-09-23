@@ -25,7 +25,7 @@ matplotlib.use('Agg')
 current_dir = os.path.dirname(__file__)
 
 # Add the path to the 'python_common' directory relative to the current directory 
-config_path = os.path.abspath(os.path.join(current_dir, '..', 'python_common'))
+config_path = os.path.abspath(os.path.join(current_dir, '../../4-common', 'python_common'))
 sys.path.append(config_path)
 
 # Import the plotting_params module
@@ -77,6 +77,10 @@ if itype == 13:
 
     realiz = int(input(">>> Specify the realization folder to use: "))
     print()
+
+# Asking the user if he wants to plot the title (that is friction Reynolds number)
+i_title = int(input(">>> Add title to .png images? (Friction Reynolds number) (0: no, 1: yes): "))
+print()
 
 # Scalar field
 if switcher == 0:
@@ -232,10 +236,13 @@ while True:
     # Colorbar label (use pp.pad_cbar_lab to use the default value for padding of the cbar label)
     cbar.set_label(field_label, fontsize=pp.fla, labelpad=pad_cbar_lab)  
     
-    # Axes labels and title
+    # Axes labels
     ax.set_xlabel(xlabel,   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$y/D$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_title(fr'$Re_\tau = {re_tau}$', fontsize=pp.fla)
+    
+    # Title
+    if i_title == 1:
+        ax.set_title(fr'$Re_\tau = {re_tau}$', fontsize=pp.fla)
 
     # Specify manually xticks
     ax.xaxis.set_major_locator(MultipleLocator(maj_ticks_int))
