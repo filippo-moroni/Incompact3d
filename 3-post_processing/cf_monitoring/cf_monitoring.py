@@ -161,6 +161,9 @@ elif itype == 13:
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
     re_taux   = sh_velx * delta_99 / nu
     
+    # Calculate the friction Reynolds number (averaged over the realizations)
+    re_tau    = sh_veltot * delta_99 / nu
+    
     # Calculate longitudinal friction coefficient
     cfx = 2.0 * (sh_velx / uwall)**2
 
@@ -370,7 +373,6 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction Reynolds number
-    #ax.scatter(time_unit, re_tau, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.plot(time_unit, re_tau, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a))
@@ -408,7 +410,6 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Streamwise friction coefficient
-    #ax.scatter(re_tau, cfx, marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 

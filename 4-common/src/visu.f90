@@ -27,6 +27,7 @@ module visu
   !        1 for 2D output with x-normal plane (for average modifiy 'write_field')
   !        2 for 2D output with y-normal plane (for average modifiy 'write_field')
   !        3 for 2D output with z-normal plane (for average modifiy 'write_field')
+  
   integer, save :: output2D
    
   integer :: ioxdmf
