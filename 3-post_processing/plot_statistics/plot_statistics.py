@@ -180,7 +180,7 @@ elif itype == 13:
     print()
 
 # Print viscous time unit
-print(">>> Viscous time unit, t_nu = ", round(t_nu_tot,1))
+print(">>> Viscous time unit, t_nu = ", round(t_nu_tot,3))
 print()
 
 # Rescale mean flow statistics through 'streamwise' shear velocity
