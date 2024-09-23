@@ -159,7 +159,7 @@ elif itype == 13:
     a_fact    = a_fact_sum
 
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
-    re_tau   = sh_velx * delta_99 / nu
+    re_taux   = sh_velx * delta_99 / nu
     
     # Calculate longitudinal friction coefficient
     cfx = 2.0 * (sh_velx / uwall)**2
@@ -173,7 +173,7 @@ elif itype == 13:
                 f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
                 f"{'delta_99':>{pp.c_w}}, "         +
-                f"{'Re_tau':>{pp.c_w}}, "           +
+                f"{'Re_tau_x':>{pp.c_w}}, "         +
                 f"{'P_in':>{pp.c_w}}, "             +
                 f"{'A_fact':>{pp.c_w}}, "           +
                 f"{'time_unit':>{pp.c_w}}\n"        )
@@ -183,7 +183,7 @@ elif itype == 13:
                     f"{sh_velx[j]:{pp.fs6}}, "      +
                     f"{cfx[j]:{pp.fs8}}, "          +
                     f"{delta_99[j]:{pp.fs}}, "      +
-                    f"{re_tau[j]:{pp.fs}}, "        +
+                    f"{re_taux[j]:{pp.fs}}, "       +
                     f"{power_in[j]:{pp.fs6}}, "     +
                     f"{a_fact[j]:{pp.fs}}, "        +
                     f"{time_unit[j]:{pp.fs}}\n"     )
