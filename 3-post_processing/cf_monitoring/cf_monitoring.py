@@ -96,46 +96,33 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 if itype == 3:
    
     # Read cf data from /data folder
-    M1 = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+    M = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
     # Extracting quantities from the full matrix
-    cfx       = M1[:,4] 
-    time_unit = M1[:,7]
+    cfx       = M[:,4] 
+    time_unit = M[:,7]
 
 # TTBL
 elif itype == 13:
 
     print()
     print(">>> Averaging 'cf_history.txt' files over different flow realizations.")
-
+    
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
 
         # Read cf data from /data_ri folder
-        M1 = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        M = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
         # Extracting quantities from the full matrix
-        sh_veltot = M1[:,0]     # total shear velocity
-        sh_velx   = M1[:,1]     # streamwise shear velocity
-        time_unit = M1[:,7]     # time unit
-        ts        = M1[:,8]     # time step
-        delta_99  = M1[:,9]     # boundary layer thickness delta_99 for a TTBL
-        power_in  = M1[:,11]    # power input
-        a_fact    = M1[:,12]    # Reynolds analogy factor
-        
-        # We need to read every umean file for a specific realization 
-        
-        # First time-step is skipped at the moment for the reading of umean
-        ts1 = ts[1]
-        
-        # The increment can be read from the input file
-        
-        
-        # Last time-step
-        tsn = ts[-1]
-        
-        for j in range(ts1, tsn, 
-        
+        sh_veltot = M[:,0]     # total shear velocity
+        sh_velx   = M[:,1]     # streamwise shear velocity
+        time_unit = M[:,7]     # time unit
+        ts        = M[:,8]     # time step
+        delta_99  = M[:,9]     # boundary layer thickness delta_99 for a TTBL
+        power_in  = M[:,11]    # power input
+        a_fact    = M[:,12]    # Reynolds analogy factor
+                             
         """
         Initialize arrays for sum
         Shear velocities, sq_sum: sum of the square, gradient multiplied by kinematic viscosity.
@@ -164,8 +151,8 @@ elif itype == 13:
         power_in_sum = power_in_sum + power_in / nr 
         
         # Average the BL analogy factor over the realizations
-        a_fact_sum = a_fact_sum + a_fact / nr  
-
+        a_fact_sum = a_fact_sum + a_fact / nr
+        
     # Finalize the averages
     sh_veltot = np.sqrt(sh_veltotsq_sum)
     sh_velx   = np.sqrt(sh_velxsq_sum)
@@ -184,7 +171,42 @@ elif itype == 13:
     
     # Calculate total friction coefficient
     cf_tot = 2.0 * (sh_veltot / uwall)**2
+    
+    
+    
+    #!--------------------------------------------------------------------------------------------------------!
 
+    # First time-step is skipped at the moment for the reading of umean
+    ts1 = ts[1]
+                
+    # Last time-step
+    tsn = ts[-1]
+    
+    # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified'
+    nsaving = len(ts) - 2
+
+    # Initialize the mean streamwise velocity profile array
+    umean = np.zeros(ny, nr)
+    
+    umean_realiz = np.zeros(ny, nsaving)
+           
+    """
+    Do loop from the first saving of umean (excluding the IC) to the last one, with increment ioutput_cf
+    that is read from the input file 'input.i3d'.
+    """
+    for j in range(ts1, tsn, ioutput_cf):
+        
+        # Do loop over different realizations
+        for i in range(1, nr + 1, 1):
+               
+            # Read of 'umean' data from 'data/umean' folder
+            umean[:,i] = np.loadtxt(f'data_r{i:01d}/umean/umean-ts{j:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
+            
+            # Summing into a sum array
+            umean_realiz[:,j] = umean[:,j] + umean[:,i] 
+
+    #!--------------------------------------------------------------------------------------------------------!
+    
     print(">>> Saving 'cf_history_realiz.txt' in data_post/cf_monitoring/.")
     print()
 

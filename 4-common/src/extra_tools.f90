@@ -708,11 +708,17 @@ subroutine print_umean(ux)
             
       ! Open and write the mean velocity profile
       open(newunit=iunit, file=filename, status="unknown", form="formatted")
+
+      ! Header
+      write(iunit, '(1(A13, A1, 1X))') 'umean(y,t,nr)'
+      
+      ! Write mean streamwise velocity profile, function of y-direction, time and specific realization
       do j=1,ny
-          write(iunit,*) u1meanHT(j)
+          write(iunit, '(1(F13.9, A1, 1X))') u1meanHT(j)
       enddo
+      
       close(iunit)
-                
+                      
   end if
   
 end subroutine print_umean
