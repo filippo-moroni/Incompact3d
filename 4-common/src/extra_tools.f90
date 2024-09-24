@@ -664,7 +664,7 @@ subroutine print_umean(ux)
   use MPI
   
   use var,       only : ux2     
-  use param,     only : zero
+  use param,     only : zero, itime
   use variables, only : nx, ny, nz
     
   implicit none
