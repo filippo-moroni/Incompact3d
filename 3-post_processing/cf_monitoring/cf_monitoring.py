@@ -216,6 +216,8 @@ elif itype == 13:
     
     max_sh_veltot = np.max(sh_veltot[licf:]) 
     max_sh_velx   = np.max(sh_velx)
+    
+    #max_index     = np.argmax(sh_velx)
 
     # Related viscous lengths
     delta_nu_tot = nu / max_sh_veltot
