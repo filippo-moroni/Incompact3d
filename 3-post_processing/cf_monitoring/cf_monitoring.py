@@ -66,7 +66,7 @@ os.makedirs('plots/time_evolution',    mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
-(itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo,  
+(itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, ioutput_cf, iswitch_wo,  
  add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
 ) = read_input_files('input.i3d','post.prm')
 
@@ -115,12 +115,26 @@ elif itype == 13:
         M1 = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
         # Extracting quantities from the full matrix
-        sh_veltot = M1[:,0]
-        sh_velx   = M1[:,1]
-        time_unit = M1[:,7]
-        delta_99  = M1[:,9]
-        power_in  = M1[:,11]
-        a_fact    = M1[:,12]
+        sh_veltot = M1[:,0]     # total shear velocity
+        sh_velx   = M1[:,1]     # streamwise shear velocity
+        time_unit = M1[:,7]     # time unit
+        ts        = M1[:,8]     # time step
+        delta_99  = M1[:,9]     # boundary layer thickness delta_99 for a TTBL
+        power_in  = M1[:,11]    # power input
+        a_fact    = M1[:,12]    # Reynolds analogy factor
+        
+        # We need to read every umean file for a specific realization 
+        
+        # First time-step is skipped at the moment for the reading of umean
+        ts1 = ts[1]
+        
+        # The increment can be read from the input file
+        
+        
+        # Last time-step
+        tsn = ts[-1]
+        
+        for j in range(ts1, tsn, 
         
         """
         Initialize arrays for sum

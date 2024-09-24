@@ -61,6 +61,7 @@ def read_input_files(filename1,filename2):
         ilast      = lines[31]
         numscalar  = lines[35]
         ioutput    = lines[73]
+        ioutput_cf = lines[74]
         iswitch_wo = lines[90]
     
         # Removing characters in front of the extracted strings and the comments:
@@ -111,6 +112,9 @@ def read_input_files(filename1,filename2):
         
         ioutput    = ioutput.split('!')[0]
         ioutput    = ioutput.split('=')[-1].strip()
+        
+        ioutput_cf = ioutput_cf.split('!')[0]
+        ioutput_cf = ioutput_cf.split('=')[-1].strip()
     
         iswitch_wo = iswitch_wo.split('!')[0]
         iswitch_wo = iswitch_wo.split('=')[-1].strip()
@@ -186,7 +190,7 @@ def read_input_files(filename1,filename2):
     # Return to main program with extracted parameters
     return (
             # From 'input.i3d'
-            itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo,
+            itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, ioutput_cf, iswitch_wo,
             
             # From 'post.prm' 
             add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
