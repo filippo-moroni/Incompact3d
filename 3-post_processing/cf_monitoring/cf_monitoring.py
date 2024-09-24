@@ -172,39 +172,6 @@ elif itype == 13:
     # Calculate total friction coefficient
     cf_tot = 2.0 * (sh_veltot / uwall)**2
     
-    
-    
-    #!--------------------------------------------------------------------------------------------------------!
-
-    # First time-step is skipped at the moment for the reading of umean
-    ts1 = ts[1]
-                
-    # Last time-step
-    tsn = ts[-1]
-    
-    # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified'
-    nsaving = len(ts) - 2
-
-    # Initialize the mean streamwise velocity profile array
-    umean = np.zeros(ny, nr)
-    
-    umean_realiz = np.zeros(ny, nsaving)
-           
-    """
-    Do loop from the first saving of umean (excluding the IC) to the last one, with increment ioutput_cf
-    that is read from the input file 'input.i3d'.
-    """
-    for j in range(ts1, tsn, ioutput_cf):
-        
-        # Do loop over different realizations
-        for i in range(1, nr + 1, 1):
-               
-            # Read of 'umean' data from 'data/umean' folder
-            umean[:,i] = np.loadtxt(f'data_r{i:01d}/umean/umean-ts{j:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
-            
-            # Summing into a sum array
-            umean_realiz[:,j] = umean[:,j] + umean[:,i] 
-
     #!--------------------------------------------------------------------------------------------------------!
     
     print(">>> Saving 'cf_history_realiz.txt' in data_post/cf_monitoring/.")
