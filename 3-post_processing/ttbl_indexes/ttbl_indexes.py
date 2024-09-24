@@ -9,8 +9,10 @@
 !              We are also calculating non-dimensional grid spacings and 
 !              domain dimensions at each snapshots' saving. Finally, we 
 !              calculate minimum Kolmogorov time scale and viscous time unit.
-! ANNOTATIONS: We are assuming unitary molecular Prandtl number for the 
-!              calculation of the analogy factor of the Reynolds analogy.                        
+! ANNOTATIONS: 1) We are assuming unitary molecular Prandtl number for the 
+!                 calculation of the analogy factor of the Reynolds analogy.
+!              2) We are calculating these quantities through snapshots.
+!                 For a complete temporal evolution, use 'cf_monitoring.py'.                         
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -124,8 +126,8 @@ t_nu          = np.zeros(ns)
 
 # Reading of yp coordinates
 yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-y0 = yp[0]   # First element of yp vector (y = 0)
-yn = yp[-1]  # Last  element of yp vector (y = Ly, height of the domain)
+y0 = yp[0]    # First element of yp vector (y = 0)
+yn = yp[-1]   # Last  element of yp vector (y = Ly, height of the domain)
 
 #!--------------------------------------------------------------------------------------!
 
