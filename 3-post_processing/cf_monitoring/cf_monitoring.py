@@ -177,6 +177,7 @@ elif itype == 13:
     with open('data_post/cf_monitoring/cf_history_realiz.txt', 'w') as f:
         f.write(f"{'sh_veltot (O(6))':>{pp.c_w}}, " +
                 f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
+                f"{'cf_tot (O(6))':>{pp.c_w}}, "    +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
                 f"{'delta_99':>{pp.c_w}}, "         +
                 f"{'Re_tau_x':>{pp.c_w}}, "         +
@@ -187,6 +188,7 @@ elif itype == 13:
         for j in range(0, len(time_unit)):
             f.write(f"{sh_veltot[j]:{pp.fs6}}, "    +
                     f"{sh_velx[j]:{pp.fs6}}, "      +
+                    f"{cf_tot[j]:{pp.fs8}}, "       +     
                     f"{cfx[j]:{pp.fs8}}, "          +
                     f"{delta_99[j]:{pp.fs}}, "      +
                     f"{re_taux[j]:{pp.fs}}, "       +
