@@ -75,6 +75,9 @@ print(" File 'data_post/ttbl_indexes/time_scales_evolution.txt':")
 print("  - minimum Kolmogorov time scale;")
 print("  - viscous time unit.")
 print()
+print(" The calculated quantities are checked at each snapshot only.")
+print(" For a complete temporal evolution, use 'cf_monitoring.py'.")
+print()
 
 #!--------------------------------------------------------------------------------------!
 
@@ -287,7 +290,7 @@ print()
 # Integral statistics and flow indexes
 with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) thickness parameters, \n')    
-    f.write('shear quantities and Reynolds analogy factor.\n')        
+    f.write('shear quantities and Reynolds analogy factor at each snapshot.\n')        
     f.write('\n')
     f.write(f'Flowcase: {add_string}.\n')
     f.write('\n')    
@@ -329,7 +332,8 @@ with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
 # Non-dimensional grid spacings and domain dimensions (nd: non-dimensional)
 with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) non-dimensional\n')    
-    f.write('grid spacings and domain dimensions. Adimensionalization in viscous units (^+).\n')        
+    f.write('grid spacings and domain dimensions at each snapshot.\n')
+    f.write('Adimensionalization in viscous units (^+) with the total shear velocity.\n')        
     f.write('\n')
     f.write(f'Flowcase: {add_string}.\n')
     f.write('\n') 
@@ -367,13 +371,13 @@ with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
 # Time scales (minimum Kolmogorov time scale and viscous time unit)
 with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) minimum\n')    
-    f.write('Kolmogorov time scale and viscous time unit.\n')        
+    f.write('Kolmogorov time scale and viscous time unit at each snapshot.\n')        
     f.write('\n')
     f.write(f'Flowcase: {add_string}.\n')
     f.write('\n') 
     f.write('Abbreviations:\n')
     f.write(' - tau_eta:  (minimum) Kolmogorov time scale;\n')
-    f.write(' - t_nu:     viscous time unit.\n')
+    f.write(' - t_nu:     viscous time unit (based on total shear velocity).\n')
     f.write(' - Re_tau_x: streamwise friction Reynolds number.\n')
     f.write(' - Re_tau:   (total) friction Reynolds number.\n')
     f.write('\n')
