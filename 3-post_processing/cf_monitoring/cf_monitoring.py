@@ -125,7 +125,8 @@ elif itype == 13:
         """
         Initialize arrays for sum
         Shear velocities, sq_sum: sum of the square, gradient multiplied by kinematic viscosity.
-        This is made in order to recover the exact arithmetic average (that is between gradients).
+        This is made in order to recover the exact arithmetic average 
+        (that is between gradients) (summation between linear quantities).
         """
         if i == 1:
 
