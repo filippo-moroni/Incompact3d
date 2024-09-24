@@ -106,7 +106,7 @@ elif switcher == 1:
     field_label   = r"$\omega_x D/U_w$"
     field_ticks   = [-0.5,0.5]
     xlabel        = r'$z/D$'
-    pad_cbar_lab  = -20
+    pad_cbar_lab  = -18
     size_cbar     = '5%'
     maj_ticks_int = 10.0
     
