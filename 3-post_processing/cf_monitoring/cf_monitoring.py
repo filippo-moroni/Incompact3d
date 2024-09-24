@@ -203,9 +203,17 @@ elif itype == 13:
 
     """
     Maximum total and streamwise shear velocities
-    Excluding first 4 savings to avoid the IC peak of cf_tot.
+    Excluding first 5 savings to avoid the IC peak of cf_tot.
+    The same index is used to plot, in order to match what we plot
+    to what we use to find the cf maximum.
     """
-    max_sh_veltot = np.max(sh_veltot[4:]) 
+    
+    # Lower index cf (to avoid first points in plotting and when we find the maximum) 
+    # (l: lower; i: index)
+    # First 5 points avoided in this manner.
+    licf = 4
+    
+    max_sh_veltot = np.max(sh_veltot[licf:]) 
     max_sh_velx   = np.max(sh_velx)
 
     # Related viscous lengths
@@ -415,7 +423,7 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction coefficient
-    ax.plot(re_tau[5:], cf_tot[5:], color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(re_tau[licf:], cf_tot[licf:], color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
