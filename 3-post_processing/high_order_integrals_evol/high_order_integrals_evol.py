@@ -38,18 +38,13 @@ from set_flow_parameters import set_flow_parameters
 
 # Print to screen what the program does
 
-print("!--- 'cf_monitoring.py' ---!")
+print("!--- 'high_order_integrals_evol.py' ---!")
 print()
-print(" Calculation and plotting of:")
-print()
-print(" Channel: ")
-print(" - streamwise friction coefficient vs time ")
-print("   and its mean value calculation.         ")
+print(" Calculation of:")
 print()
 print(" TTBL: ")
-print(" - streamwise friction coefficient vs time;")
-print(" - friction Reynolds number vs time;       ")
-print(" - streamwise friction coefficient vs friction Reynolds number.")                
+print(" - displacement thickness, delta*;")
+print(" - momentum thickness, theta.")
 print()
 
 #!--------------------------------------------------------------------------------------!
@@ -75,24 +70,25 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 # to be completed
 
 # First time-step is skipped at the moment for the reading of umean
-ts1 = ts[1]
+ts1 = ioutput_cf
                 
 # Last time-step
-tsn = ts[-1]
+tsn = ilast
     
 # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified'
-nsaving = len(ts) - 2
+nsavings = (tsn - ts1) // ioutput_cf + 1
 
-# Initialize the mean streamwise velocity profile array
+# Initialize the mean streamwise velocity profile array (function of y and specific flow realization)
 umean = np.zeros(ny, nr)
-    
-umean_realiz = np.zeros(ny, nsaving)
+
+# Initialize the array to sum the mean streamwise velocity profile (function of y and of time)    
+umean_realiz = np.zeros(ny, nsavings)
            
 """
 Do loop from the first saving of umean (excluding the IC) to the last one, with increment ioutput_cf
 that is read from the input file 'input.i3d'.
 """
-for j in range(ioutput_cf, ilast, ioutput_cf):
+for j in range(ts1, tsn, ioutput_cf):
         
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
@@ -100,8 +96,17 @@ for j in range(ioutput_cf, ilast, ioutput_cf):
         # Read of 'umean' data from 'data/umean' folder
         umean[:,i] = np.loadtxt(f'data_r{i:01d}/umean/umean-ts{j:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
             
-        # Summing into a sum array
-        umean_realiz[:,j] = umean[:,j] + umean[:,i] 
+        # Summing into a sum array for different realizations
+        umean_realiz[:,j] = umean[:,j] + umean[:,i]
+    
+    # Here, we can calculate the thickness parameters
+    
+    # ...
+    
+
+# Save to file
+
+# Plot (optionally) (we can call this function before cf_monitoring so we can read data later and plot with different available quantities)
 
 print()
 print(">>> End.")
