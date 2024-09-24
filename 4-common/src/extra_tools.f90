@@ -30,7 +30,7 @@ subroutine print_cf(ux,uz,phi)
   use decomp_2d
   
   use param
-  use variables,     only : nx,ny,nz,yp,numscalar,sc
+  use variables, only : nx,ny,nz,yp,numscalar,sc
       
   implicit none
  
@@ -652,8 +652,7 @@ end subroutine calculate_bl_thick
 ! DESCRIPTION: Calculate the streamwise velocity profile and print it
 !              runtime. Used for TTBL to calculate high order integrals  
 !              of BL thickness parameters (delta*, theta) 
-!              during post_processing. 
-!              It is called inside 'print_cf'.
+!              during post_processing. It is called inside 'print_cf'.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!       
 subroutine print_umean(ux)
@@ -662,25 +661,25 @@ subroutine print_umean(ux)
   use decomp_2d_mpi
   use decomp_2d
   
-  use var,         only : ux2   
   use MPI
-    
-  use param,       only : zero
-  use variables,   only : nx, ny, nz
+  
+  use var,       only : ux2     
+  use param,     only : zero
+  use variables, only : nx, ny, nz
     
   implicit none
   
   ! Inputs
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
      
-  ! Local variables 
+  ! Local variables
+  real(mytype)                      :: den 
   real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
-  real(mytype)                      :: temp, den
   integer                           :: code,i,j,k,iunit
-  character(99) :: filename
+  character(99)                     :: filename
 
   ! Write filename 
-  write(filename, "('data/umean/umean-',I7.7,'.txt')") itime
+  write(filename, "('data/umean/umean-ts',I7.7,'.txt')") itime
   
   ! Set again variables to zero
   u1meanH1 = zero
