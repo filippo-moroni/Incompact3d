@@ -412,15 +412,15 @@ if itype == 13:
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
-    # Streamwise friction coefficient
-    ax.plot(re_tau, cf_tot, color='C0', linestyle='-', linewidth=pp.lw)
+    # Friction coefficient
+    ax.plot(re_tau[5:], cf_tot[5:], color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
     
     # Axes labels
     ax.set_xlabel(r'$Re_\tau$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$c_{f x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$c_{f}$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Axes ranges
     xliminf = np.min(re_tau)
