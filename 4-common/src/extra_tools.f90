@@ -10,6 +10,7 @@
 !              - 'calculate_scalar_grad_wall'
 !              - 'calculate_ubulk' 
 !              - 'calculate_bl_thick'
+!              - 'print_umean'
 !              - 'write_scalar_plane_z'
 !              - 'write_vortx_plane_x'.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
@@ -51,6 +52,9 @@ subroutine print_cf(ux,uz,phi)
   
   ! TTBL
   if(itype .eq. itype_ttbl) then
+  
+      ! Write mean streamwise velocity profile in case of a TTBL
+      call print_umean(ux)
 
       ! Shear velocity bottom wall
       call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
@@ -291,7 +295,7 @@ subroutine print_cf(ux,uz,phi)
           close(iunit)
           
   end if
-               
+                 
 end subroutine print_cf
 
 !-----------------------------------------------------------------------------!
@@ -643,6 +647,76 @@ subroutine calculate_bl_thick(ux,delta_99,counter)
   end if
   
 end subroutine calculate_bl_thick
+
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculate the streamwise velocity profile and print it
+!              runtime. Used for TTBL to calculate high order integrals  
+!              of BL thickness parameters (delta*, theta) 
+!              during post_processing. 
+!              It is called inside 'print_cf'.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!       
+subroutine print_umean(ux)
+  
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  
+  use var,         only : ux2   
+  use MPI
+    
+  use param,       only : zero
+  use variables,   only : nx, ny, nz
+    
+  implicit none
+  
+  ! Inputs
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
+     
+  ! Local variables 
+  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
+  real(mytype)                      :: temp, den
+  integer                           :: code,i,j,k,iunit
+  character(99) :: filename
+
+  ! Write filename 
+  write(filename, "('data/umean/umean-',I7.7,'.txt')") itime
+  
+  ! Set again variables to zero
+  u1meanH1 = zero
+  u1meanHT = zero
+    
+  ! Denominator of the divisions
+  den = real(nx*nz,mytype)
+      
+  ! Transpose data to y-pencils 
+  call transpose_x_to_y(ux,ux2)
+  
+  ! Summation over x and z directions
+  do k=1,ysize(3)
+      do i=1,ysize(1)
+          do j=1,ysize(2)          
+              u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/den                               
+          enddo          
+      enddo
+  enddo
+
+  ! Summation over all MPI processes
+  call MPI_REDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  
+  ! Print mean velocity profile
+  if(nrank .eq. 0) then
+            
+      ! Open and write the mean velocity profile
+      open(newunit=iunit, file=filename, status="unknown", form="formatted")
+      do j=1,ny
+          write(iunit,*) u1meanHT(j)
+      enddo
+      close(iunit)
+                
+  end if
+  
+end subroutine print_umean
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Write an instantaneous plane with z-dir. normal of the scalar 

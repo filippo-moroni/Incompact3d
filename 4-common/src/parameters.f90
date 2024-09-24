@@ -313,20 +313,27 @@ subroutine parameter(input_i3d)
      if (iscalar.eq.1) xcst_sc = xcst / sc
   endif
   
+  !--- Creating folders ---!
+  
   ! Creating /data folder
-  if (nrank==0) call execute_command_line('mkdir -p data')
+  if (nrank == 0) call execute_command_line('mkdir -p data')
   
   ! Creating /restart_info folder inside /data
-  if (nrank==0) call execute_command_line('mkdir -p data/restart_info')
+  if (nrank == 0) call execute_command_line('mkdir -p data/restart_info')
   
   ! Creating /monitoring folder inside /data
-  if (nrank==0) call execute_command_line('mkdir -p data/monitoring')
+  if (nrank == 0) call execute_command_line('mkdir -p data/monitoring')
   
   ! Creating /planes folder inside /data
-  if (nrank==0) call execute_command_line('mkdir -p data/planes')
+  if (nrank == 0) call execute_command_line('mkdir -p data/planes')
   
   ! Creating /checkpoints folder inside /data
-  if (nrank==0) call execute_command_line('mkdir -p data/checkpoints')
+  if (nrank == 0) call execute_command_line('mkdir -p data/checkpoints')
+  
+  ! Creating /umean folder inside /data if we are simulating a TTBL
+  if (nrank == 0 .and. itype .eq. itype_ttbl) call execute_command_line('mkdir -p data/umean')
+  
+  !------------------------!
   
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
