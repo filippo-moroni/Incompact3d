@@ -181,6 +181,7 @@ elif itype == 13:
                 f"{'cf_tot (O(6))':>{pp.c_w}}, "    +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
                 f"{'delta_99':>{pp.c_w}}, "         +
+                f"{'Re_tau':>{pp.c_w}}, "           +    
                 f"{'Re_tau_x':>{pp.c_w}}, "         +
                 f"{'P_in':>{pp.c_w}}, "             +
                 f"{'A_fact':>{pp.c_w}}, "           +
@@ -192,6 +193,7 @@ elif itype == 13:
                     f"{cf_tot[j]:{pp.fs8}}, "       +     
                     f"{cfx[j]:{pp.fs8}}, "          +
                     f"{delta_99[j]:{pp.fs}}, "      +
+                    f"{re_tau[j]:{pp.fs}}, "        +
                     f"{re_taux[j]:{pp.fs}}, "       +
                     f"{power_in[j]:{pp.fs6}}, "     +
                     f"{a_fact[j]:{pp.fs}}, "        +
