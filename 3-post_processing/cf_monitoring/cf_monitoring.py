@@ -166,6 +166,9 @@ elif itype == 13:
     
     # Calculate longitudinal friction coefficient
     cfx = 2.0 * (sh_velx / uwall)**2
+    
+    # Calculate total friction coefficient
+    cf_tot = 2.0 * (sh_veltot / uwall)**2
 
     print(">>> Saving 'cf_history_realiz.txt' in data_post/cf_monitoring/.")
     print()
@@ -410,7 +413,7 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Streamwise friction coefficient
-    ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(re_tau, cf_tot, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
