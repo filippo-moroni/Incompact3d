@@ -508,11 +508,12 @@ if itype == 13:
     ax.plot(re_mom_t, re_disp_t, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
+    # (displacement thickness multiplied by trip Reynolds number, that is the same in both cases).
     ax.plot(retheta_gboga, disp_t_gboga*re, color='C1', linestyle='-', linewidth=pp.lw)
     
     # Axes labels
     ax.set_xlabel(r'$Re_\theta$',     fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$Re_\{delta^*}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$Re_{\delta^*}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Axes ranges
     xliminf = np.min(re_mom_t)
