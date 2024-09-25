@@ -114,6 +114,7 @@ elif switcher == 1:
 os.makedirs('images' + field_name, mode=0o777, exist_ok=True)
     
 # Extent of the image (dimensions of the domain)
+# (if too large, we can try to rescale through a factor that multiplies the array)
 extent = [0.0, Lxi, 0.0, Ly]
 
 # Limits for axes (used in 'set_plot_settings')
