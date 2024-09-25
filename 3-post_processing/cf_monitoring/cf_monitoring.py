@@ -3,10 +3,12 @@
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this script, we perform:                              
 !              - plotting of streamwise friction coefficient vs time       
-!                and its mean value calculation (Channel).                
+!                and its mean value calculation (Channel);                
 !              - plotting of streamwise friction coefficient vs time,     
 !                friction Reynolds number vs time and streamwise          
-!                friction coefficient vs friction Reynolds number (TTBL). 
+!                friction coefficient vs friction Reynolds number (TTBL);
+!              - calculation with an external subroutine of 6th order 
+!                integrals of TTBL thickness parameters (delta*, theta).
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -37,6 +39,9 @@ from read_files import read_input_files, read_ref_data_temp_evol
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
+# Import function to calculate TTBL thickness parameters at the 6th order
+from cf_monitoring_subs import calculate_thickness_param
+
 #!--------------------------------------------------------------------------------------!
 
 # Print to screen what the program does
@@ -52,7 +57,8 @@ print()
 print(" TTBL: ")
 print(" - streamwise friction coefficient vs time;")
 print(" - friction Reynolds number vs time;       ")
-print(" - streamwise friction coefficient vs friction Reynolds number.")                
+print(" - streamwise friction coefficient vs friction Reynolds number;")
+print(" - 6th order integrals of TTBL thickness parameters (delta*, theta).")                
 print()
 
 #!--------------------------------------------------------------------------------------!
@@ -386,15 +392,15 @@ save_and_show_plot('cfx_vs_time', add_string=add_string, subfolder='time_evoluti
 if itype == 13:
 
     print()
-    print(">>> Plotting friction Reynolds number as function of time.")
-    print(">>> Reference data Cimarelli et al. (2024a).")
+    print(">>> Plotting (streamwise) friction Reynolds number as function of time.")
+    print(">>> Reference data Cimarelli et al. (2024a), data with total shear velocity.")
     print()
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction Reynolds number
-    ax.plot(time_unit, re_tau, color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(time_unit, re_taux, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a))
     ax.plot(t_gboga, retau_vs_time_gboga, color='C1', linestyle='-', linewidth=pp.lw)
@@ -423,15 +429,15 @@ if itype == 13:
     #!--------------------------------------------------------------------------------------!
 
     print()
-    print(">>> Plotting streamwise friction coefficient as function of friction Reynolds number.")
-    print(">>> Reference data Cimarelli et al. (2024a).")
+    print(">>> Plotting streamwise friction coefficient as function of (streamwise) friction Reynolds number.")
+    print(">>> Reference data Cimarelli et al. (2024a), data with total shear velocity.")
     print()
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction coefficient
-    ax.plot(re_tau[licf:], cf_tot[licf:], color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(re_taux[licf:], cfx[licf:], color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
