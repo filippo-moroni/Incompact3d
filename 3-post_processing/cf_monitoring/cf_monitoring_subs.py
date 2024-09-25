@@ -1,6 +1,40 @@
 
 """
 !-----------------------------------------------------------------------------!
+! DESCRIPTION: Subroutine(s) used in 'cf_monitoring.py'.  
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+# Libraries
+import sys
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import InterpolatedUnivariateSpline
+
+# Get the current directory
+current_dir = os.path.dirname(__file__)
+
+# Add the path to the 'python_common' directory relative to the current directory 
+config_path = os.path.abspath(os.path.join(current_dir, '../../4-common', 'python_common'))
+sys.path.append(config_path)
+
+# Import the plotting_params module
+import plot_params as pp
+
+# Import functions to setting up, save and show plots a
+from plot_subs import set_plot_settings, save_and_show_plot
+
+# Import function to read 'input.i3d' and 'post.prm' files and reference data
+from read_files import read_input_files, read_ref_data_temp_evol
+
+# Import function to setup flow parameters 
+from set_flow_parameters import set_flow_parameters
+
+
+"""
+!-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this subroutine we perform calculation of 6th order 
 !              accurate calculations of integrals of TTBL thickness 
 !              parameters using 'umean' files printed at the same time as 
@@ -8,9 +42,6 @@
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
-
-# Libraries
-from scipy.interpolate import InterpolatedUnivariateSpline
 
 def calculate_thickness_param():
 

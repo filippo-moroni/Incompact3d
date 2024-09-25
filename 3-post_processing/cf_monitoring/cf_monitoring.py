@@ -98,7 +98,7 @@ uwall, nu, twd = set_flow_parameters(itype, re)
 # Reading of grid points
 y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
-# Channel (only 1 realization generally)
+# Channel (only 1 flow realization generally)
 if itype == 3:
    
     # Read cf data from /data folder
