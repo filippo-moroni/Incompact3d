@@ -11,8 +11,9 @@
 !              calculate minimum Kolmogorov time scale and viscous time unit.
 ! ANNOTATIONS: 1) We are assuming unitary molecular Prandtl number for the 
 !                 calculation of the analogy factor of the Reynolds analogy.
-!              2) We are calculating these quantities through snapshots.
-!                 For a complete temporal evolution, use 'cf_monitoring.py'.                         
+!              2) We are calculating these quantities through averages of
+!                 snapshots. For a complete temporal evolution, 
+!                 use 'cf_monitoring.py'.                         
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -48,9 +49,9 @@ from ttbl_subs import calculate_ttbl_delta_99
 
 # Print to screen what the program does
 
-print("!--- 'ttbl_indexes.py' ---!")
+print("!--- 'ttbl_indexes_snap.py' ---!")
 print()
-print(" File 'data_post/ttbl_indexes/thickness_params_evolution.txt':")
+print(" File 'data_post/ttbl_indexes_snap/thickness_params_evolution.txt':")
 print("  - delta_99;")
 print("  - displacement thickness, delta*;")
 print("  - momentum thickness, theta;")
@@ -66,12 +67,12 @@ print(" This function requires at least one realization folder with")
 print(" snapshots' headers in order to read time unit t.")
 print()
 print()
-print(" File 'data_post/ttbl_indexes/nd_mesh_evolution.txt':")
+print(" File 'data_post/ttbl_indexes_snap/nd_mesh_evolution.txt':")
 print("  - non-dimensional mesh spacings;")
 print("  - non-dimensional domain dimensions.")
 print()
 print()
-print(" File 'data_post/ttbl_indexes/time_scales_evolution.txt':")
+print(" File 'data_post/ttbl_indexes_snap/time_scales_evolution.txt':")
 print("  - minimum Kolmogorov time scale;")
 print("  - viscous time unit.")
 print()
@@ -89,7 +90,7 @@ print()
 #!--------------------------------------------------------------------------------------!
 
 # Create the folder to store the results
-os.makedirs('data_post/ttbl_indexes', mode=0o777, exist_ok=True)
+os.makedirs('data_post/ttbl_indexes_snap', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -129,8 +130,12 @@ t_nu          = np.zeros(ns)
 
 # Reading of yp coordinates
 yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-y0 = yp[0]    # First element of yp vector (y = 0)
-yn = yp[-1]   # Last  element of yp vector (y = Ly, height of the domain)
+
+# First element of yp vector (y = 0)
+y0 = yp[0]
+
+# Last  element of yp vector (y = Ly, height of the domain)    
+yn = yp[-1]   
 
 #!--------------------------------------------------------------------------------------!
 
@@ -187,7 +192,7 @@ for i in range(file1, filen + icrfile, icrfile):
     # Calculate BL thickness delta_99 for a TTBL and its related index
     (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(umean, yp) 
     
-    # Copy the result in the temporal array
+    # Copy the result in the array for the different snapshots
     delta_99[ii] = bl_thick
 
     # Calculate the displacement thickness delta*
@@ -288,7 +293,7 @@ print(">>> Writing to .txt file.")
 print()
 
 # Integral statistics and flow indexes
-with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
+with open('data_post/ttbl_indexes_snap/thickness_params_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) thickness parameters, \n')    
     f.write('shear quantities and Reynolds analogy factor at each snapshot.\n')        
     f.write('\n')
@@ -330,7 +335,7 @@ with open('data_post/ttbl_indexes/thickness_params_evolution.txt', 'w') as f:
                 f"{time_unit[j]:{pp.fs}}\n"  )
                 
 # Non-dimensional grid spacings and domain dimensions (nd: non-dimensional)
-with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
+with open('data_post/ttbl_indexes_snap/nd_mesh_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) non-dimensional\n')    
     f.write('grid spacings and domain dimensions at each snapshot.\n')
     f.write('Adimensionalization in viscous units (^+) with the total shear velocity.\n')        
@@ -369,7 +374,7 @@ with open('data_post/ttbl_indexes/nd_mesh_evolution.txt', 'w') as f:
                 f"{re_tau[j]:{pp.fs}}\n"        )
                 
 # Time scales (minimum Kolmogorov time scale and viscous time unit)
-with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
+with open('data_post/ttbl_indexes_snap/time_scales_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) minimum\n')    
     f.write('Kolmogorov time scale and viscous time unit at each snapshot.\n')        
     f.write('\n')
@@ -398,7 +403,7 @@ with open('data_post/ttbl_indexes/time_scales_evolution.txt', 'w') as f:
 # Print that calculations have been completed
 print(">>> Done!")
 print()
-print(">>> Results saved in: data_post/ttbl_indexes.")
+print(">>> Results saved in: data_post/ttbl_indexes_snap.")
 print()
            
 #!---------------------------------------------------------!
