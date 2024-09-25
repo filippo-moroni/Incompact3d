@@ -283,15 +283,15 @@ end subroutine print_cf
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate streamwise and spanwise shear velocities
 !              (if squared, they correspond to the mean wall-shear stress
-!              along a specific direction).
-!              Important note: these components cannot be used to calculate
-!              the total shear velocity. We must obtain first wall-shear 
-!              stress components (x and z).  
+!              along a specific direction). 
 !              - Used in 'BC-Temporal-TBL.f90' and in 'BC-Channel-flow.f90'
 !                for the spanwise wall oscillations with feedback control 
 !                enabled. 
 !              - Used to print cf coefficients and shear velocities to an 
 !                overall .txt file for time evolution check.    
+! ANNOTATIONS: These components cannot be used to calculate
+!              the total shear velocity as a vector magnitude. 
+!              We must obtain first wall-shear stress components (x and z).
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 subroutine calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
