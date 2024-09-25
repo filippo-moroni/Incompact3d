@@ -307,7 +307,7 @@ end if
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,vpremean, &
                                    phi1mean,phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientp,mean_gradientx,mean_gradientz,mean_gradphi)
+     if (post_vort) call stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientx,mean_gradientz,mean_gradphi)
      
      if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
    
@@ -412,7 +412,6 @@ end if
               vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/den 
               
               ! Mean gradients
-              mean_gradientpH1(j)=mean_gradientpH1(j)+mean_gradientp(i,j,k)/den
               mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/den 
               mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den 
               mean_gradphiH1  (j)=mean_gradphiH1  (j)+mean_gradphi  (i,j,k)/den                   
@@ -500,7 +499,6 @@ end if
       call MPI_ALLREDUCE(vortzmeanH1,vortzmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)  
      
       ! Mean gradients
-      call MPI_ALLREDUCE(mean_gradientpH1,mean_gradientpHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code) 
       call MPI_ALLREDUCE(mean_gradientxH1,mean_gradientxHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(mean_gradientzH1,mean_gradientzHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(mean_gradphiH1,  mean_gradphiHT,  ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -702,15 +700,13 @@ end if
         
         ! Header
         write(iunit, '(7(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
-                                         'dU_par/dy'    , ',', 'dU/dy'        , ',', 'dW/dy',         ',', &
-                                         'dPhi/dy'   
+                                         'dU/dy'        , ',', 'dW/dy',         ',', 'dPhi/dy'   
         
         do j = 1, ysize(2) 
                 
             write(iunit, '(7(F13.9, A1, 1X))') vortxmeanHT(j),      ',',  &
                                                vortymeanHT(j),      ',',  &       
                                                vortzmeanHT(j),      ',',  &
-                                               mean_gradientpHT(j), ',',  &
                                                mean_gradientxHT(j), ',',  &
                                                mean_gradientzHT(j), ',',  &
                                                mean_gradphiHT(j)      
@@ -1019,8 +1015,7 @@ end if
      write(*,*) '"vort_stats" file(s):'
      write(*,*) ' '
      write(*,*) 'mean[omega_x], mean[omega_y], mean[omega_z]'
-     write(*,*) 'dU_par/dy,     dU/dy,         dW/dy'
-     write(*,*) 'dPhi/dy'
+     write(*,*) 'dU/dy,         dW/dy,         dPhi/dy'
      write(*,*) ' '    
      endif
      
