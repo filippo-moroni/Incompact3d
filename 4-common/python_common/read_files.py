@@ -135,6 +135,7 @@ def read_input_files(filename1,filename2):
         ilast      = int(ilast)
         numscalar  = int(numscalar)
         ioutput    = int(ioutput)
+        ioutput_cf = int(ioutput_cf)
         iswitch_wo = int(iswitch_wo)
     
     # Opening of 'post.prm' file

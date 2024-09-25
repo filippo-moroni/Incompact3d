@@ -76,10 +76,10 @@ def calculate_thickness_param():
     nsavings = (tsn - ts1) // ioutput_cf + 1
 
     # Initialize the mean streamwise velocity profile array (function of y and specific flow realization)
-    umean = np.zeros(ny, nr)
+    umean = np.zeros((ny, nr))
 
     # Initialize the array to sum the mean streamwise velocity profile (function of y and of time)    
-    umean_realiz = np.zeros(ny, nsavings)
+    umean_realiz = np.zeros((ny, nsavings))
 
     # Initialize arrays for TTBL thickness parameters
     disp_t = np.zeros(nsavings)   # displacement thickness, delta*
@@ -89,16 +89,20 @@ def calculate_thickness_param():
     Do loop from the first saving of umean (excluding the IC) to the last one, with increment ioutput_cf
     that is read from the input file 'input.i3d'.
     """
-    for j in range(ts1, tsn, ioutput_cf):
+
+    for j in range(0, nsavings, 1):
+      
+        # Calculate ts to open 'umean-ts' file (ts_iter: time-step for iterations)
+        ts_iter = ts1 + j*ioutput_cf
         
         # Do loop over different realizations
-        for i in range(1, nr + 1, 1):
+        for i in range(1, nr+1, 1):
                
             # Read of 'umean' data from 'data/umean' folder
-            umean[:,i] = np.loadtxt(f'data_r{i:01d}/umean/umean-ts{j:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
+            umean[:,i-1] = np.loadtxt(f'data_r{i:01d}/umean/umean-ts{ts_iter:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
             
             # Summing into a sum array for different realizations
-            umean_realiz[:,j] = umean_realiz[:,j] + umean[:,i]
+            umean_realiz[:,j] = umean_realiz[:,j] + umean[:,i-1]
     
         #!--- Calculation of thickness parameters ---!
 
