@@ -65,15 +65,9 @@ def calculate_thickness_param():
     uwall, nu, twd = set_flow_parameters(itype, re)
                           
     #!--------------------------------------------------------------------------------------!
-
-    # First time-step is skipped at the moment for the reading of umean
-    ts1 = ioutput_cf
-                
-    # Last time-step
-    tsn = ilast
-    
+                    
     # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified'
-    nsavings = (tsn - ts1) // ioutput_cf + 1
+    nsavings = ilast // ioutput_cf + 1
 
     # Initialize the mean streamwise velocity profile array (function of y and specific flow realization)
     umean = np.zeros((ny, nr))
@@ -86,14 +80,23 @@ def calculate_thickness_param():
     mom_t  = np.zeros(nsavings)   # momentum     thickness, theta
 
     """
-    Do loop from the first saving of umean (excluding the IC) to the last one, with increment ioutput_cf
+    Do loop from the first saving of umean (IC) to the last one, with increment ioutput_cf
     that is read from the input file 'input.i3d'.
     """
 
     for j in range(0, nsavings, 1):
       
-        # Calculate ts to open 'umean-ts' file (ts_iter: time-step for iterations)
-        ts_iter = ts1 + j*ioutput_cf
+        # Calculate ts to open 'umean-ts' file (ts_iter: time-step of the iterations)
+        
+        # ts of the initial condition is ts = 1
+        if j == 0:
+
+            ts_iter = 1
+
+        # All the other ts are multiples of 'output_cf'
+        else:
+
+            ts_iter = j*ioutput_cf
         
         # Do loop over different realizations
         for i in range(1, nr+1, 1):
@@ -119,12 +122,12 @@ def calculate_thickness_param():
         # Interpolation at the 6th order of accuracy with a spline of 5th order
         spl = InterpolatedUnivariateSpline(yp, int2, k=5)
         mom_t[j] = spl.integral(y0, yn)
+        
+    # Save to file
     
-# Save to file
 
-# Plot (optionally) (we can call this function before cf_monitoring so we can read data later and plot with different available quantities)
-
-
+    # Return to main program
+    return (disp_t, mom_t)
 
 
 

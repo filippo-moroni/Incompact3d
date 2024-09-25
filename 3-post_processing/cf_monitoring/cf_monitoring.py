@@ -291,7 +291,33 @@ elif itype == 13:
                 f"{t_nu_tot:{pp.fs6}}\n"         )
 
     # Call subroutine for calculations of 6th order TTBL thickness parameters    
-    calculate_thickness_param()
+    (disp_t, mom_t) = calculate_thickness_param()
+
+    print(">>> Saving 'high_order_integrals_evol.txt' in data_post/cf_monitoring/.")
+    print()
+
+    # Create the file and write  
+    with open('data_post/cf_monitoring/high_order_integrals_evol.txt', 'w') as f:
+        f.write(f"{'cf_tot':>{pp.c_w}}, "       +
+                f"{'cfx':>{pp.c_w}}, "          +
+                f"{'delta_99':>{pp.c_w}}, "     +
+                f"{'disp_t':>{pp.c_w}}, "       +
+                f"{'mom_t':>{pp.c_w}}, "        +  
+                f"{'Re_tau':>{pp.c_w}}, "       +    
+                f"{'Re_tau_x':>{pp.c_w}}, "     +
+                f"{'time_unit':>{pp.c_w}}\n"    )
+
+        for j in range(0, len(time_unit)):
+            f.write(f"{cf_tot[j]:{pp.fs8}}, "   +     
+                    f"{cfx[j]:{pp.fs8}}, "      +
+                    f"{delta_99[j]:{pp.fs}}, "  +
+                    f"{disp_t[j]:{pp.fs}}, "    +
+                    f"{mom_t[j]:{pp.fs}}, "     + 
+                    f"{re_tau[j]:{pp.fs}}, "    +
+                    f"{re_taux[j]:{pp.fs}}, "   +
+                    f"{time_unit[j]:{pp.fs}}\n" )
+
+
 
 #!--------------------------------------------------------------------------------------!
 
