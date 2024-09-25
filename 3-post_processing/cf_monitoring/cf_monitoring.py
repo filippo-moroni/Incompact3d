@@ -462,7 +462,7 @@ if itype == 13:
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
-    # Friction coefficient
+    # Friction coefficient (li_cf: lower index cf, to exclude the peak of IC)
     ax.plot(re_taux[li_cf:], cfx[li_cf:], color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
