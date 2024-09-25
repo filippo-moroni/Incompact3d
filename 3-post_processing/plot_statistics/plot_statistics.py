@@ -2,7 +2,7 @@
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this script, we perform plotting of statistics for TTBLs 
-!              and channel flow simulations:                 
+!              and Channel flow simulations:                 
 !               
 !               - mean statistics (mean[u], mean[w], 
 !                                  var[u], var[v], var[w],
@@ -18,6 +18,10 @@
 !               - non-dimensional grid spacings and domain dimensions;
 !               - time-scales (viscous time and Kolmogorov time scale).
 !                         
+!              For TTBLs, we are plotting averages at a specific time unit,
+!              while for channels we are dealing with the total averages
+!              (unique files, no time dependence).
+! 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
