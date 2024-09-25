@@ -290,6 +290,9 @@ elif itype == 13:
                 f"{t_nu_x:{pp.fs6}}, "           +
                 f"{t_nu_tot:{pp.fs6}}\n"         )
 
+    # Call subroutine for calculations of 6th order TTBL thickness parameters    
+    calculate_thickness_param()
+
 #!--------------------------------------------------------------------------------------!
 
 # Only for a channel
