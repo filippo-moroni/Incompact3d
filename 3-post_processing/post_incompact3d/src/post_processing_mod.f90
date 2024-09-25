@@ -81,12 +81,7 @@ module post_processing
   real(mytype), save, allocatable, dimension(:,:,:) :: vortxmean,vortymean,vortzmean
   real(mytype), save, allocatable, dimension(:)     :: vortxmeanH1,vortymeanH1,vortzmeanH1
   real(mytype), save, allocatable, dimension(:)     :: vortxmeanHT,vortymeanHT,vortzmeanHT
-  
-  ! Arrays for mean total parallel gradient (dU_parallel/dy) (p: parallel)
-  real(mytype), save, allocatable, dimension(:,:,:) :: mean_gradientp
-  real(mytype), save, allocatable, dimension(:)     :: mean_gradientpH1
-  real(mytype), save, allocatable, dimension(:)     :: mean_gradientpHT
-  
+    
   ! Arrays for mean streamwise gradient (dU/dy) (x: streamwise)
   real(mytype), save, allocatable, dimension(:,:,:) :: mean_gradientx
   real(mytype), save, allocatable, dimension(:)     :: mean_gradientxH1
@@ -156,9 +151,15 @@ contains
     
     call decomp_info_init(nxmsize, nymsize, nzmsize, ph)
         
-    !xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively. In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
+    ! xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. 
+    ! The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively. 
+    ! In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. 
+    ! So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
 
-    !xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system. Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, it is easier to know which process owns the plane if global index is used).
+    ! xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system.
+    ! Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. 
+    ! It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, 
+    ! it is easier to know which process owns the plane if global index is used).
     
     ! Allocate x-pencils arrays using global indices (temporary array is not necessary as x-pencil)
     call alloc_x(ux1, opt_global=.true.)  !global indices
@@ -431,15 +432,12 @@ contains
         allocate(vortzmeanHT(ysize(2))); vortzmeanHT = zero
       
         ! Mean gradients (velocity)
-        allocate(mean_gradientp(ysize(1),ysize(2),ysize(3))); mean_gradientp = zero       
         allocate(mean_gradientx(ysize(1),ysize(2),ysize(3))); mean_gradientx = zero
         allocate(mean_gradientz(ysize(1),ysize(2),ysize(3))); mean_gradientz = zero
        
-        allocate(mean_gradientpH1(ysize(2))); mean_gradientpH1 = zero
         allocate(mean_gradientxH1(ysize(2))); mean_gradientxH1 = zero
         allocate(mean_gradientzH1(ysize(2))); mean_gradientzH1 = zero
        
-        allocate(mean_gradientpHT(ysize(2))); mean_gradientpHT = zero
         allocate(mean_gradientxHT(ysize(2))); mean_gradientxHT = zero
         allocate(mean_gradientzHT(ysize(2))); mean_gradientzHT = zero
        
@@ -548,9 +546,8 @@ contains
   end if
   
   if (post_vort) then
-      vortxmean      = zero; vortymean      = zero; vortzmean      = zero
-      mean_gradientp = zero; mean_gradientx = zero; mean_gradientz = zero
-      mean_gradphi   = zero
+      vortxmean      = zero; vortymean      = zero; vortzmean    = zero
+      mean_gradientx = zero; mean_gradientz = zero; mean_gradphi = zero
   end if
   
   if (post_diss) then
@@ -610,14 +607,12 @@ contains
   if (post_vort) then
   
       ! Subdomains
-      vortxmeanH1      = zero; vortymeanH1      = zero; vortzmeanH1      = zero
-      mean_gradientpH1 = zero; mean_gradientxH1 = zero; mean_gradientzH1 = zero
-      mean_gradphiH1 = zero
+      vortxmeanH1      = zero; vortymeanH1      = zero; vortzmeanH1    = zero
+      mean_gradientxH1 = zero; mean_gradientzH1 = zero; mean_gradphiH1 = zero
   
       ! Total domain
-      vortxmeanHT      = zero; vortymeanHT      = zero; vortzmeanHT      = zero
-      mean_gradientpHT = zero; mean_gradientxHT = zero; mean_gradientzHT = zero
-      mean_gradphiHT   = zero
+      vortxmeanHT      = zero; vortymeanHT      = zero; vortzmeanHT    = zero
+      mean_gradientxHT = zero; mean_gradientzHT = zero; mean_gradphiHT = zero
   
   end if
   
