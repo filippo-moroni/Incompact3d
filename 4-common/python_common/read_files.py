@@ -221,7 +221,6 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     vort_x      = 0.0
     vort_y      = 0.0
     vort_z      = 0.0
-    mg_tot      = 0.0
     mg_x        = 0.0
     mg_z        = 0.0
     
@@ -261,17 +260,16 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     
         """
         Reading of vorticity components and mean gradients
-        (always performed since we need the mean gradient to calculate
-        shear velocity).
+        (always performed since we need the mean gradients to calculate
+        total shear velocity).
         
         """
         M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
         vort_x = M[:,0]
         vort_y = M[:,1]
         vort_z = M[:,2]
-        mg_tot = M[:,3]
-        mg_x   = M[:,4]
-        mg_z   = M[:,5]
+        mg_x   = M[:,3]
+        mg_z   = M[:,4]
     
         # Reading of the mean total dissipation
         if post_diss:
@@ -326,17 +324,16 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     
         """
         Reading of vorticity components and mean gradients
-        (always performed since we need the mean gradient to calculate
-        shear velocity).
+        (always performed since we need the mean gradients to calculate
+        total shear velocity).
         
         """
         M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
         vort_x = M[:,0]
         vort_y = M[:,1]
         vort_z = M[:,2]
-        mg_tot = M[:,3]
-        mg_x   = M[:,4]
-        mg_z   = M[:,5]
+        mg_x   = M[:,3]
+        mg_z   = M[:,4]
     
         # Reading of the mean total dissipation
         if post_diss:
@@ -367,7 +364,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
  
     return (
     mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
-    vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
+    vort_x, vort_y, vort_z, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
     snap_numb
