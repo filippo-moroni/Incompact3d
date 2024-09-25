@@ -23,7 +23,7 @@
 !              them in a .txt file (used for TTBLs and Channels).    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine print_cf(ux,uz,phi)
+subroutine print_cf(ux,uy,uz,phi)
   
   use decomp_2d_constants
   use decomp_2d_mpi
@@ -35,7 +35,7 @@ subroutine print_cf(ux,uz,phi)
   implicit none
  
   ! Inputs 
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux, uz
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux,uy,uz
   real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi
   
   ! Locals
@@ -69,7 +69,7 @@ subroutine print_cf(ux,uz,phi)
   if(itype .eq. itype_ttbl) then
   
       ! Write mean statistics runtime in case of a TTBL
-      call print_mean_stats(ux,uz)     
+      call print_mean_stats(ux,uy,uz)     
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -638,7 +638,7 @@ end subroutine calculate_bl_thick
 !              This subroutine is called inside 'print_cf'.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!       
-subroutine print_mean_stats(ux,uz)
+subroutine print_mean_stats(ux,uy,uz)
   
   use decomp_2d_constants
   use decomp_2d_mpi
@@ -646,20 +646,29 @@ subroutine print_mean_stats(ux,uz)
   
   use MPI
   
-  use var,       only : ux2, uz2     
-  use param,     only : zero, itime
-  use variables, only : nx, ny, nz
+  use var,       only : ux2,uy2,uz2     
+  use param,     only : zero,itime
+  use variables, only : nx,ny,nz
     
   implicit none
   
   ! Inputs
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux,uz
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
      
   ! Local variables
   real(mytype)                      :: den 
   
-  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT  ! mean streamwise velocity
-  real(mytype), dimension(ysize(2)) :: w1meanH1,w1meanHT  ! mean spanwise   velocity
+  ! Mean velocity profile
+  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT  ! mean streamwise  velocity
+  real(mytype), dimension(ysize(2)) :: v1meanH1,v1meanHT  ! mean wall-normal velocity
+  real(mytype), dimension(ysize(2)) :: w1meanH1,w1meanHT  ! mean spanwise    velocity
+  
+  ! Variances
+  
+  
+  ! Reynolds stress
+  
+  
     
   integer                           :: code,i,j,k,iunit
   character(99)                     :: filename
@@ -669,6 +678,7 @@ subroutine print_mean_stats(ux,uz)
   
   ! Set again variables to zero
   u1meanH1 = zero; u1meanHT = zero
+  v1meanH1 = zero; v1meanHT = zero  
   w1meanH1 = zero; w1meanHT = zero
     
   ! Denominator of the divisions
@@ -676,20 +686,36 @@ subroutine print_mean_stats(ux,uz)
       
   ! Transpose data to y-pencils 
   call transpose_x_to_y(ux,ux2)
+  call transpose_x_to_y(uy,uy2)
   call transpose_x_to_y(uz,uz2)
-  
+    
   ! Summation over x and z directions
   do k=1,ysize(3)
       do i=1,ysize(1)
-          do j=1,ysize(2)          
+          do j=1,ysize(2)
+          
+              ! Mean velocity field          
               u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/den
-              w1meanH1(j)=w1meanH1(j)+uz2(i,j,k)/den                                                              
+              v1meanH1(j)=v1meanH1(j)+uy2(i,j,k)/den
+              w1meanH1(j)=w1meanH1(j)+uz2(i,j,k)/den
+              
+              ! Variances
+              u2meanH1(j)=u2meanH1(j)+ux2(i,j,k)*ux2(i,j,k)/den
+              v2meanH1(j)=v2meanH1(j)+uy2(i,j,k)*uy2(i,j,k)/den
+              w2meanH1(j)=w2meanH1(j)+uz2(i,j,k)*uz2(i,j,k)/den                                                              
+          
+              ! Reynolds stresses
+              uvmeanH1(j)=uvmeanH1(j)+ux2(i,j,k)*uy2(i,j,k)/den
+              uwmeanH1(j)=uwmeanH1(j)+ux2(i,j,k)*uz2(i,j,k)/den
+              vwmeanH1(j)=vwmeanH1(j)+uy2(i,j,k)*uz2(i,j,k)/den
+          
           enddo          
       enddo
   enddo
 
   ! Summation over all MPI processes
   call MPI_REDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  call MPI_REDUCE(v1meanH1,v1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   call MPI_REDUCE(w1meanH1,w1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   
   ! Print mean velocity profile
@@ -701,13 +727,15 @@ subroutine print_mean_stats(ux,uz)
       ! Header
       write(iunit, *) 'Mean statistics calculated runtime.'
       write(iunit, *) ' '
-      write(iunit, '(2(A13, A1, 1X))') 'umean(y,t,nr)', ',', &
+      write(iunit, '(3(A13, A1, 1X))') 'umean(y,t,nr)', ',', &
+                                       'vmean(y,t,nr)', ',', &
                                        'wmean(y,t,nr)'
       
       ! Write mean statistics, function of y-direction, time and specific realization
       do j=1,ny
-          write(iunit, '(2(F13.9, A1, 1X))') u1meanHT(j), ',', &  ! Mean streamwise velocity
-                                             w1meanHT(j)          ! Mean spanwise velocity
+          write(iunit, '(3(F13.9, A1, 1X))') u1meanHT(j), ',', &  ! Mean streamwise  velocity
+                                             v1meanHT(j), ',', &  ! Mean wall-normal velocity
+                                             w1meanHT(j)          ! Mean spanwise    velocity
       enddo
       
       close(iunit)

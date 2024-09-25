@@ -90,7 +90,7 @@ program xcompact3d
      
      ! Print of cf for monitoring
      if ((mod(itime, ioutput_cf) .eq. 0) .or. (itime.eq.ifirst) .and. (itime .ge. start_output)) then
-         call print_cf(ux1,uz1,phi1)
+         call print_cf(ux1,uy1,uz1,phi1)
      end if
      
      ! Save planes of relevant quantities for quick visualization and low memory requirements
