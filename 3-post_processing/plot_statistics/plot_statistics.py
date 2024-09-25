@@ -110,7 +110,7 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Read statistics data
 (mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
- vort_x, vort_y, vort_z, mg_tot, mg_x, mg_z,
+ vort_x, vort_y, vort_z, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
  snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
@@ -124,8 +124,17 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 delta_x = Lx / nx
 delta_z = Lz / nz
            
-# Shear quantities
-sh_vel_x   = np.sqrt(nu * np.abs(mg_x[0]))    # streamwise shear velocity (based on streamwise mean gradient)  
+# (Total) wall shear stress: in case of fixed wall(s), mean spanwise gradient 'mg_z' is zero
+# Used to check maximum numerical resolutions (mesh spacings and viscous time) 
+tau_wtot  = nu*np.sqrt(mg_x[0]**2 + mg_z[0]**2) 
+
+# Streamwise wall shear stress: used to rescale statistics in wall units
+tau_wx   = nu*np.abs(mg_x[0])
+
+# Shear velocities
+
+
+sh_vel_x   = np.sqrt(tau_wx)    # streamwise shear velocity (based on streamwise mean gradient)  
 sh_vel_tot = np.sqrt(nu * np.abs(mg_tot[0]))  # total shear velocity (based on total mean gradient)  
 
 delta_nu_x   = nu / sh_vel_x                  # viscous length based on streamwise shear velocity
