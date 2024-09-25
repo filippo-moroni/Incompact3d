@@ -104,8 +104,8 @@ if itype == 3:
     M = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
 
     # Extracting quantities from the full matrix
-    cfx       = M[:,4] 
-    time_unit = M[:,7]
+    cfx       = M[:,3] 
+    time_unit = M[:,6]
 
 # TTBL
 elif itype == 13:
@@ -122,11 +122,11 @@ elif itype == 13:
         # Extracting quantities from the full matrix
         sh_veltot = M[:,0]     # total shear velocity
         sh_velx   = M[:,1]     # streamwise shear velocity
-        time_unit = M[:,7]     # time unit
-        ts        = M[:,8]     # time step
-        delta_99  = M[:,9]     # boundary layer thickness delta_99 for a TTBL
-        power_in  = M[:,11]    # power input
-        a_fact    = M[:,12]    # Reynolds analogy factor
+        a_fact    = M[:,4]     # Reynolds analogy factor
+        time_unit = M[:,6]     # time unit
+        ts        = M[:,7]     # time step
+        delta_99  = M[:,8]     # boundary layer thickness delta_99 for a TTBL
+        power_in  = M[:,10]    # power input
                              
         """
         Initialize arrays for sum
@@ -138,15 +138,18 @@ elif itype == 13:
 
             sh_veltotsq_sum = np.zeros(len(time_unit))    
             sh_velxsq_sum   = np.zeros(len(time_unit))
+            a_fact_sum      = np.zeros(len(time_unit))
             delta_99_sum    = np.zeros(len(time_unit))
             power_in_sum    = np.zeros(len(time_unit))
-            a_fact_sum      = np.zeros(len(time_unit))
 
         # Average the square of the total shear velocity over the realizations 
         sh_veltotsq_sum = sh_veltotsq_sum + (sh_veltot**2 / nr)
 
         # Average the square of the longitudinal shear velocity over the realizations 
         sh_velxsq_sum = sh_velxsq_sum + (sh_velx**2 / nr)
+
+        # Average the Reynolds analogy factor over the realizations
+        a_fact_sum = a_fact_sum + a_fact / nr
         
         # Average the BL thickness delta_99 over the realizations
         delta_99_sum = delta_99_sum + delta_99 / nr
@@ -154,28 +157,19 @@ elif itype == 13:
         # Average the power input over the realizations
         # (to be refined with the explicit calculation with wall velocities and shear velocities)
         power_in_sum = power_in_sum + power_in / nr 
-        
-        # Average the BL analogy factor over the realizations
-        a_fact_sum = a_fact_sum + a_fact / nr
-        
+                
     # Finalize the averages
     sh_veltot = np.sqrt(sh_veltotsq_sum)
     sh_velx   = np.sqrt(sh_velxsq_sum)
+    a_fact    = a_fact_sum
     delta_99  = delta_99_sum
     power_in  = power_in_sum
-    a_fact    = a_fact_sum
 
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
-    re_taux   = sh_velx * delta_99 / nu
-    
-    # Calculate the friction Reynolds number (averaged over the realizations)
-    re_tau    = sh_veltot * delta_99 / nu
-    
-    # Calculate longitudinal friction coefficient
+    re_tau = sh_velx * delta_99 / nu
+        
+    # Calculate (streamwise) friction coefficient
     cfx = 2.0 * (sh_velx / uwall)**2
-    
-    # Calculate total friction coefficient
-    cf_tot = 2.0 * (sh_veltot / uwall)**2
     
     #!--------------------------------------------------------------------------------------------------------!
     
@@ -186,23 +180,19 @@ elif itype == 13:
     with open('data_post/cf_monitoring/cf_history_realiz.txt', 'w') as f:
         f.write(f"{'sh_veltot (O(6))':>{pp.c_w}}, " +
                 f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
-                f"{'cf_tot (O(6))':>{pp.c_w}}, "    +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
                 f"{'delta_99':>{pp.c_w}}, "         +
                 f"{'Re_tau':>{pp.c_w}}, "           +    
-                f"{'Re_tau_x':>{pp.c_w}}, "         +
                 f"{'P_in':>{pp.c_w}}, "             +
                 f"{'A_fact':>{pp.c_w}}, "           +
                 f"{'time_unit':>{pp.c_w}}\n"        )
 
         for j in range(0, len(time_unit)):
             f.write(f"{sh_veltot[j]:{pp.fs6}}, "    +
-                    f"{sh_velx[j]:{pp.fs6}}, "      +
-                    f"{cf_tot[j]:{pp.fs8}}, "       +     
+                    f"{sh_velx[j]:{pp.fs6}}, "      +    
                     f"{cfx[j]:{pp.fs8}}, "          +
                     f"{delta_99[j]:{pp.fs}}, "      +
                     f"{re_tau[j]:{pp.fs}}, "        +
-                    f"{re_taux[j]:{pp.fs}}, "       +
                     f"{power_in[j]:{pp.fs6}}, "     +
                     f"{a_fact[j]:{pp.fs}}, "        +
                     f"{time_unit[j]:{pp.fs}}\n"     )
@@ -213,8 +203,8 @@ elif itype == 13:
     print(">>> Calculating grid spacings and viscous time scale at maximum cf.")
 
     """
-    Maximum total and streamwise shear velocities.
-    Excluding first 5 savings to avoid the IC peak of cf_tot.
+    Maximum (total) shear velocity.
+    Excluding first 5 savings to avoid the IC peak of cf.
     The same index is used to plot, in order to match what we plot
     to what we use to find the cf maximum.
     """
@@ -223,15 +213,11 @@ elif itype == 13:
     # (l: lower; i: index)
     # First 5 points avoided in this manner.
     li_cf = 4
-    
-    max_sh_veltot = np.max(sh_veltot[li_cf:]) 
-    max_sh_velx   = np.max(sh_velx)
-    
-    #max_index     = np.argmax(sh_velx)
 
+    max_sh_veltot = np.max(sh_veltot[li_cf:]) 
+    
     # Related viscous lengths
     delta_nu_tot = nu / max_sh_veltot
-    delta_nu_x   = nu / max_sh_velx
 
     # Mesh spacings (dimensional)
     delta_x  = Lx / nx
@@ -240,17 +226,12 @@ elif itype == 13:
 
     """
     Non-dimensional mesh spacings and viscous time unit
-    (p: plus, tot: total shear velocity, x: streamwise shear velocity).
+    (p: plus, tot: total shear velocity).
     """
     delta_x_p_tot  = delta_x  / delta_nu_tot
     delta_yw_p_tot = delta_yw / delta_nu_tot
     delta_z_p_tot  = delta_z  / delta_nu_tot
 
-    delta_x_p_x  = delta_x  / delta_nu_x
-    delta_yw_p_x = delta_yw / delta_nu_x
-    delta_z_p_x  = delta_z  / delta_nu_x
-    
-    t_nu_x   = nu / max_sh_velx**2
     t_nu_tot = nu / max_sh_veltot**2
     
     # Minimum viscous time unit
@@ -266,27 +247,19 @@ elif itype == 13:
     # Write and save to .txt file 
     with open('data_post/cf_monitoring/num_resolutions.txt', 'w') as f:
         f.write('Maximum non-dimensional grid spacings and minimum viscous time scale.\n')
-        f.write('tot: rescaling with total shear velocity.\n')
-        f.write('x:   rescaling with streamwise shear velocity.\n')
+        f.write('Rescaling with total shear velocity,\n')
+        f.write('based on the norm of the wall shear stress vector.\n')
         f.write('\n')
         f.write(f'Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
         f.write('\n')
-        f.write(f"{'delta_x+_tot':>{pp.c_w}}, "  +
-                f"{'delta_yw+_tot':>{pp.c_w}}, " +
-                f"{'delta_z+_tot':>{pp.c_w}}, "  + 
-                f"{'delta_x+_x':>{pp.c_w}}, "    +
-                f"{'delta_yw+_x':>{pp.c_w}}, "   +
-                f"{'delta_z+_x':>{pp.c_w}}, "    +
-                f"{'t_nu_x':>{pp.c_w}}, "        +
-                f"{'t_nu_tot':>{pp.c_w}}\n"      )
+        f.write(f"{'delta_x+_max':>{pp.c_w}}, "  +
+                f"{'delta_yw+_max':>{pp.c_w}}, " +
+                f"{'delta_z+_max':>{pp.c_w}}, "  + 
+                f"{'t_nu_max':>{pp.c_w}}\n"      )
         
         f.write(f"{delta_x_p_tot:{pp.fs6}}, "    +
                 f"{delta_yw_p_tot:{pp.fs6}}, "   +
                 f"{delta_z_p_tot:{pp.fs6}}, "    +
-                f"{delta_x_p_x:{pp.fs6}}, "      +
-                f"{delta_yw_p_x:{pp.fs6}}, "     +
-                f"{delta_z_p_x:{pp.fs6}}, "      +
-                f"{t_nu_x:{pp.fs6}}, "           +
                 f"{t_nu_tot:{pp.fs6}}\n"         )
 
     # Call subroutine for calculations of 6th order TTBL thickness parameters    
@@ -297,23 +270,19 @@ elif itype == 13:
 
     # Create the file and write  
     with open('data_post/cf_monitoring/high_order_integrals_evol.txt', 'w') as f:
-        f.write(f"{'cf_tot':>{pp.c_w}}, "       +
-                f"{'cfx':>{pp.c_w}}, "          +
+        f.write(f"{'cfx':>{pp.c_w}}, "          +
                 f"{'delta_99':>{pp.c_w}}, "     +
                 f"{'disp_t':>{pp.c_w}}, "       +
                 f"{'mom_t':>{pp.c_w}}, "        +  
                 f"{'Re_tau':>{pp.c_w}}, "       +    
-                f"{'Re_tau_x':>{pp.c_w}}, "     +
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
         for j in range(0, len(time_unit)):
-            f.write(f"{cf_tot[j]:{pp.fs8}}, "   +     
-                    f"{cfx[j]:{pp.fs8}}, "      +
+            f.write(f"{cfx[j]:{pp.fs8}}, "      +
                     f"{delta_99[j]:{pp.fs}}, "  +
                     f"{disp_t[j]:{pp.fs}}, "    +
                     f"{mom_t[j]:{pp.fs}}, "     + 
                     f"{re_tau[j]:{pp.fs}}, "    +
-                    f"{re_taux[j]:{pp.fs}}, "   +
                     f"{time_unit[j]:{pp.fs}}\n" )
 
 #!--------------------------------------------------------------------------------------!
@@ -426,7 +395,7 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction Reynolds number
-    ax.plot(time_unit, re_taux, color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(time_unit, re_tau, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a))
     ax.plot(t_gboga, retau_vs_time_gboga, color='C1', linestyle='-', linewidth=pp.lw)
@@ -463,7 +432,7 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction coefficient (li_cf: lower index cf, to exclude the peak of IC)
-    ax.plot(re_taux[li_cf:], cfx[li_cf:], color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(re_tau[li_cf:], cfx[li_cf:], color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)

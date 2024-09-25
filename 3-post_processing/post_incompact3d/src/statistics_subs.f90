@@ -177,15 +177,14 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
 end subroutine stat_mean
 
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Mean vorticity components and mean gradients 
-!              (x, z, parallel to the wall and scalar field).
+! DESCRIPTION: Mean vorticity components and mean velocity gradients to the 
+!              wall (x, z, and scalar field).
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
 !              Roberto Corsini <roberto.corsini@unimore.it> 
 !-----------------------------------------------------------------------------!
 subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
                           vortxmean2,vortymean2,vortzmean2,                &
-                          mean_gradientp2,mean_gradientx2,mean_gradientz2, &
-                          mean_gradphi2)   
+                          mean_gradientx2,mean_gradientz2,mean_gradphi2)   
 
   use decomp_2d_constants
   use decomp_2d_mpi
@@ -214,8 +213,8 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   ! Vorticity (average vorticity components, y-pencils)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2   
   
-  ! Mean gradients (mean gradients, y-pencils) (p: parallel, x:streamwise, z: spanwise)
-  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradientp2, mean_gradientx2, mean_gradientz2
+  ! Mean gradients (mean gradients, y-pencils) (x:streamwise, z: spanwise)
+  real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradientx2, mean_gradientz2
   
   ! Mean scalar gradient (y-pencils)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradphi2
@@ -263,20 +262,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
 #endif
   
   !---- Mean gradients ----!
-  
-  ! Mean total parallel gradient
-  do i=1,xsize(1)
-    do j=1,xsize(2)
-      do k=1,xsize(3)
-        di1(i,j,k) = sqrt(td1(i,j,k)**2 + tf1(i,j,k)**2) ! sqrt[ (du/dy)**2 + (dw/dy)**2 ]
-      enddo
-    enddo
-  enddo
-  
-  ! Transpose array along y and sum
-  call transpose_x_to_y(di1,di2)
-  mean_gradientp2 = mean_gradientp2 + di2/den
-  
+    
   ! Mean streamwise gradient
   di1 = td1 ! du/dy
   
