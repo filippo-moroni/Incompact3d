@@ -132,16 +132,14 @@ tau_wtot  = nu*np.sqrt(mg_x[0]**2 + mg_z[0]**2)
 tau_wx   = nu*np.abs(mg_x[0])
 
 # Shear velocities
+sh_vel_x   = np.sqrt(tau_wx)          # streamwise shear velocity (based on streamwise mean gradient)  
+sh_vel_tot = np.sqrt(tau_wtot)        # total shear velocity (based on total mean gradient)  
 
+delta_nu_x   = nu / sh_vel_x          # viscous length based on streamwise shear velocity
+delta_nu_tot = nu / sh_vel_tot        # viscous length based on total shear velocity
 
-sh_vel_x   = np.sqrt(tau_wx)    # streamwise shear velocity (based on streamwise mean gradient)  
-sh_vel_tot = np.sqrt(nu * np.abs(mg_tot[0]))  # total shear velocity (based on total mean gradient)  
-
-delta_nu_x   = nu / sh_vel_x                  # viscous length based on streamwise shear velocity
-delta_nu_tot = nu / sh_vel_tot                # viscous length based on total shear velocity
-
-t_nu_x      = nu / (sh_vel_x ** 2)            # viscous time based on streamwise shear velocity
-t_nu_tot    = nu / (sh_vel_tot ** 2)          # viscous time based on total shear velocity
+t_nu_x      = nu / (sh_vel_x ** 2)    # viscous time based on streamwise shear velocity
+t_nu_tot    = nu / (sh_vel_tot ** 2)  # viscous time based on total shear velocity
   
 # Rescaling grid spacings and domain dimensions through 'total' viscous length
 delta_x_plus = delta_x / delta_nu_tot
@@ -215,15 +213,11 @@ if post_vort:
 
 # Rescale TKE terms
 if post_tke_eq:
-    tke_turbt  /= sh_vel_x**2
-    tke_presst /= sh_vel_x**2
-    
-    # For TKE diffusion, we need to rescale by domain height
-    # This is something that needs further verification.
-    tke_difft   = (tke_difft/sh_vel_x**2) * Ly
-    
-    tke_prod   /= sh_vel_x**2
-    tke_pseps  /= sh_vel_x**2
+    tke_turbt  /= sh_vel_x**3 * nu
+    tke_presst /= sh_vel_x**3 * nu
+    tke_difft  /= sh_vel_x**3 * nu
+    tke_prod   /= sh_vel_x**3 * nu
+    tke_pseps  /= sh_vel_x**3 * nu
 
 #!--------------------------------------------------------------------------------------!
     
