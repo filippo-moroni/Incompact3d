@@ -6,11 +6,11 @@
 !              purpose, not present in standard Incompact3d releases:
 !              - 'print_cf' 
 !              - 'calculate_shear_velocity' 
-!              - 'spanwise_wall_oscillations' 
 !              - 'calculate_scalar_grad_wall'
+!              - 'spanwise_wall_oscillations' 
 !              - 'calculate_ubulk' 
 !              - 'calculate_bl_thick'
-!              - 'print_umean'
+!              - 'print_mean_stats'
 !              - 'write_scalar_plane_z'
 !              - 'write_vortx_plane_x'.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
@@ -68,8 +68,8 @@ subroutine print_cf(ux,uz,phi)
   ! TTBL
   if(itype .eq. itype_ttbl) then
   
-      ! Write mean streamwise velocity profile in case of a TTBL
-      call print_umean(ux)     
+      ! Write mean statistics runtime in case of a TTBL
+      call print_mean_stats(ux)     
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -381,56 +381,6 @@ subroutine calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
 end subroutine calculate_shear_velocity
 
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Calculate the spanwise velocity at the wall due to the 
-!              imposed sinusoidal oscillations. Oscillation parameters 
-!              (A and T) are read from the input file. 
-!              With no feedback control, A and T are in outer units.
-!              With feedback control,    A and T are in viscous units, 
-!              (A^+, T^+).    
-!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
-!-----------------------------------------------------------------------------!
-subroutine spanwise_wall_oscillations(ux1,uz1)
-
-  use decomp_2d_constants
-  use decomp_2d_mpi
-  use decomp_2d
-
-  use param,       only : sh_velx, sh_velz, span_vel, t
-  use param,       only : a_wo, t_wo, ifeedback_control, in_phase
-  use param,       only : two, xnu, pi
-
-  implicit none
-
-  real(mytype) :: amplitude, period
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
-
-  ! Amplitude and period in outer units if feedback control is disabled (open loop)
-  if (ifeedback_control .eq. 0) then
-
-      amplitude = a_wo
-
-      period = t_wo
-
-  ! Rescale amplitude and period in friction units if feedback control is enabled (closed loop)
-  else if (ifeedback_control .eq. 1) then
-
-      ! Calculate shear velocity    
-      call calculate_shear_velocity(ux1,uz1,sh_velx,sh_velz)
-
-      ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
-      amplitude = sh_velx * a_wo
-
-      ! Period of oscillation, based on longitudinal shear velocity
-      period = xnu * t_wo / (sh_velx**2)
-
-  end if
-
-  ! Calculation of the spanwise wall velocity
-  span_vel = amplitude * sin(two*pi*t/period + in_phase*pi)
-
-end subroutine spanwise_wall_oscillations
-
-!-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate mean scalar gradient at the wall.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!  
@@ -499,6 +449,56 @@ subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
   call MPI_ALLREDUCE(mean_phigw,mean_phigwtot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
       
 end subroutine calculate_scalar_grad_wall
+
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculate the spanwise velocity at the wall due to the 
+!              imposed sinusoidal oscillations. Oscillation parameters 
+!              (A and T) are read from the input file. 
+!              With no feedback control, A and T are in outer units.
+!              With feedback control,    A and T are in viscous units, 
+!              (A^+, T^+).    
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+subroutine spanwise_wall_oscillations(ux1,uz1)
+
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+
+  use param,       only : sh_velx, sh_velz, span_vel, t
+  use param,       only : a_wo, t_wo, ifeedback_control, in_phase
+  use param,       only : two, xnu, pi
+
+  implicit none
+
+  real(mytype) :: amplitude, period
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux1, uz1
+
+  ! Amplitude and period in outer units if feedback control is disabled (open loop)
+  if (ifeedback_control .eq. 0) then
+
+      amplitude = a_wo
+
+      period = t_wo
+
+  ! Rescale amplitude and period in friction units if feedback control is enabled (closed loop)
+  else if (ifeedback_control .eq. 1) then
+
+      ! Calculate shear velocity    
+      call calculate_shear_velocity(ux1,uz1,sh_velx,sh_velz)
+
+      ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
+      amplitude = sh_velx * a_wo
+
+      ! Period of oscillation, based on longitudinal shear velocity
+      period = xnu * t_wo / (sh_velx**2)
+
+  end if
+
+  ! Calculation of the spanwise wall velocity
+  span_vel = amplitude * sin(two*pi*t/period + in_phase*pi)
+
+end subroutine spanwise_wall_oscillations
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate bulk velocity for a channel.
@@ -630,13 +630,15 @@ subroutine calculate_bl_thick(ux,delta_99,counter)
 end subroutine calculate_bl_thick
 
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Calculate the streamwise velocity profile and print it
-!              runtime. Used for TTBL to calculate high order integrals  
-!              of BL thickness parameters (delta*, theta) 
-!              during post_processing. It is called inside 'print_cf'.
+! DESCRIPTION: Calculate runtime mean statistics (umean, wmean, variances and
+!              Reynolds stress) for a TTBL. As an example, the streamwise
+!              mean velocity profile is used to calculate high order 
+!              integrals of BL thickness parameters (delta*, theta) 
+!              during post_processing. 
+!              This subroutine is called inside 'print_cf'.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!       
-subroutine print_umean(ux)
+subroutine print_mean_stats(ux,uz)
   
   use decomp_2d_constants
   use decomp_2d_mpi
@@ -644,45 +646,50 @@ subroutine print_umean(ux)
   
   use MPI
   
-  use var,       only : ux2     
+  use var,       only : ux2, uz2     
   use param,     only : zero, itime
   use variables, only : nx, ny, nz
     
   implicit none
   
   ! Inputs
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux,uz
      
   ! Local variables
   real(mytype)                      :: den 
-  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT
+  
+  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT  ! mean streamwise velocity
+  real(mytype), dimension(ysize(2)) :: w1meanH1,w1meanHT  ! mean spanwise   velocity
+    
   integer                           :: code,i,j,k,iunit
   character(99)                     :: filename
 
   ! Write filename 
-  write(filename, "('data/umean/umean-ts',I7.7,'.txt')") itime
+  write(filename, "('data/mean_stats_runtime/mean_stats_runtime-ts',I7.7,'.txt')") itime
   
   ! Set again variables to zero
-  u1meanH1 = zero
-  u1meanHT = zero
+  u1meanH1 = zero; u1meanHT = zero
     
   ! Denominator of the divisions
   den = real(nx*nz,mytype)
       
   ! Transpose data to y-pencils 
   call transpose_x_to_y(ux,ux2)
+  call transpose_x_to_y(uz,uz2)
   
   ! Summation over x and z directions
   do k=1,ysize(3)
       do i=1,ysize(1)
           do j=1,ysize(2)          
-              u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/den                               
+              u1meanH1(j)=u1meanH1(j)+ux2(i,j,k)/den
+              w1meanH1(j)=w1meanH1(j)+uz2(i,j,k)/den                                                              
           enddo          
       enddo
   enddo
 
   ! Summation over all MPI processes
   call MPI_REDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  call MPI_REDUCE(w1meanH1,w1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   
   ! Print mean velocity profile
   if(nrank .eq. 0) then
@@ -691,11 +698,13 @@ subroutine print_umean(ux)
       open(newunit=iunit, file=filename, status="unknown", form="formatted")
 
       ! Header
-      write(iunit, '(1(A13, A1, 1X))') 'umean(y,t,nr)'
+      write(iunit, *) 'Mean statistics calculated runtime.'
+      write(iunit, *) ' '
+      write(iunit, '(2(A13, A1, 1X))') 'umean(y,t,nr), wmean(y,t,nr)'
       
       ! Write mean streamwise velocity profile, function of y-direction, time and specific realization
       do j=1,ny
-          write(iunit, '(1(F13.9, A1, 1X))') u1meanHT(j)
+          write(iunit, '(2(F13.9, A1, 1X))') u1meanHT(j), ',', w1meanHT(j)
       enddo
       
       close(iunit)

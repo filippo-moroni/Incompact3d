@@ -330,8 +330,8 @@ subroutine parameter(input_i3d)
   ! Creating /checkpoints folder inside /data
   if (nrank == 0) call execute_command_line('mkdir -p data/checkpoints')
   
-  ! Creating /umean folder inside /data if we are simulating a TTBL
-  if (nrank == 0 .and. itype .eq. itype_ttbl) call execute_command_line('mkdir -p data/umean')
+  ! Creating /mean_stats_runtime folder inside /data if we are simulating a TTBL
+  if (nrank == 0 .and. itype .eq. itype_ttbl) call execute_command_line('mkdir -p data/mean_stats_runtime')
   
   !------------------------!
   

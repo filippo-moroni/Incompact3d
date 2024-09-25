@@ -99,8 +99,8 @@ def calculate_thickness_param():
         # Do loop over different realizations
         for i in range(1, nr+1, 1):
                
-            # Read of 'umean' data from 'data/umean' folder
-            umean[:,i-1] = np.loadtxt(f'data_r{i:01d}/umean/umean-ts{ts_iter:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
+            # Read of 'umean' data from 'data/mean_stats_runtime' folder
+            umean[:,i-1] = np.loadtxt(f'data_r{i:01d}/umean/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
             
             # Summing into a sum array for different realizations
             umean_realiz[:,j] = umean_realiz[:,j] + umean[:,i-1]
