@@ -35,10 +35,10 @@ from set_flow_parameters import set_flow_parameters
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: With this subroutine we perform calculation of 6th order 
-!              accurate calculations of integrals of TTBL thickness 
-!              parameters using 'umean' files printed at the same time as 
-!              'cf_monitoring'.  
+! DESCRIPTION: With this subroutine we perform 6th order accurate 
+!              calculations of integrals of TTBL thickness parameters 
+!              (delta*, theta) using 'umean' files printed at the same time 
+!              as 'cf_monitoring'.  
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -80,13 +80,11 @@ def calculate_thickness_param():
     mom_t  = np.zeros(nsavings)   # momentum     thickness, theta
 
     """
-    Do loop from the first saving of umean (IC) to the last one, with increment ioutput_cf
-    that is read from the input file 'input.i3d'.
+    Do loop from the first saving of umean (IC) to the last one, with increment ioutput_cf.
     """
-
     for j in range(0, nsavings, 1):
       
-        # Calculate ts to open 'umean-ts' file (ts_iter: time-step of the iterations)
+        #!--- Calculate ts to open 'umean-ts' file (ts_iter: time-step of the iterations) ---!
         
         # ts of the initial condition is ts = 1
         if j == 0:
@@ -112,19 +110,18 @@ def calculate_thickness_param():
         # Calculate the displacement thickness delta*
         int1 = umean_realiz[:,j]/uwall  # 'integrand 1' 
 
-        # Interpolation at the 6th order of accuracy with a spline of 5th order
+        # Interpolation at the 6th order of accuracy with a spline of 5th order, 
+        # that passes through all data points
         spl = InterpolatedUnivariateSpline(yp, int1, k=5)
         disp_t[j] = spl.integral(y0, yn)
 
         # Calculate the momentum thickness theta
         int2 = int1 - int1**2  # 'integrand 2' 
 
-        # Interpolation at the 6th order of accuracy with a spline of 5th order
+        # Interpolation at the 6th order of accuracy with a spline of 5th order,
+        # that passes through all data points
         spl = InterpolatedUnivariateSpline(yp, int2, k=5)
         mom_t[j] = spl.integral(y0, yn)
-        
-    # Save to file
-    
 
     # Return to main program
     return (disp_t, mom_t)

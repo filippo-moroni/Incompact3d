@@ -58,7 +58,7 @@ print(" TTBL: ")
 print(" - streamwise friction coefficient vs time;")
 print(" - friction Reynolds number vs time;       ")
 print(" - streamwise friction coefficient vs friction Reynolds number;")
-print(" - 6th order integrals of TTBL thickness parameters (delta*, theta).")                
+print(" - 6th order accurate integrals of TTBL thickness parameters (delta*, theta).")                
 print()
 
 #!--------------------------------------------------------------------------------------!
@@ -88,7 +88,6 @@ os.makedirs('plots/time_evolution',    mode=0o777, exist_ok=True)
  disp_t_gboga,
  cf_gboga    
  ) = read_ref_data_temp_evol()
-
 
 #!--- Parameters ---!
 uwall, nu, twd = set_flow_parameters(itype, re)
@@ -214,7 +213,7 @@ elif itype == 13:
     print(">>> Calculating grid spacings and viscous time scale at maximum cf.")
 
     """
-    Maximum total and streamwise shear velocities
+    Maximum total and streamwise shear velocities.
     Excluding first 5 savings to avoid the IC peak of cf_tot.
     The same index is used to plot, in order to match what we plot
     to what we use to find the cf maximum.
@@ -223,9 +222,9 @@ elif itype == 13:
     # Lower index cf (to avoid first points in plotting and when we find the maximum) 
     # (l: lower; i: index)
     # First 5 points avoided in this manner.
-    licf = 4
+    li_cf = 4
     
-    max_sh_veltot = np.max(sh_veltot[licf:]) 
+    max_sh_veltot = np.max(sh_veltot[li_cf:]) 
     max_sh_velx   = np.max(sh_velx)
     
     #max_index     = np.argmax(sh_velx)
@@ -235,9 +234,9 @@ elif itype == 13:
     delta_nu_x   = nu / max_sh_velx
 
     # Mesh spacings (dimensional)
-    delta_x = Lx / nx
+    delta_x  = Lx / nx
     delta_yw = y[1]  
-    delta_z = Lz / nz
+    delta_z  = Lz / nz
 
     """
     Non-dimensional mesh spacings and viscous time unit
@@ -316,8 +315,6 @@ elif itype == 13:
                     f"{re_tau[j]:{pp.fs}}, "    +
                     f"{re_taux[j]:{pp.fs}}, "   +
                     f"{time_unit[j]:{pp.fs}}\n" )
-
-
 
 #!--------------------------------------------------------------------------------------!
 
@@ -466,7 +463,7 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction coefficient
-    ax.plot(re_taux[licf:], cfx[licf:], color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(re_taux[li_cf:], cfx[li_cf:], color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
