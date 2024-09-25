@@ -490,6 +490,48 @@ if itype == 13:
     # Save and show the figure
     save_and_show_plot('cfx_vs_retaux', add_string=add_string, subfolder='time_evolution', description=description)
 
+    #!--------------------------------------------------------------------------------------!
+
+    print()
+    print(">>> Plotting displacement thickness Reynolds number vs momentum thickness Reynolds number.")
+    print(">>> Reference data Cimarelli et al. (2024a).")
+    print()
+
+    # Calculate Reynolds numbers based on displacement thickness and momentum thickness
+    re_disp_t = disp_t * re
+    re_mom_t  = mom_t  * re
+
+    # Subplots environment
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+   
+    # Displacement thickness Reynolds number vs momentum thickness Reynolds number
+    ax.plot(re_mom_t, re_disp_t, color='C0', linestyle='-', linewidth=pp.lw)
+    
+    # G. Boga (Cimarelli et al. (2024a)) 
+    ax.plot(retheta_gboga, disp_t_gboga, color='C1', linestyle='-', linewidth=pp.lw)
+    
+    # Axes labels
+    ax.set_xlabel(r'$Re_\theta$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$Re_\delta^*$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Axes ranges
+    xliminf = np.min(re_mom_t)
+    xlimsup = np.max(re_mom_t)
+    yliminf = np.min(re_disp_t) * 0.0
+    ylimsup = np.max(re_disp_t) * 1.2 
+              
+    # Description
+    description  = 'Displacement thickness Reynolds number against '\
+                   'momentum thickness Reynolds number. '
+    description += 'Reference data Cimarelli et al. (2024a).'
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    
+    # Save and show the figure
+    save_and_show_plot('re_disp_t_vs_re_theta', add_string=add_string, subfolder='time_evolution', description=description)
+
 #!--------------------------------------------------------------------------------------!
 
 print()
