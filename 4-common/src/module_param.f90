@@ -449,10 +449,8 @@ module param
   real(mytype), dimension(5) :: adt,bdt,cdt,ddt,gdt
     
   ! Shear quantities at the wall (used for Channel and TTBL)
-  real(mytype), save :: sh_vel        ! Total shear velocity
   real(mytype), save :: sh_velx       ! Shear velocity along x
   real(mytype), save :: sh_velz       ! Shear velocity along z
-  real(mytype), save :: fric_coeff    ! Total skin friction coefficient
   real(mytype), save :: fric_coeffx   ! Skin friction coefficient along x
   real(mytype), save :: fric_coeffz   ! Skin friction coefficient along z
   real(mytype), save :: t_viscous     ! Viscous time unit (based on shear velocity and viscous length)

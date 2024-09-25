@@ -57,7 +57,7 @@ subroutine print_cf(ux,uz,phi)
       call print_umean(ux)
 
       ! Shear velocity bottom wall
-      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+      call calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -307,19 +307,17 @@ end subroutine print_cf
 !                overall .txt file for time evolution check.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+subroutine calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
 
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
   
-  use var,         only : ux2,uz2
-  use var,         only : ta2,tc2,di2
-  use ibm_param,   only : ubcx,ubcz
-
   use MPI
 
-  use param,       only : zero, two, xnu, itype, itype_channel, itype_ttbl
+  use var,       only : ux2,uz2,ta2,tc2,di2
+  use ibm_param, only : ubcx,ubcz
+  use param,     only : zero, two, xnu, itype, itype_channel, itype_ttbl
   use variables
 
   implicit none
@@ -328,12 +326,10 @@ subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
   real(mytype), dimension(xsize(1),xsize(2),xsize(3)), intent(in) :: ux, uz
 
   ! Outputs
-  real(mytype), intent(out) :: sh_vel  ! Total shear velocity 
   real(mytype), intent(out) :: sh_velx ! Shear velocity along x 
   real(mytype), intent(out) :: sh_velz ! Shear velocity along z
 
   ! Work variables
-  real(mytype) :: mean_gw    ! Mean total parallel gradient at each processor
   real(mytype) :: mean_gwx   ! Mean gradient direction x at each processor
   real(mytype) :: mean_gwz   ! Mean gradient direction z at each processor
   real(mytype) :: den        ! Denominator of the divisions
@@ -342,10 +338,8 @@ subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
   integer      :: i,k
 
   ! Set again variables to zero
-  mean_gw  = zero
   mean_gwx = zero
   mean_gwz = zero
-  sh_vel   = zero
   sh_velx  = zero
   sh_velz  = zero
 
@@ -370,9 +364,6 @@ subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
          ! TTBL, only bottom wall (j = 1)
          if (itype .eq. itype_ttbl) then
 
-             ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-             mean_gw = mean_gw + sqrt(ta2(i,1,k)**2 + tc2(i,1,k)**2) / den
-
              ! Mean streamwise gradient dU/dy
              mean_gwx = mean_gwx + ta2(i,1,k) / den
 
@@ -381,9 +372,6 @@ subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
 
          ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
          else if (itype .eq. itype_channel) then
-
-             ! Total velocity gradient at the wall, sqrt[(du/dy)**2 + (dw/dy)**2] 
-             mean_gw = mean_gw + (sqrt(ta2(i,1,k)**2 + tc2(i,1,k)**2) + sqrt(ta2(i,ysize(2),k)**2 + tc2(i,ysize(2),k)**2)) / den / two
 
              ! Mean streamwise gradient dU/dy
              mean_gwx = mean_gwx + (ta2(i,1,k) - ta2(i,ysize(2),k)) / den / two
@@ -396,12 +384,10 @@ subroutine calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
   enddo
 
   ! Summation over all MPI processes and broadcast the result          
-  call MPI_ALLREDUCE(mean_gw, sh_vel, 1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
   call MPI_ALLREDUCE(mean_gwx,sh_velx,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
   call MPI_ALLREDUCE(mean_gwz,sh_velz,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
 
   ! Finalize shear velocities calculation
-  sh_vel  = sqrt(sh_vel  * xnu)
   sh_velx = sqrt(abs(sh_velx) * xnu)
   sh_velz = sqrt(abs(sh_velz) * xnu)
 
@@ -422,7 +408,7 @@ subroutine spanwise_wall_oscillations(ux1,uz1)
   use decomp_2d_mpi
   use decomp_2d
 
-  use param,       only : sh_vel, sh_velx, sh_velz, span_vel, t
+  use param,       only : sh_velx, sh_velz, span_vel, t
   use param,       only : a_wo, t_wo, ifeedback_control, in_phase
   use param,       only : two, xnu, pi
 
@@ -442,7 +428,7 @@ subroutine spanwise_wall_oscillations(ux1,uz1)
   else if (ifeedback_control .eq. 1) then
 
       ! Calculate shear velocity    
-      call calculate_shear_velocity(ux1,uz1,sh_vel,sh_velx,sh_velz)
+      call calculate_shear_velocity(ux1,uz1,sh_velx,sh_velz)
 
       ! Maximum amplitude of spanwise oscillations, based on longitudinal shear velocity
       amplitude = sh_velx * a_wo
@@ -465,12 +451,12 @@ subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
          
   use decomp_2d_constants
   use decomp_2d_mpi
-  use decomp_2d       
+  use decomp_2d
+  
+  use MPI 
               
-  use var,         only : td2,di2,phi2
-  use param,       only : zero
-      
-  use MPI    
+  use var,       only : td2,di2,phi2
+  use param,     only : zero
   use variables
     
   implicit none
