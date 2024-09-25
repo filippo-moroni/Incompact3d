@@ -1,9 +1,10 @@
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: With this script we perform calculation of 6th order accurate
-!              calculation of integrals of TTBL thickness parameters using
-!              'umean' files printed at the same time as 'cf_monitoring'.  
+! DESCRIPTION: With this subroutine we perform calculation of 6th order 
+!              accurate calculations of integrals of TTBL thickness 
+!              parameters using 'umean' files printed at the same time as 
+!              'cf_monitoring'.  
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
