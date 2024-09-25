@@ -17,7 +17,7 @@
 !-----------------------------------------------------------------------------!
 
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Write shear velocities, skin friction coefficients, viscous 
+! DESCRIPTION: Write shear velocities, skin friction coefficient, viscous 
 !              time unit, time unit, bulk velocity (channel only), boundary 
 !              layer thickness (delta_99) and Re_tau (TTBL only) and stores
 !              them in a .txt file (used for TTBLs and Channels).    
@@ -46,18 +46,27 @@ subroutine print_cf(ux,uz,phi)
   
   ! Local value of amplitude and period of wall oscillations in wall units
   real(mytype) :: a_wo_loc,t_wo_loc
+
+  ! Total shear velocity
+  real(mytype) :: sh_vel
       
   ! Write filename
-  if (nrank .eq. 0) write(filename,"('data/monitoring/cf_history.txt')") 
+  if (nrank .eq. 0) write(filename,"('data/monitoring/cf_history.txt')")
+  
+  ! Calculate shear velocities
+  call calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
+
+  ! Calculate total shear velocity (based on the total wall shear stress)
+  sh_vel = (sh_velx**4 + sh_velz**4)**0.25
+
+  ! Calculate viscous time unit (based on the total shear velocity)            
+  t_viscous = xnu / (sh_vel**2)
   
   ! TTBL
   if(itype .eq. itype_ttbl) then
   
       ! Write mean streamwise velocity profile in case of a TTBL
-      call print_umean(ux)
-
-      ! Shear velocity bottom wall
-      call calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
+      call print_umean(ux)     
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -65,14 +74,15 @@ subroutine print_cf(ux,uz,phi)
       ! Calculate mean scalar gradient
       if(iscalar .eq. 1) call calculate_scalar_grad_wall(phi,mean_phigwtot)
       
-      ! Create or open a file to store sh_vel, cf coefficients, viscous time and time unit
+      ! Create or open a file to store shear velocities, cf coefficient, viscous time and time unit
       if(nrank .eq. 0) then
 
-          ! Calculate friction coefficients
-          fric_coeff  = two * ((sh_vel  / uwall)**2)
-          fric_coeffx = two * ((sh_velx / uwall)**2)
-          fric_coeffz = two * ((sh_velz / uwall)**2)
-          
+          ! Calculate (streamwise) friction coefficient
+          fric_coeff  = two * ((sh_velx  / uwall)**2)
+
+          ! Calculate friction Re number for a TTBL
+          re_tau_tbl = delta_99 * sh_velx / xnu
+
           ! Calculate power input (assuming unitary density)
           if(iswitch_wo .eq. 0) then
               
@@ -85,19 +95,7 @@ subroutine print_cf(ux,uz,phi)
               powerin = (sh_velx**2)*uwall + (sh_velz**2)*span_vel
           
           end if
-          
-          ! Calculate friction Re number for a TBL
-          re_tau_tbl = delta_99 * sh_velx / xnu
-          
-          ! Calculate viscous time unit
-          if(iswitch_wo .eq. 1) then
-              ! Moving walls
-              t_viscous = xnu / (sh_velx**2)
-          else
-              ! Fixed walls
-              t_viscous = xnu / (sh_vel**2)
-          end if
-          
+        
           ! Dissimilar control section
           if (iscalar .eq. 1) then
               
@@ -110,28 +108,27 @@ subroutine print_cf(ux,uz,phi)
           if (exists) then
               open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6,A, F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                          & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                          &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                                          &
-                             delta_99,   ',', re_tau_tbl,  ',', powerin,     ',',                                                          &
-                             A_fact
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
+                             fric_coeff, ',', A_fact       ',',                                                         &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                       &
+                             delta_99,   ',', re_tau_tbl,  ',', powerin                                         
+                             
           else
               open(newunit=iunit, file=filename, status="new", action="write")
               ! Header
-              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12)') &
-                            'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                                 &
-                            'cf,tot',    ',', 'cf,x',      ',', 'cf,z',    ',',                                 &
-                            't_nu',      ',', 't',         ',', 'ts',      ',',                                 &
-                            'delta_99',  ',', 'Re_tau',    ',', 'P_in',    ',',                                 &         
-                            'A_fact'
+              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12)') &
+                            'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                    &
+                            'cfx',       ',', 'A_fact'                                             &
+                            't_nu',      ',', 't',         ',', 'ts',      ',',                    &
+                            'delta_99',  ',', 'Re_tau',    ',', 'P_in'                             &         
+                            
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6,A, F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                                          & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                                          &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                                          &
-                             delta_99,   ',', re_tau_tbl,  ',', powerin,     ',',                                                          &
-                             A_fact
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
+                             fric_coeff, ',', A_fact       ',',                                                         &
+                             t_viscous,  ',', t,           ',', itime,       ',',                                       &
+                             delta_99,   ',', re_tau_tbl,  ',', powerin 
           end if
               close(iunit)
       
@@ -139,52 +136,38 @@ subroutine print_cf(ux,uz,phi)
  
   ! Channel
   else if(itype .eq. itype_channel) then
-      
-      ! Shear velocity both walls
-      call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
-      
+            
       ! Bulk velocity
       call calculate_ubulk(ux,ubulk)
     
-      ! Create or open a file to store sh_vel, cf coefficients, viscous time, time unit and bulk velocity
+      ! Create or open a file to store shear velocities, cf coefficient, viscous time, time unit and bulk velocity
       if(nrank .eq. 0) then
-          ! Calculate friction coefficients
-          fric_coeff  = two * ((sh_vel  / ubulk)**2)
-          fric_coeffx = two * ((sh_velx / ubulk)**2)
-          fric_coeffz = two * ((sh_velz / ubulk)**2)
-          
-          ! Calculate viscous time unit
-          if(iswitch_wo .eq. 1) then
-              ! Moving walls
-              t_viscous = xnu / (sh_velx**2)
-          else
-              ! Fixed walls
-              t_viscous = xnu / (sh_vel**2)
-          end if
-          
+
+          ! Calculate (streamwise) friction coefficient
+          fric_coeff  = two * ((sh_velx  / ubulk)**2)
+                   
           inquire(file=filename, exist=exists)
           if (exists) then
               open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.4)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                 & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                 &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                 &
-                             ubulk
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.4,A, F12.6,A,F12.4,A,I12,A)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                & 
+                             fric_coeff, ',', ubulk        ',',                                  &
+                             t_viscous,  ',', t,           ',', itime
+                             
           else
               open(newunit=iunit, file=filename, status="new", action="write")
               ! Header
-              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A16,A,A16,A, A12,A,A12,A,A12,A, A12)') &
-                            'sh_vel', ',', 'sh_velx', ',', 'sh_velz', ',',                   &
-                            'cf,tot', ',', 'cf,x',    ',', 'cf,z',    ',',                   &
-                            't_nu',   ',', 't',       ',', 'ts',      ',',                   &
-                            'Ubulk'          
+              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A, A12,A,A12,A,A12,A)') &
+                            'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',        &
+                            'cfx',       ',', 'Ubulk',     ',',                        &
+                            't_nu',      ',', 't',         ',', 'ts'
+                                      
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F16.10,A,F16.10,A, F12.6,A,F12.4,A,I12,A, F12.4)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                 & 
-                             fric_coeff, ',', fric_coeffx, ',', fric_coeffz, ',',                                 &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                 &
-                             ubulk
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.4,A, F12.6,A,F12.4,A,I12,A)') &
+                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                & 
+                             fric_coeff, ',', ubulk        ',',                                  &
+                             t_viscous,  ',', t,           ',', itime
           end if
               close(iunit)
       end if  
@@ -299,7 +282,12 @@ subroutine print_cf(ux,uz,phi)
 end subroutine print_cf
 
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Calculate total shear velocity and its x and z components. 
+! DESCRIPTION: Calculate streamwise and spanwise shear velocities
+!              (if squared, they correspond to the mean wall-shear stress
+!              along a specific direction).
+!              Important note: these components cannot be used to calculate
+!              the total shear velocity. We must obtain first wall-shear 
+!              stresses.  
 !              - Used in 'BC-Temporal-TBL.f90' and in 'BC-Channel-flow.f90'
 !                for the spanwise wall oscillations with feedback control 
 !                enabled. 
@@ -491,12 +479,20 @@ subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
   ! Index for j is 1, since we are dealing with y-pencils and summation over all points (each processor)
   do k=1,ysize(3)
      do i=1,ysize(1)
-           
-         ! TTBL, only bottom wall (j = 1)
+         
+        ! TTBL, only bottom wall (j = 1)
+        if (itype .eq. itype_ttbl) then
                                  
-         ! Mean scalar gradient dPhi/dy at the wall
-         mean_phigw = mean_phigw + td2(i,1,k) / den         
-             
+            ! Mean scalar gradient dPhi/dy at the wall
+            mean_phigw = mean_phigw + td2(i,1,k) / den
+         
+        ! Channel, upper wall summation too, with opposite sign (j = ysize(2))
+        else if (itype .eq. itype_channel) then
+
+            ! Mean scalar gradient dPhi/dy at the wall
+            mean_phigw = mean_phigw + (td2(i,1,k) - td2(i,ysize(2),k)) / den / two
+        
+        end if     
      enddo
   enddo
          
