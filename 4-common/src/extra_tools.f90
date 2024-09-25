@@ -69,7 +69,7 @@ subroutine print_cf(ux,uz,phi)
   if(itype .eq. itype_ttbl) then
   
       ! Write mean statistics runtime in case of a TTBL
-      call print_mean_stats(ux)     
+      call print_mean_stats(ux,uz)     
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -669,6 +669,7 @@ subroutine print_mean_stats(ux,uz)
   
   ! Set again variables to zero
   u1meanH1 = zero; u1meanHT = zero
+  w1meanH1 = zero; w1meanHT = zero
     
   ! Denominator of the divisions
   den = real(nx*nz,mytype)
@@ -700,18 +701,20 @@ subroutine print_mean_stats(ux,uz)
       ! Header
       write(iunit, *) 'Mean statistics calculated runtime.'
       write(iunit, *) ' '
-      write(iunit, '(2(A13, A1, 1X))') 'umean(y,t,nr), wmean(y,t,nr)'
+      write(iunit, '(2(A13, A1, 1X))') 'umean(y,t,nr)', ',', &
+                                       'wmean(y,t,nr)'
       
-      ! Write mean streamwise velocity profile, function of y-direction, time and specific realization
+      ! Write mean statistics, function of y-direction, time and specific realization
       do j=1,ny
-          write(iunit, '(2(F13.9, A1, 1X))') u1meanHT(j), ',', w1meanHT(j)
+          write(iunit, '(2(F13.9, A1, 1X))') u1meanHT(j), ',', &  ! Mean streamwise velocity
+                                             w1meanHT(j)          ! Mean spanwise velocity
       enddo
       
       close(iunit)
                       
   end if
   
-end subroutine print_umean
+end subroutine print_mean_stats
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Write an instantaneous plane with z-dir. normal of the scalar 
