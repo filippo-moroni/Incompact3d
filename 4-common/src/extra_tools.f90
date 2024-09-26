@@ -736,21 +736,6 @@ subroutine print_mean_stats(ux,uy,uz)
   ! Print mean velocity profile
   if(nrank .eq. 0) then
 
-      ! Finalize statistics calculation
-      do j=1,ysize(2)
-        
-          ! Velocity statistics
-          u2meanHT(j)=u2meanHT(j)-u1meanHT(j)**2
-          v2meanHT(j)=v2meanHT(j)-v1meanHT(j)**2
-          w2meanHT(j)=w2meanHT(j)-w1meanHT(j)**2
-   
-          ! Reynolds stresses
-          uvmeanHT(j)=uvmeanHT(j)-u1meanHT(j)*v1meanHT(j)
-          uwmeanHT(j)=uwmeanHT(j)-u1meanHT(j)*w1meanHT(j)
-          vwmeanHT(j)=vwmeanHT(j)-v1meanHT(j)*w1meanHT(j)
-
-      end do
-
       ! Write filename 
       write(filename, "('data/mean_stats_runtime/mean_stats_runtime-ts',I7.7,'.txt')") itime
             
@@ -759,6 +744,13 @@ subroutine print_mean_stats(ux,uy,uz)
 
       ! Header
       write(iunit, *) 'Mean statistics calculated runtime.'
+      write(iunit, *) ' '
+      write(iunit, *) 'Pay attention that statistics need to be averaged later'
+      write(iunit, *) 'with different flow realizations.'
+      write(iunit, *) ' '
+      write(iunit, *) 'var[u] needs to be finalized later by subtracting (mean[u])**2.'
+      write(iunit, *) 'The finalization of 2nd order statistics can be performed in order to check'
+      write(iunit, *) 'the correctness of the calculations.' 
       write(iunit, *) ' '
       write(iunit, '(9(A13, A1, 1X))') 'umean(y,t,nr)',  ',', &
                                        'vmean(y,t,nr)',  ',', &
