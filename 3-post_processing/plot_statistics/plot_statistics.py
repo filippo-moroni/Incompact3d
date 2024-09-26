@@ -211,7 +211,7 @@ if post_vort:
     vort_y *= t_nu_tot
     vort_z *= t_nu_tot
 
-# Rescale TKE terms
+# Rescale TKE terms (same as Mansour et al. (1988))
 if post_tke_eq:
     tke_turbt  = tke_turbt  * nu / sh_vel_x**4
     tke_presst = tke_presst * nu / sh_vel_x**4
