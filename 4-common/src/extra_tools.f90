@@ -631,11 +631,14 @@ end subroutine calculate_bl_thick
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate runtime mean statistics (umean, wmean, variances and
-!              Reynolds stress) for a TTBL. As an example, the streamwise
-!              mean velocity profile is used to calculate high order 
-!              integrals of BL thickness parameters (delta*, theta) 
-!              during post_processing. 
-!              This subroutine is called inside 'print_cf'.
+!              Reynolds stress) for a TTBL.
+!              This subroutine is called inside 'print_cf'. 
+!              The streamwise mean velocity profile is used to calculate 
+!              high order integrals of BL thickness parameters (delta*, theta) 
+!              during post_processing.
+!              These statistics must be finalized with different flow 
+!              realizations. var[u] must be finalized further, as:
+!                         var[u] = var[u] - mean[u]**2 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!       
 subroutine print_mean_stats(ux,uy,uz)
@@ -745,11 +748,13 @@ subroutine print_mean_stats(ux,uy,uz)
       ! Header
       write(iunit, *) 'Mean statistics calculated runtime.'
       write(iunit, *) ' '
-      write(iunit, *) 'Pay attention that statistics need to be averaged later'
+      write(iunit, *) 'Pay attention that these statistics need to be averaged later'
       write(iunit, *) 'with different flow realizations.'
       write(iunit, *) ' '
-      write(iunit, *) 'var[u] needs to be finalized later by subtracting (mean[u])**2.'
-      write(iunit, *) 'The finalization of 2nd order statistics can be performed in order to check'
+      write(iunit, *) 'Only var[u] needs to be finalized later by subtracting (mean[u])**2,'
+      write(iunit, *) 'due to the symmetries of the TTBL.'
+      write(iunit, *) ' '     
+      write(iunit, *) 'The finalization of all 2nd order statistics can be performed in order to check'
       write(iunit, *) 'the correctness of the calculations.' 
       write(iunit, *) ' '
       write(iunit, '(9(A13, A1, 1X))') 'umean(y,t,nr)',  ',', &

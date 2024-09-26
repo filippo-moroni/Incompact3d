@@ -106,8 +106,10 @@ def calculate_thickness_param():
         mean_stats_realiz[:,5,:] = mean_stats_realiz[:,5,:] - mean_stats_realiz[:,2,:]**2  # spanwise    velocity variance    
         
         # Reynolds stress
-        mean_stats_realiz[:,6,:] = mean_stats_realiz[:,6,:] - mean_stats_realiz[:,0,:]*mean_stas  # streamwise velocity variance
-             
+        mean_stats_realiz[:,6,:] = mean_stats_realiz[:,6,:] - mean_stats_realiz[:,0,:]*mean_stats_realiz[:,1,:]  # Reynolds stress <u'v'>
+        mean_stats_realiz[:,7,:] = mean_stats_realiz[:,7,:] - mean_stats_realiz[:,0,:]*mean_stats_realiz[:,2,:]  # Reynolds stress <u'w'>
+        mean_stats_realiz[:,8,:] = mean_stats_realiz[:,8,:] - mean_stats_realiz[:,1,:]*mean_stats_realiz[:,2,:]  # Reynolds stress <v'w'>
+
         #!--- Calculation of thickness parameters ---!
 
         # Calculate the displacement thickness delta*
