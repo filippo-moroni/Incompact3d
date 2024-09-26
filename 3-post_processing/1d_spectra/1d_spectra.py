@@ -86,9 +86,9 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 #!--- Calculations ---!
           
 # Inner quantities
-sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
-delta_nu = nu / sh_vel                    # viscous length
-y_plus   = y / delta_nu                   # y+
+sh_velx  = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
+delta_nu = nu / sh_velx                   # viscous length
+y_plus   = y  / delta_nu                  # y+
 Ly_plus  = Ly / delta_nu                  # Ly+
 
 # Spanwise mesh spacing
@@ -101,7 +101,7 @@ if itype == 13:
     (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
     
     # Friction Reynolds number
-    re_tau = sh_vel * bl_thick / nu
+    re_tau = sh_velx * bl_thick / nu
     re_tau = int(re_tau)
 
     # Print friction Reynolds number, boundary layer thickness and
@@ -167,10 +167,10 @@ nzh = nz // 2
 
 # Resize arrays and rescale in wall units 
 kz     = kz[:nzh]*delta_nu
-Euuz   = Euuz[:,:nzh] / sh_vel**2
-Evvz   = Evvz[:,:nzh] / sh_vel**2
-Ewwz   = Ewwz[:,:nzh] / sh_vel**2
-Euvz   = Euvz[:,:nzh] / sh_vel**2
+Euuz   = Euuz[:,:nzh] / sh_velx**2
+Evvz   = Evvz[:,:nzh] / sh_velx**2
+Ewwz   = Ewwz[:,:nzh] / sh_velx**2
+Euvz   = Euvz[:,:nzh] / sh_velx**2
 
 # Pre-multiply if asked
 if i_premult == 1:
