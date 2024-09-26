@@ -393,7 +393,7 @@ subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
   use MPI 
               
   use var,       only : td2,di2,phi2
-  use param,     only : zero
+  use param,     only : zero, itype, itype_ttbl, itype_channel
   use variables
     
   implicit none
