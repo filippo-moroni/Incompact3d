@@ -122,7 +122,7 @@ subroutine print_cf(ux,uy,uz,phi)
                             'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                    &
                             'cfx',       ',', 'A_fact',                                            &
                             't_nu',      ',', 't',         ',', 'ts',      ',',                    &
-                            'delta_99',  ',', 'Re_tau',    ',', 'P_in'                             &         
+                            'delta_99',  ',', 'Re_tau',    ',', 'P_in'                                      
                             
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
