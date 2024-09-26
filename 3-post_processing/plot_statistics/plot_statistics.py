@@ -123,12 +123,18 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 # Mesh spacings
 delta_x = Lx / nx
 delta_z = Lz / nz
-           
-# (Total) wall shear stress: in case of fixed wall(s), mean spanwise gradient 'mg_z' is zero
-# Used to check maximum numerical resolutions (mesh spacings and viscous time) 
+
+"""           
+(Total) wall shear stress is used to check maximum numerical resolutions (mesh spacings and viscous time).
+In case of fixed wall(s), the mean spanwise gradient 'mg_z' is zero, so the total wall shear stress
+is equivalent to the streamwise wall shear stress.
+"""
 tau_wtot  = nu*np.sqrt(mg_x[0]**2 + mg_z[0]**2) 
 
-# Streamwise wall shear stress: used to rescale statistics in wall units
+"""
+Streamwise wall shear stress is used to rescale statistics in wall units 
+(with or without wall oscillations).
+"""
 tau_wx   = nu*np.abs(mg_x[0])
 
 # Shear velocities
@@ -138,8 +144,8 @@ sh_vel_tot = np.sqrt(tau_wtot)        # total shear velocity (based on total mea
 delta_nu_x   = nu / sh_vel_x          # viscous length based on streamwise shear velocity
 delta_nu_tot = nu / sh_vel_tot        # viscous length based on total shear velocity
 
-t_nu_x      = nu / (sh_vel_x ** 2)    # viscous time based on streamwise shear velocity
-t_nu_tot    = nu / (sh_vel_tot ** 2)  # viscous time based on total shear velocity
+t_nu_x      = nu / (sh_vel_x ** 2)    # viscous time based on streamwise shear velocity, used to rescale vorticity
+t_nu_tot    = nu / (sh_vel_tot ** 2)  # viscous time based on total shear velocity, used to check time-step value
   
 # Rescaling grid spacings and domain dimensions through 'total' viscous length
 delta_x_plus = delta_x / delta_nu_tot
@@ -205,11 +211,11 @@ if post_mean:
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
     mean_w_plus  = mean_w / sh_vel_x
 
-# Rescale vorticity through 'total' viscous time unit
+# Rescale vorticity through 'streamwise' viscous time unit
 if post_vort:
-    vort_x *= t_nu_tot
-    vort_y *= t_nu_tot
-    vort_z *= t_nu_tot
+    vort_x *= t_nu_x
+    vort_y *= t_nu_x
+    vort_z *= t_nu_x
 
 # Rescale TKE terms (same as Mansour et al. (1988))
 if post_tke_eq:
