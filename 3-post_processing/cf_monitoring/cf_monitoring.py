@@ -265,6 +265,10 @@ elif itype == 13:
     # Call subroutine for calculations of 6th order TTBL thickness parameters    
     (disp_t, mom_t) = calculate_thickness_param()
 
+    # Calculate Reynolds numbers based on displacement thickness and momentum thickness
+    re_disp_t = disp_t * re
+    re_mom_t  = mom_t  * re
+
     print(">>> Saving 'high_order_integrals_evol.txt' in data_post/cf_monitoring/.")
     print()
 
@@ -274,7 +278,9 @@ elif itype == 13:
                 f"{'delta_99':>{pp.c_w}}, "     +
                 f"{'disp_t':>{pp.c_w}}, "       +
                 f"{'mom_t':>{pp.c_w}}, "        +  
-                f"{'Re_tau':>{pp.c_w}}, "       +    
+                f"{'Re_tau':>{pp.c_w}}, "       +
+                f"{'Re_delta*':>{pp.c_w}}, "    +
+                f"{'Re_theta':>{pp.c_w}}, "     +
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
         for j in range(0, len(time_unit)):
@@ -283,6 +289,8 @@ elif itype == 13:
                     f"{disp_t[j]:{pp.fs}}, "    +
                     f"{mom_t[j]:{pp.fs}}, "     + 
                     f"{re_tau[j]:{pp.fs}}, "    +
+                    f"{re_disp_t[j]:{pp.fs}}, " +
+                    f"{re_mom_t[j]:{pp.fs}}, "  +
                     f"{time_unit[j]:{pp.fs}}\n" )
 
 #!--------------------------------------------------------------------------------------!
@@ -462,13 +470,54 @@ if itype == 13:
     #!--------------------------------------------------------------------------------------!
 
     print()
+    print(">>> Plotting friction Reynolds number vs momentum thickness Reynolds number.")
+    print(">>> Reference data Cimarelli et al. (2024a).")
+    print(">>> Reference straight line Schlatter & Orlu (2010).")
+    print()
+
+    # Subplots environment
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+   
+    # Friction Reynolds number vs momentum thickness Reynolds number
+    ax.plot(re_mom_t, re_disp_t, color='C0', linestyle='-', linewidth=pp.lw)
+    
+    # G. Boga (Cimarelli et al. (2024a)) 
+    ax.plot(retheta_gboga, retau_gboga, color='C1', linestyle='-', linewidth=pp.lw)
+
+    # Schlatter & Orlu (2010), straight line (so: Schlatter & Orlu)
+    re_theta_so = np.linspace(1, 3000, 3000)
+    re_tau_so   = 1.13 * re_theta_so**0.843
+    ax.plot(re_theta_so, re_tau_so, color='C2', linestyle='-', linewidth=pp.lw)
+    
+    # Axes labels
+    ax.set_xlabel(r'$Re_\theta$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$Re_\tau$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Axes ranges
+    xliminf = np.min(re_mom_t)
+    xlimsup = np.max(re_mom_t)
+    yliminf = np.min(re_tau) * 0.0
+    ylimsup = np.max(re_tau) * 1.2 
+              
+    # Description
+    description  = 'Friction Reynolds number against '\
+                   'momentum thickness Reynolds number. '
+    description += 'Reference data Cimarelli et al. (2024a).'
+    description += 'Reference straight line Schlatter & Orlu (2010).'
+    
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
+    
+    # Save and show the figure
+    save_and_show_plot('re_tau_vs_re_theta', add_string=add_string, subfolder='time_evolution', description=description)
+
+    #!--------------------------------------------------------------------------------------!
+
+    print()
     print(">>> Plotting displacement thickness Reynolds number vs momentum thickness Reynolds number.")
     print(">>> Reference data Cimarelli et al. (2024a).")
     print()
-
-    # Calculate Reynolds numbers based on displacement thickness and momentum thickness
-    re_disp_t = disp_t * re
-    re_mom_t  = mom_t  * re
 
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
