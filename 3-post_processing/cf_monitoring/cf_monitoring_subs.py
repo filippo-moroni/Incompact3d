@@ -61,11 +61,12 @@ def calculate_thickness_param():
     # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified'
     nsavings = ilast // ioutput_cf + 1
 
-    # Initialize the mean streamwise velocity profile array (function of y and specific flow realization)
-    umean = np.zeros((ny, nr))
-
-    # Initialize the array to sum the mean streamwise velocity profile (function of y and of time)    
-    umean_realiz = np.zeros((ny, nsavings))
+    # Initialize instantaneous mean statistics array, not averaged with different flow realizations
+    # we have 9 different statistics (mean, var, Reynolds stress) (function of y)
+    mean_stats = np.zeros((ny, 9))
+    
+    # Initialize mean statistics array, function of y and time
+    mean_stats_realiz = np.zeros((ny, 9, nsavings))
 
     # Initialize arrays for TTBL thickness parameters
     disp_t = np.zeros(nsavings)   # displacement thickness, delta*
@@ -88,19 +89,30 @@ def calculate_thickness_param():
 
             ts_iter = j*ioutput_cf
         
-        # Do loop over different realizations
+        # Do loop over different realizations, from 1 to nr
         for i in range(1, nr+1, 1):
                
-            # Read of 'umean' data from 'data/mean_stats_runtime' folder
-            umean[:,i-1] = np.loadtxt(f'data_r{i:01d}/umean/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=1, delimiter=None, dtype=np.float64)
+            # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime' folder
+            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=10, delimiter=None, dtype=np.float64)
+                        
+            # Summing mean statistics array with different realizations into the overall array for time-evolution
+            mean_stats_realiz[:,:,j] = mean_stats_realiz[:,:,j] + mean_stats[:,:] / nr
             
-            # Summing into a sum array for different realizations
-            umean_realiz[:,j] = umean_realiz[:,j] + umean[:,i-1]
-    
+        #!--- Finalize 2nd order statistics ---!
+        
+        # Variances
+        mean_stats_realiz[:,3,:] = mean_stats_realiz[:,3,:] - mean_stats_realiz[:,0,:]**2  # streamwise  velocity variance
+        mean_stats_realiz[:,4,:] = mean_stats_realiz[:,4,:] - mean_stats_realiz[:,1,:]**2  # wall-normal velocity variance
+        mean_stats_realiz[:,5,:] = mean_stats_realiz[:,5,:] - mean_stats_realiz[:,2,:]**2  # spanwise    velocity variance    
+        
+        # Reynolds stress
+        mean_stats_realiz[:,6,:] = mean_stats_realiz[:,6,:] - mean_stats_realiz[:,0,:]*mean_stas  # streamwise velocity variance
+             
         #!--- Calculation of thickness parameters ---!
 
         # Calculate the displacement thickness delta*
-        int1 = umean_realiz[:,j]/uwall  # 'integrand 1' 
+        # First column of the 'mean_stats_realiz' array is mean streamwise velocity profile
+        int1 = mean_stats_realiz[:,0,j]/uwall  # 'integrand 1' 
 
         # Interpolation at the 6th order of accuracy with a spline of 5th order, 
         # that passes through all data points
