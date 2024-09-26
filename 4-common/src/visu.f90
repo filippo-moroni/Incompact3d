@@ -429,11 +429,14 @@ contains
       write(ioxdmf,*)'        <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>'
     endif
   end subroutine write_xdmf_header
-
+  
   !-----------------------------------------------------------------------------!
-  ! Write the footer of the XDMF file
-  ! Adapted from https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !-----------------------------------------------------------------------------!
+  ! DESCRIPTION: Write the footer of the XDMF file
+  !              Adapted from: 
+  !              https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
+  !   AUTHOR(s): Unknown
+  ! MODIFIED BY: Filippo Moroni <filippo.moroni@unimore.it>
+  !-----------------------------------------------------------------------------! 
   subroutine write_xdmf_footer(ux,uz)
 
     use param
@@ -450,7 +453,7 @@ contains
     if(itype .eq. itype_ttbl) then
     
         ! Shear velocity bottom wall
-        call calculate_shear_velocity(ux,uz,sh_vel,sh_velx,sh_velz)
+        call calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
       
         ! Boundary layer thickness
         call calculate_bl_thick(ux,delta_99,counter)
@@ -619,13 +622,13 @@ contains
     write(gen_h5path, "(A)") path_to_h5file//num//"/"//filename
 #endif
   end function gen_h5path
-  
-  !----------------------------------------------!
-  ! Generation of the filename without pathname, !
-  ! used in gen_h5path for .xdmf file creation.  !
-  !                                              !
-  ! Adapted from gen_filename.                   !
-  !----------------------------------------------!
+    
+  !-----------------------------------------------------------------------------!
+  ! DESCRIPTION: Generation of the filename without pathname, 
+  !              used in gen_h5path for .xdmf file creation.  
+  !              Adapted from 'gen_filename' function.
+  !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+  !-----------------------------------------------------------------------------! 
   function gen_filename2(varname, num, ext)
 
     character(len=*), intent(in) :: varname, num, ext
