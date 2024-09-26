@@ -213,11 +213,11 @@ if post_vort:
 
 # Rescale TKE terms
 if post_tke_eq:
-    tke_turbt  /= sh_vel_x**3 * nu
-    tke_presst /= sh_vel_x**3 * nu
-    tke_difft  /= sh_vel_x**3 * nu
-    tke_prod   /= sh_vel_x**3 * nu
-    tke_pseps  /= sh_vel_x**3 * nu
+    tke_turbt  = tke_turbt  * nu / sh_vel_x**4
+    tke_presst = tke_presst * nu / sh_vel_x**4
+    tke_difft  = tke_difft  * nu / sh_vel_x**4
+    tke_prod   = tke_prod   * nu / sh_vel_x**4
+    tke_pseps  = tke_pseps  * nu / sh_vel_x**4
 
 #!--------------------------------------------------------------------------------------!
     
