@@ -111,7 +111,7 @@ subroutine print_cf(ux,uy,uz,phi)
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
                              sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
-                             fric_coeff, ',', A_fact       ',',                                                         &
+                             fric_coeff, ',', A_fact,      ',',                                                         &
                              t_viscous,  ',', t,           ',', itime,       ',',                                       &
                              delta_99,   ',', re_tau_tbl,  ',', powerin                                         
                              
@@ -120,14 +120,14 @@ subroutine print_cf(ux,uy,uz,phi)
               ! Header
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12)') &
                             'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                    &
-                            'cfx',       ',', 'A_fact'                                             &
+                            'cfx',       ',', 'A_fact',                                            &
                             't_nu',      ',', 't',         ',', 'ts',      ',',                    &
                             'delta_99',  ',', 'Re_tau',    ',', 'P_in'                             &         
                             
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
                              sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
-                             fric_coeff, ',', A_fact       ',',                                                         &
+                             fric_coeff, ',', A_fact,      ',',                                                         &
                              t_viscous,  ',', t,           ',', itime,       ',',                                       &
                              delta_99,   ',', re_tau_tbl,  ',', powerin 
           end if
@@ -153,7 +153,7 @@ subroutine print_cf(ux,uy,uz,phi)
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.4,A, F12.6,A,F12.4,A,I12,A)') &
                              sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                & 
-                             fric_coeff, ',', ubulk        ',',                                  &
+                             fric_coeff, ',', ubulk,       ',',                                  &
                              t_viscous,  ',', t,           ',', itime
                              
           else
@@ -167,7 +167,7 @@ subroutine print_cf(ux,uy,uz,phi)
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.4,A, F12.6,A,F12.4,A,I12,A)') &
                              sh_vel,     ',', sh_velx,     ',', sh_velz,   ',',                  & 
-                             fric_coeff, ',', ubulk        ',',                                  &
+                             fric_coeff, ',', ubulk,       ',',                                  &
                              t_viscous,  ',', t,           ',', itime
           end if
               close(iunit)
