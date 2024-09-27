@@ -931,11 +931,11 @@ contains
     call MPI_REDUCE(recmax_in,recmax_out,4,real_type,MPI_MAX,0,MPI_COMM_WORLD,code)
 
     if (nrank == 0) then
-      write(*,*) 'Reynolds cell (or numerical Péclet, Pé)'
-      write(*,"(' Pé,x                   : ',F17.8)") recmax_out(1) / xnu
-      write(*,"(' Pé,y                   : ',F17.8)") recmax_out(2) / xnu
-      write(*,"(' Pé,z                   : ',F17.8)") recmax_out(3) / xnu
-      write(*,"(' Pé,sum                 : ',F17.8)") recmax_out(4) / xnu
+      write(*,*) 'Reynolds cell (or numerical Péclet, Pe)'
+      write(*,"(' Pe,x                   : ',F17.8)") recmax_out(1) / xnu
+      write(*,"(' Pe,y                   : ',F17.8)") recmax_out(2) / xnu
+      write(*,"(' Pe,z                   : ',F17.8)") recmax_out(3) / xnu
+      write(*,"(' Pe,sum                 : ',F17.8)") recmax_out(4) / xnu
       write(*,*) '-----------------------------------------------------------'
     end if
   end subroutine compute_reynolds_cell

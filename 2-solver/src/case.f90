@@ -347,7 +347,7 @@ contains
   !              Compute and show:
   !               - CFL (or Co):  Courant number;
   !               - D:            Numerical Fourier number;
-  !               - Pé (or Re_c): Numerical Péclet or Reynolds cell number;
+  !               - Pe (or Re_c): Numerical Péclet or Reynolds cell number;
   !               - S:            Stability parameter (Thompson et al. (1985)).
   !-----------------------------------------------------------------------------!
   subroutine test_flow(rho1,ux1,uy1,uz1,phi1,ep1,drho1,divu3)
@@ -373,10 +373,19 @@ contains
     if ((mod(itime,ilist)==0 .or. itime == ifirst .or. itime == ilast)) then
        call divergence(dv3,rho1,ux1,uy1,uz1,ep1,drho1,divu3,2)
        call test_speed_min_max(ux1,uy1,uz1)
+       
+       ! Courant number or CFL
        call compute_cfl(ux1,uy1,uz1)
+       
+       ! Numerical Fourier number
        call compute_cfldiff()
+       
+       ! Numerical Péclet or Reynolds cell number
        call compute_reynolds_cell(ux1,uy1,uz1)
+       
+       ! Stability parameter (Thompson et al. (1985))
        call compute_stab_param(ux1,uy1,uz1)
+       
        if (iscalar==1) call test_scalar_min_max(phi1)
     endif
 
