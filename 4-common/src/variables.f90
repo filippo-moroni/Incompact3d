@@ -81,6 +81,7 @@ contains
 #ifdef DEBG
     if (nrank == 0) write(*,*) 'Init_variables start'
 #endif
+
     if (nrank == 0) write(*,*) '==========================================================='
     if (nrank == 0) write(*,*) 'Initializing variables...'
 
@@ -101,9 +102,15 @@ contains
     endif
     call decomp_info_init(nxmsize, nymsize, nzmsize, ph)
     
-    !xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively. In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
+    ! xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. 
+    ! The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively.
+    ! In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. 
+    ! So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
 
-    !xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system. Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, it is easier to know which process owns the plane if global index is used).
+    ! xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system.
+    ! Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. 
+    ! It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain,
+    ! it is easier to know which process owns the plane if global index is used).
 
     !X PENCILS
     call alloc_x(ux1, opt_global=.true.) !global indices
@@ -148,6 +155,7 @@ contains
     tdi1 = zero
     call alloc_x(ep1)
     tep1 = zero
+    
     if (ilmn) then
       call alloc_x(mu1, opt_global=.true.)
       mu1 = one
@@ -168,7 +176,7 @@ contains
     allocate(pgz1(nxmsize,xsize(2),xsize(3)))
     pgz1 = zero
 
-    !inflow/ouflow 2d arrays (Boundary Conditions)
+    ! inflow/ouflow 2d arrays (Boundary Conditions)
     allocate(bxx1(xsize(2),xsize(3)))
     bxx1=zero
     allocate(bxy1(xsize(2),xsize(3)))
@@ -218,7 +226,7 @@ contains
     allocate(bzo(xsize(2),xsize(3)))
     bzo=zero
     
-    !pre_correc 2d array
+    ! pre_correc 2d array
     allocate(dpdyx1(xsize(2),xsize(3)),dpdyxn(xsize(2),xsize(3)))
     dpdyx1=zero
     dpdyxn=zero
@@ -238,7 +246,7 @@ contains
     dpdyz1=zero
     dpdyzn=zero
 
-    !arrays for visualization!pay attention to the size!
+    ! arrays for visualization; pay attention to the size!
     allocate(uvisu(xstV(1):xenV(1),xstV(2):xenV(2),xstV(3):xenV(3)))
     uvisu=zero
 
@@ -835,7 +843,7 @@ contains
     allocate(vz(zsize(1),zsize(2)))
     vz=zero
 
-    !O6SVV
+    ! O6SVV
     allocate(newsm(ny))
     newsm=zero
     allocate(newtm(ny))
@@ -1055,7 +1063,7 @@ contains
     allocate(ciwi6z(nz))
     ciwi6z=zero
 
-    !module waves
+    ! module waves
     allocate(zkz(nz/2+1))
     zkz=zero
     allocate(zk2(nz/2+1))
@@ -1077,7 +1085,7 @@ contains
     allocate(exs(nx))
     exs=zero
 
-    !module mesh
+    ! module mesh
     allocate(ppy(ny))
     ppy=zero
     allocate(pp2y(ny))
