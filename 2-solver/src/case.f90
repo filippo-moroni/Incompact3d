@@ -123,21 +123,23 @@ contains
     ! Channel flow
     if (itype.eq.itype_channel) then
 
-       ! Calculate the spanwise wall oscillations
-       if (iswitch_wo .eq. 1) then
+       ! Calculate the spanwise wall oscillations if enabled and only after a specified time-step
+       if (iswitch_wo .eq. 1 .and. itime .ge. start_wo) then
            call spanwise_wall_oscillations (ux,uz)
        end if
 
+       ! Apply boundary conditions b_ijn
        call boundary_conditions_channel (ux, uy, uz, phi)
     
     ! TTBL
     elseif (itype.eq.itype_ttbl) then
        
-       ! Calculate the spanwise wall oscillations
-       if (iswitch_wo .eq. 1) then
+       ! Calculate the spanwise wall oscillations if enabled and only after a specified time-step
+       if (iswitch_wo .eq. 1 .and. itime .ge. start_wo) then
            call spanwise_wall_oscillations (ux,uz)
        end if
        
+       ! Apply boundary conditions b_ijn
        call boundary_conditions_ttbl (phi)   
        
     endif
