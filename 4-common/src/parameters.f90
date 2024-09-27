@@ -51,7 +51,7 @@ subroutine parameter(input_i3d)
                         ilist, isnap, ivisu, nvisu, output2D, start_output, end_output
   
   NAMELIST /AdditionalControls/ iswitch_wo
-  NAMELIST /WallOscillations/ ifeedback_control, a_wo, t_wo, in_phase
+  NAMELIST /WallOscillations/ ifeedback_control, a_wo, t_wo, in_phase, start_wo
   
   NAMELIST /ChannelParam/ cpg, idir_stream, wrotation, spinup_time
   NAMELIST /TemporalTBLParam/ uwall, twd, uln, lln, phiwall 
@@ -627,6 +627,7 @@ subroutine parameter_defaults()
   a_wo = twelve          ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled) 
   t_wo = onehundred      ! Period of spanwise wall oscillations (in friction units if feedback control enabled) 
   in_phase = zero        ! Initial phase of the wall oscillations, given as fraction of pi [rad]
+  start_wo = 1           ! Time-step at which we start (>=) to apply spanwise wall oscillations (w: wall; o:oscillations)
 
   ! ChannelParam 
   cpg         = .FALSE.

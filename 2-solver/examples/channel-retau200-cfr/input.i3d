@@ -100,6 +100,7 @@ ifeedback_control = 0 ! Switcher to enable feedback control from run-time stream
 a_wo = 0.503746       ! Amplitude of spanwise wall oscillations (in friction units if feedback control enabled)  
 t_wo = 12.0           ! Period of spanwise wall oscillations (in friction units if feedback control enabled)
 in_phase = 0.0        ! Initial phase of the wall oscillations, given as fraction of pi [rad]
+start_wo = 1          ! Time-step at which we start (>=) to apply spanwise wall oscillations (w: wall; o:oscillations)
 
 /End
 

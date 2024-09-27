@@ -475,8 +475,8 @@ module param
   !--- Additional controls namelist and related quantities ---!
   
   ! Spanwise wall oscillations
-  integer      :: iswitch_wo          ! Switcher to enable the reading of wall-oscillation parameters and the application of wall oscillations
-  real(mytype) :: span_vel            ! Spanwise velocity at the wall due to imposed wall oscillations, variable calculated
+  integer      :: iswitch_wo             ! Switcher to enable the reading of wall-oscillation parameters and the application of wall oscillations
+  real(mytype) :: span_vel = 0.0_mytype  ! Spanwise velocity at the wall due to imposed wall oscillations, variable calculated; initialised to zero
   
   !--- TTBL namelist and related quantities ---!
   
@@ -513,6 +513,7 @@ module param
   real(mytype) :: t_wo                ! Period of spanwise wall oscillations (in friction units if feedback control enabled) 
   integer      :: ifeedback_control   ! Switcher to enable feedback control from run-time streamwise shear velocity (closed loop)
   real(mytype) :: in_phase            ! Initial phase of the wall oscillations, given as fraction of pi [rad]
+  integer      :: start_wo            ! Time-step at which we start (>=) to apply spanwise wall oscillations (w: wall; o:oscillations)
     
   ! Numbers
   real(mytype),parameter :: zpzeroone=0.01_mytype
