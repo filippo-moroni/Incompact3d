@@ -757,7 +757,7 @@ subroutine print_mean_stats(ux,uy,uz)
       write(iunit, *) 'The finalization of all 2nd order statistics can be performed in order to check'
       write(iunit, *) 'the correctness of the calculations.' 
       write(iunit, *) ' '
-      write(iunit, '(9(A13, A1, 1X))') 'umean(y,t,nr)',  ',', &
+      write(iunit, '(9(A14, A1, 1X))') 'umean(y,t,nr)',  ',', &
                                        'vmean(y,t,nr)',  ',', &
                                        'wmean(y,t,nr)',  ',', &
                                        'var[u](y,t,nr)', ',', &
@@ -769,7 +769,7 @@ subroutine print_mean_stats(ux,uy,uz)
 
       ! Write mean statistics, function of y-direction, time and specific realization
       do j=1,ny
-          write(iunit, '(9(F13.9, A1, 1X))') u1meanHT(j), ',', &  ! Mean streamwise  velocity
+          write(iunit, '(9(F14.9, A1, 1X))') u1meanHT(j), ',', &  ! Mean streamwise  velocity
                                              v1meanHT(j), ',', &  ! Mean wall-normal velocity
                                              w1meanHT(j), ',', &  ! Mean spanwise    velocity
                                              u2meanHT(j), ',', &  ! Streamwise  velocity variance
