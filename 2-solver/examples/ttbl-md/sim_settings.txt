@@ -1,0 +1,95 @@
+!----- Temporal TBL setting parameters -----!
+
+!----- Inputs: -----!
+╒════════════╤════════════╤═════════════════════════════════╕
+│   nx/ny/nz │   Lx/Ly/Lz │   (Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t) │
+╞════════════╪════════════╪═════════════════════════════════╡
+│        256 │       88.4 │                               4 │
+├────────────┼────────────┼─────────────────────────────────┤
+│        577 │       66.3 │                               3 │
+├────────────┼────────────┼─────────────────────────────────┤
+│        256 │       44.2 │                               2 │
+╘════════════╧════════════╧═════════════════════════════════╛
+╒════════╤═══════╤═════════╤═══════╤═══════╤══════╤═══════════╕
+│   beta │    nu │   Uwall │    dt │   twd │   Re │   nrealiz │
+╞════════╪═══════╪═════════╪═══════╪═══════╪══════╪═══════════╡
+│      2 │ 0.002 │       1 │ 0.005 │     1 │  500 │         4 │
+╘════════╧═══════╧═════════╧═══════╧═══════╧══════╧═══════════╛
+!--- BL thickness delta_99 (bl_t) @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!
+╒════════════════╤══════════╕
+│   bl_thickness │   cf_max │
+╞════════════════╪══════════╡
+│           22.1 │    0.007 │
+╘════════════════╧══════════╛
+!----- Outputs: -----!
+
+!--- Non-dimensional domain dimensions: ---!
+╒═════════════════════╤══════════════════════════╤═══════════════════════════════╕
+│   Lx+/Ly+/Lz+ at IC │   Lx+/Ly+/Lz+ at peak cf │   Lx+/Ly+/Lz+ at Re_tau = 500 │
+╞═════════════════════╪══════════════════════════╪═══════════════════════════════╡
+│                58.7 │                   2614.9 │                        1974.9 │
+├─────────────────────┼──────────────────────────┼───────────────────────────────┤
+│                44   │                   1961.2 │                        1481.1 │
+├─────────────────────┼──────────────────────────┼───────────────────────────────┤
+│                29.3 │                   1307.5 │                         987.4 │
+╘═════════════════════╧══════════════════════════╧═══════════════════════════════╛
+!--- Numerics-related parameters: ---!
+╒═════════╤═══════╤════════╤═══════╕
+│   CFL,x │   D,y │   Pe,x │   S,x │
+╞═════════╪═══════╪════════╪═══════╡
+│    0.01 │  0.09 │ 172.66 │  1.25 │
+╘═════════╧═══════╧════════╧═══════╛
+!--- Mesh sizes at IC, at peak cf and at Re_tau = 500: ---!
+╒═══════════╤══════╤═══════════╤════════════════╕
+│ /         │ IC   │ peak cf   │   Re_tau = 500 │
+╞═══════════╪══════╪═══════════╪════════════════╡
+│ delta_x+  │ 0.23 │ 10.21     │           7.71 │
+├───────────┼──────┼───────────┼────────────────┤
+│ delta_y1+ │ 0.01 │ 0.32      │           0.24 │
+├───────────┼──────┼───────────┼────────────────┤
+│ delta_z+  │ 0.11 │ 5.11      │           3.86 │
+├───────────┼──────┼───────────┼────────────────┤
+│ delta_yd+ │ /    │ /         │           6.8  │
+╘═══════════╧══════╧═══════════╧════════════════╛
+!--- Miscellaneous ---!
+╒═════════╤════════╤════════════╤══════════════╤═════════════╤═══════════════╤══════════════╕
+│   npvis │   npsl │   theta_sl │   sl_99^+_IC │   sh_vel_IC │   sh_vel_peak │   sh_vel_500 │
+╞═════════╪════════╪════════════╪══════════════╪═════════════╪═══════════════╪══════════════╡
+│      15 │    132 │      0.108 │     0.990281 │  0.00132782 │     0.0591608 │      0.04468 │
+╘═════════╧════════╧════════════╧══════════════╧═════════════╧═══════════════╧══════════════╛
+!--- Memory (storage) requirement and CPUh ---!
+╒══════════╤═════════╤════════════════╤═════════╕
+│    n_tot │   nsnap │   mem_tot [GB] │    CPUh │
+╞══════════╪═════════╪════════════════╪═════════╡
+│ 37814272 │       9 │         54.453 │ 35751.7 │
+╘══════════╧═════════╧════════════════╧═════════╛
+
+!--- INFO: ---!
+We are employing 3 different cf values:
+
+1) Value obtained from the derivative at the wall due to the IC.
+
+2) Peak value found in literature (e.g. 0.007, see Cimarelli et al. (2024)).
+
+3) Value at Re_tau = 500, again according to Cimarelli et al. (2024).
+
+!--- List of acronyms & variables: ---!
+
+nrealiz:       Number of flow realizations considered.
+S:             Stability parameter, S < 1 (Thompson et al. (1985)).
+npvis:         Number of points viscous sublayer at cf peak (y+ < 5).
+npsl:          Number of points initial shear layer (y+ < sl_99^+_IC).
+theta_sl:      Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).
+sl_99^+_IC:    Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional).
+sh_vel_IC:     Shear velocity of the initial condition.
+sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).
+sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).
+n_tot:         Total number of grid points.
+nsnap:         Number of snapshots for a single flow realization.
+mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).
+CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).
+               Number of elements per CPU must be higher than 100'000 and a safety factor is included.
+
+!-------------------------------------!
+
+
