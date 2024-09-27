@@ -73,21 +73,22 @@ def calculate_thickness_param():
     mom_t  = np.zeros(nsavings)   # momentum     thickness, theta
 
     """
-    Do loop from the first saving of umean (IC) to the last one, with increment ioutput_cf.
+    Do loop over all savings of 'mean_stats_runtime' files. 
+    The ts goes from the first saving (IC, ts = 1) to the last one, with increment ioutput_cf.
     """
-    for j in range(0, nsavings, 1):
+    for time_index in range(0, nsavings, 1):
       
         #!--- Calculate ts to open 'umean-ts' file (ts_iter: time-step of the iterations) ---!
         
         # ts of the initial condition is ts = 1
-        if j == 0:
+        if time_index == 0:
 
             ts_iter = 1
 
         # All the other ts are multiples of 'output_cf'
         else:
 
-            ts_iter = j*ioutput_cf
+            ts_iter = time_index*ioutput_cf
         
         # Do loop over different realizations, from 1 to nr
         for i in range(1, nr+1, 1):
@@ -96,7 +97,7 @@ def calculate_thickness_param():
             mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=10, delimiter=None, dtype=np.float64)
                         
             # Summing mean statistics array with different realizations into the overall array for time-evolution
-            mean_stats_realiz[:,:,j] = mean_stats_realiz[:,:,j] + mean_stats[:,:] / nr
+            mean_stats_realiz[:,:,time_index] = mean_stats_realiz[:,:,time_index] + mean_stats[:,:] / nr
             
         #!--- Finalize 2nd order statistics ---!
         
@@ -114,7 +115,7 @@ def calculate_thickness_param():
 
         # Calculate the displacement thickness delta*
         # First column of the 'mean_stats_realiz' array is mean streamwise velocity profile
-        int1 = mean_stats_realiz[:,0,j]/uwall  # 'integrand 1' 
+        int1 = mean_stats_realiz[:,0,time_index]/uwall  # 'integrand 1' 
 
         # Interpolation at the 6th order of accuracy with a spline of 5th order, 
         # that passes through all data points
