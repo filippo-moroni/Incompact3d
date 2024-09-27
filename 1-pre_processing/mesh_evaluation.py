@@ -47,7 +47,7 @@ from pre_processing_tools import mem_and_cpuh, plot_initial_vel_profile
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
-(itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo,  
+(itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, ioutput_cf, iswitch_wo,  
  add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
 ) = read_input_files('input.i3d','post.prm')
 
@@ -113,14 +113,13 @@ elif itype == 3:
     
     # Revert to total number of ny points for channel (they are halved in 'read_input_files')
     ny = (ny - 1) * 2 + 1          
-
-          
-# Number of points in the channel half (h: half)
-nyh = ((ny - 1) // 2) + 1
+        
+    # Number of points in the channel half (h: half) 
+    nyh = ((ny - 1) // 2) + 1
 
 #!--- Calculations valid for both TTBL and Channel ---!
 
-# Calculate the spacings along x and z (uniform)
+# Calculate spacings along x and z (uniform)
 delta_x = xlx / nx
 delta_z = zlz / nz
 
@@ -131,23 +130,23 @@ yp = stretching_mesh_y(ny, yly, beta, istret)
 calculate_geometric_quantities(ny, yp, delta_x)
 
 # Shear velocity at peak cf or at steady state 
-sh_vel_peak = np.sqrt((cf/2.0)) * uref
+sh_vel_max = np.sqrt((cf/2.0)) * uref
 
 # Viscous length at peak cf or at steady state
-delta_nu_peak = nu / sh_vel_peak
+delta_nu_max = nu / sh_vel_max
 
 # First element y-dimension
 delta_y1 = yp[1] - yp[0]
 
 # Rescaling the mesh spacings with viscous unit at peak cf or at steady state
-delta_x_nd_peak  = round(delta_x  / delta_nu_peak, 2)
-delta_y1_nd_peak = round(delta_y1 / delta_nu_peak, 2)
-delta_z_nd_peak  = round(delta_z  / delta_nu_peak, 2)
+delta_x_nd_max  = round(delta_x  / delta_nu_max, 2)
+delta_y1_nd_max = round(delta_y1 / delta_nu_max, 2)
+delta_z_nd_max  = round(delta_z  / delta_nu_max, 2)
 
 # Non-dimensional domain dimensions at peak cf or at steady state (nd: non-dimensional)
-xlx_nd_peak = round(xlx / delta_nu_peak, 1)
-yly_nd_peak = round(yly / delta_nu_peak, 1)
-zlz_nd_peak = round(zlz / delta_nu_peak, 1)
+xlx_nd_max = round(xlx / delta_nu_max, 1)
+yly_nd_max = round(yly / delta_nu_max, 1)
+zlz_nd_max = round(zlz / delta_nu_max, 1)
 
 #!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC or at steady state ---!
    
@@ -169,13 +168,13 @@ S = round(((uref**2)*dt)/(2.0*nu), 2)
 npvis = 0     # number of points viscous sublayer
 height = 0.0  # cumulative height in viscous unit (y+)
     
-# Rescaling y-coordinates with viscous unit at peak cf
-yp_peak = yp / delta_nu_peak
+# Rescaling y-coordinates with viscous unit at peak cf or at steady state
+yp_max = yp / delta_nu_max
       
 for j in range(1, ny):
-    if height + yp_peak[j] - yp_peak[j-1] <= 5.0:
+    if height + yp_max[j] - yp_max[j-1] <= 5.0:
         npvis += 1 
-    height += yp_peak[j] - yp_peak[j-1]
+    height += yp_max[j] - yp_max[j-1]
         
 #!--------------------------------------------------!
 
@@ -310,9 +309,9 @@ if itype == 13:
     print('Height of the domain (Ly+) at IC:           ', yly_nd_ic)
     print('Width  of the domain (Lz+) at IC:           ', zlz_nd_ic)
     print()
-    print('Length of the domain (Lx+) at peak cf:      ', xlx_nd_peak)
-    print('Height of the domain (Ly+) at peak cf:      ', yly_nd_peak)
-    print('Width  of the domain (Lz+) at peak cf:      ', zlz_nd_peak)
+    print('Length of the domain (Lx+) at peak cf:      ', xlx_nd_max)
+    print('Height of the domain (Ly+) at peak cf:      ', yly_nd_max)
+    print('Width  of the domain (Lz+) at peak cf:      ', zlz_nd_max)
     print()
     print('Length of the domain (Lx+) at Re_tau = 500: ', xlx_nd_500)
     print('Height of the domain (Ly+) at Re_tau = 500: ', yly_nd_500)
@@ -320,23 +319,23 @@ if itype == 13:
     print()
 
 if itype == 3:
-    print('Length of the domain (Lx+) at steady state: ', xlx_nd_peak)
-    print('Height of the domain (Ly+) at steady state: ', yly_nd_peak)
-    print('Width  of the domain (Lz+) at steady state: ', zlz_nd_peak)
+    print('Length of the domain (Lx+) at steady state: ', xlx_nd_max)
+    print('Height of the domain (Ly+) at steady state: ', yly_nd_max)
+    print('Width  of the domain (Lz+) at steady state: ', zlz_nd_max)
     print()
 
 print('!--- Numerics-related parameters based on reference velocity U_ref: ---!')
 print()
 print('Estimated CFL,x: ', CFL)
 print('Estimated D,y  : ', D)
-print('Estimated Pé,x : ', Pe)
+print('Estimated Pe,x : ', Pe)
 print('Estimated stability parameter S,x: ', S)
 print()
 print('!--- Mesh sizes at peak cf or at steady state ---!')
 print()
-print('Mesh size x-direction: delta_x+ = ', delta_x_nd_peak)
-print('Mesh size y-direction at the first element near the wall: delta_y1+ = ', delta_y1_nd_peak)
-print('Mesh size z-direction: delta_z+ = ', delta_z_nd_peak)
+print('Mesh size x-direction: delta_x+ = ', delta_x_nd_max)
+print('Mesh size y-direction at the first element near the wall: delta_y1+ = ', delta_y1_nd_max)
+print('Mesh size z-direction: delta_z+ = ', delta_z_nd_max)
 print()
 
 if itype == 13:
@@ -410,27 +409,27 @@ if itype == 13:
     # Create data arrays with outputs
     data1 = [
              ["Lx+/Ly+/Lz+ at IC", "Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at Re_tau = 500" ],
-             [ xlx_nd_ic,           xlx_nd_peak,              xlx_nd_500                   ],
-             [ yly_nd_ic,           yly_nd_peak,              yly_nd_500                   ],
-             [ zlz_nd_ic,           zlz_nd_peak,              zlz_nd_500                   ],
+             [ xlx_nd_ic,           xlx_nd_max,               xlx_nd_500                   ],
+             [ yly_nd_ic,           yly_nd_max,               yly_nd_500                   ],
+             [ zlz_nd_ic,           zlz_nd_max,               zlz_nd_500                   ],
             ]
            
     data2 = [
-             ["CFL,x", "D,y", "Pé,x", "S,x"],
+             ["CFL,x", "D,y", "Pe,x", "S,x"],
              [ CFL,     D,     Pe,     S   ],
             ]
             
     data3 = [
              ["/",           "IC",           "peak cf",        "Re_tau = 500"   ],
-             ["delta_x+",     delta_x_nd_ic,  delta_x_nd_peak,  delta_x_nd_500  ],
-             ["delta_y1+",    delta_y1_nd_ic, delta_y1_nd_peak, delta_y1_nd_500 ],
-             ["delta_z+",     delta_z_nd_ic,  delta_z_nd_peak,  delta_z_nd_500  ],
+             ["delta_x+",     delta_x_nd_ic,  delta_x_nd_max,   delta_x_nd_500  ],
+             ["delta_y1+",    delta_y1_nd_ic, delta_y1_nd_max,  delta_y1_nd_500 ],
+             ["delta_z+",     delta_z_nd_ic,  delta_z_nd_max,   delta_z_nd_500  ],
              ["delta_yd+",   "/",            "/",               delta_yd_nd_500 ],       
             ]
            
     data4 = [
              ["npvis", "npsl", "theta_sl", "sl_99^+_IC", "sh_vel_IC", "sh_vel_peak", "sh_vel_500" ],
-             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_peak,   sh_vel_500, ],                     
+             [ npvis,   npsl,   theta_sl,   sl_99_ic,     sh_vel_ic,   sh_vel_max,    sh_vel_500, ],                     
             ]
             
     data5 = [
@@ -527,20 +526,20 @@ elif itype == 3:
     # Create data arrays with outputs
     data1 = [
              ["Lx+/Ly+/Lz+", "dx+/dyw+/dz+/dyc+" ],
-             [ xlx_nd_peak,   delta_x_nd_peak    ],
-             [ yly_nd_peak,   delta_y1_nd_peak   ],
-             [ zlz_nd_peak,   delta_z_nd_peak    ],
+             [ xlx_nd_peak,   delta_x_nd_max     ],
+             [ yly_nd_peak,   delta_y1_nd_max    ],
+             [ zlz_nd_peak,   delta_z_nd_max     ],
              ["/",            delta_yc_nd        ],
             ]
            
     data2 = [
-             ["CFL,x", "D,y", "Pé,x", "S,x"],
+             ["CFL,x", "D,y", "Pe,x", "S,x"],
              [ CFL,     D,     Pe,     S   ],
             ]
                        
     data3 = [
              ["sh_vel",    "n_tot", "nsnap", "mem_tot [GB]",  "CPUh" ],
-             [ sh_vel_peak, n_tot,   nsnap,   mem_tot,         cpuh  ],
+             [ sh_vel_max,  n_tot,   nsnap,   mem_tot,         cpuh  ],
             ]
             
     # Create the tables using tabulate
