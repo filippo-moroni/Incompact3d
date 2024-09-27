@@ -1,16 +1,15 @@
 
 """
-This file stores Python subroutines for the pre-processing 
-of Incompact3d simulations. 
-
-Subroutines list:
-
- - mem_and_cpuh
- - plot_initial_vel_profile
- 
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This file stores Python subroutines for the pre-processing 
+!              of Incompact3d simulations.
+!              
+!              Subroutines list:
+!               - mem_and_cpuh;
+!               - plot_initial_vel_profile. 
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
 """
-
-#!-----------------------------------------------------------------------------!
 
 # Libraries
 import sys
@@ -37,7 +36,7 @@ from plot_subs import set_plot_settings, save_and_show_plot
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculation of:
 !               - total number of points, n_tot;
-!               - total number of snapshots, nsnap;
+!               - total number of snapshots, nsnap (one realization);
 !               - total memory requirement [GB], in order to save velocity,
 !                 pressure and 1 scalar field in double precision, accounting
 !                 for all snapshots and all flow realizations.
@@ -54,7 +53,7 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
     # Total number of points
     n_tot = nx*ny*nz
 
-    # Calculate total number of snapshots
+    # Calculate total number of snapshots (one realization)
     # Last '+1' is to count also the 1st time step (that is saved)
     nsnap = (ilast - ifirst + 1) // ioutput + 1
 
@@ -71,7 +70,7 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
      - ts_tot = 320'000.
     """
 
-    # Ratio of CPUh of 1 flow realization with the product of number of points and number of total time-steps 
+    # Ratio of CPUh of 1 flow realization by the product of number of points and number of total time-steps 
     performance_index = 13000.0 / (66.0 * (10**6) * 320000)  
 
     # Safety factor for estimation of total CPUh required
