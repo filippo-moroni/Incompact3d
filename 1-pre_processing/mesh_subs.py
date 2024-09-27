@@ -167,10 +167,10 @@ def calculate_geometric_quantities(ny, yp, delta_x):
     # (checked, yp values are equal to the ones printed by Incompact3d)
 
     with open('mesh_y.txt', 'w') as f:
-        f.write(f"{'yp':<{pp.c_w}}, "      +
-                f"{'delta_y':<{pp.c_w}}, " +
-                f"{'gr_y':<{pp.c_w}}, "    +
-                f"{'AR_xy':<{pp.c_w}}\n"   )
+        f.write(f"{'yp':>{pp.c_w}}, "      +
+                f"{'delta_y':>{pp.c_w}}, " +
+                f"{'gr_y':>{pp.c_w}}, "    +
+                f"{'AR_xy':>{pp.c_w}}\n"   )
             
         for j in range(0,ny):
             f.write(f"{yp[j]:{pp.fs6}}, "      +
