@@ -120,7 +120,7 @@ subroutine print_cf(ux,uy,uz,phi)
               ! Header
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12)') &
                             'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                    &
-                            'cfx',       ',', 'A_fact',                                            &
+                            'cfx',       ',', 'A_fact',    ',',                                    &
                             't_nu',      ',', 't',         ',', 'ts',      ',',                    &
                             'delta_99',  ',', 'Re_tau',    ',', 'P_in'                                      
                             
