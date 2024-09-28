@@ -488,22 +488,26 @@ subroutine parameter(input_i3d)
        end do
      endif
      write(*,*) '==========================================================='
-     write(*,"(' spinup_time            : ',I17)") spinup_time
-     write(*,"(' wrotation              : ',F17.8)") wrotation
-     write(*,*) '==========================================================='
+     
+     if(itype .eq. itype_channel) then
+         write(*,"(' spinup_time            : ',I17)") spinup_time
+         write(*,"(' wrotation              : ',F17.8)") wrotation
+         write(*,*) '==========================================================='
+     end if
+     
      if (iibm==0) write(*,"(' Immersed boundary      : ',A17)") "off"
      if (iibm.gt.1) then
-      write(*,"(' Immersed boundary      : ',A17)") "on"
-      write(*,"(' iibm                   : ',I17)") iibm
+         write(*,"(' Immersed boundary      : ',A17)") "on"
+         write(*,"(' iibm                   : ',I17)") iibm
      end if
      if (iibm==1) write(*,*) 'Simple immersed boundary method'
      if (iibm==2) then
-       write(*,*) 'Lagrangian polynomial reconstruction'
-       write(*,*) '==========================================================='
-       write(*,"(' npif                   : ',I17)") npif
-       write(*,"(' izap                   : ',I17)") izap
-       write(*,"(' nraf                   : ',I17)") nraf
-       write(*,"(' nobjmax                : ',I17)") nobjmax
+         write(*,*) 'Lagrangian polynomial reconstruction'
+         write(*,*) '==========================================================='
+         write(*,"(' npif                   : ',I17)") npif
+         write(*,"(' izap                   : ',I17)") izap
+         write(*,"(' nraf                   : ',I17)") nraf
+         write(*,"(' nobjmax                : ',I17)") nobjmax
      end if
      write(*,*) '==========================================================='
      write(*,"(' Boundary condition velocity field: ')")
@@ -512,11 +516,11 @@ subroutine parameter(input_i3d)
      write(*,"(' nclz1, nclzn           : ',I15,',',I1 )") nclz1,nclzn
      write(*,*) '==========================================================='
      if ((iscalar==1).or.(ilmn)) then
-       write(*,"(' Boundary condition scalar field: ')")
-       write(*,"(' nclxS1, nclxSn         : ',I15,',',I1 )") nclxS1,nclxSn
-       write(*,"(' nclyS1, nclySn         : ',I15,',',I1 )") nclyS1,nclySn
-       write(*,"(' nclzS1, nclzSn         : ',I15,',',I1 )") nclzS1,nclzSn
-       write(*,*) '==========================================================='
+         write(*,"(' Boundary condition scalar field: ')")
+         write(*,"(' nclxS1, nclxSn         : ',I15,',',I1 )") nclxS1,nclxSn
+         write(*,"(' nclyS1, nclySn         : ',I15,',',I1 )") nclyS1,nclySn
+         write(*,"(' nclzS1, nclzSn         : ',I15,',',I1 )") nclzS1,nclzSn
+         write(*,*) '==========================================================='
      endif
 
 #ifdef DOUBLE_PREC
