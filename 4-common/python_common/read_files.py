@@ -301,64 +301,89 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
 
         print(">>> Plotting of statistics for a TTBL.")
         print()
+
+        """
+        Asking to the user if he wants to plot statistics calculated from:
+         - 'post_incompact3d', that employs full snapshots;
+         - 'cf_monitoring', that employs mean statistics calculated runtime;
+            in this case, only mean statistics can be plotted. 
+        """
+        i_switch_plot = int(input(">>> Specify the type of results to plot: (0: from 'post_incompact3d'; 1: from 'cf_monitoring') "))
+
+        # Plotting statistics from 'post_incompact3d'
+        if i_switch_plot == 0:
+        
+            # Asking to the user the specific snapshot to show
+            snap_numb = input(">>> Enter the snapshot number to show: ")
     
-        # Asking to the user the specific snapshot to show
-        snap_numb = input(">>> Enter the snapshot number to show: ")
-    
-        # Pad with zeros to match snapshots' naming  
-        snap_numb = snap_numb.zfill(4)
+            # Pad with zeros to match snapshots' naming  
+            snap_numb = snap_numb.zfill(4)
                      
-        """
-        Reading of mean statistics. For a TTBL it is always done since 
-        we need to calculate the boundary layer thickness delta_99 to display
-        friction Reynolds number.
-        
-        """
-        M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-        mean_u  = M[:,0]
-        mean_w  = M[:,2]   
-        var_u   = M[:,3]
-        var_v   = M[:,4]
-        var_w   = M[:,5]
-        mean_uv = M[:,12]
+            """
+            Reading of mean statistics. For a TTBL it is always done since 
+            we need to calculate the boundary layer thickness delta_99 to display
+            friction Reynolds number.
+            """
+            M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            mean_u  = M[:,0]
+            mean_w  = M[:,2]   
+            var_u   = M[:,3]
+            var_v   = M[:,4]
+            var_w   = M[:,5]
+            mean_uv = M[:,12]
     
-        """
-        Reading of vorticity components and mean gradients
-        (always performed since we need the mean gradients to calculate
-        total shear velocity).
-        
-        """
-        M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-        vort_x = M[:,0]
-        vort_y = M[:,1]
-        vort_z = M[:,2]
-        mg_x   = M[:,3]
-        mg_z   = M[:,4]
+            """
+            Reading of vorticity components and mean gradients
+            (always performed since we need the mean gradients to calculate
+            total shear velocity).
+            """
+            M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            vort_x = M[:,0]
+            vort_y = M[:,1]
+            vort_z = M[:,2]
+            mg_x   = M[:,3]
+            mg_z   = M[:,4]
     
-        # Reading of the mean total dissipation
-        if post_diss:
-            eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            # Reading of the mean total dissipation
+            if post_diss:
+                eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
         
-        # Reading of correlations
-        if post_corz:
-            Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-            Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-            Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-            Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            # Reading of correlations
+            if post_corz:
+                Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
-            # Read scalar field correlations
-            if numscalar == 1:
-            
-                Rssz = np.loadtxt(f'data_post/Rssz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                # Read scalar field correlations
+                if numscalar == 1:
+                    Rssz = np.loadtxt(f'data_post/Rssz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
-        # Read of TKE
-        if post_tke_eq: 
-            M = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-            tke_turbt  = M[:,0]   
-            tke_presst = M[:,1]     
-            tke_difft  = M[:,2]
-            tke_prod   = M[:,3]
-            tke_pseps  = M[:,4]
+            # Read of TKE
+            if post_tke_eq: 
+                M = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+                tke_turbt  = M[:,0]   
+                tke_presst = M[:,1]     
+                tke_difft  = M[:,2]
+                tke_prod   = M[:,3]
+                tke_pseps  = M[:,4]
+
+        # Plotting statistics from 'cf_monitoring'
+        elif i_switch_plot == 1:
+        
+            # Asking to the user the time-step to show
+            ts = input(">>> Enter the time-step to show: ")
+    
+            # Pad with zeros to match 'mean_stats_realiz' naming  
+            ts = ts.zfill(7)
+
+            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts:07d}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            mean_u  = M[:,0]
+            mean_w  = M[:,2]   
+            var_u   = M[:,3]
+            var_v   = M[:,4]
+            var_w   = M[:,5]
+            mean_uv = M[:,7]
 
     print()
  
