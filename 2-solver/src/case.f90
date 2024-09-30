@@ -116,9 +116,9 @@ contains
 
     implicit none
     
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz,ep
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3))           :: ux,uy,uz,ep
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
-    real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho
+    real(mytype),dimension(xsize(1),xsize(2),xsize(3),nrhotime)  :: rho
     
     ! Calculate the spanwise wall oscillations if enabled and only after a specified time-step
     if (iswitch_wo .eq. 1 .and. itime .ge. start_wo) then

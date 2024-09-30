@@ -125,7 +125,6 @@ elif itype == 13:
         a_fact    = M[:,4]     # Reynolds analogy factor
         time_unit = M[:,6]     # time unit
         ts        = M[:,7]     # time step
-        delta_99  = M[:,8]     # boundary layer thickness delta_99 for a TTBL
         power_in  = M[:,10]    # power input
                              
         """
@@ -139,7 +138,6 @@ elif itype == 13:
             sh_veltotsq_sum = np.zeros(len(time_unit))    
             sh_velxsq_sum   = np.zeros(len(time_unit))
             a_fact_sum      = np.zeros(len(time_unit))
-            delta_99_sum    = np.zeros(len(time_unit))
             power_in_sum    = np.zeros(len(time_unit))
 
         # Average the square of the total shear velocity over the realizations 
@@ -150,10 +148,7 @@ elif itype == 13:
 
         # Average the Reynolds analogy factor over the realizations
         a_fact_sum = a_fact_sum + a_fact / nr
-        
-        # Average the BL thickness delta_99 over the realizations
-        delta_99_sum = delta_99_sum + delta_99 / nr
-        
+                
         # Average the power input over the realizations
         # (to be refined with the explicit calculation with wall velocities and shear velocities)
         power_in_sum = power_in_sum + power_in / nr 
@@ -162,11 +157,7 @@ elif itype == 13:
     sh_veltot = np.sqrt(sh_veltotsq_sum)
     sh_velx   = np.sqrt(sh_velxsq_sum)
     a_fact    = a_fact_sum
-    delta_99  = delta_99_sum
     power_in  = power_in_sum
-
-    # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
-    re_tau = sh_velx * delta_99 / nu
         
     # Calculate (streamwise) friction coefficient
     cfx = 2.0 * (sh_velx / uwall)**2
@@ -181,7 +172,6 @@ elif itype == 13:
         f.write(f"{'sh_veltot (O(6))':>{pp.c_w}}, " +
                 f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
-                f"{'delta_99':>{pp.c_w}}, "         +
                 f"{'Re_tau':>{pp.c_w}}, "           +    
                 f"{'P_in':>{pp.c_w}}, "             +
                 f"{'A_fact':>{pp.c_w}}, "           +
@@ -191,7 +181,6 @@ elif itype == 13:
             f.write(f"{sh_veltot[j]:{pp.fs6}}, "    +
                     f"{sh_velx[j]:{pp.fs6}}, "      +    
                     f"{cfx[j]:{pp.fs8}}, "          +
-                    f"{delta_99[j]:{pp.fs}}, "      +
                     f"{re_tau[j]:{pp.fs}}, "        +
                     f"{power_in[j]:{pp.fs6}}, "     +
                     f"{a_fact[j]:{pp.fs}}, "        +
@@ -263,7 +252,10 @@ elif itype == 13:
                 f"{t_nu_tot:{pp.fs6}}\n"         )
 
     # Call subroutine for calculations of 6th order TTBL thickness parameters    
-    (disp_t, mom_t) = calculate_thickness_param()
+    (delta_99, disp_t, mom_t) = calculate_thickness_param()
+    
+    # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
+    re_tau = sh_velx * delta_99 / nu
 
     # Calculate Reynolds numbers based on displacement thickness and momentum thickness
     re_disp_t = disp_t * re

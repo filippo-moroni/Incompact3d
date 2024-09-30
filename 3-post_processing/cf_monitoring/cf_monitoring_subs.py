@@ -28,6 +28,9 @@ from read_files import read_input_files
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
+# Import function to calculate boundary layer thickness delta_99 for a TTBL
+from ttbl_subs import calculate_ttbl_delta_99
+
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this subroutine we perform 6th order accurate 
@@ -67,6 +70,10 @@ def calculate_thickness_param():
                     
     # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified'
     nsavings = ilast // ioutput_cf + 1
+    
+    # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
+    # at a certain time unit
+    mean_u = np.zeros(ny)
 
     # Initialize instantaneous mean statistics array, not averaged with different flow realizations
     # we have 9 different statistics (mean, var, Reynolds stress) (function of y)
@@ -76,26 +83,28 @@ def calculate_thickness_param():
     mean_stats_realiz = np.zeros((ny, 9, nsavings))
 
     # Initialize arrays for TTBL thickness parameters
-    disp_t = np.zeros(nsavings)   # displacement thickness, delta*
-    mom_t  = np.zeros(nsavings)   # momentum     thickness, theta
+    delta_99 = np.zeros(nsavings)   # BL thickness delta_99
+    disp_t   = np.zeros(nsavings)   # displacement thickness, delta*
+    mom_t    = np.zeros(nsavings)   # momentum     thickness, theta
 
     """
     Do loop over all savings of 'mean_stats_runtime' files. 
-    The ts goes from the first saving (IC, ts = 1) to the last one, with increment ioutput_cf.
+    The ts goes from the first saving (IC, ts = 1) to the last one, ilast, with increment ioutput_cf.
+    Index for the cycle is ti: time index.
     """
-    for time_index in range(0, nsavings, 1):
+    for ti in range(0, nsavings, 1):
       
         #!--- Calculate ts to open 'mean_stats_runtime-ts' file (ts_iter: time-step of the iterations) ---!
         
         # ts of the initial condition is ts = 1
-        if time_index == 0:
+        if ti == 0:
 
             ts_iter = 1
 
         # All the other ts are multiples of 'output_cf'
         else:
 
-            ts_iter = time_index*ioutput_cf
+            ts_iter = ti*ioutput_cf
         
         # Do loop over different realizations, from 1 to nr
         for i in range(1, nr+1, 1):
@@ -104,13 +113,10 @@ def calculate_thickness_param():
             mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=10, delimiter=None, dtype=np.float64)
                         
             # Summing mean statistics array with different realizations into the overall array for time-evolution
-            mean_stats_realiz[:,:,time_index] = mean_stats_realiz[:,:,time_index] + mean_stats[:,:] / nr
+            mean_stats_realiz[:,:,ti] = mean_stats_realiz[:,:,ti] + mean_stats[:,:] / nr
             
         #!--- Finalize 2nd order statistics ---!
         
-        # Take alias for 'time_index'
-        ti = time_index
-
         # Variances
         mean_stats_realiz[:,3,ti] = mean_stats_realiz[:,3,ti] - mean_stats_realiz[:,0,ti]**2  # streamwise  velocity variance
         mean_stats_realiz[:,4,ti] = mean_stats_realiz[:,4,ti] - mean_stats_realiz[:,1,ti]**2  # wall-normal velocity variance
@@ -149,15 +155,20 @@ def calculate_thickness_param():
                     f"{mean_stats_realiz[j,8,ti]:{pp.fs6}}\n" )
 
         #!--- Calculation of thickness parameters ---!
-
+        
+        # Take alias for mean streamwise velocity profile
+        mean_u[:] = mean_stats_realiz[:,0,ti]
+               
+        # Calculate BL thickness delta_99 for a TTBL and its related index
+        (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
+        
         # Calculate the displacement thickness delta*
-        # First column of the 'mean_stats_realiz' array is mean streamwise velocity profile
-        int1 = mean_stats_realiz[:,0,time_index]/uwall  # 'integrand 1' 
+        int1 = mean_u/uwall  # 'integrand 1' 
 
         # Interpolation at the 6th order of accuracy with a spline of 5th order, 
         # that passes through all data points
         spl = InterpolatedUnivariateSpline(yp, int1, k=5)
-        disp_t[time_index] = spl.integral(y0, yn)
+        disp_t[ti] = spl.integral(y0, yn)
 
         # Calculate the momentum thickness theta
         int2 = int1 - int1**2  # 'integrand 2' 
@@ -165,10 +176,10 @@ def calculate_thickness_param():
         # Interpolation at the 6th order of accuracy with a spline of 5th order,
         # that passes through all data points
         spl = InterpolatedUnivariateSpline(yp, int2, k=5)
-        mom_t[time_index] = spl.integral(y0, yn)
+        mom_t[ti] = spl.integral(y0, yn)
 
     # Return to main program
-    return (disp_t, mom_t)
+    return (delta_99,disp_t, mom_t)
 
 
 
