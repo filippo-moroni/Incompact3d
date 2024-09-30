@@ -414,7 +414,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             var_u   = M[:,3]
             var_v   = M[:,4]
             var_w   = M[:,5]
-            mean_uv = M[:,7]
+            mean_uv = M[:,6]
             
             # Opening of 'mean_stats_realiz-ts' file
             with open(f'data_post_te/mean_stats_realiz-ts{ts}.txt', 'r') as file:
