@@ -69,7 +69,7 @@ def read_input_files(filename1,filename2):
         # 2) we select the portion of string with index inside square brackets;
         # 3) strip: removes leading or trailing whitespaces from the string. 
     
-        itype = itype.split('=')[-1].strip()
+        itype      = itype.split('=')[-1].strip()
     
         nx         = nx.split('!')[0]
         nx         = nx.split('=')[-1].strip()
@@ -401,14 +401,10 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             
             # Pad with zeros to match 'mean_stats_realiz-ts' naming  
             ts = ts.zfill(7)
-
-            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=1, delimiter=',', dtype=np.float64)
-            
-            # Shear velocities
-            sh_vel_x   = M[10]   # streamwise shear velocity (based on streamwise mean gradient)  
-            sh_vel_tot = M[11]   # total shear velocity (based on total mean gradient) 
-            
-            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=3, delimiter=',', dtype=np.float64)
+           
+            # Read mean stats averaged with different flow realizations.
+            # These are time-dependent statistics.
+            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=6, delimiter=',', dtype=np.float64)
                         
             mean_u  = M[:,0]
             mean_w  = M[:,2]   
@@ -416,7 +412,26 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             var_v   = M[:,4]
             var_w   = M[:,5]
             mean_uv = M[:,7]
-                   
+            
+            
+            # Read all lines into a list
+            lines = file.readlines()
+            
+            # Shear velocities reading: as always, index is 1 less of the line number (Python convention)
+            sh_vel_x   = lines[2]   # streamwise shear velocity (based on streamwise mean gradient)  
+            sh_vel_tot = lines[3]   # total shear velocity (based on total mean gradient) 
+            
+            # Removing characters in front of the extracted strings and the comments:
+            # 1) split: the string is split when the specified character is encountered; 
+            # 2) we select the portion of string with index inside square brackets;
+            # 3) strip: removes leading or trailing whitespaces from the string. 
+            sh_vel_x   =   sh_vel_x.split('=')[-1].strip()
+            sh_vel_tot = sh_vel_tot.split('=')[-1].strip()
+            
+            # Convert to needed variable type (integer or boolean)
+            sh_vel_x   = np.float64(sh_vel_x)
+            sh_vel_tot = np.float64(sh_vel_tot)
+                               
     print()
  
     return (

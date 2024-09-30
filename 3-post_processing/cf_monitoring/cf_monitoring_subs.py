@@ -139,7 +139,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
 
         # Create the file and write  
         with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
-            f.write('Mean statistics at ts={ts}.\n')        
+            f.write(f'Mean statistics at ts={ts}.\n')        
             f.write('\n')
             f.write(f"{'sh_vel_x':>{pp.c_w}} = {sh_velx[ti]:{pp.fs6}}\n")
             f.write(f"{'sh_vel_tot':>{pp.c_w}} = {sh_veltot[ti]:{pp.fs6}}\n")
