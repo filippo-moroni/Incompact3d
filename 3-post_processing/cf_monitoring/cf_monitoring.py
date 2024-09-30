@@ -251,8 +251,12 @@ elif itype == 13:
                 f"{delta_z_p_tot:{pp.fs6}}, "    +
                 f"{t_nu_tot:{pp.fs6}}\n"         )
 
-    # Call subroutine for calculations of 6th order TTBL thickness parameters    
-    (delta_99, disp_t, mom_t) = calculate_thickness_param()
+    """
+    Call subroutine for calculations of 6th order TTBL thickness parameters,
+    mean_stats runtime averaged with different flow realizations and 
+    TTBL thickness delta_99.     
+    """
+    (delta_99, disp_t, mom_t) = calculate_thickness_param(sh_veltot,sh_velx)
     
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
     re_tau = sh_velx * delta_99 / nu

@@ -33,16 +33,20 @@ from ttbl_subs import calculate_ttbl_delta_99
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: With this subroutine we perform 6th order accurate 
-!              calculations of integrals of TTBL thickness parameters 
-!              (delta*, theta) using 'mean_stats_runtime' files printed at 
-!              the same time as 'cf_monitoring'. We are also saving the 
-!              runtime statistics averaged with different flow realizations. 
+! DESCRIPTION: With this subroutine we perform:
+!               - 6th order accurate calculations of integrals of TTBL 
+!                 thickness parameters (delta*, theta) using 
+!                 'mean_stats_runtime' files printed at the same time as 
+!                 'cf_monitoring';
+!               - averaging and saving of runtime mean statistics
+!                 (different flow realizations);
+!               - calculation of TTBL thickness delta_99.
+!               
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
 
-def calculate_thickness_param():
+def calculate_thickness_param(sh_veltot,sh_velx):
 
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te', mode=0o777, exist_ok=True)
@@ -133,17 +137,32 @@ def calculate_thickness_param():
 
         # Create the file and write  
         with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
-            f.write(f"{'mean[u]':>{pp.c_w}}, "  +
-                    f"{'mean[v]':>{pp.c_w}}, "  +
-                    f"{'mean[w]':>{pp.c_w}}, "  +
-                    f"{'var[u]':>{pp.c_w}}, "   +
-                    f"{'var[v]':>{pp.c_w}}, "   +
-                    f"{'var[w]':>{pp.c_w}}, "   +
-                    f"{'mean[uv]':>{pp.c_w}}, " +
-                    f"{'mean[uw]':>{pp.c_w}}, " +
-                    f"{'mean[vw]':>{pp.c_w}}\n ")
+            f.write(f"{'mean[u]':>{pp.c_w}}, "    +
+                    f"{'mean[v]':>{pp.c_w}}, "    +
+                    f"{'mean[w]':>{pp.c_w}}, "    +
+                    f"{'var[u]':>{pp.c_w}}, "     +
+                    f"{'var[v]':>{pp.c_w}}, "     +
+                    f"{'var[w]':>{pp.c_w}}, "     +
+                    f"{'mean[uv]':>{pp.c_w}}, "   +
+                    f"{'mean[uw]':>{pp.c_w}}, "   +
+                    f"{'mean[vw]':>{pp.c_w}}, "   +
+                    f"{'sh_vel_tot':>{pp.c_w}}, " +
+                    f"{'sh_vel_tot':>{pp.c_w}}\n" )
+            
+            # First for with also shear velocities
+            f.write(f"{mean_stats_realiz[0,0,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,1,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,2,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,3,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,4,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,5,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,6,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,7,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[0,8,ti]:{pp.fs6}}, " +
+                    f"{sh_veltot[ti]:{pp.fs6}}, "             +
+                    f"{sh_veltot[ti]:{pp.fs6}}\n "            )
     
-        for j in range(0, ny):
+        for j in range(1, ny):
             f.write(f"{mean_stats_realiz[j,0,ti]:{pp.fs6}}, " +
                     f"{mean_stats_realiz[j,1,ti]:{pp.fs6}}, " +
                     f"{mean_stats_realiz[j,2,ti]:{pp.fs6}}, " +
