@@ -189,19 +189,8 @@ elif itype == 13:
     print()
     print(">>> Calculating grid spacings and viscous time scale at maximum cf.")
 
-    """
-    Maximum (total) shear velocity.
-    Excluding first 5 savings to avoid the IC peak of cf.
-    The same index is used to plot, in order to match what we plot
-    to what we use to find the cf maximum.
-    """
-    
-    # Lower index cf (to avoid first points in plotting and when we find the maximum) 
-    # (l: lower; i: index)
-    # First 5 points avoided in this manner.
-    li_cf = 4
-
-    max_sh_veltot = np.max(sh_veltot[li_cf:]) 
+    # Maximum (total) shear velocity
+    max_sh_veltot = np.max(sh_veltot) 
     
     # Related viscous lengths
     delta_nu_tot = nu / max_sh_veltot
@@ -434,8 +423,8 @@ if itype == 13:
     # Subplots environment
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
-    # Friction coefficient (li_cf: lower index cf, to exclude the peak of IC)
-    ax.plot(re_tau[li_cf:], cfx[li_cf:], color='C0', linestyle='-', linewidth=pp.lw)
+    # Friction coefficient
+    ax.plot(re_tau, cfx, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retau_gboga, cf_gboga, color='C1', linestyle='-', linewidth=pp.lw)
