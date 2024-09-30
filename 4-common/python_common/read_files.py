@@ -241,6 +241,9 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     tke_prod   = 0.0
     tke_pseps  = 0.0
     
+    sh_vel_x   = 0.0  
+    sh_vel_tot = 0.0
+    
     print()
 
     # Channel
@@ -441,7 +444,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     vort_x, vort_y, vort_z, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
-    snap_numb, sh_vel_tot, sh_vel_x
+    snap_numb, sh_vel_x, sh_vel_tot
     )
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!    
