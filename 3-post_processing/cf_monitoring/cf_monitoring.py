@@ -45,7 +45,7 @@ from cf_monitoring_subs import calculate_thickness_param
 #!--------------------------------------------------------------------------------------!
 
 # Print to screen what the program does
-
+print()
 print("!--- 'cf_monitoring.py' ---!")
 print()
 print(" Calculation and plotting of:")
@@ -172,7 +172,6 @@ elif itype == 13:
         f.write(f"{'sh_veltot (O(6))':>{pp.c_w}}, " +
                 f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
                 f"{'cfx (O(6))':>{pp.c_w}}, "       +
-                f"{'Re_tau':>{pp.c_w}}, "           +    
                 f"{'P_in':>{pp.c_w}}, "             +
                 f"{'A_fact':>{pp.c_w}}, "           +
                 f"{'time_unit':>{pp.c_w}}\n"        )
@@ -181,7 +180,6 @@ elif itype == 13:
             f.write(f"{sh_veltot[j]:{pp.fs6}}, "    +
                     f"{sh_velx[j]:{pp.fs6}}, "      +    
                     f"{cfx[j]:{pp.fs8}}, "          +
-                    f"{re_tau[j]:{pp.fs}}, "        +
                     f"{power_in[j]:{pp.fs6}}, "     +
                     f"{a_fact[j]:{pp.fs}}, "        +
                     f"{time_unit[j]:{pp.fs}}\n"     )

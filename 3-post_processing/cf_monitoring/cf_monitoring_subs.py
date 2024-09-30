@@ -114,7 +114,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
         for i in range(1, nr+1, 1):
                
             # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime' folder
-            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=10, delimiter=None, dtype=np.float64)
+            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
                         
             # Summing mean statistics array with different realizations into the overall array for time-evolution
             mean_stats_realiz[:,:,ti] = mean_stats_realiz[:,:,ti] + mean_stats[:,:] / nr
@@ -162,16 +162,16 @@ def calculate_thickness_param(sh_veltot,sh_velx):
                     f"{sh_veltot[ti]:{pp.fs6}}, "             +
                     f"{sh_veltot[ti]:{pp.fs6}}\n "            )
     
-        for j in range(1, ny):
-            f.write(f"{mean_stats_realiz[j,0,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,1,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,2,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,3,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,4,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,5,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,6,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,7,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[j,8,ti]:{pp.fs6}}\n" )
+            for j in range(1, ny):
+                f.write(f"{mean_stats_realiz[j,0,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,1,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,2,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,3,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,4,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,5,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,6,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,7,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_realiz[j,8,ti]:{pp.fs6}}\n" )
 
         #!--- Calculation of thickness parameters ---!
         
@@ -179,7 +179,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
         mean_u[:] = mean_stats_realiz[:,0,ti]
                
         # Calculate BL thickness delta_99 for a TTBL and its related index
-        (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
+        (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, yp)
         
         # Calculate the displacement thickness delta*
         int1 = mean_u/uwall  # 'integrand 1' 
