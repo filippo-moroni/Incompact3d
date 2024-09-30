@@ -169,20 +169,20 @@ elif itype == 13:
 
     # Create the file and write  
     with open('data_post/cf_monitoring/cf_history_realiz.txt', 'w') as f:
-        f.write(f"{'sh_veltot (O(6))':>{pp.c_w}}, " +
-                f"{'sh_velx (O(6))':>{pp.c_w}}, "   +
-                f"{'cfx (O(6))':>{pp.c_w}}, "       +
-                f"{'P_in':>{pp.c_w}}, "             +
-                f"{'A_fact':>{pp.c_w}}, "           +
-                f"{'time_unit':>{pp.c_w}}\n"        )
+        f.write(f"{'sh_veltot':>{pp.c_w}}, "     +
+                f"{'sh_velx':>{pp.c_w}}, "       +
+                f"{'cfx':>{pp.c_w}}, "           +
+                f"{'P_in':>{pp.c_w}}, "          +
+                f"{'A_fact':>{pp.c_w}}, "        +
+                f"{'time_unit':>{pp.c_w}}\n"     )
 
         for j in range(0, len(time_unit)):
-            f.write(f"{sh_veltot[j]:{pp.fs6}}, "    +
-                    f"{sh_velx[j]:{pp.fs6}}, "      +    
-                    f"{cfx[j]:{pp.fs8}}, "          +
-                    f"{power_in[j]:{pp.fs6}}, "     +
-                    f"{a_fact[j]:{pp.fs}}, "        +
-                    f"{time_unit[j]:{pp.fs}}\n"     )
+            f.write(f"{sh_veltot[j]:{pp.fs6}}, " +
+                    f"{sh_velx[j]:{pp.fs6}}, "   +    
+                    f"{cfx[j]:{pp.fs8}}, "       +
+                    f"{power_in[j]:{pp.fs6}}, "  +
+                    f"{a_fact[j]:{pp.fs}}, "     +
+                    f"{time_unit[j]:{pp.fs}}\n"  )
 
     #!--- Section on check of mesh spacings ---!
 
@@ -263,6 +263,7 @@ elif itype == 13:
     re_disp_t = disp_t * re
     re_mom_t  = mom_t  * re
 
+    print()
     print(">>> Saving 'high_order_integrals_evol.txt' in data_post/cf_monitoring/.")
     print()
 

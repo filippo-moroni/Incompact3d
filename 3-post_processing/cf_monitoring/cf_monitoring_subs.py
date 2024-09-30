@@ -98,6 +98,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
     """
     
     #!--- Save averaged mean statistics ---!
+    print()
     print(">>> Saving 'mean_stats_realiz' in /data_post_te.")
     print()
         
@@ -147,7 +148,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
                     f"{'mean[uv]':>{pp.c_w}}, "   +
                     f"{'mean[uw]':>{pp.c_w}}, "   +
                     f"{'mean[vw]':>{pp.c_w}}, "   +
-                    f"{'sh_vel_tot':>{pp.c_w}}, " +
+                    f"{'sh_vel_x':>{pp.c_w}}, "   +
                     f"{'sh_vel_tot':>{pp.c_w}}\n" )
             
             # First for with also shear velocities
@@ -160,8 +161,8 @@ def calculate_thickness_param(sh_veltot,sh_velx):
                     f"{mean_stats_realiz[0,6,ti]:{pp.fs6}}, " +
                     f"{mean_stats_realiz[0,7,ti]:{pp.fs6}}, " +
                     f"{mean_stats_realiz[0,8,ti]:{pp.fs6}}, " +
-                    f"{sh_veltot[ti]:{pp.fs6}}, "             +
-                    f"{sh_veltot[ti]:{pp.fs6}}\n "            )
+                    f"{sh_velx[ti]:{pp.fs6}}, "               +
+                    f"{sh_veltot[ti]:{pp.fs6}}\n"             )
     
             for j in range(1, ny):
                 f.write(f"{mean_stats_realiz[j,0,ti]:{pp.fs6}}, " +
