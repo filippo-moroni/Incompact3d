@@ -311,7 +311,10 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
          - 'cf_monitoring', that employs mean statistics calculated runtime;
             in this case, only mean statistics can be plotted. 
         """
-        i_switch_plot = int(input(">>> Specify the type of results to plot: (0: from 'post_incompact3d'; 1: from 'cf_monitoring') "))
+        print(">>> Specify the type of results to plot: ")
+        print(">>> 0: from 'post_incompact3d' ")  
+        print(">>> 1: from 'cf_monitoring' ")          
+        i_switch_plot = int(input(""))
 
         # Plotting statistics from 'post_incompact3d'
         if i_switch_plot == 0:
@@ -395,19 +398,25 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         
             # Asking to the user the time-step to show
             ts = input(">>> Enter the time-step to show: ")
+            
+            # Pad with zeros to match 'mean_stats_realiz-ts' naming  
+            ts = ts.zfill(7)
 
-            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts:07d}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            
+            # Shear velocities
+            sh_vel_x   = M[0,10]   # streamwise shear velocity (based on streamwise mean gradient)  
+            sh_vel_tot = M[0,11]   # total shear velocity (based on total mean gradient) 
+            
+            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=3, delimiter=',', dtype=np.float64)
+                        
             mean_u  = M[:,0]
             mean_w  = M[:,2]   
             var_u   = M[:,3]
             var_v   = M[:,4]
             var_w   = M[:,5]
             mean_uv = M[:,7]
-            
-            # Shear velocities
-            sh_vel_x   = M[0,10]   # streamwise shear velocity (based on streamwise mean gradient)  
-            sh_vel_tot = M[0,11]   # total shear velocity (based on total mean gradient) 
-            
+                   
     print()
  
     return (
