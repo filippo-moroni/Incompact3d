@@ -96,6 +96,11 @@ def calculate_thickness_param(sh_veltot,sh_velx):
     The ts goes from the first saving (IC, ts = 1) to the last one, ilast, with increment ioutput_cf.
     Index for the cycle is ti: time index.
     """
+    
+    #!--- Save averaged mean statistics ---!
+    print(">>> Saving 'mean_stats_realiz' in /data_post_te.")
+    print()
+        
     for ti in range(0, nsavings, 1):
       
         #!--- Calculate ts to open 'mean_stats_runtime-ts' file (ts_iter: time-step of the iterations) ---!
@@ -130,10 +135,6 @@ def calculate_thickness_param(sh_veltot,sh_velx):
         mean_stats_realiz[:,6,ti] = mean_stats_realiz[:,6,ti] - mean_stats_realiz[:,0,ti]*mean_stats_realiz[:,1,ti]  # Reynolds stress <u'v'>
         mean_stats_realiz[:,7,ti] = mean_stats_realiz[:,7,ti] - mean_stats_realiz[:,0,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <u'w'>
         mean_stats_realiz[:,8,ti] = mean_stats_realiz[:,8,ti] - mean_stats_realiz[:,1,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <v'w'>
-
-        #!--- Save averaged mean statistics ---!
-        print(">>> Saving 'mean_stats_realiz' in /data_post_te.")
-        print()
 
         # Create the file and write  
         with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
@@ -181,6 +182,9 @@ def calculate_thickness_param(sh_veltot,sh_velx):
         # Calculate BL thickness delta_99 for a TTBL and its related index
         (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, yp)
         
+        # Store result in 'delta_99' array
+        delta_99[ti] = bl_thick
+        
         # Calculate the displacement thickness delta*
         int1 = mean_u/uwall  # 'integrand 1' 
 
@@ -198,7 +202,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
         mom_t[ti] = spl.integral(y0, yn)
 
     # Return to main program
-    return (delta_99,disp_t, mom_t)
+    return (delta_99, disp_t, mom_t)
 
 
 

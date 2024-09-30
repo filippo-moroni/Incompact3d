@@ -234,8 +234,7 @@ elif itype == 13:
     # Write and save to .txt file 
     with open('data_post/cf_monitoring/num_resolutions.txt', 'w') as f:
         f.write('Maximum non-dimensional grid spacings and minimum viscous time scale.\n')
-        f.write('Rescaling with total shear velocity,\n')
-        f.write('based on the norm of the wall shear stress vector.\n')
+        f.write('Rescaling with total shear velocity, based on the norm of the total wall shear stress vector.\n')
         f.write('\n')
         f.write(f'Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
         f.write('\n')
@@ -257,6 +256,7 @@ elif itype == 13:
     (delta_99, disp_t, mom_t) = calculate_thickness_param(sh_veltot,sh_velx)
     
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
+    re_tau = np.zeros(len(time_unit)) 
     re_tau = sh_velx * delta_99 / nu
 
     # Calculate Reynolds numbers based on displacement thickness and momentum thickness
@@ -473,7 +473,7 @@ if itype == 13:
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
    
     # Friction Reynolds number vs momentum thickness Reynolds number
-    ax.plot(re_mom_t, re_disp_t, color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(re_mom_t, re_tau, color='C0', linestyle='-', linewidth=pp.lw)
     
     # G. Boga (Cimarelli et al. (2024a)) 
     ax.plot(retheta_gboga, retau_gboga, color='C1', linestyle='-', linewidth=pp.lw)
