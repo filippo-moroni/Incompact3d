@@ -405,8 +405,8 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=1, delimiter=',', dtype=np.float64)
             
             # Shear velocities
-            sh_vel_x   = M[0,10]   # streamwise shear velocity (based on streamwise mean gradient)  
-            sh_vel_tot = M[0,11]   # total shear velocity (based on total mean gradient) 
+            sh_vel_x   = M[10]   # streamwise shear velocity (based on streamwise mean gradient)  
+            sh_vel_tot = M[11]   # total shear velocity (based on total mean gradient) 
             
             M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=3, delimiter=',', dtype=np.float64)
                         

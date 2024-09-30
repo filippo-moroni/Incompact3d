@@ -139,6 +139,11 @@ def calculate_thickness_param(sh_veltot,sh_velx):
 
         # Create the file and write  
         with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
+            f.write('Mean statistics at ts={ts}.\n')        
+            f.write('\n')
+            f.write(f"{'sh_vel_x':>{pp.c_w}} = {sh_velx[ti]:{pp.fs6}}\n")
+            f.write(f"{'sh_vel_tot':>{pp.c_w}} = {sh_veltot[ti]:{pp.fs6}}\n")
+            f.write('\n') 
             f.write(f"{'mean[u]':>{pp.c_w}}, "    +
                     f"{'mean[v]':>{pp.c_w}}, "    +
                     f"{'mean[w]':>{pp.c_w}}, "    +
@@ -147,24 +152,9 @@ def calculate_thickness_param(sh_veltot,sh_velx):
                     f"{'var[w]':>{pp.c_w}}, "     +
                     f"{'mean[uv]':>{pp.c_w}}, "   +
                     f"{'mean[uw]':>{pp.c_w}}, "   +
-                    f"{'mean[vw]':>{pp.c_w}}, "   +
-                    f"{'sh_vel_x':>{pp.c_w}}, "   +
-                    f"{'sh_vel_tot':>{pp.c_w}}\n" )
-            
-            # First for with also shear velocities
-            f.write(f"{mean_stats_realiz[0,0,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,1,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,2,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,3,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,4,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,5,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,6,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,7,ti]:{pp.fs6}}, " +
-                    f"{mean_stats_realiz[0,8,ti]:{pp.fs6}}, " +
-                    f"{sh_velx[ti]:{pp.fs6}}, "               +
-                    f"{sh_veltot[ti]:{pp.fs6}}\n"             )
-    
-            for j in range(1, ny):
+                    f"{'mean[vw]':>{pp.c_w}}\n"   )
+                
+            for j in range(0, ny):
                 f.write(f"{mean_stats_realiz[j,0,ti]:{pp.fs6}}, " +
                         f"{mean_stats_realiz[j,1,ti]:{pp.fs6}}, " +
                         f"{mean_stats_realiz[j,2,ti]:{pp.fs6}}, " +
