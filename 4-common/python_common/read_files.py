@@ -317,7 +317,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         print(">>> Specify the type of results to plot: ")
         print(">>> 0: from 'post_incompact3d' ")  
         print(">>> 1: from 'cf_monitoring' ")          
-        i_switch_plot = int(input(""))
+        i_switch_plot = int(input())
 
         # Plotting statistics from 'post_incompact3d'
         if i_switch_plot == 0:
