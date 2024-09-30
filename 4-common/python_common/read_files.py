@@ -413,9 +413,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             var_w   = M[:,5]
             mean_uv = M[:,7]
             
-            
-            # Read all lines into a list
-            lines = file.readlines()
+            # Opening of 'mean_stats_realiz-ts' file
+            with open(f'data_post_te/mean_stats_realiz-ts{ts}.txt', 'r') as file:
+    
+                # Read all lines into a list
+                lines = file.readlines()
             
             # Shear velocities reading: as always, index is 1 less of the line number (Python convention)
             sh_vel_x   = lines[2]   # streamwise shear velocity (based on streamwise mean gradient)  
