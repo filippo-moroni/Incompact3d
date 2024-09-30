@@ -202,7 +202,10 @@ def read_input_files(filename1,filename2):
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Python function to read statistics data, obtained from
-!              'post_incompact3d'.   
+!              'post_incompact3d' or from 'cf_monitoring" 
+!              (only for TTBL simulations). 
+!              For data from 'post_incompact3d', shear velocities are also 
+!              calculated, since we have data (only) on mean gradients.   
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -343,6 +346,25 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             vort_z = M[:,2]
             mg_x   = M[:,3]
             mg_z   = M[:,4]
+            
+            
+            """           
+            (Total) wall shear stress is used to check maximum numerical resolutions (mesh spacings and viscous time).
+            In case of fixed wall(s), the mean spanwise gradient 'mg_z' is zero, so the total wall shear stress 
+            is equivalent to the streamwise wall shear stress.
+            """
+            tau_wtot  = nu*np.sqrt(mg_x[0]**2 + mg_z[0]**2) 
+
+            """
+            Streamwise wall shear stress is used to rescale statistics in wall units 
+            (with or without wall oscillations).
+            """
+            tau_wx   = nu*np.abs(mg_x[0])
+
+            # Shear velocities
+            sh_vel_x   = np.sqrt(tau_wx)     # streamwise shear velocity (based on streamwise mean gradient)  
+            sh_vel_tot = np.sqrt(tau_wtot)   # total shear velocity (based on total mean gradient) 
+    
     
             # Reading of the mean total dissipation
             if post_diss:
@@ -381,6 +403,9 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             var_v   = M[:,4]
             var_w   = M[:,5]
             mean_uv = M[:,7]
+            
+            # read shear velocities from this file
+            # to do
 
     print()
  
@@ -389,7 +414,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     vort_x, vort_y, vort_z, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
-    snap_numb
+    snap_numb, sh_vel_tot, sh_vel_x
     )
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!    
