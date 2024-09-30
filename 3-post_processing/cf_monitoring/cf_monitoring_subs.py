@@ -19,7 +19,10 @@ current_dir = os.path.dirname(__file__)
 config_path = os.path.abspath(os.path.join(current_dir, '../../4-common', 'python_common'))
 sys.path.append(config_path)
 
-# Import function to read 'input.i3d' and 'post.prm' files
+# Import the plotting_params module
+import plot_params as pp
+
+# Import function to read 'input.i3d'
 from read_files import read_input_files
 
 # Import function to setup flow parameters 
@@ -29,13 +32,16 @@ from set_flow_parameters import set_flow_parameters
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this subroutine we perform 6th order accurate 
 !              calculations of integrals of TTBL thickness parameters 
-!              (delta*, theta) using 'umean' files printed at the same time 
-!              as 'cf_monitoring'.  
+!              (delta*, theta) using 'mean_stats_runtime' files printed at 
+!              the same time as 'cf_monitoring'.  
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
 
 def calculate_thickness_param():
+
+    # Create folder to store later results (te: time evolution)
+    os.makedirs('data_post_te', mode=0o777, exist_ok=True)
 
     #!--- Reading of files section and setup of flow parameters ---!
 
@@ -78,7 +84,7 @@ def calculate_thickness_param():
     """
     for time_index in range(0, nsavings, 1):
       
-        #!--- Calculate ts to open 'umean-ts' file (ts_iter: time-step of the iterations) ---!
+        #!--- Calculate ts to open 'mean_stats_runtime-ts' file (ts_iter: time-step of the iterations) ---!
         
         # ts of the initial condition is ts = 1
         if time_index == 0:
@@ -101,15 +107,45 @@ def calculate_thickness_param():
             
         #!--- Finalize 2nd order statistics ---!
         
+        # Take alias for 'time_index'
+        ti = time_index
+
         # Variances
-        mean_stats_realiz[:,3,:] = mean_stats_realiz[:,3,:] - mean_stats_realiz[:,0,:]**2  # streamwise  velocity variance
-        mean_stats_realiz[:,4,:] = mean_stats_realiz[:,4,:] - mean_stats_realiz[:,1,:]**2  # wall-normal velocity variance
-        mean_stats_realiz[:,5,:] = mean_stats_realiz[:,5,:] - mean_stats_realiz[:,2,:]**2  # spanwise    velocity variance    
+        mean_stats_realiz[:,3,ti] = mean_stats_realiz[:,3,ti] - mean_stats_realiz[:,0,ti]**2  # streamwise  velocity variance
+        mean_stats_realiz[:,4,ti] = mean_stats_realiz[:,4,ti] - mean_stats_realiz[:,1,ti]**2  # wall-normal velocity variance
+        mean_stats_realiz[:,5,ti] = mean_stats_realiz[:,5,ti] - mean_stats_realiz[:,2,ti]**2  # spanwise    velocity variance    
         
         # Reynolds stress
-        mean_stats_realiz[:,6,:] = mean_stats_realiz[:,6,:] - mean_stats_realiz[:,0,:]*mean_stats_realiz[:,1,:]  # Reynolds stress <u'v'>
-        mean_stats_realiz[:,7,:] = mean_stats_realiz[:,7,:] - mean_stats_realiz[:,0,:]*mean_stats_realiz[:,2,:]  # Reynolds stress <u'w'>
-        mean_stats_realiz[:,8,:] = mean_stats_realiz[:,8,:] - mean_stats_realiz[:,1,:]*mean_stats_realiz[:,2,:]  # Reynolds stress <v'w'>
+        mean_stats_realiz[:,6,ti] = mean_stats_realiz[:,6,ti] - mean_stats_realiz[:,0,ti]*mean_stats_realiz[:,1,ti]  # Reynolds stress <u'v'>
+        mean_stats_realiz[:,7,ti] = mean_stats_realiz[:,7,ti] - mean_stats_realiz[:,0,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <u'w'>
+        mean_stats_realiz[:,8,ti] = mean_stats_realiz[:,8,ti] - mean_stats_realiz[:,1,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <v'w'>
+
+        #!--- Save averaged mean statistics ---!
+        print(">>> Saving 'mean_stats_realiz' in /data_post_te.")
+        print()
+
+        # Create the file and write  
+        with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
+            f.write(f"{'mean[u]':>{pp.c_w}}, "  +
+                    f"{'mean[v]':>{pp.c_w}}, "  +
+                    f"{'mean[w]':>{pp.c_w}}, "  +
+                    f"{'var[u]':>{pp.c_w}}, "   +
+                    f"{'var[v]':>{pp.c_w}}, "   +
+                    f"{'var[w]':>{pp.c_w}}, "   +
+                    f"{'mean[uv]':>{pp.c_w}}, " +
+                    f"{'mean[uw]':>{pp.c_w}}, " +
+                    f"{'mean[vw]':>{pp.c_w}}\n ")
+    
+        for j in range(0, ny):
+            f.write(f"{mean_stats_realiz[j,0,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,1,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,2,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,3,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,4,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,5,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,6,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,7,ti]:{pp.fs6}}, " +
+                    f"{mean_stats_realiz[j,8,ti]:{pp.fs6}}\n" )
 
         #!--- Calculation of thickness parameters ---!
 
@@ -120,7 +156,7 @@ def calculate_thickness_param():
         # Interpolation at the 6th order of accuracy with a spline of 5th order, 
         # that passes through all data points
         spl = InterpolatedUnivariateSpline(yp, int1, k=5)
-        disp_t[j] = spl.integral(y0, yn)
+        disp_t[time_index] = spl.integral(y0, yn)
 
         # Calculate the momentum thickness theta
         int2 = int1 - int1**2  # 'integrand 2' 
@@ -128,7 +164,7 @@ def calculate_thickness_param():
         # Interpolation at the 6th order of accuracy with a spline of 5th order,
         # that passes through all data points
         spl = InterpolatedUnivariateSpline(yp, int2, k=5)
-        mom_t[j] = spl.integral(y0, yn)
+        mom_t[time_index] = spl.integral(y0, yn)
 
     # Return to main program
     return (disp_t, mom_t)
