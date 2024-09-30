@@ -33,7 +33,8 @@ from set_flow_parameters import set_flow_parameters
 ! DESCRIPTION: With this subroutine we perform 6th order accurate 
 !              calculations of integrals of TTBL thickness parameters 
 !              (delta*, theta) using 'mean_stats_runtime' files printed at 
-!              the same time as 'cf_monitoring'.  
+!              the same time as 'cf_monitoring'. We are also saving the 
+!              runtime statistics averaged with different flow realizations. 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
