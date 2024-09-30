@@ -404,9 +404,10 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             var_w   = M[:,5]
             mean_uv = M[:,7]
             
-            # read shear velocities from this file
-            # to do
-
+            # Shear velocities
+            sh_vel_x   = M[0,10]   # streamwise shear velocity (based on streamwise mean gradient)  
+            sh_vel_tot = M[0,11]   # total shear velocity (based on total mean gradient) 
+            
     print()
  
     return (
