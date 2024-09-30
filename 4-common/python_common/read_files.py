@@ -373,9 +373,6 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         
             # Asking to the user the time-step to show
             ts = input(">>> Enter the time-step to show: ")
-    
-            # Pad with zeros to match 'mean_stats_realiz' naming  
-            ts = ts.zfill(7)
 
             M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts:07d}.txt', skiprows=1, delimiter=',', dtype=np.float64)
             mean_u  = M[:,0]
