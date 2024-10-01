@@ -78,9 +78,16 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  vort_x, vort_y, vort_z, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
- snap_numb, ts, 
+ snap_numb, i_switch_plot, ts, 
  sh_vel_x, sh_vel_tot) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                                    post_corz, post_tke_eq, ny, nz)
+
+#!--------------------------------------------------------------------------------------!
+
+# Exit if the user tries to plot spectra using statistics from 'cf_monitoring'                                   
+if i_switch_plot:
+    print(">>> Spanwise correlation functions are present only in the dataset from 'post_incompact3d'.")
+    sys.exit(">>> Exiting")  
                                                                                                                                               
 #!--------------------------------------------------------------------------------------!
 
