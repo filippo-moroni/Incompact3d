@@ -164,7 +164,7 @@ if itype == 13:
     (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x)
     print()
     print(">>> Average of runtime mean statistics with different flow realizations")
-    print(">>> and calculation of time evolution of TTBL thickness parameters: done.")
+    print("    and calculation of time evolution of TTBL thickness parameters: done.")
         
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
     re_tau = np.zeros(len(time_unit)) 
