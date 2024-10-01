@@ -331,10 +331,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         print(">>> Specify the type of results to plot: ")
         print(">>> 0: from 'post_incompact3d' ")  
         print(">>> 1: from 'cf_monitoring' ")          
-        i_switch_plot = int(input())
+        print()
+        i_switch_plot = bool(int(input()))
 
         # Plotting statistics from 'post_incompact3d'
-        if i_switch_plot == 0:
+        if i_switch_plot == False:
         
             # Asking to the user the specific snapshot to show
             snap_numb = input(">>> Enter the snapshot number to show: ")
@@ -411,7 +412,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
                 tke_pseps  = M[:,4]
 
         # Plotting statistics from 'cf_monitoring'
-        elif i_switch_plot == 1:
+        elif i_switch_plot == True:
         
             # Asking to the user the time-step to show
             ts = input(">>> Enter the time-step to show: ")
@@ -458,7 +459,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     vort_x, vort_y, vort_z, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
-    snap_numb, ts, sh_vel_x, sh_vel_tot
+    snap_numb, i_switch_plot, ts, sh_vel_x, sh_vel_tot
     )
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!    

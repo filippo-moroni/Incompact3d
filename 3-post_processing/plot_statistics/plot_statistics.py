@@ -113,7 +113,7 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  vort_x, vort_y, vort_z, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
- snap_numb, ts, 
+ snap_numb, i_switch_plot, ts, 
  sh_vel_x, sh_vel_tot) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
                                    post_corz, post_tke_eq, ny, nz)
                                                                                                                                    
@@ -721,7 +721,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
 
 #!--- Total dissipation section ---!
-if post_diss:
+if post_diss and i_switch_plot == False:
 
     # Find the maximum of mean total dissipation
     eps_max = max(eps)
@@ -809,7 +809,7 @@ if post_diss:
     #!--------------------------------------------------------------------------------------!
 
 #!--- Correlation coefficients in spanwise direction (z) ---!
-if post_corz:
+if post_corz and i_switch_plot == False:
 
     #!--- Calculations for correlations ---!
 
@@ -1042,7 +1042,7 @@ if post_corz:
     #!--------------------------------------------------------------------------------------!
 
 #!--- Turbulent Kinetic Energy (TKE) budgets ---!
-if post_tke_eq:
+if post_tke_eq and i_switch_plot == False:
 
     """ 
     Ratio between turbulent production and dissipation;
