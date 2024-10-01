@@ -1,7 +1,8 @@
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: With this script, we perform:                              
+! DESCRIPTION: With this script, we perform:
+!              - averages of runtime mean statistics for a TTBL                               
 !              - plotting of streamwise friction coefficient vs time       
 !                and its mean value calculation (Channel);                
 !              - plotting of streamwise friction coefficient vs time,     
@@ -65,7 +66,7 @@ print()
 
 #!--------------------------------------------------------------------------------------!
 
-# Create folders to store later results (e.g. cf_mean and plot)
+# Create folders to store later results
 os.makedirs('time_evolution',       mode=0o777, exist_ok=True)
 os.makedirs('num_resolutions',      mode=0o777, exist_ok=True)
 os.makedirs('plots',                mode=0o777, exist_ok=True)
@@ -94,23 +95,11 @@ os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
 #!--- Parameters and mesh ---!
 (uwall, nu, twd, y) = set_flow_parameters(itype, re)
                          
-#!--- Reading of files section ---!
-
-# Channel (only 1 flow realization generally)
-if itype == 3:
-   
-    # Read cf data from /data folder
-    M = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
-
-    # Extracting quantities from the full matrix
-    cfx       = M[:,3] 
-    time_unit = M[:,6]
-
-# TTBL
-elif itype == 13:
+# Start of calculations for a TTBL
+if itype == 13:
 
     print()
-    print(">>> Averaging 'cf_history.txt' files over different flow realizations.")
+    print(">>> Opening 'cf_history.txt' files over different flow realizations.")
     
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
@@ -160,6 +149,9 @@ elif itype == 13:
     # Calculate (streamwise) friction coefficient
     cfx = 2.0 * (sh_vel_x / uwall)**2
     
+    print()
+    print(">>> Average of shear velocities, Reynolds analogy factor and power input: done.")
+    
     #!--------------------------------------------------------------------------------------------------------!
     
     """
@@ -170,7 +162,10 @@ elif itype == 13:
      - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
     (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x)
-    
+    print()
+    print(">>> Average of runtime mean statistics with different flow realizations")
+    print(">>> and calculation of time evolution of TTBL thickness parameters: done.")
+        
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
     re_tau = np.zeros(len(time_unit)) 
     re_tau = sh_vel_x * delta_99 / nu
@@ -296,8 +291,20 @@ elif itype == 13:
 
 #!--------------------------------------------------------------------------------------!
 
-# Only for a channel
+"""
+Calculations for a channel (at the moment, we are limited to 1 flow realization only;
+however, it is not so common to make different channel flow realizations.
+
+"""
+
 if itype == 3:
+   
+    # Read cf data from /data folder
+    M = np.loadtxt('data/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
+
+    # Extracting quantities from the full matrix
+    cfx       = M[:,3] 
+    time_unit = M[:,6]
 
     # Calculating the delta (in time units) between savings (skipping first saving that is IC usually)
     a = time_unit[1]
@@ -364,9 +371,12 @@ elif itype == 3:
     
     # Horizontal line to show mean cf value
     ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
-               
+    
+    # Create folder to store cf_mean 
+    os.makedirs('cf_stats', mode=0o777, exist_ok=True)
+           
     # Create the file and write  
-    with open('data_post/cf_monitoring/cf_mean.txt', 'w') as f:
+    with open('cf_stats/cf_mean.txt', 'w') as f:
         f.write(f"{'cf_mean':<{pp.c_w}}, "  +
                 f"{'t_tot':<{pp.c_w}}, "    +
                 f"{'delta_TU':<{pp.c_w}}, " +
