@@ -62,8 +62,8 @@ fs6 = f">{c_w}.6f"   # 6 decimal digits
 fs8 = f">{c_w}.8f"   # 8 decimal digits (used mainly for cf)
 
 # Parameters for contourf plots
-nlvl = 256         # number of isolevels
-pad_cbar_lab = -8  # padding of label of colorbar (cbar)
+nlvl = 256           # number of isolevels
+pad_cbar_lab = -8    # padding of label of colorbar (cbar)
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
 

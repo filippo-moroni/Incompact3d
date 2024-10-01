@@ -3,8 +3,7 @@
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: In this file, we store Python functions to read .txt files 
 !              for post-processing and plots:                             
-!               - read_input_files:        to read 'input.i3d' and 
-!                                          'post.prm';    
+!               - read_input_files:        to read 'input.i3d' and 'post.prm';    
 !               - read_data:               to read statistics data;               
 !               - read_ref_data:           to read reference data;
 !               - read_ref_data_temp_evol: to read TTBL temporal evolution 
@@ -28,8 +27,7 @@ dirname = os.path.join(base_path, 'Incompact3d/3-post_processing/reference_data'
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Function to read Incompact3d files:
-!              'input.i3d' and 'post.prm'.   
+! DESCRIPTION: Function to read Incompact3d files: 'input.i3d' and 'post.prm'.   
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -42,64 +40,64 @@ def read_input_files(filename1,filename2):
         # Read all lines into a list
         lines = file.readlines()
     
-        # Extract: itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, 
-        # Re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo 
+    # Extract: itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, 
+    # Re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo 
         
-        # As always, index is 1 less of the line number (Python convention)
-        itype      = lines[7]  
-        nx         = lines[14]
-        ny         = lines[15]
-        nz         = lines[16]
-        istret     = lines[17]
-        beta       = lines[18]
-        Lx         = lines[21]
-        Ly         = lines[22]
-        Lz         = lines[23]
-        re         = lines[26]
-        dt         = lines[29]
-        ifirst     = lines[30]
-        ilast      = lines[31]
-        numscalar  = lines[35]
-        ioutput    = lines[73]
-        ioutput_cf = lines[74]
-        iswitch_wo = lines[90]
+    # As always, index is 1 less of the line number (Python convention)
+    itype      = lines[7]  
+    nx         = lines[14]
+    ny         = lines[15]
+    nz         = lines[16]
+    istret     = lines[17]
+    beta       = lines[18]
+    Lx         = lines[21]
+    Ly         = lines[22]
+    Lz         = lines[23]
+    re         = lines[26]
+    dt         = lines[29]
+    ifirst     = lines[30]
+    ilast      = lines[31]
+    numscalar  = lines[35]
+    ioutput    = lines[73]
+    ioutput_cf = lines[74]
+    iswitch_wo = lines[90]
     
-        # Removing characters in front of the extracted strings and the comments:
-        # 1) split: the string is split when the specified character is encountered; 
-        # 2) we select the portion of string with index inside square brackets;
-        # 3) strip: removes leading or trailing whitespaces from the string. 
+    # Removing characters in front of the extracted strings and the comments:
+    # 1) split: the string is split when the specified character is encountered; 
+    # 2) we select the portion of string with index inside square brackets;
+    # 3) strip: removes leading or trailing whitespaces from the string. 
     
-        itype      = itype.split('=')[-1].strip()
+    itype      = itype.split('=')[-1].strip()
     
-        nx         = nx.split('!')[0]
-        nx         = nx.split('=')[-1].strip()
+    nx         = nx.split('!')[0]
+    nx         = nx.split('=')[-1].strip()
         
-        ny         = ny.split('!')[0]
-        ny         = ny.split('=')[-1].strip()
+    ny         = ny.split('!')[0]
+    ny         = ny.split('=')[-1].strip()
     
-        nz         = nz.split('!')[0]
-        nz         = nz.split('=')[-1].strip()
+    nz         = nz.split('!')[0]
+    nz         = nz.split('=')[-1].strip()
         
-        istret     = istret.split('!')[0]
-        istret     = istret.split('=')[-1].strip()
+    istret     = istret.split('!')[0]
+    istret     = istret.split('=')[-1].strip()
         
-        beta       = beta.split('!')[0]
-        beta       = beta.split('=')[-1].strip()
+    beta       = beta.split('!')[0]
+    beta       = beta.split('=')[-1].strip()
     
-        Lx         = Lx.split('!')[0]
-        Lx         = Lx.split('=')[-1].strip()
+    Lx         = Lx.split('!')[0]
+    Lx         = Lx.split('=')[-1].strip()
     
-        Ly         = Ly.split('!')[0]
-        Ly         = Ly.split('=')[-1].strip()
+    Ly         = Ly.split('!')[0]
+    Ly         = Ly.split('=')[-1].strip()
     
-        Lz         = Lz.split('!')[0]
-        Lz         = Lz.split('=')[-1].strip()
+    Lz         = Lz.split('!')[0]
+    Lz         = Lz.split('=')[-1].strip()
     
-        re         = re.split('!')[0]
-        re         = re.split('=')[-1].strip()
+    re         = re.split('!')[0]
+    re         = re.split('=')[-1].strip()
         
-        dt         = dt.split('!')[0]
-        dt         = dt.split('=')[-1].strip()
+    dt         = dt.split('!')[0]
+    dt         = dt.split('=')[-1].strip()
         
         ifirst     = ifirst.split('!')[0]
         ifirst     = ifirst.split('=')[-1].strip()
