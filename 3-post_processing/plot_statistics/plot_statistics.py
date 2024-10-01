@@ -118,7 +118,7 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
  snap_numb, i_switch_plot, ts, 
  sh_vel_x, sh_vel_tot) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
-                                   post_corz, post_tke_eq, ny, nz)
+                                   post_corz, post_tke_eq, ny, nz, nu)
                                                                                                                                    
 #!--------------------------------------------------------------------------------------!
 
