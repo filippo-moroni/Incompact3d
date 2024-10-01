@@ -34,20 +34,20 @@ from ttbl_subs import calculate_ttbl_thick_params
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this subroutine we perform:
+!               - averaging between different flow realizations of runtime 
+!                 mean statistics files 'mean_stats_runtime' and saving of 
+!                 the related shear velocities in the average files 
+!                 'mean_stats_realiz-ts'; 
 !               - 6th order accurate calculations of integrals of TTBL 
-!                 thickness parameters (delta*, theta) using 
-!                 'mean_stats_runtime' files printed at the same time as 
-!                 'cf_monitoring';
-!               - averaging and saving of runtime mean statistics
-!                 (different flow realizations) and save related 
-!                 shear velocities; 
-!               - calculation of TTBL thickness delta_99.
+!                 thickness parameters (delta*, theta) and delta_99 using 
+!                 an external subroutine applied on the flow field averaged 
+!                 with different flow realizations.               
 !               
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
 
-def calculate_thickness_param(sh_veltot,sh_velx):
+def average_runtime_mean_stats(sh_veltot,sh_velx):
 
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te', mode=0o777, exist_ok=True)
@@ -92,7 +92,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
     
     #!--- Save averaged mean statistics ---!
     print()
-    print(">>> Saving 'mean_stats_realiz' in /data_post_te.")
+    print(">>> Saving 'mean_stats_realiz-ts' files in /data_post_te.")
     print()
         
     for ti in range(0, nsavings, 1):

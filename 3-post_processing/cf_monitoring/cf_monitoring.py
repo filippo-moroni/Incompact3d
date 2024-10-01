@@ -39,8 +39,8 @@ from read_files import read_input_files, read_ref_data_temp_evol
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
-# Import function to calculate TTBL thickness parameters at the 6th order
-from cf_monitoring_subs import calculate_thickness_param
+# Import function to average runtime mean stats with different flow realizations
+from cf_monitoring_subs import average_runtime_mean_stats
 
 #!--------------------------------------------------------------------------------------!
 
@@ -238,11 +238,12 @@ elif itype == 13:
                 f"{t_nu_tot:{pp.fs6}}\n"         )
 
     """
-    Call subroutine for calculations of 6th order TTBL thickness parameters,
-    mean_stats runtime averaged with different flow realizations and 
-    TTBL thickness delta_99.     
+    Call subroutine for calculations of:
+     - mean_stats runtime averaged with different flow realizations;
+     - 6th order integrals for TTBL thickness parameters delta* and theta;
+     - TTBL thickness delta_99.     
     """
-    (delta_99, disp_t, mom_t) = calculate_thickness_param(sh_veltot,sh_velx)
+    (delta_99, disp_t, mom_t) = average_runtime_mean_stats(sh_veltot, sh_velx)
     
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
     re_tau = np.zeros(len(time_unit)) 
