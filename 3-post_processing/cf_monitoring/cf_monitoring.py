@@ -65,6 +65,7 @@ print()
 
 # Create folders to store later results (e.g. cf_mean and plot)
 os.makedirs('time_evolution',       mode=0o777, exist_ok=True)
+os.makedirs('num_resolutions',      mode=0o777, exist_ok=True)
 os.makedirs('plots',                mode=0o777, exist_ok=True)
 os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
 
@@ -162,59 +163,6 @@ elif itype == 13:
     
     #!--------------------------------------------------------------------------------------------------------!
     
-    #!--- Section on check of mesh spacings ---!
-
-    print()
-    print(">>> Calculating grid spacings and viscous time scale at maximum cf.")
-
-    # Maximum (total) shear velocity
-    max_sh_vel_tot = np.max(sh_vel_tot) 
-    
-    # Related viscous lengths
-    delta_nu_tot = nu / max_sh_vel_tot
-
-    # Mesh spacings (dimensional)
-    delta_x  = Lx / nx
-    delta_yw = y[1]  
-    delta_z  = Lz / nz
-
-    """
-    Non-dimensional mesh spacings and viscous time unit
-    (p: plus, tot: total shear velocity).
-    """
-    delta_x_p_tot  = delta_x  / delta_nu_tot
-    delta_yw_p_tot = delta_yw / delta_nu_tot
-    delta_z_p_tot  = delta_z  / delta_nu_tot
-
-    t_nu_tot = nu / max_sh_vel_tot**2
-    
-    # Minimum viscous time unit
-    t_nu_min = np.min(t_nu_tot)
-    
-    # Ratio of time-step dt and minimum viscous time unit
-    dt_plus = round(dt / t_nu_min, 4)
-
-    # Saving "num_resolutions.txt" (num: numerical)
-    print(">>> Saving 'num_resolutions.txt' in data_post/cf_monitoring/.")
-    print()
-
-    # Write and save to .txt file 
-    with open('data_post/cf_monitoring/num_resolutions.txt', 'w') as f:
-        f.write('Maximum non-dimensional grid spacings and minimum viscous time scale.\n')
-        f.write('Rescaling with total shear velocity, based on the norm of the total wall shear stress vector.\n')
-        f.write('\n')
-        f.write(f'Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
-        f.write('\n')
-        f.write(f"{'delta_x+_max':>{pp.c_w}}, "  +
-                f"{'delta_yw+_max':>{pp.c_w}}, " +
-                f"{'delta_z+_max':>{pp.c_w}}, "  + 
-                f"{'t_nu_max':>{pp.c_w}}\n"      )
-        
-        f.write(f"{delta_x_p_tot:{pp.fs6}}, "    +
-                f"{delta_yw_p_tot:{pp.fs6}}, "   +
-                f"{delta_z_p_tot:{pp.fs6}}, "    +
-                f"{t_nu_tot:{pp.fs6}}\n"         )
-
     """
     Call subroutine for calculations of:
      - mean_stats runtime averaged with different flow realizations;
@@ -279,6 +227,72 @@ elif itype == 13:
                     f"{power_in[j]:{pp.fs6}}, " +
                     f"{a_fact[j]:{pp.fs}}, "    +
                     f"{time_unit[j]:{pp.fs}}\n" )
+    
+    #!--------------------------------------------------------------------------------------------------------!
+    
+    #!--- Section on check of mesh spacings ---!
+
+    print()
+    print(">>> Calculating maximum grid spacings in wall units and minimum viscous time scale.")
+    print(">>> We expect to observe maximum grid spacings along x and z and minimum viscous time at peak cf,")
+    print(">>> while maximum wall-normal grid spacing at the BL interface at the end of the simulation.
+
+    # Maximum (total) shear velocity
+    max_sh_vel_tot = np.max(sh_vel_tot) 
+    
+    # Related viscous length
+    delta_nu_tot = nu / max_sh_vel_tot
+
+    # Mesh spacings (dimensional)
+    delta_x  = Lx / nx
+    delta_yw = y[1]  
+    delta_z  = Lz / nz
+
+    """
+    Non-dimensional mesh spacings and viscous time unit
+    (p: plus, tot: total shear velocity).
+    """
+    delta_x_p_tot  = delta_x  / delta_nu_tot
+    delta_yw_p_tot = delta_yw / delta_nu_tot
+    delta_z_p_tot  = delta_z  / delta_nu_tot
+
+    t_nu_min_tot = nu / max_sh_vel_tot**2
+        
+    # Ratio of time-step dt and minimum viscous time unit
+    dt_plus = round(dt / t_nu_min, 4)
+
+    # Saving "num_resolutions.txt" (num: numerical)
+    print(">>> Saving 'worst_num_resolutions.txt' in num_resolutions/.")
+    print()
+
+    # Write and save to .txt file 
+    with open('num_resolutions/worst_num_resolutions.txt', 'w') as f:
+        f.write('Maximum non-dimensional grid spacings and minimum viscous time scale.\n')
+        f.write('Rescaling with total shear velocity, based on the norm of the total wall shear stress vector.\n')
+        f.write('\n')
+        f.write(f'Flowcase: {add_string}.\n')
+        f.write('\n')
+        f.write(f'Time-step dt = {dt}.\n')        
+        f.write(f'Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
+        f.write('\n')
+        f.write('Abbreviations:\n')
+        f.write(' - x:        streamwise direction;\n')
+        f.write(' - y:        wall-normal direction;\n')
+        f.write(' - z:        spanwise direction;\n')
+        f.write(' - delta:    mesh spacing;\n')
+        f.write(' - d:        boundary layer interface (d: small letter greek delta);\n')
+        f.write('\n')
+        f.write(f"{'delta_x+_max':>{pp.c_w}}, "   +
+                f"{'delta_yw+_max':>{pp.c_w}}, "  +
+                f"{'delta_z+_max':>{pp.c_w}}, "   +
+                f"{'delta_yd+_max':>{pp.c_w}}, "  +
+                f"{'t_nu_min':>{pp.c_w}}\n"       )
+        
+        f.write(f"{delta_x_p_tot:{pp.fs6}}, "     +
+                f"{delta_yw_p_tot:{pp.fs6}}, "    +
+                f"{delta_z_p_tot:{pp.fs6}}, "     +
+                f"{max_delta_yd_plus:{pp.fs6}}, " +                 
+                f"{t_nu_min_tot:{pp.fs6}}\n"      )
 
 #!--------------------------------------------------------------------------------------!
 
