@@ -47,7 +47,7 @@ from ttbl_subs import calculate_ttbl_thick_params
 !-----------------------------------------------------------------------------!
 """
 
-def average_runtime_mean_stats(sh_veltot,sh_velx):
+def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
 
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te', mode=0o777, exist_ok=True)
@@ -80,9 +80,11 @@ def average_runtime_mean_stats(sh_veltot,sh_velx):
 
     # Initialize arrays for TTBL thickness parameters
     delta_99   = np.zeros(nsavings)   # BL thickness delta_99
-    delta_99_j = np.zeros(nsavings)   # BL thickness delta_99 j index
     disp_t     = np.zeros(nsavings)   # displacement thickness, delta*
     mom_t      = np.zeros(nsavings)   # momentum     thickness, theta
+    
+    # Initialize maximum Delta y+ at the BL edge for grid resolutions monitoring
+    max_delta_yd_plus = 0.0
 
     """
     Do loop over all savings of 'mean_stats_runtime' files. 
@@ -164,10 +166,17 @@ def average_runtime_mean_stats(sh_veltot,sh_velx):
         mean_u[:] = mean_stats_realiz[:,0,ti]
         
         # Call of external subroutine for the calculation of TTBL thickness parameters
-        (delta_99[ti], delta_99_j[ti], disp_t[ti], mom_t[ti]) = calculate_ttbl_thick_params(mean_u,y,uwall)
+        (delta_99[ti], delta_99_j, disp_t[ti], mom_t[ti]) = calculate_ttbl_thick_params(mean_u,y,uwall)
+        
+        # Delta y+ at the BL edge
+        delta_yd_plus = (y[delta_99_j] - y[delta_99_j-1]) * sh_vel_tot[ti] / nu
+        
+        # Maximum Delta y+ at the BL edge for grid resolutions monitoring
+        if max_delta_yd_plus < delta_yd_plus:
+            max_delta_yd_plus = delta_yd_plus
                
     # Return to main program
-    return (delta_99, disp_t, mom_t)
+    return (delta_99, disp_t, mom_t, max_delta_yd_plus)
 
 
 

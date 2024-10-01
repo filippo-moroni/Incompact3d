@@ -120,12 +120,12 @@ elif itype == 13:
         M = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
         # Extracting quantities from the full matrix
-        sh_veltot = M[:,0]     # total shear velocity
-        sh_velx   = M[:,1]     # streamwise shear velocity
-        a_fact    = M[:,4]     # Reynolds analogy factor
-        time_unit = M[:,6]     # time unit
-        ts        = M[:,7]     # time step
-        power_in  = M[:,10]    # power input
+        sh_vel_tot = M[:,0]     # total shear velocity
+        sh_vel_x   = M[:,1]     # streamwise shear velocity
+        a_fact     = M[:,4]     # Reynolds analogy factor
+        time_unit  = M[:,6]     # time unit
+        ts         = M[:,7]     # time step
+        power_in   = M[:,10]    # power input
                              
         """
         Initialize arrays for sum
@@ -135,16 +135,16 @@ elif itype == 13:
         """
         if i == 1:
 
-            sh_veltotsq_sum = np.zeros(len(time_unit))    
-            sh_velxsq_sum   = np.zeros(len(time_unit))
-            a_fact_sum      = np.zeros(len(time_unit))
-            power_in_sum    = np.zeros(len(time_unit))
+            sh_vel_tot_sq_sum = np.zeros(len(time_unit))    
+            sh_vel_x_sq_sum   = np.zeros(len(time_unit))
+            a_fact_sum        = np.zeros(len(time_unit))
+            power_in_sum      = np.zeros(len(time_unit))
 
         # Average the square of the total shear velocity over the realizations 
-        sh_veltotsq_sum = sh_veltotsq_sum + (sh_veltot**2 / nr)
+        sh_vel_tot_sq_sum = sh_vel_tot_sq_sum + (sh_vel_tot**2 / nr)
 
         # Average the square of the longitudinal shear velocity over the realizations 
-        sh_velxsq_sum = sh_velxsq_sum + (sh_velx**2 / nr)
+        sh_vel_x_sq_sum = sh_vel_x_sq_sum + (sh_vel_x**2 / nr)
 
         # Average the Reynolds analogy factor over the realizations
         a_fact_sum = a_fact_sum + a_fact / nr
@@ -154,13 +154,13 @@ elif itype == 13:
         power_in_sum = power_in_sum + power_in / nr 
                 
     # Finalize the averages
-    sh_veltot = np.sqrt(sh_veltotsq_sum)
-    sh_velx   = np.sqrt(sh_velxsq_sum)
-    a_fact    = a_fact_sum
-    power_in  = power_in_sum
+    sh_vel_tot = np.sqrt(sh_vel_tot_sq_sum)
+    sh_vel_x   = np.sqrt(sh_vel_x_sq_sum)
+    a_fact     = a_fact_sum
+    power_in   = power_in_sum
         
     # Calculate (streamwise) friction coefficient
-    cfx = 2.0 * (sh_velx / uwall)**2
+    cfx = 2.0 * (sh_vel_x / uwall)**2
     
     #!--------------------------------------------------------------------------------------------------------!
     
@@ -169,20 +169,20 @@ elif itype == 13:
 
     # Create the file and write  
     with open('data_post/cf_monitoring/cf_history_realiz.txt', 'w') as f:
-        f.write(f"{'sh_veltot':>{pp.c_w}}, "     +
-                f"{'sh_velx':>{pp.c_w}}, "       +
-                f"{'cfx':>{pp.c_w}}, "           +
-                f"{'P_in':>{pp.c_w}}, "          +
-                f"{'A_fact':>{pp.c_w}}, "        +
-                f"{'time_unit':>{pp.c_w}}\n"     )
+        f.write(f"{'sh_vel_tot':>{pp.c_w}}, "     +
+                f"{'sh_vel_x':>{pp.c_w}}, "       +
+                f"{'cfx':>{pp.c_w}}, "            +
+                f"{'P_in':>{pp.c_w}}, "           +
+                f"{'A_fact':>{pp.c_w}}, "         +
+                f"{'time_unit':>{pp.c_w}}\n"      )
 
         for j in range(0, len(time_unit)):
-            f.write(f"{sh_veltot[j]:{pp.fs6}}, " +
-                    f"{sh_velx[j]:{pp.fs6}}, "   +    
-                    f"{cfx[j]:{pp.fs8}}, "       +
-                    f"{power_in[j]:{pp.fs6}}, "  +
-                    f"{a_fact[j]:{pp.fs}}, "     +
-                    f"{time_unit[j]:{pp.fs}}\n"  )
+            f.write(f"{sh_vel_tot[j]:{pp.fs6}}, " +
+                    f"{sh_vel_x[j]:{pp.fs6}}, "   +    
+                    f"{cfx[j]:{pp.fs8}}, "        +
+                    f"{power_in[j]:{pp.fs6}}, "   +
+                    f"{a_fact[j]:{pp.fs}}, "      +
+                    f"{time_unit[j]:{pp.fs}}\n"   )
 
     #!--- Section on check of mesh spacings ---!
 
@@ -190,10 +190,10 @@ elif itype == 13:
     print(">>> Calculating grid spacings and viscous time scale at maximum cf.")
 
     # Maximum (total) shear velocity
-    max_sh_veltot = np.max(sh_veltot) 
+    max_sh_vel_tot = np.max(sh_vel_tot) 
     
     # Related viscous lengths
-    delta_nu_tot = nu / max_sh_veltot
+    delta_nu_tot = nu / max_sh_vel_tot
 
     # Mesh spacings (dimensional)
     delta_x  = Lx / nx
@@ -208,7 +208,7 @@ elif itype == 13:
     delta_yw_p_tot = delta_yw / delta_nu_tot
     delta_z_p_tot  = delta_z  / delta_nu_tot
 
-    t_nu_tot = nu / max_sh_veltot**2
+    t_nu_tot = nu / max_sh_vel_tot**2
     
     # Minimum viscous time unit
     t_nu_min = np.min(t_nu_tot)
@@ -241,13 +241,14 @@ elif itype == 13:
     Call subroutine for calculations of:
      - mean_stats runtime averaged with different flow realizations;
      - 6th order integrals for TTBL thickness parameters delta* and theta;
-     - TTBL thickness delta_99.     
+     - TTBL thickness delta_99;
+     - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
-    (delta_99, disp_t, mom_t) = average_runtime_mean_stats(sh_veltot, sh_velx)
+    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x)
     
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
     re_tau = np.zeros(len(time_unit)) 
-    re_tau = sh_velx * delta_99 / nu
+    re_tau = sh_vel_x * delta_99 / nu
 
     # Calculate Reynolds numbers based on displacement thickness and momentum thickness
     re_disp_t = disp_t * re
