@@ -154,25 +154,25 @@ if itype == 3:
 
 # TTBL only
 elif itype == 13:
-
-    # Calculate BL thickness delta_99 for a TTBL and its related index
-    (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
+    
+    # Call of external subroutine for the calculation of TTBL thickness parameters
+    (delta_99, delta_99_j, disp_t, mom_t) = calculate_ttbl_thick_params(mean_u,y,uwall)
 
     # Delta y+ at the BL edge
-    delta_yd_plus = y_plus_tot[bl_thick_j] - y_plus_tot[bl_thick_j-1]
+    delta_yd_plus = y_plus_tot[delta_99_j] - y_plus_tot[delta_99_j-1]
 
     # Shift of mean streamwise velocity profile due to the translating wall
     mean_u = uwall - mean_u
 
     # (Streamwise) friction Reynolds number
-    re_tau = sh_vel_x * bl_thick / nu
+    re_tau = sh_vel_x * delta_99 / nu
     re_tau = int(re_tau)
         
     # Print friction Reynolds number, boundary layer thickness and
     # domain height in viscous units
     print(">>> Friction Reynolds number, Re_tau = ", re_tau)
     print()
-    print(">>> Boundary layer thickness, delta_99 = ", round(bl_thick,1))
+    print(">>> Boundary layer thickness, delta_99 = ", round(delta_99,1))
     print()
     print(">>> Domain height in wall units, Ly+ = ", round(Ly_plus,1))
     print()
