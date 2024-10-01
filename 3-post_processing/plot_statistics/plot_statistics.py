@@ -219,7 +219,7 @@ print(">>> Folder: data_post/plot_statistics/grid_spacings.")
 print()
 
 # TTBL only
-if itype == 13:
+if itype == 13 and i_switch_plot == False:
 
     print(">>> For a comprehensive file for grid_spacings evolution,")
     print(">>> run 'ttbl_indexes.py'.")
@@ -231,6 +231,10 @@ filename = f'data_post/plot_statistics/grid_spacings/grid_spacings_post'
 # Add snap_numb if it is provided
 if snap_numb is not None:
     filename += f'-{snap_numb}'
+    
+# Add time-step if it is provided
+if ts is not None:
+    filename += f'-ts{ts}'
 
 # Add add_string if it is provided
 if add_string is not None:
