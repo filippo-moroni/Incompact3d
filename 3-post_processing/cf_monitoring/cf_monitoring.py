@@ -64,10 +64,9 @@ print()
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. cf_mean and plot)
-os.makedirs('data_post',               mode=0o777, exist_ok=True)
-os.makedirs('data_post/cf_monitoring', mode=0o777, exist_ok=True)
-os.makedirs('plots',                   mode=0o777, exist_ok=True)
-os.makedirs('plots/time_evolution',    mode=0o777, exist_ok=True)
+os.makedirs('time_evolution',       mode=0o777, exist_ok=True)
+os.makedirs('plots',                mode=0o777, exist_ok=True)
+os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -150,7 +149,6 @@ elif itype == 13:
         a_fact_sum = a_fact_sum + a_fact / nr
                 
         # Average the power input over the realizations
-        # (to be refined with the explicit calculation with wall velocities and shear velocities)
         power_in_sum = power_in_sum + power_in / nr 
                 
     # Finalize the averages
@@ -164,26 +162,6 @@ elif itype == 13:
     
     #!--------------------------------------------------------------------------------------------------------!
     
-    print(">>> Saving 'cf_history_realiz.txt' in data_post/cf_monitoring/.")
-    print()
-
-    # Create the file and write  
-    with open('data_post/cf_monitoring/cf_history_realiz.txt', 'w') as f:
-        f.write(f"{'sh_vel_tot':>{pp.c_w}}, "     +
-                f"{'sh_vel_x':>{pp.c_w}}, "       +
-                f"{'cfx':>{pp.c_w}}, "            +
-                f"{'P_in':>{pp.c_w}}, "           +
-                f"{'A_fact':>{pp.c_w}}, "         +
-                f"{'time_unit':>{pp.c_w}}\n"      )
-
-        for j in range(0, len(time_unit)):
-            f.write(f"{sh_vel_tot[j]:{pp.fs6}}, " +
-                    f"{sh_vel_x[j]:{pp.fs6}}, "   +    
-                    f"{cfx[j]:{pp.fs8}}, "        +
-                    f"{power_in[j]:{pp.fs6}}, "   +
-                    f"{a_fact[j]:{pp.fs}}, "      +
-                    f"{time_unit[j]:{pp.fs}}\n"   )
-
     #!--- Section on check of mesh spacings ---!
 
     print()
@@ -255,11 +233,30 @@ elif itype == 13:
     re_mom_t  = mom_t  * re
 
     print()
-    print(">>> Saving 'high_order_integrals_evol.txt' in data_post/cf_monitoring/.")
+    print(">>> Saving 'time_evolution.txt' in time_evolution/.")
+    print(">>> This file stores the following quantities:")
+    print(">>>  - cfx;")
+    print(">>>  - delta_99, delta*, theta;")
+    print(">>>  - Re_tau, Re_delta*, Re_theta;")
+    print(">>>  - power input, P_in;")
+    print(">>>  - Reynolds analogy factor, A_fact.")
     print()
 
     # Create the file and write  
-    with open('data_post/cf_monitoring/high_order_integrals_evol.txt', 'w') as f:
+    with open('time_evolution/time_evolution.txt', 'w') as f:
+        f.write('This file stores the main quantities of interest to analyse the behaviour of TTBLs.\n')
+        f.write('Acronyms & quantities:\n')
+        f.write(f' - cfx       : streamwise friction coefficient;\n')
+        f.write(f' - delta_99  : TTBL thickness delta_99;\n')
+        f.write(f' - disp_t    : TTBL displacement thickness (delta*);\n')        
+        f.write(f' - mom_t     : TTBL momentum thickness (theta);\n')        
+        f.write(f' - Re_tau    : friction Reynolds number;\n')        
+        f.write(f' - Re_delta* : Reynolds number based on displacement thickness;\n')        
+        f.write(f' - Re_theta  : Reynolds number based on momentum thickness;\n')        
+        f.write(f' - P_in      : power input (valid for both fixed and oscillating wall);\n')        
+        f.write(f' - A_fact    : Reynolds analogy factor.\n')        
+        f.write(f' - time_unit : non-dimensional outer time scale, based on wall velocity and trip wire diameter.\n')        
+        f.write('\n')
         f.write(f"{'cfx':>{pp.c_w}}, "          +
                 f"{'delta_99':>{pp.c_w}}, "     +
                 f"{'disp_t':>{pp.c_w}}, "       +
@@ -267,6 +264,8 @@ elif itype == 13:
                 f"{'Re_tau':>{pp.c_w}}, "       +
                 f"{'Re_delta*':>{pp.c_w}}, "    +
                 f"{'Re_theta':>{pp.c_w}}, "     +
+                f"{'P_in':>{pp.c_w}}, "         +
+                f"{'A_fact':>{pp.c_w}}, "       +
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
         for j in range(0, len(time_unit)):
@@ -277,6 +276,8 @@ elif itype == 13:
                     f"{re_tau[j]:{pp.fs}}, "    +
                     f"{re_disp_t[j]:{pp.fs}}, " +
                     f"{re_mom_t[j]:{pp.fs}}, "  +
+                    f"{power_in[j]:{pp.fs6}}, " +
+                    f"{a_fact[j]:{pp.fs}}, "    +
                     f"{time_unit[j]:{pp.fs}}\n" )
 
 #!--------------------------------------------------------------------------------------!
