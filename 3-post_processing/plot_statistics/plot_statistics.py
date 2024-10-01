@@ -357,7 +357,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
     
     # Save and show the figure
-    save_and_show_plot('umean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    save_and_show_plot('umean', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -412,7 +412,7 @@ if post_mean:
         set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
 
     # Save and show the figure
-    save_and_show_plot('wmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    save_and_show_plot('wmean', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
     
     #!--------------------------------------------------------------------------------------!
 
@@ -489,7 +489,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    save_and_show_plot('uvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -566,7 +566,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('vvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    save_and_show_plot('vvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
     
@@ -634,7 +634,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('wvar', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    save_and_show_plot('wvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -716,7 +716,7 @@ if post_mean:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('uvmean', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    save_and_show_plot('uvmean', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
