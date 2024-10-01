@@ -73,12 +73,12 @@ def set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, iswitch_slp):
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this script, we close the plot section for statistics 
-!              plotting.
+!              plotting (save and show).
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
 
-def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=None, y_plus_in=None, subfolder=None, description=None):
+def save_and_show_plot(variable_name, snap_numb=None, ts=None, add_string=None, re_tau=None, y_plus_in=None, subfolder=None, description=None):
     
     """
     Saves and shows a plot with a given variable name and optional parameters.
