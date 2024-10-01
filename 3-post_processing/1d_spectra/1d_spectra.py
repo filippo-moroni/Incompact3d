@@ -86,8 +86,10 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Exit if the user tries to plot spectra using statistics from 'cf_monitoring'                                   
 if i_switch_plot:
-    print(">>> Spanwise correlation functions are present only in the dataset from 'post_incompact3d'.")
-    sys.exit(">>> Exiting")  
+    print(">>> Spanwise correlation functions are present only in the dataset from 'post_incompact3d',")
+    print(">>> we cannot calculate spectra and plot them.")
+    print()    
+    sys.exit(">>> Exiting from '1d_spectra.py'.")  
                                                                                                                                               
 #!--------------------------------------------------------------------------------------!
 
