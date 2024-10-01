@@ -99,42 +99,42 @@ def read_input_files(filename1,filename2):
     dt         = dt.split('!')[0]
     dt         = dt.split('=')[-1].strip()
         
-        ifirst     = ifirst.split('!')[0]
-        ifirst     = ifirst.split('=')[-1].strip()
+    ifirst     = ifirst.split('!')[0]
+    ifirst     = ifirst.split('=')[-1].strip()
         
-        ilast      = ilast.split('!')[0]
-        ilast      = ilast.split('=')[-1].strip()
+    ilast      = ilast.split('!')[0]
+    ilast      = ilast.split('=')[-1].strip()
         
-        numscalar  = numscalar.split('!')[0]
-        numscalar  = numscalar.split('=')[-1].strip()
+    numscalar  = numscalar.split('!')[0]
+    numscalar  = numscalar.split('=')[-1].strip()
         
-        ioutput    = ioutput.split('!')[0]
-        ioutput    = ioutput.split('=')[-1].strip()
+    ioutput    = ioutput.split('!')[0]
+    ioutput    = ioutput.split('=')[-1].strip()
         
-        ioutput_cf = ioutput_cf.split('!')[0]
-        ioutput_cf = ioutput_cf.split('=')[-1].strip()
+    ioutput_cf = ioutput_cf.split('!')[0]
+    ioutput_cf = ioutput_cf.split('=')[-1].strip()
     
-        iswitch_wo = iswitch_wo.split('!')[0]
-        iswitch_wo = iswitch_wo.split('=')[-1].strip()
+    iswitch_wo = iswitch_wo.split('!')[0]
+    iswitch_wo = iswitch_wo.split('=')[-1].strip()
     
-        # Convert to needed variable type (integer, float, etc.)
-        itype      = int(itype)
-        nx         = int(nx)
-        ny         = int(ny)
-        nz         = int(nz)
-        istret     = int(istret)
-        beta       = np.float64(beta)
-        Lx         = np.float64(Lx)
-        Ly         = np.float64(Ly)
-        Lz         = np.float64(Lz)
-        re         = np.float64(re)
-        dt         = np.float64(dt)
-        ifirst     = int(ifirst)
-        ilast      = int(ilast)
-        numscalar  = int(numscalar)
-        ioutput    = int(ioutput)
-        ioutput_cf = int(ioutput_cf)
-        iswitch_wo = int(iswitch_wo)
+    # Convert to needed variable type (integer, float, etc.)
+    itype      = int(itype)
+    nx         = int(nx)
+    ny         = int(ny)
+    nz         = int(nz)
+    istret     = int(istret)
+    beta       = np.float64(beta)
+    Lx         = np.float64(Lx)
+    Ly         = np.float64(Ly)
+    Lz         = np.float64(Lz)
+    re         = np.float64(re)
+    dt         = np.float64(dt)
+    ifirst     = int(ifirst)
+    ilast      = int(ilast)
+    numscalar  = int(numscalar)
+    ioutput    = int(ioutput)
+    ioutput_cf = int(ioutput_cf)
+    iswitch_wo = int(iswitch_wo)
     
     # Opening of 'post.prm' file
     with open(filename2, 'r') as file:
@@ -142,45 +142,45 @@ def read_input_files(filename1,filename2):
         # Read all lines into a list
         lines = file.readlines()
    
-        # Extract needed lines  
-        add_string  = lines[3]    # Flow case name
-        file1       = lines[5]    # First snapshot index
-        filen       = lines[6]    # Final snapshot index
-        icrfile     = lines[7]    # File increment
-        nr          = lines[8]    # Number of flow realizations
+    # Extract needed lines  
+    add_string  = lines[3]    # Flow case name
+    file1       = lines[5]    # First snapshot index
+    filen       = lines[6]    # Final snapshot index
+    icrfile     = lines[7]    # File increment
+    nr          = lines[8]    # Number of flow realizations
         
-        post_mean   = lines[12]   # Compute mean statistics
-        post_vort   = lines[13]   # Compute mean vorticity and mean gradient
-        post_diss   = lines[14]   # Compute mean total dissipation rate    
-        post_corz   = lines[15]   # Compute correlation functions along z (a previous run with post_mean = 1 must be performed)
-        post_tke_eq = lines[16]   # Compute fluctuating terms of TKE equations (a previous run with post_mean = 1 must be performed)
+    post_mean   = lines[12]   # Compute mean statistics
+    post_vort   = lines[13]   # Compute mean vorticity and mean gradient
+    post_diss   = lines[14]   # Compute mean total dissipation rate    
+    post_corz   = lines[15]   # Compute correlation functions along z (a previous run with post_mean = 1 must be performed)
+    post_tke_eq = lines[16]   # Compute fluctuating terms of TKE equations (a previous run with post_mean = 1 must be performed)
         
-        # Extract the needed variables
-        add_string  = add_string.split('!')[0]
-        add_string  = add_string.rstrip()
+    # Extract the needed variables
+    add_string  = add_string.split('!')[0]
+    add_string  = add_string.rstrip()
         
-        file1       =   file1.split('#')[0].strip()
-        filen       =   filen.split('#')[0].strip()
-        icrfile     = icrfile.split('#')[0].strip()
-        nr          =      nr.split('#')[0].strip()
+    file1       =   file1.split('#')[0].strip()
+    filen       =   filen.split('#')[0].strip()
+    icrfile     = icrfile.split('#')[0].strip()
+    nr          =      nr.split('#')[0].strip()
         
-        post_mean   =   post_mean.split('#')[0].strip()
-        post_vort   =   post_vort.split('#')[0].strip()
-        post_diss   =   post_diss.split('#')[0].strip()
-        post_corz   =   post_corz.split('#')[0].strip()
-        post_tke_eq = post_tke_eq.split('#')[0].strip()
+    post_mean   =   post_mean.split('#')[0].strip()
+    post_vort   =   post_vort.split('#')[0].strip()
+    post_diss   =   post_diss.split('#')[0].strip()
+    post_corz   =   post_corz.split('#')[0].strip()
+    post_tke_eq = post_tke_eq.split('#')[0].strip()
         
-        # Convert to needed variable type (integer or boolean)
-        file1       = int(file1)
-        filen       = int(filen)
-        icrfile     = int(icrfile)
-        nr          = int(nr)
+    # Convert to needed variable type (integer or boolean)
+    file1       = int(file1)
+    filen       = int(filen)
+    icrfile     = int(icrfile)
+    nr          = int(nr)
         
-        post_mean   = bool(int(post_mean))
-        post_vort   = bool(int(post_vort))
-        post_diss   = bool(int(post_diss))
-        post_corz   = bool(int(post_corz))
-        post_tke_eq = bool(int(post_tke_eq))
+    post_mean   = bool(int(post_mean))
+    post_vort   = bool(int(post_vort))
+    post_diss   = bool(int(post_diss))
+    post_corz   = bool(int(post_corz))
+    post_tke_eq = bool(int(post_tke_eq))
     
     # Halve the points in y direction for a channel
     if itype == 3:
