@@ -62,16 +62,13 @@ from ttbl_subs import calculate_ttbl_thick_params
 #!--------------------------------------------------------------------------------------!
 
 # Create folders to store later results (e.g. grid spacings and time scales files, plots)
-os.makedirs('data_post',                               mode=0o777, exist_ok=True)
-os.makedirs('data_post/plot_statistics',               mode=0o777, exist_ok=True)
-os.makedirs('data_post/plot_statistics/grid_spacings', mode=0o777, exist_ok=True)
-os.makedirs('data_post/plot_statistics/time_scales',   mode=0o777, exist_ok=True)
-os.makedirs('plots',                                   mode=0o777, exist_ok=True)
-os.makedirs('plots/mean_stats',                        mode=0o777, exist_ok=True)
-os.makedirs('plots/vort_stats',                        mode=0o777, exist_ok=True)
-os.makedirs('plots/diss_stats',                        mode=0o777, exist_ok=True)
-os.makedirs('plots/correlations',                      mode=0o777, exist_ok=True)
-os.makedirs('plots/tke_stats',                         mode=0o777, exist_ok=True)
+os.makedirs('num_resolutions',    mode=0o777, exist_ok=True)
+os.makedirs('plots',              mode=0o777, exist_ok=True)
+os.makedirs('plots/mean_stats',   mode=0o777, exist_ok=True)
+os.makedirs('plots/vort_stats',   mode=0o777, exist_ok=True)
+os.makedirs('plots/diss_stats',   mode=0o777, exist_ok=True)
+os.makedirs('plots/correlations', mode=0o777, exist_ok=True)
+os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -215,18 +212,18 @@ if post_tke_eq:
 
 print(">>> Saving in 'grid_spacings_post' non-dimensional grid spacings")
 print(">>> and domain dimensions.")
-print(">>> Folder: data_post/plot_statistics/grid_spacings.")
+print(">>> Folder: /num_resolutions.")
 print()
 
 # TTBL only
 if itype == 13 and i_switch_plot == False:
 
-    print(">>> For a comprehensive file for grid_spacings evolution,")
-    print(">>> run 'ttbl_indexes.py'.")
+    print(">>> For a comprehensive file for grid_spacings evolution")
+    print("    at snapshots' saving, run 'ttbl_indexes.py'.")
     print()
 
 # Create the file and write
-filename = f'data_post/plot_statistics/grid_spacings/grid_spacings_post'
+filename = f'num_resolutions/grid_spacings_post'
 
 # Add snap_numb if it is provided
 if snap_numb is not None:
@@ -738,7 +735,7 @@ if post_diss and i_switch_plot == False:
     #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
     print(">>> Saving in 'time_scales' viscous time unit and")
     print(">>> Kolmogorov time scale.")
-    print(">>> Folder: data_post/plot_statistics/time_scales.")
+    print(">>> Folder: /num_resolutions.")
     print()
     
     # TTBL only
@@ -749,7 +746,7 @@ if post_diss and i_switch_plot == False:
         print()
         
     # Create the file and write
-    filename = f'data_post/plot_statistics/time_scales/time_scales'
+    filename = f'num_resolutions/time_scales'
 
     # Add snap_numb if it is provided
     if snap_numb is not None:
