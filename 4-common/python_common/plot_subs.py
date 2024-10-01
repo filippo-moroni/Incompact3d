@@ -86,6 +86,7 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     Parameters:
     - variable_name (str):           The name of the variable to be saved in the filename.
     - snap_numb (str, optional):     Snapshot number to be included in the filename. Added if itype is 13 (TTBL).
+    - ts (str, optional):            Time-step at which we are plotting. Used only if statistics from 'cf_monitoring' are plotted.
     - add_string (str, optional):    Additional string to be included in the filename, used to add the flowcase name (add: additional).
     - y_plus_in (float64, optional): The additional parameter to be included in the filename if we are plotting and saving correlation functions.
     - re_tau (int, optional):        Additional Friction Reynolds number value to add the the filename if we are saving a plot of a TTBL.
@@ -107,6 +108,10 @@ def save_and_show_plot(variable_name, snap_numb=None, add_string=None, re_tau=No
     # Add snap_numb if it is provided
     if snap_numb is not None:
         filename += f'-{snap_numb}'
+    
+    # Add time-step if it is provided
+    if ts is not None:
+        filename += f'-ts{ts}'
     
     # Add add_string if it is provided
     if add_string is not None:

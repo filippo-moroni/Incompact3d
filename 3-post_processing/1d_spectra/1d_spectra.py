@@ -78,8 +78,9 @@ y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  vort_x, vort_y, vort_z, mg_x, mg_z,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
- snap_numb) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
-                        post_corz, post_tke_eq, ny, nz)
+ snap_numb, ts, 
+ sh_vel_x, sh_vel_tot) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
+                                   post_corz, post_tke_eq, ny, nz)
                                                                                                                                               
 #!--------------------------------------------------------------------------------------!
 

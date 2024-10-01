@@ -202,18 +202,24 @@ def read_input_files(filename1,filename2):
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Python function to read statistics data, obtained from
-!              'post_incompact3d' or from 'cf_monitoring" 
-!              (only for TTBL simulations). 
+!              'post_incompact3d'. For TTBL simulations only, we can plot
+!              statistics from 'cf_monitoring'. 
 !              For data from 'post_incompact3d', shear velocities are also 
-!              calculated, since we have data (only) on mean gradients.   
+!              calculated from mean gradients. On the other hand, 
+!              'cf_monitoring' data contains already directly the shear 
+!              velocities.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
     
 def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq, ny, nz, snap_numb=None):
 
-    # Initialize variables
+    #!--- Initialize variables ---! 
+    
+    # Snapshot number
     snap_numb   = None
+    
+    # Mean statistics
     mean_u      = 0.0
     mean_w      = 0.0
     var_u       = 0.0
@@ -221,28 +227,36 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     var_w       = 0.0
     mean_uv     = 0.0
     
+    # Mean vorticity and mean gradients
     vort_x      = 0.0
     vort_y      = 0.0
     vort_z      = 0.0
     mg_x        = 0.0
     mg_z        = 0.0
     
+    # Total dissipation
     eps         = 0.0
     
+    # Spanwise correlation functions
     Ruuz = np.zeros((ny,nz), dtype=np.float64, order='F')
     Rvvz = np.zeros((ny,nz), dtype=np.float64, order='F')
     Rwwz = np.zeros((ny,nz), dtype=np.float64, order='F')
     Ruvz = np.zeros((ny,nz), dtype=np.float64, order='F')
     Rssz = np.zeros((ny,nz), dtype=np.float64, order='F')
     
+    # Turbulent Kinetic Energy (TKE) budget
     tke_turbt  = 0.0   
     tke_presst = 0.0     
     tke_difft  = 0.0
     tke_prod   = 0.0
     tke_pseps  = 0.0
     
+    # Shear velocities
     sh_vel_x   = 0.0  
     sh_vel_tot = 0.0
+    
+    # Time-step
+    ts = None
     
     print()
 
@@ -444,7 +458,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     vort_x, vort_y, vort_z, mg_x, mg_z,
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
-    snap_numb, sh_vel_x, sh_vel_tot
+    snap_numb, ts, sh_vel_x, sh_vel_tot
     )
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!    
