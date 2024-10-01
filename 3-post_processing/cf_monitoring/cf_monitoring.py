@@ -58,7 +58,9 @@ print(" TTBL: ")
 print(" - streamwise friction coefficient vs time;")
 print(" - friction Reynolds number vs time;       ")
 print(" - streamwise friction coefficient vs friction Reynolds number;")
-print(" - 6th order accurate integrals of TTBL thickness parameters (delta*, theta).")                
+print(" - 6th order accurate integrals of TTBL thickness parameters (delta*, theta);")
+print(" - friction Reynolds number as function of momentum thickness Reynolds number;")
+print(" - displacement thickness Reynolds number as function of momentum thickness Reynolds number.")
 print()
 
 #!--------------------------------------------------------------------------------------!
@@ -89,13 +91,10 @@ os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
  cf_gboga    
  ) = read_ref_data_temp_evol()
 
-#!--- Parameters ---!
-uwall, nu, twd = set_flow_parameters(itype, re)
+#!--- Parameters and mesh ---!
+(uwall, nu, twd, y) = set_flow_parameters(itype, re)
                          
 #!--- Reading of files section ---!
-
-# Reading of grid points
-y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
 
 # Channel (only 1 flow realization generally)
 if itype == 3:
@@ -235,7 +234,7 @@ elif itype == 13:
     print()
     print(">>> Calculating maximum grid spacings in wall units and minimum viscous time scale.")
     print(">>> We expect to observe maximum grid spacings along x and z and minimum viscous time at peak cf,")
-    print(">>> while maximum wall-normal grid spacing at the BL interface at the end of the simulation.
+    print(">>> while maximum wall-normal grid spacing at the BL interface at the end of the simulation.")
 
     # Maximum (total) shear velocity
     max_sh_vel_tot = np.max(sh_vel_tot) 
@@ -259,7 +258,7 @@ elif itype == 13:
     t_nu_min_tot = nu / max_sh_vel_tot**2
         
     # Ratio of time-step dt and minimum viscous time unit
-    dt_plus = round(dt / t_nu_min, 4)
+    dt_plus = round(dt / t_nu_min_tot, 4)
 
     # Saving "num_resolutions.txt" (num: numerical)
     print(">>> Saving 'worst_num_resolutions.txt' in num_resolutions/.")
@@ -471,7 +470,7 @@ if itype == 13:
     #!--------------------------------------------------------------------------------------!
 
     print()
-    print(">>> Plotting friction Reynolds number vs momentum thickness Reynolds number.")
+    print(">>> Plotting friction Reynolds number as function of momentum thickness Reynolds number.")
     print(">>> Reference data Cimarelli et al. (2024a).")
     print(">>> Reference straight line Schlatter & Orlu (2010).")
     print()
@@ -516,7 +515,7 @@ if itype == 13:
     #!--------------------------------------------------------------------------------------!
 
     print()
-    print(">>> Plotting displacement thickness Reynolds number vs momentum thickness Reynolds number.")
+    print(">>> Plotting displacement thickness Reynolds number as function of momentum thickness Reynolds number.")
     print(">>> Reference data Cimarelli et al. (2024a).")
     print()
 

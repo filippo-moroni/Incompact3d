@@ -136,8 +136,8 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
         with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
             f.write(f'Mean statistics at ts={ts_iter}.\n')        
             f.write('\n')
-            f.write(f"{'sh_vel_x':>{pp.c_w}} = {sh_velx[ti]:{pp.fs6}}\n")
-            f.write(f"{'sh_vel_tot':>{pp.c_w}} = {sh_veltot[ti]:{pp.fs6}}\n")
+            f.write(f"{'sh_vel_x':>{pp.c_w}} = {sh_vel_x[ti]:{pp.fs6}}\n")
+            f.write(f"{'sh_vel_tot':>{pp.c_w}} = {sh_vel_tot[ti]:{pp.fs6}}\n")
             f.write('\n') 
             f.write(f"{'mean[u]':>{pp.c_w}}, "    +
                     f"{'mean[v]':>{pp.c_w}}, "    +
