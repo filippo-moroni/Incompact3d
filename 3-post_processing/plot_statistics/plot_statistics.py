@@ -40,12 +40,15 @@ current_dir = os.path.dirname(__file__)
 config_path = os.path.abspath(os.path.join(current_dir, '../../4-common', 'python_common'))
 sys.path.append(config_path)
 
-# Import the plotting_params module
+# Import the plot_params module
 import plot_params as pp
 
-# Import functions to setting up, save and show plots and to get 
-# reference mean streamwise velocity profile  
-from plot_subs import set_plot_settings, save_and_show_plot, get_ref_mean_vel_profile
+"""
+Import functions to setting up, save and show plots, to get 
+reference mean streamwise velocity profile and to obtain 
+closest y+ location to what is chosen and its index
+"""
+from plot_subs import set_plot_settings, save_and_show_plot, get_ref_mean_vel_profile, y_plus_location
 
 # Import functions to read 'input.i3d', 'post.prm' files, statistics data and reference data
 from read_files import read_input_files, read_data, read_ref_data
@@ -815,43 +818,25 @@ if post_diss and i_switch_plot == False:
 #!--- Correlation coefficients in spanwise direction (z) ---!
 if post_corz and i_switch_plot == False:
 
-    #!--- Calculations for correlations ---!
 
-    # Select the height at which correlations are plotted
-    y_plus_in = np.float64(input(">>> Enter y+ value for correlations plotting: "))
-    print()
-
-    # Search for the index corresponding to the target y+ for correlations
-    c = 0 
-    for j in range(0, ny-1, 1):   
-        if y_plus[j] < y_plus_in: c = c + 1
-
-    # Print the actual y+ value selected
-    print(">>> Actual y+ value selected = ", y_plus[c])
-    print()
-
-    # Store this value in an integer for naming the different .pdf files
-    y_plus_name = int(y_plus[c])
-
-    # Print the corresponding j-th index
-    print(">>> Corresponding j-th index = ", c)
-    print()
+    # Call external subroutine to determine the closest y+ location to what we want and its index 
+    (y_plus_index, y_plus_name) = y_plus_location(y_plus, ny)
 
     # Take the correlation functions value at rz = 0 and rescale to obtain correlation coefficients
-    temp = Ruuz[c,0]
+    temp = Ruuz[y_plus_index,0]
     Ruuz = Ruuz / temp
 
-    temp = Rvvz[c,0]
+    temp = Rvvz[y_plus_index,0]
     Rvvz = Rvvz / temp
 
-    temp = Rwwz[c,0]
+    temp = Rwwz[y_plus_index,0]
     Rwwz = Rwwz / temp
 
-    temp = Ruvz[c,0]
+    temp = Ruvz[y_plus_index,0]
     Ruvz = Ruvz / temp
 
     if numscalar == 1:
-        temp = Rssz[c,0]
+        temp = Rssz[y_plus_index,0]
         Rssz = Rssz / temp
 
     # Halve the number of points in z-dir. to avoid periodicity effects
@@ -863,7 +848,7 @@ if post_corz and i_switch_plot == False:
 
     # Calculate the index at which the correlation coefficient goes to zero
     k = 0
-    while Ruuz[c,k] > 0.0: k = k + 1
+    while Ruuz[y_plus_index,k] > 0.0: k = k + 1
 
     rz0    = rz[0]    # First element of rz vector (rz = 0)
     rzstar = rz[k-1]  # Element of rz vector at which Cii(rz) goes to zero
@@ -878,7 +863,7 @@ if post_corz and i_switch_plot == False:
     order_spline = min(k-1, 5)
 
     # Interpolation at the 6th order of accuracy with a spline of 5th order
-    spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[c,:k], k=order_spline)
+    spl = InterpolatedUnivariateSpline(rz[:k], Ruuz[y_plus_index,:k], k=order_spline)
     lambda_z = spl.integral(rz0, rzstar)
 
     # Rescale in wall units
@@ -938,14 +923,14 @@ if post_corz and i_switch_plot == False:
         xliminf = 0.0
         xlimsup = Lz_plus / 2.0
 
-        min_value1 = np.min(plot['var'][c, :])
+        min_value1 = np.min(plot['var'][y_plus_index, :])
         min_value2 = np.min(plot['kim_data'][:])
 
         yliminf = min(min_value1, min_value2) * 1.2
         ylimsup = 1.2
 
         # Auto-correlation coefficient Cii(rz^+)
-        ax.scatter(rz, plot['var'][c, :nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        ax.scatter(rz, plot['var'][y_plus_index, :nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
         # Reference data at y+ = 10
         if y_plus_in == 10.0:
@@ -983,11 +968,11 @@ if post_corz and i_switch_plot == False:
     # Limits for axes
     xliminf = 0.0
     xlimsup = Lz_plus / 2.0
-    yliminf = np.min(Ruvz[c,:])*1.2
-    ylimsup = np.max(Ruvz[c,:])*1.2
+    yliminf = np.min(Ruvz[y_plus_index,:])*1.2
+    ylimsup = np.max(Ruvz[y_plus_index,:])*1.2
 
     # Correlation coefficient for u' and v'
-    ax.scatter(rz, Ruvz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(rz, Ruvz[y_plus_index,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
     # Plot horizontal line at Cuv = 0
     ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
@@ -1020,11 +1005,11 @@ if post_corz and i_switch_plot == False:
         # Limits for axes
         xliminf = 0.0
         xlimsup = Lz_plus / 2.0
-        yliminf = np.min(Rssz[c,:])*1.2
-        ylimsup = np.max(Rssz[c,:])*1.2
+        yliminf = np.min(Rssz[y_plus_index,:])*1.2
+        ylimsup = np.max(Rssz[y_plus_index,:])*1.2
 
         # Auto-correlation coefficient for phi' (s: scalar)
-        ax.scatter(rz, Rssz[c,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        ax.scatter(rz, Rssz[y_plus_index,:nz], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
 
         # Plot horizontal line at Css = 0
         ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')

@@ -184,6 +184,43 @@ def get_ref_mean_vel_profile(itype,iswitch):
     u_plus_k = (1.0 / k) * np.log(y_plus_k) + B
 
     return (y_plus_vsl,u_plus_vsl,y_plus_k,u_plus_k)
+
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script:
+!               - we insert a desired y+ value to plot correlations or 
+!                 spectra;
+!               - the closest effective value of y+ is found, as well as 
+!                 its index.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""    
+
+def y_plus_location(y_plus, ny):
+    
+    # Select the height at which correlations or spectra are plotted
+    y_plus_in = np.float64(input(">>> Enter y+ value for correlations plotting: "))
+    print()
+
+    # Search for the index corresponding to the target y+ for correlations
+    y_plus_index = 0 
+    for j in range(0, ny-1, 1):   
+        if y_plus[j] < y_plus_in: y_plus_index = y_plus_index + 1
+
+    # Print the actual y+ value selected
+    print(">>> Actual y+ value selected = ", y_plus[y_plus_index])
+    print()
+
+    # Store this value in an integer for naming the different .pdf files
+    y_plus_name = int(y_plus[y_plus_index])
+
+    # Print the corresponding j-th index
+    print(">>> Corresponding j-th index = ", y_plus_index)
+    print()
+    
+    return(y_plus_index, y_plus_name)    
     
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
 
