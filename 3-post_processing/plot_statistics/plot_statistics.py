@@ -56,8 +56,8 @@ from read_files import read_input_files, read_data, read_ref_data
 # Import function to setup flow parameters and mesh 
 from set_flow_parameters import set_flow_parameters
 
-# Import function to calculate boundary layer thickness delta_99 for a TTBL
-from ttbl_subs import calculate_ttbl_delta_99
+# Import function to calculate TTBL thickness parameters
+from ttbl_subs import calculate_ttbl_thick_params
 
 #!--------------------------------------------------------------------------------------!
 

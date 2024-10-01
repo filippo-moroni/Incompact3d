@@ -42,8 +42,8 @@ from read_files import read_input_files
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
-# Import function to calculate boundary layer thickness delta_99 for a TTBL
-from ttbl_subs import calculate_ttbl_delta_99
+# Import function to calculate TTBL thickness parameters
+from ttbl_subs import calculate_ttbl_thick_params
 
 #!--------------------------------------------------------------------------------------!
 
@@ -94,8 +94,8 @@ os.makedirs('data_post/ttbl_indexes_snap', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
-#!--- Parameters ---!
-uwall, nu, twd = set_flow_parameters(itype, re)
+#!--- Parameters and mesh ---!
+(uwall, nu, twd, y) = set_flow_parameters(itype, re)
 
 # Mesh spacings
 delta_x = Lx / nx
@@ -107,6 +107,7 @@ ns    = (filen - file1)//icrfile + 1  # Number of snapshots
 
 # TTBL thickness parameters and shear quantities
 delta_99   = np.zeros(ns)
+delta_99_j = np.zeros(ns)
 disp_t     = np.zeros(ns)
 mom_t      = np.zeros(ns)
 sh_velx    = np.zeros(ns)
@@ -127,15 +128,6 @@ Lz_plus       = np.zeros(ns)
 # Arrays for Kolmogorov time scale and viscous time unit
 tau_eta       = np.zeros(ns)
 t_nu          = np.zeros(ns)
-
-# Reading of yp coordinates
-yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-
-# First element of yp vector (y = 0)
-y0 = yp[0]
-
-# Last  element of yp vector (y = Ly, height of the domain)    
-yn = yp[-1]   
 
 #!--------------------------------------------------------------------------------------!
 
@@ -208,6 +200,8 @@ for i in range(file1, filen + icrfile, icrfile):
     # Interpolation at the 6th order of accuracy with a spline of 5th order
     spl = InterpolatedUnivariateSpline(yp, int2, k=5)
     mom_t[ii] = spl.integral(y0, yn)
+    
+    
     
     # Reading of mean gradients: streamwise, spanwise and scalar 
     file_path = f"data_post/vort_stats-{i:04d}.txt"
