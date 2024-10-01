@@ -59,15 +59,6 @@ def calculate_thickness_param(sh_veltot,sh_velx):
      add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
     ) = read_input_files('input.i3d','post.prm')
 
-    # Reading of yp coordinates
-    yp = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-
-    # First element of yp vector (y = 0)
-    y0 = yp[0]
-
-    # Last  element of yp vector (y = Ly, height of the domain)    
-    yn = yp[-1]
-
     #!--- Parameters ---!
     uwall, nu, twd = set_flow_parameters(itype, re)
                           

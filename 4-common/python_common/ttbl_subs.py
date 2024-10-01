@@ -17,6 +17,7 @@
 !-----------------------------------------------------------------------------!
 """
 
+# Libraries
 from lxml import etree
 
 def extract_re_tau_value(file_path):
@@ -60,24 +61,73 @@ def extract_re_tau_value(file_path):
 !-----------------------------------------------------------------------------!
 """
 
-def calculate_ttbl_delta_99(mean_u,y):
+# Libraries
+from scipy.interpolate import InterpolatedUnivariateSpline
 
-    # Initialize the index
+def calculate_ttbl_delta_99(mean_u,y,uwall):
+
+    """
+    !-----------------------------------------------------------!
+     TTBL thickness delta_99 calculation (Kozul et al. (2016)). 
+    !-----------------------------------------------------------!    
+    """
+    
+    # Initialize the TTBL delta_99 index
     j = 0
     
     # Calculate the index at which the BL thickness delta99 is and delta_99 itself
     while mean_u[j] > mean_u[0]*0.01: 
         
         # Boundary layer thickness delta_99
-        bl_thick = y[j]
+        delta_99 = y[j]
         
         # Increment the index
         j = j + 1
 
     # Rename index for better clarity
-    bl_thick_j = j
+    delta_99_j = j
     
-    # Return to main program with bl_thickness and its related j index
-    return (bl_thick, bl_thick_j)
+    """
+    !-----------------------------------------------------------!
+     TTBL displacement thickness (disp_t) delta* calculation 
+     (Kozul et al. (2016)). 
+    !-----------------------------------------------------------!    
+    """
+    
+    # First element of 'yp.dat' (y = 0)
+    y0 = y[0]
+
+    # Last element of 'yp.dat' (y = Ly, height of the domain)    
+    yn = y[-1]
+    
+    # Calculate the displacement thickness delta* (int1: 'integrand 1')
+    int1 = mean_u/uwall 
+
+    # Interpolation at the 6th order of accuracy with a spline of 5th order, 
+    # that passes through all data points
+    spl = InterpolatedUnivariateSpline(y, int1, k=5)
+    disp_t = spl.integral(y0, yn)
+    
+    """
+    !-----------------------------------------------------------!
+     TTBL momentum thickness (mom_t) theta calculation 
+     (Kozul et al. (2016)). This is the same as a standard
+     spatial TBL. 
+    !-----------------------------------------------------------!    
+    """
+
+    # Calculate the momentum thickness theta (int2: 'integrand 2') 
+    int2 = int1 - int1**2 
+
+    # Interpolation at the 6th order of accuracy with a spline of 5th order,
+    # that passes through all data points
+    spl = InterpolatedUnivariateSpline(y, int2, k=5)
+    mom_t = spl.integral(y0, yn)
+        
+     
+    # Return to main program with TTBL thicknesses and delta_99 related j index
+    return (delta_99, delta_99_j, disp_t, mom_t)
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+
+
