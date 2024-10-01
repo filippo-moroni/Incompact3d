@@ -53,7 +53,7 @@ from plot_subs import set_plot_settings, save_and_show_plot, get_ref_mean_vel_pr
 # Import functions to read 'input.i3d', 'post.prm' files, statistics data and reference data
 from read_files import read_input_files, read_data, read_ref_data
 
-# Import function to setup flow parameters 
+# Import function to setup flow parameters and mesh 
 from set_flow_parameters import set_flow_parameters
 
 # Import function to calculate boundary layer thickness delta_99 for a TTBL
@@ -82,8 +82,8 @@ os.makedirs('plots/tke_stats',                         mode=0o777, exist_ok=True
 
 #!--------------------------------------------------------------------------------------!
     
-#!--- Parameters ---!
-uwall, nu, twd = set_flow_parameters(itype, re)
+#!--- Parameters and mesh ---!
+(uwall, nu, twd, y) = set_flow_parameters(itype, re)
 
 #!--- Reference data ---!
 (y_plus_lm,                 mean_u_lm, var_u_lm, var_v_lm, var_w_lm, mean_uv_lm,
@@ -108,9 +108,6 @@ uwall, nu, twd = set_flow_parameters(itype, re)
  y_plus_tke_prod_mansour,   tke_prod_mansour,
  y_plus_tke_pseps_mansour,  tke_pseps_mansour) = read_ref_data()
   
-# Reading of grid points
-y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-
 # Read statistics data
 (mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
  vort_x, vort_y, vort_z, mg_x, mg_z,

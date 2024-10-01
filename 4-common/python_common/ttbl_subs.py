@@ -64,7 +64,7 @@ def extract_re_tau_value(file_path):
 # Libraries
 from scipy.interpolate import InterpolatedUnivariateSpline
 
-def calculate_ttbl_delta_99(mean_u,y,uwall):
+def calculate_ttbl_thick_params(mean_u,y,uwall):
 
     """
     !-----------------------------------------------------------!

@@ -25,11 +25,11 @@ import plot_params as pp
 # Import function to read 'input.i3d'
 from read_files import read_input_files
 
-# Import function to setup flow parameters 
+# Import function to setup flow parameters and mesh 
 from set_flow_parameters import set_flow_parameters
 
-# Import function to calculate boundary layer thickness delta_99 for a TTBL
-from ttbl_subs import calculate_ttbl_delta_99
+# Import function to calculate TTBL thickness parameters
+from ttbl_subs import calculate_ttbl_thick_params
 
 """
 !-----------------------------------------------------------------------------!
@@ -59,8 +59,8 @@ def calculate_thickness_param(sh_veltot,sh_velx):
      add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
     ) = read_input_files('input.i3d','post.prm')
 
-    #!--- Parameters ---!
-    uwall, nu, twd = set_flow_parameters(itype, re)
+    #!--- Parameters and mesh ---!
+    (uwall, nu, twd, y) = set_flow_parameters(itype, re)
                           
     #!--------------------------------------------------------------------------------------!
                     
@@ -79,9 +79,10 @@ def calculate_thickness_param(sh_veltot,sh_velx):
     mean_stats_realiz = np.zeros((ny, 9, nsavings))
 
     # Initialize arrays for TTBL thickness parameters
-    delta_99 = np.zeros(nsavings)   # BL thickness delta_99
-    disp_t   = np.zeros(nsavings)   # displacement thickness, delta*
-    mom_t    = np.zeros(nsavings)   # momentum     thickness, theta
+    delta_99   = np.zeros(nsavings)   # BL thickness delta_99
+    delta_99_j = np.zeros(nsavings)   # BL thickness delta_99 j index
+    disp_t     = np.zeros(nsavings)   # displacement thickness, delta*
+    mom_t      = np.zeros(nsavings)   # momentum     thickness, theta
 
     """
     Do loop over all savings of 'mean_stats_runtime' files. 
@@ -161,29 +162,10 @@ def calculate_thickness_param(sh_veltot,sh_velx):
         
         # Take alias for mean streamwise velocity profile
         mean_u[:] = mean_stats_realiz[:,0,ti]
+        
+        # Call of external subroutine for the calculation of TTBL thickness parameters
+        (delta_99[ti], delta_99_j[ti], disp_t[ti], mom_t[ti]) = calculate_ttbl_thick_params(mean_u,y,uwall)
                
-        # Calculate BL thickness delta_99 for a TTBL and its related index
-        (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, yp)
-        
-        # Store result in 'delta_99' array
-        delta_99[ti] = bl_thick
-        
-        # Calculate the displacement thickness delta*
-        int1 = mean_u/uwall  # 'integrand 1' 
-
-        # Interpolation at the 6th order of accuracy with a spline of 5th order, 
-        # that passes through all data points
-        spl = InterpolatedUnivariateSpline(yp, int1, k=5)
-        disp_t[ti] = spl.integral(y0, yn)
-
-        # Calculate the momentum thickness theta
-        int2 = int1 - int1**2  # 'integrand 2' 
-
-        # Interpolation at the 6th order of accuracy with a spline of 5th order,
-        # that passes through all data points
-        spl = InterpolatedUnivariateSpline(yp, int2, k=5)
-        mom_t[ti] = spl.integral(y0, yn)
-
     # Return to main program
     return (delta_99, disp_t, mom_t)
 

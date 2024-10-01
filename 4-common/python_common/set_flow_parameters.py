@@ -1,13 +1,18 @@
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Small Python function to set up flow parameters.
+! DESCRIPTION: Small Python function to set up flow parameters and to read
+!              y-coordinates of mesh elements: 'yp.dat'.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
 
+# Libraries
 import numpy as np
 
 def set_flow_parameters(itype, re):
+
+    # Reading of y-coordinates grid points
+    y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
  
     # Default parameters
     twd   = np.float64(1.0)                  # Trip wire diameter, D
@@ -26,5 +31,5 @@ def set_flow_parameters(itype, re):
         re_tau  = 0.123*(re_cent**0.875)     # Estimated friction Reynolds number 
         nu      = 1.0/re_cent                # Kinematic viscosity
     
-    # Return to main program with parameters
-    return uwall, nu, twd
+    # Return to main program with parameters and y-coordinates
+    return (uwall, nu, twd, y)
