@@ -275,11 +275,12 @@ elif itype == 13:
         f.write(f'Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
         f.write('\n')
         f.write('Abbreviations:\n')
-        f.write(' - x:        streamwise direction;\n')
-        f.write(' - y:        wall-normal direction;\n')
-        f.write(' - z:        spanwise direction;\n')
-        f.write(' - delta:    mesh spacing;\n')
-        f.write(' - d:        boundary layer interface (d: small letter greek delta);\n')
+        f.write(' - x     : streamwise direction;\n')
+        f.write(' - y     : wall-normal direction;\n')
+        f.write(' - z     : spanwise direction;\n')
+        f.write(' - delta : mesh spacing;\n')
+        f.write(' - w     : first element at the wall;\n')        
+        f.write(' - d     : boundary layer interface (d: small letter greek delta);\n')
         f.write('\n')
         f.write(f"{'delta_x+_max':>{pp.c_w}}, "   +
                 f"{'delta_yw+_max':>{pp.c_w}}, "  +
