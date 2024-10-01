@@ -90,7 +90,8 @@ print()
 #!--------------------------------------------------------------------------------------!
 
 # Create the folder to store the results
-os.makedirs('data_post/ttbl_indexes_snap', mode=0o777, exist_ok=True)
+os.makedirs('time_evolution',  mode=0o777, exist_ok=True)
+os.makedirs('num_resolutions', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -179,30 +180,11 @@ for i in range(file1, filen + icrfile, icrfile):
     file_path = f"data_post/mean_stats-{i:04d}.txt"
        
     data = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype=np.float64)
-    umean = data[:, 0]
+    mean_u = data[:, 0]
     
-    # Calculate BL thickness delta_99 for a TTBL and its related index
-    (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(umean, yp) 
-    
-    # Copy the result in the array for the different snapshots
-    delta_99[ii] = bl_thick
-
-    # Calculate the displacement thickness delta*
-    int1 = umean/uwall  # 'integrand 1' 
-
-    # Interpolation at the 6th order of accuracy with a spline of 5th order
-    spl = InterpolatedUnivariateSpline(yp, int1, k=5)
-    disp_t[ii] = spl.integral(y0, yn)
-
-    # Calculate the momentum thickness theta
-    int2 = int1 - int1**2  # 'integrand 2' 
-
-    # Interpolation at the 6th order of accuracy with a spline of 5th order
-    spl = InterpolatedUnivariateSpline(yp, int2, k=5)
-    mom_t[ii] = spl.integral(y0, yn)
-    
-    
-    
+    # Call of external subroutine for the calculation of TTBL thickness parameters
+    (delta_99[ii], dummy, disp_t[ii], mom_t[ii]) = calculate_ttbl_thick_params(mean_u,y,uwall)
+            
     # Reading of mean gradients: streamwise, spanwise and scalar 
     file_path = f"data_post/vort_stats-{i:04d}.txt"
     
@@ -240,7 +222,7 @@ for i in range(file1, filen + icrfile, icrfile):
     delta_x_plus[ii] = delta_x / delta_nu
     delta_z_plus[ii] = delta_z / delta_nu
     
-    y_plus           = yp      / delta_nu
+    y_plus           = y       / delta_nu
     
     delta_yw_plus[ii] = y_plus[1]
     
@@ -288,8 +270,8 @@ re_theta = mom_t*uwall*re
 print(">>> Writing to .txt file.")
 print()
 
-# Integral statistics and flow indexes
-with open('data_post/ttbl_indexes_snap/thickness_params_evolution.txt', 'w') as f:
+# Integral statistics and flow indexes at snapshots' time of saving
+with open('time_evolution/time_evolution_snaps.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) thickness parameters, \n')    
     f.write('shear quantities and Reynolds analogy factor at each snapshot.\n')        
     f.write('\n')
@@ -305,31 +287,31 @@ with open('data_post/ttbl_indexes_snap/thickness_params_evolution.txt', 'w') as 
     f.write(' - Reynolds analogy factor:         A_fact;\n')
     f.write(' - (outer) time unit:               time_unit.\n')
     f.write('\n')
-    f.write(f"{'delta_99 O(6)':>{pp.c_w}}, " +
-            f"{'disp_t O(6)':>{pp.c_w}}, "   +
-            f"{'mom_t O(6)':>{pp.c_w}}, "    +
-            f"{'Re_tau O(6)':>{pp.c_w}}, "   +    
-            f"{'Re_ds O(6)':>{pp.c_w}}, "    +
-            f"{'Re_theta O(6)':>{pp.c_w}}, " +
-            f"{'sh_velx O(6)':>{pp.c_w}}, "  +
-            f"{'cfx O(6)':>{pp.c_w}}, "      +
-            f"{'A_fact O(6)':>{pp.c_w}}, "   +
-            f"{'time_unit':>{pp.c_w}}\n"     )
+    f.write(f"{'delta_99':>{pp.c_w}}, "     +
+            f"{'disp_t':>{pp.c_w}}, "       +
+            f"{'mom_t':>{pp.c_w}}, "        +
+            f"{'Re_tau':>{pp.c_w}}, "       +    
+            f"{'Re_delta*':>{pp.c_w}}, "    +
+            f"{'Re_theta:>{pp.c_w}}, "      +
+            f"{'sh_velx':>{pp.c_w}}, "      +
+            f"{'cfx':>{pp.c_w}}, "          +
+            f"{'A_fact:>{pp.c_w}}, "        +
+            f"{'time_unit':>{pp.c_w}}\n"    )
 
     for j in range(0, ii):
-        f.write(f"{delta_99[j]:{pp.fs}}, "   +
-                f"{disp_t[j]:{pp.fs}}, "     +
-                f"{mom_t[j]:{pp.fs}}, "      +
-                f"{re_tau[j]:{pp.fs}}, "     +
-                f"{re_ds[j]:{pp.fs}}, "      +
-                f"{re_theta[j]:{pp.fs}}, "   +
-                f"{sh_velx[j]:{pp.fs6}}, "   +
-                f"{cfx[j]:{pp.fs8}}, "       +
-                f"{a_fact[j]:{pp.fs}}, "     +
-                f"{time_unit[j]:{pp.fs}}\n"  )
+        f.write(f"{delta_99[j]:{pp.fs}}, "  +
+                f"{disp_t[j]:{pp.fs}}, "    +
+                f"{mom_t[j]:{pp.fs}}, "     +
+                f"{re_tau[j]:{pp.fs}}, "    +
+                f"{re_ds[j]:{pp.fs}}, "     +
+                f"{re_theta[j]:{pp.fs}}, "  +
+                f"{sh_velx[j]:{pp.fs6}}, "  +
+                f"{cfx[j]:{pp.fs8}}, "      +
+                f"{a_fact[j]:{pp.fs}}, "    +
+                f"{time_unit[j]:{pp.fs}}\n" )
                 
 # Non-dimensional grid spacings and domain dimensions (nd: non-dimensional)
-with open('data_post/ttbl_indexes_snap/nd_mesh_evolution.txt', 'w') as f:
+with open('num_resolutions/nd_mesh_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) non-dimensional\n')    
     f.write('grid spacings and domain dimensions at each snapshot.\n')
     f.write('Adimensionalization in viscous units (^+) with the (total) shear velocity.\n')        
@@ -365,7 +347,7 @@ with open('data_post/ttbl_indexes_snap/nd_mesh_evolution.txt', 'w') as f:
                 f"{re_tau[j]:{pp.fs}}\n"        )
                 
 # Time scales (minimum Kolmogorov time scale and viscous time unit)
-with open('data_post/ttbl_indexes_snap/time_scales_evolution.txt', 'w') as f:
+with open('num_resolutions/time_scales_evolution.txt', 'w') as f:
     f.write('Time evolution of Temporal Turbulent Boundary Layer (TTBL) minimum\n')    
     f.write('Kolmogorov time scale and viscous time unit at each snapshot.\n')        
     f.write('\n')
@@ -390,7 +372,7 @@ with open('data_post/ttbl_indexes_snap/time_scales_evolution.txt', 'w') as f:
 # Print that calculations have been completed
 print(">>> Done!")
 print()
-print(">>> Results saved in: data_post/ttbl_indexes_snap.")
+print(">>> Results saved in /time_evolution and /num_resolutions.")
 print()
            
 #!---------------------------------------------------------!
