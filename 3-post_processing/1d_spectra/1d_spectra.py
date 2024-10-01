@@ -29,8 +29,11 @@ sys.path.append(config_path)
 # Import the plotting_params module
 import plot_params as pp
 
-# Import function to setting up, save and show plots 
-from plot_subs import set_plot_settings, save_and_show_plot
+"""
+Import functions to setting up, save and show plots and to obtain 
+closest y+ location to what is chosen and its index
+"""
+from plot_subs import set_plot_settings, save_and_show_plot, y_plus_location
 
 # Import functions to read 'input.i3d', 'post.prm' files and statistics data 
 from read_files import read_input_files, read_data
@@ -128,27 +131,8 @@ if itype == 13:
 i_premult = int(input(">>> Plot pre-multiplied spectra? (0: no, 1: yes) "))
 print()
 
-#!--- y+ input for 1D spectra ---!
-
-# Select the height at which correlations are plotted
-y_plus_in = np.float64(input(">>> Enter y+ value for correlations plotting: "))
-print()
-
-# Search for the index corresponding to the target y+ for correlations
-c = 0 
-for j in range(0, ny-1, 1):   
-    if y_plus[j] < y_plus_in: c = c + 1
-
-# Print the actual y+ value selected
-print(">>> Actual y+ value selected = ", y_plus[c])
-print()
-
-# Store this value in an integer for naming the different .pdf files
-y_plus_name = int(y_plus[c])
-
-# Print the corresponding j-th index
-print(">>> Corresponding j-th index = ", c)
-print()
+# Call external subroutine to determine the closest y+ location to what we want and its index 
+(y_plus_index, y_plus_name) = y_plus_location(y_plus, ny)
 
 #!-------------------------------!
 
@@ -210,7 +194,7 @@ for var, ylabel, descr in variables:
     # Limits for axes
     xliminf = np.min(kz) * 0.8
     xlimsup = np.max(kz) * 1.2
-    ylimsup = np.max(data[c, :]) * 1.2
+    ylimsup = np.max(data[y_plus_index, :]) * 1.2
     
     if i_premult == 1:
         yliminf = np.min(data) * 1.2
@@ -218,7 +202,7 @@ for var, ylabel, descr in variables:
         yliminf = 0.000001
 
     # Plot
-    ax.plot(kz, data[c, :], color='C0', linestyle='-', linewidth=pp.lw)
+    ax.plot(kz, data[y_plus_index, :], color='C0', linestyle='-', linewidth=pp.lw)
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)

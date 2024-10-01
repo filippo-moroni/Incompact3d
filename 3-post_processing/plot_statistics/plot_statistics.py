@@ -818,7 +818,6 @@ if post_diss and i_switch_plot == False:
 #!--- Correlation coefficients in spanwise direction (z) ---!
 if post_corz and i_switch_plot == False:
 
-
     # Call external subroutine to determine the closest y+ location to what we want and its index 
     (y_plus_index, y_plus_name) = y_plus_location(y_plus, ny)
 
