@@ -265,9 +265,6 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     
         print(">>> Plotting of statistics for a channel.")
 
-        # Setting 'snap_numb' to an empty string
-        snap_numb = None
-
         # Reading of mean statistics
         if post_mean:        
             M = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -303,8 +300,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
       
             # Read scalar field correlations
-            if numscalar == 1:
-                
+            if numscalar == 1:               
                 Rssz = np.loadtxt('data_post/Rssz.txt', skiprows=0, delimiter=None, dtype=np.float64)
         
         # Read of TKE 
@@ -332,6 +328,8 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         print(">>> 0: from 'post_incompact3d' ")  
         print(">>> 1: from 'cf_monitoring' ")          
         print()
+        
+        # Switcher for plotting different sources of statistics
         i_switch_plot = bool(int(input()))
 
         # Plotting statistics from 'post_incompact3d'
