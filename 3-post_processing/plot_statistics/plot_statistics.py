@@ -940,7 +940,7 @@ if post_corz and i_switch_plot == False:
             # Complete description            
             plot['descr'] += ' Reference data Kim et al. (1987).'
             
-
+            
         # Plot horizontal line at C = 0
         ax.hlines(y=0.0, xmin=xliminf, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
 

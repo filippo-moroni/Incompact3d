@@ -39,7 +39,8 @@ from ttbl_subs import calculate_ttbl_delta_99
 !                 'mean_stats_runtime' files printed at the same time as 
 !                 'cf_monitoring';
 !               - averaging and saving of runtime mean statistics
-!                 (different flow realizations);
+!                 (different flow realizations) and save related 
+!                 shear velocities; 
 !               - calculation of TTBL thickness delta_99.
 !               
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
@@ -137,7 +138,7 @@ def calculate_thickness_param(sh_veltot,sh_velx):
         mean_stats_realiz[:,7,ti] = mean_stats_realiz[:,7,ti] - mean_stats_realiz[:,0,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <u'w'>
         mean_stats_realiz[:,8,ti] = mean_stats_realiz[:,8,ti] - mean_stats_realiz[:,1,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <v'w'>
 
-        # Create the file and write  
+        # Create the file and write; we are adding at each file the shear velocities coming from the main function 
         with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
             f.write(f'Mean statistics at ts={ts_iter}.\n')        
             f.write('\n')
