@@ -814,7 +814,7 @@ subroutine print_mean_stats_scalar(ux,uy,uz,phi)
   
   use var,       only : ux2,uy2,uz2,phi2
   use param,     only : zero,itime
-  use variables, only : nx,ny,nz
+  use variables, only : nx,ny,nz,numscalar
     
   implicit none
   
