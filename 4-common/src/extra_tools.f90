@@ -859,15 +859,15 @@ subroutine print_mean_stats_scalar(ux,uy,uz,phi)
           do j=1,ysize(2)
           
               ! Mean scalar field          
-              phi1meanH1(j)=phi1meanH1(j)+phi2(i,j,k)/den
+              phi1meanH1(j)=phi1meanH1(j)+phi2(i,j,k,1)/den
               
               ! Variance
-              phi2meanH1(j)=phi2meanH1(j)+phi2(i,j,k)*phi2(i,j,k)/den                                                             
+              phi2meanH1(j)=phi2meanH1(j)+phi2(i,j,k,1)*phi2(i,j,k,1)/den                                                             
           
               ! Mixed fluctuations
-              uphimeanH1(j)=uphimeanH1(j)+ux2(i,j,k)*phi2(i,j,k)/den
-              vphimeanH1(j)=vphimeanH1(j)+uy2(i,j,k)*phi2(i,j,k)/den
-              wphimeanH1(j)=wphimeanH1(j)+uz2(i,j,k)*phi2(i,j,k)/den
+              uphimeanH1(j)=uphimeanH1(j)+ux2(i,j,k)*phi2(i,j,k,1)/den
+              vphimeanH1(j)=vphimeanH1(j)+uy2(i,j,k)*phi2(i,j,k,1)/den
+              wphimeanH1(j)=wphimeanH1(j)+uz2(i,j,k)*phi2(i,j,k,1)/den
                                       
           enddo          
       enddo
