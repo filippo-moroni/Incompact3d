@@ -851,7 +851,7 @@ subroutine print_mean_stats_scalar(ux,uy,uz,phi)
   call transpose_x_to_y(ux,ux2)
   call transpose_x_to_y(uy,uy2)
   call transpose_x_to_y(uz,uz2)
-  call transpose_x_to_y(phi,phi2)
+  call transpose_x_to_y(phi(:,:,:,1), phi2(:,:,:,1))
     
   ! Summation over x and z directions
   do k=1,ysize(3)
