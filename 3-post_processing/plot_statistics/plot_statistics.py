@@ -31,7 +31,6 @@ import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import InterpolatedUnivariateSpline
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -219,7 +218,7 @@ print()
 if itype == 13 and i_switch_plot == False:
 
     print(">>> For a comprehensive file for grid_spacings evolution")
-    print("    at snapshots' saving, run 'ttbl_indexes.py'.")
+    print("    at snapshots' savings, run 'ttbl_indexes.py'.")
     print()
 
 # Create the file and write
