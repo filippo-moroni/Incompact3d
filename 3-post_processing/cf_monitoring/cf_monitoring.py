@@ -110,10 +110,11 @@ if itype == 13:
         # Extracting quantities from the full matrix
         sh_vel_tot = M[:,0]     # total shear velocity
         sh_vel_x   = M[:,1]     # streamwise shear velocity
-        a_fact     = M[:,4]     # Reynolds analogy factor
-        time_unit  = M[:,6]     # time unit
-        ts         = M[:,7]     # time step
-        power_in   = M[:,10]    # power input
+        mg_phi     = M[:,4]     # mean scalar gradient at the wall
+        a_fact     = M[:,5]     # Reynolds analogy factor
+        time_unit  = M[:,7]     # time unit
+        ts         = M[:,8]     # time step
+        power_in   = M[:,11]    # power input
                              
         """
         Initialize arrays for sum
