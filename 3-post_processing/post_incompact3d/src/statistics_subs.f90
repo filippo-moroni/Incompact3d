@@ -19,7 +19,7 @@
 !              2) Two-points statistics:
 !                 - spanwise correlation functions for velocity components 
 !                   (Ruuz, Rvvz, Rwwz, Ruvz)
-!                 - spanwise correlation function for scalar field 
+!                 - spanwise correlation function for scalar field (s: scalar)
 !                   (Rssz).
 !              Adapted from original Incompact3d file (v2.0) of R. Corsini. 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
@@ -223,6 +223,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
   call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   call derx (tc1,uz1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
+  
   ! y-derivatives
   call transpose_x_to_y(ux1,td2)
   call transpose_x_to_y(uy1,te2)
@@ -230,6 +231,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
   call dery (tb2,te2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0,lind)
   call dery (tc2,tf2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
+  
   ! z-derivatives
   call transpose_y_to_z(td2,td3)
   call transpose_y_to_z(te2,te3)
@@ -237,6 +239,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   call derz (ta3,td3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tb3,te3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tc3,tf3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0,lind)
+  
   ! all back to x-pencils
   call transpose_z_to_y(ta3,td2)
   call transpose_z_to_y(tb3,te2)
@@ -350,6 +353,7 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   call derx (ta1,ux1,di1,sx,ffx, fsx, fwx, xsize(1),xsize(2),xsize(3),0,lind)
   call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   call derx (tc1,uz1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
+  
   ! y-derivatives
   call transpose_x_to_y(ux1,td2)
   call transpose_x_to_y(uy1,te2)
@@ -357,6 +361,7 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
   call dery (tb2,te2,di2,sy,ffy, fsy, fwy, ppy,ysize(1),ysize(2),ysize(3),0,lind)
   call dery (tc2,tf2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
+  
   ! z-derivatives
   call transpose_y_to_z(td2,td3)
   call transpose_y_to_z(te2,te3)
@@ -364,6 +369,7 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   call derz (ta3,td3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tb3,te3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tc3,tf3,di3,sz,ffz, fsz, fwz, zsize(1),zsize(2),zsize(3),0,lind)
+  
   ! all back to x-pencils
   call transpose_z_to_y(ta3,td2)
   call transpose_z_to_y(tb3,te2)
@@ -568,6 +574,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
   call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   call derx (tc1,uz1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
+  
   ! y-derivatives
   call transpose_x_to_y(ux1,td2)
   call transpose_x_to_y(uy1,te2)
@@ -575,6 +582,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
   call dery (tb2,te2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0,lind)
   call dery (tc2,tf2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
+  
   ! z-derivatives
   call transpose_y_to_z(td2,td3)
   call transpose_y_to_z(te2,te3)
@@ -582,6 +590,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   call derz (ta3,td3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tb3,te3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tc3,tf3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0,lind)
+  
   ! all back to x-pencils
   call transpose_z_to_y(ta3,td2)
   call transpose_z_to_y(tb3,te2)
