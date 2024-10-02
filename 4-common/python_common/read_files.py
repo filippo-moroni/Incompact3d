@@ -254,6 +254,9 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     sh_vel_x   = 0.0  
     sh_vel_tot = 0.0
     
+    # Scalar field friction quantities
+    phi_tau = 0.0
+    
     # Time-step
     ts = None
     
@@ -381,7 +384,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
 
             # Shear velocities
             sh_vel_x   = np.sqrt(tau_wx)     # streamwise shear velocity (based on streamwise mean gradient)  
-            sh_vel_tot = np.sqrt(tau_wtot)   # total shear velocity (based on total mean gradient) 
+            sh_vel_tot = np.sqrt(tau_wtot)   # total shear velocity (based on total mean gradient)
+            
+            # Scalar friction quantity phi_tau (counterpart of u_tau) (see Kozul et al. (2016) for example)
+            # To be verified the correct rescaling for wall oscillations (u_taux or u_tau)
+            phi_tau = nu * (mg_phi[0] / sh_vel_tot) 
     
     
             # Reading of the mean total dissipation
@@ -445,12 +452,46 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             sh_vel_x   =   sh_vel_x.split('=')[-1].strip()
             sh_vel_tot = sh_vel_tot.split('=')[-1].strip()
             
-            # Convert to needed variable type (integer or boolean)
+            # Convert to needed variable type (float)
             sh_vel_x   = np.float64(sh_vel_x)
             sh_vel_tot = np.float64(sh_vel_tot)
             
             
-                               
+            # Read scalar mean stats averaged with different flow realizations.
+            # These are time-dependent statistics.
+            if numscalar == 1:
+
+                M = np.loadtxt(f'data_post_te/scalar/mean_stats_scalar_realiz-ts{ts}.txt', skiprows=5, delimiter=',', dtype=np.float64)
+                        
+                mean_phi  = M[:,0]
+                var_phi   = M[:,1]
+                mean_uphi = M[:,2]
+                mean_vphi = M[:,3]
+                mean_wphi = M[:,4]
+            
+            # Opening of 'mean_stats_scalar_realiz-ts' file
+            with open(f'data_post_te/scalar/mean_stats_scalar_realiz-ts{ts}.txt', 'r') as file:
+    
+                # Read all lines into a list
+                lines = file.readlines()
+            
+                # Mean scalar gradient at the wall reading: as always, index is 1 less of the line number (Python convention)
+                mg_phi_w = lines[2]   # streamwise shear velocity (based on streamwise mean gradient)  
+
+                # Removing characters in front of the extracted strings and the comments:
+                # 1) split: the string is split when the specified character is encountered; 
+                # 2) we select the portion of string with index inside square brackets;
+                # 3) strip: removes leading or trailing whitespaces from the string. 
+                mg_phi_w = mg_phi_w.split('=')[-1].strip()
+            
+                # Convert to needed variable type (float)
+                mg_phi_w = np.float64(mg_phi_w)
+            
+                # Calculate phi_tau (counterpart of u_tau for the scalar field) (Kozul et al. (2016))
+                # We are assuming unitary molecular Prandtl number (thus we are multiplying by kinematic viscosity) 
+                # To be verified the correct rescaling for wall oscillations (u_taux or u_tau)
+                phi_tau = nu * mg_phi_w / sh_vel_tot
+                 
     print()
  
     return (
@@ -458,7 +499,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     vort_x, vort_y, vort_z, mg_x, mg_z, mg_phi, 
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
-    snap_numb, i_switch_plot, ts, sh_vel_x, sh_vel_tot
+    snap_numb, i_switch_plot, ts, sh_vel_x, sh_vel_tot, phi_tau
     )
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!    
