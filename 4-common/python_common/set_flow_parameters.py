@@ -17,10 +17,13 @@ def set_flow_parameters(itype, re):
         # Reading of y-coordinates grid points
         y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
     
-    except OSError:  # Handles the case where the file is not found (pre-processing)
+    # Handles the case where the file is not found (pre-processing)
+    except OSError:  
         
         print("Warning: 'yp.dat' not found. Defaulting y to an empty array.")
-        y = np.array([])  # Default to an empty array or provide other fallback behavior
+        
+        # Default to an empty array
+        y = np.array([])  
         
     # Default parameters
     twd   = np.float64(1.0)                  # Trip wire diameter, D
