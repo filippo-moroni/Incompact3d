@@ -47,7 +47,7 @@ from ttbl_subs import calculate_ttbl_thick_params
 !-----------------------------------------------------------------------------!
 """
 
-def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi):
+def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w):
 
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te',          mode=0o777, exist_ok=True)
@@ -199,7 +199,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi):
             with open(f'data_post_te/scalar/mean_stats_scalar_realiz-ts{ts_iter:07d}.txt', 'w') as f:
                 f.write(f'Mean scalar statistics at ts={ts_iter}.\n')        
                 f.write('\n')
-                f.write(f"{'(dPhi/dy)w':>{pp.c_w}} = {mg_phi[ti]:{pp.fs6}}\n")
+                f.write(f"{'(dPhi/dy)w':>{pp.c_w}} = {mg_phi_w[ti]:{pp.fs6}}\n")
                 f.write('\n') 
                 f.write(f"{'mean[phi]':>{pp.c_w}}, " +
                         f"{'var[phi]':>{pp.c_w}}, "  +
