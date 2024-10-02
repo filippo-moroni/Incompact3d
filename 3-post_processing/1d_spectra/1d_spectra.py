@@ -41,8 +41,8 @@ from read_files import read_input_files, read_data
 # Import function to setup flow parameters 
 from set_flow_parameters import set_flow_parameters
 
-# Import function to calculate boundary layer thickness delta_99 for a TTBL
-from ttbl_subs import calculate_ttbl_delta_99
+# Import function to calculate TTBL thickness parameters
+from ttbl_subs import calculate_ttbl_thick_params
 
 #!--------------------------------------------------------------------------------------!
 
@@ -70,27 +70,24 @@ os.makedirs('plots/spectra', mode=0o777, exist_ok=True)
 
 #!--------------------------------------------------------------------------------------!
     
-#!--- Parameters ---!
-uwall, nu, twd = set_flow_parameters(itype, re)
+#!--- Parameters and mesh ---!
+(uwall, nu, twd, y) = set_flow_parameters(itype, re)
   
-# Reading of grid points
-y = np.loadtxt('yp.dat', delimiter=None, dtype=np.float64)
-
 # Read statistics data
 (mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
- vort_x, vort_y, vort_z, mg_x, mg_z,
+ vort_x, vort_y, vort_z, mg_x, mg_z, mg_phi,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
  snap_numb, i_switch_plot, ts, 
- sh_vel_x, sh_vel_tot) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
-                                   post_corz, post_tke_eq, ny, nz)
+ sh_vel_x, sh_vel_tot, phi_tau) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
+                                            post_corz, post_tke_eq, ny, nz, nu)
 
 #!--------------------------------------------------------------------------------------!
 
 # Exit if the user tries to plot spectra using statistics from 'cf_monitoring'                                   
 if i_switch_plot:
     print(">>> Spanwise correlation functions are present only in the dataset from 'post_incompact3d',")
-    print(">>> we cannot calculate spectra and plot them.")
+    print("    thus we cannot calculate spectra and plot them.")
     print()    
     sys.exit(">>> Exiting from '1d_spectra.py'.")  
                                                                                                                                               
@@ -108,19 +105,19 @@ delta_z  = Lz / nz
 
 # Valid only for TTBLs
 if itype == 13:
-    
-    # Calculate BL thickness delta_99 for a TTBL and its related index
-    (bl_thick, bl_thick_j) = calculate_ttbl_delta_99(mean_u, y)
-    
+
+    # Calculate BL thickness delta_99 for a TTBL
+    (delta_99, delta_99_j, disp_t, mom_t) = calculate_ttbl_thick_params(mean_u,y,uwall)
+            
     # Friction Reynolds number
-    re_tau = sh_vel_x * bl_thick / nu
+    re_tau = sh_vel_x * delta_99 / nu
     re_tau = int(re_tau)
 
     # Print friction Reynolds number, boundary layer thickness and
     # domain height in viscous units
     print(">>> Friction Reynolds number, Re_tau = ", re_tau)
     print()
-    print(">>> Boundary layer thickness, delta_99 = ", round(bl_thick,1))
+    print(">>> Boundary layer thickness, delta_99 = ", round(delta_99,1))
     print()
     print(">>> Domain height in wall units, Ly+ = ", round(Ly_plus,1))
     print()
