@@ -176,12 +176,12 @@ if itype == 13:
 
     print()
     print(">>> Saving 'time_evolution.txt' in time_evolution/.")
-    print(">>> This file stores the following quantities:")
-    print(">>>  - cfx;")
-    print(">>>  - delta_99, delta*, theta;")
-    print(">>>  - Re_tau, Re_delta*, Re_theta;")
-    print(">>>  - power input, P_in;")
-    print(">>>  - Reynolds analogy factor, A_fact.")
+    print("    This file stores the following quantities:")
+    print("     - cfx;")
+    print("     - delta_99, delta*, theta;")
+    print("     - Re_tau, Re_delta*, Re_theta;")
+    print("     - power input, P_in;")
+    print("     - Reynolds analogy factor, A_fact.")
     print()
 
     # Create the file and write  
@@ -407,7 +407,7 @@ if itype == 13:
 
     print()
     print(">>> Plotting (streamwise) friction Reynolds number as function of time.")
-    print(">>> Reference data Cimarelli et al. (2024a), data with total shear velocity.")
+    print("    Reference data Cimarelli et al. (2024a), data with total shear velocity.")
     print()
 
     # Subplots environment
@@ -444,7 +444,7 @@ if itype == 13:
 
     print()
     print(">>> Plotting streamwise friction coefficient as function of (streamwise) friction Reynolds number.")
-    print(">>> Reference data Cimarelli et al. (2024a), data with total shear velocity.")
+    print("    Reference data Cimarelli et al. (2024a), data with total shear velocity.")
     print()
 
     # Subplots environment
@@ -482,8 +482,8 @@ if itype == 13:
 
     print()
     print(">>> Plotting friction Reynolds number as function of momentum thickness Reynolds number.")
-    print(">>> Reference data Cimarelli et al. (2024a).")
-    print(">>> Reference straight line Schlatter & Orlu (2010).")
+    print("    Reference data Cimarelli et al. (2024a).")
+    print("    Reference straight line Schlatter & Orlu (2010).")
     print()
 
     # Subplots environment
@@ -527,7 +527,7 @@ if itype == 13:
 
     print()
     print(">>> Plotting displacement thickness Reynolds number as function of momentum thickness Reynolds number.")
-    print(">>> Reference data Cimarelli et al. (2024a).")
+    print("    Reference data Cimarelli et al. (2024a).")
     print()
 
     # Subplots environment
