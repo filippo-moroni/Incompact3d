@@ -69,7 +69,10 @@ subroutine print_cf(ux,uy,uz,phi)
   if(itype .eq. itype_ttbl) then
   
       ! Write mean statistics runtime in case of a TTBL
-      call print_mean_stats(ux,uy,uz)     
+      call print_mean_stats(ux,uy,uz)
+      
+      ! We can add here the runtime saving of mean stats for the scalar field
+      ! we can print mean phi, mixed fluctuations and scalar gradient     
       
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
@@ -785,6 +788,10 @@ subroutine print_mean_stats(ux,uy,uz)
   end if
   
 end subroutine print_mean_stats
+
+! add and create 'print_mean_stats_scalar'
+
+! ... re-adapt 'print_mean_stats'
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Write an instantaneous plane with z-dir. normal of the scalar 

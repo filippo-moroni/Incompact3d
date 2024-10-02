@@ -162,6 +162,7 @@ if itype == 13:
      - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
     (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x)
+    
     print()
     print(">>> Average of runtime mean statistics with different flow realizations")
     print("    and calculation of time evolution of TTBL thickness parameters: done.")
