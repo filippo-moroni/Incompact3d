@@ -192,6 +192,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
                         f"{mean_stats_r[j,7,ti]:{pp.fs6}}, " +
                         f"{mean_stats_r[j,8,ti]:{pp.fs6}}\n" )
         
+        # to be completed ... add mean scalar gradient (to be read from statistics data)
         
         # Create the file and write; we are adding at each file the shear velocities coming from the main function 
         with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
