@@ -47,7 +47,7 @@ from ttbl_subs import calculate_ttbl_thick_params
 !-----------------------------------------------------------------------------!
 """
 
-def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
+def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi):
 
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te',          mode=0o777, exist_ok=True)
@@ -177,9 +177,9 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
                     f"{'var[u]':>{pp.c_w}}, "     +
                     f"{'var[v]':>{pp.c_w}}, "     +
                     f"{'var[w]':>{pp.c_w}}, "     +
-                    f"{'mean[uv]':>{pp.c_w}}, "   +
-                    f"{'mean[uw]':>{pp.c_w}}, "   +
-                    f"{'mean[vw]':>{pp.c_w}}\n"   )
+                    f"{'mean[u'v']':>{pp.c_w}}, " +
+                    f"{'mean[u'w']':>{pp.c_w}}, " +
+                    f"{'mean[v'w']':>{pp.c_w}}\n" )
                 
             for j in range(0, ny):
                 f.write(f"{mean_stats_r[j,0,ti]:{pp.fs6}}, " +
@@ -192,38 +192,29 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
                         f"{mean_stats_r[j,7,ti]:{pp.fs6}}, " +
                         f"{mean_stats_r[j,8,ti]:{pp.fs6}}\n" )
         
-        # to be completed ... add mean scalar gradient (to be read from statistics data)
-        
-        # Create the file and write; we are adding at each file the shear velocities coming from the main function 
-        with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
-            f.write(f'Mean statistics at ts={ts_iter}.\n')        
-            f.write('\n')
-            f.write(f"{'sh_vel_x':>{pp.c_w}} = {sh_vel_x[ti]:{pp.fs6}}\n")
-            f.write(f"{'sh_vel_tot':>{pp.c_w}} = {sh_vel_tot[ti]:{pp.fs6}}\n")
-            f.write('\n') 
-            f.write(f"{'mean[u]':>{pp.c_w}}, "    +
-                    f"{'mean[v]':>{pp.c_w}}, "    +
-                    f"{'mean[w]':>{pp.c_w}}, "    +
-                    f"{'var[u]':>{pp.c_w}}, "     +
-                    f"{'var[v]':>{pp.c_w}}, "     +
-                    f"{'var[w]':>{pp.c_w}}, "     +
-                    f"{'mean[uv]':>{pp.c_w}}, "   +
-                    f"{'mean[uw]':>{pp.c_w}}, "   +
-                    f"{'mean[vw]':>{pp.c_w}}\n"   )
+        # Save runtime statistics averaged on flow realizations for scalar field
+        if numscalar == 1:
                 
-            for j in range(0, ny):
-                f.write(f"{mean_stats_r[j,0,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,1,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,2,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,3,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,4,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,5,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,6,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,7,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,8,ti]:{pp.fs6}}\n" )
-        
-        
-
+            # Create the file and write; we are adding at each file the mean scalar gradient at the wall coming from the main function 
+            with open(f'data_post_te/scalar/mean_stats_scalar_realiz-ts{ts_iter:07d}.txt', 'w') as f:
+                f.write(f'Mean scalar statistics at ts={ts_iter}.\n')        
+                f.write('\n')
+                f.write(f"{'(dPhi/dy)w':>{pp.c_w}} = {mg_phi[ti]:{pp.fs6}}\n")
+                f.write('\n') 
+                f.write(f"{'mean[phi]':>{pp.c_w}}, " +
+                        f"{'var[phi]':>{pp.c_w}}, "  +
+                        f"{'<u'phi'>':>{pp.c_w}}, "  +
+                        f"{'<v'phi'>':>{pp.c_w}}, "  +
+                        f"{'<w'phi'>':>{pp.c_w}}\n"  )
+                
+                for j in range(0, ny):
+                    f.write(f"{mean_stats_scalar_r[j,0,ti]:{pp.fs6}}, " +
+                            f"{mean_stats_scalar_r[j,1,ti]:{pp.fs6}}, " +
+                            f"{mean_stats_scalar_r[j,2,ti]:{pp.fs6}}, " +
+                            f"{mean_stats_scalar_r[j,3,ti]:{pp.fs6}}, " +
+                            f"{mean_stats_scalar_r[j,4,ti]:{pp.fs6}}\n" )
+      
+      
         #!--- Calculation of thickness parameters ---!
         
         # Take alias for mean streamwise velocity profile
