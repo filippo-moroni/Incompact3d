@@ -76,10 +76,7 @@ subroutine print_cf(ux,uy,uz,phi)
       
       ! Write mean statistics runtime for scalar field in case of a TTBL 
       if(iscalar .eq. 1) call print_mean_stats_scalar(ux,uy,uz,phi) 
-      
-      ! We can add here the runtime saving of mean stats for the scalar field
-      ! we can print mean phi, mixed fluctuations and scalar gradient     
-      
+             
       ! Boundary layer thickness
       call calculate_bl_thick(ux,delta_99,counter)
       
@@ -110,7 +107,7 @@ subroutine print_cf(ux,uy,uz,phi)
           if (iscalar .eq. 1) then
               
               ! Analogy factor
-              A_fact = (xnu / sc(1)) * abs(mean_phigwtot) / sh_vel**2 
+              A_fact = (xnu / sc(1)) * mean_phigwtot / sh_vel**2 
               
           end if
           
@@ -118,27 +115,27 @@ subroutine print_cf(ux,uy,uz,phi)
           if (exists) then
               open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
-                             fric_coeff, ',', A_fact,      ',',                                                         &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                       &
-                             delta_99,   ',', re_tau_tbl,  ',', powerin                                         
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,      ',', sh_velz, ',',                                                  & 
+                             fric_coeff, ',', mean_phigwtot ',', A_fact,  ',',                                                  &
+                             t_viscous,  ',', t,            ',', itime,   ',',                                                  &
+                             delta_99,   ',', re_tau_tbl,   ',', powerin                                         
                              
           else
               open(newunit=iunit, file=filename, status="new", action="write")
               ! Header
-              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12)') &
-                            'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',                    &
-                            'cfx',       ',', 'A_fact',    ',',                                    &
-                            't_nu',      ',', 't',         ',', 'ts',      ',',                    &
-                            'delta_99',  ',', 'Re_tau',    ',', 'P_in'                                      
+              write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12)') &
+                            'sh_vel',    ',', 'sh_velx',    ',', 'sh_velz', ',',                         &
+                            'cfx',       ',', '(dPhi/dy)w', ',', 'A_fact',  ',',                         &
+                            't_nu',      ',', 't',          ',', 'ts',      ',',                         &
+                            'delta_99',  ',', 'Re_tau',     ',', 'P_in'                                      
                             
               
-              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,     ',', sh_velz,     ',',                                       & 
-                             fric_coeff, ',', A_fact,      ',',                                                         &
-                             t_viscous,  ',', t,           ',', itime,       ',',                                       &
-                             delta_99,   ',', re_tau_tbl,  ',', powerin 
+              write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
+                             sh_vel,     ',', sh_velx,      ',', sh_velz, ',',                                                  & 
+                             fric_coeff, ',', mean_phigwtot ',', A_fact,  ',',                                                  &
+                             t_viscous,  ',', t,            ',', itime,   ',',                                                  &
+                             delta_99,   ',', re_tau_tbl,   ',', powerin 
           end if
               close(iunit)
       
@@ -456,6 +453,9 @@ subroutine calculate_scalar_grad_wall(phi,mean_phigwtot)
          
   ! Summation over all MPI processes and broadcast the result          
   call MPI_ALLREDUCE(mean_phigw,mean_phigwtot,1,real_type,MPI_SUM,MPI_COMM_WORLD,ierr)
+  
+  ! Finalize calculation of mean scalar gradient at the wall
+  mean_phigwtot = abs(mean_phigwtot)
       
 end subroutine calculate_scalar_grad_wall
 
