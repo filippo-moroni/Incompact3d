@@ -226,11 +226,12 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     mean_uv     = 0.0
     
     # Mean vorticity and mean gradients
-    vort_x      = 0.0
-    vort_y      = 0.0
-    vort_z      = 0.0
-    mg_x        = 0.0
-    mg_z        = 0.0
+    vort_x      = 0.0   # streamwise mean vorticity
+    vort_y      = 0.0   # wall-normal mean vorticity
+    vort_z      = 0.0   # spanwise mean vorticity
+    mg_x        = 0.0   # streamwise mean gradient
+    mg_z        = 0.0   # spanwise mean gradient
+    mg_phi      = 0.0   # scalar mean gradient
     
     # Total dissipation
     eps         = 0.0
@@ -363,7 +364,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             vort_z = M[:,2]
             mg_x   = M[:,3]
             mg_z   = M[:,4]
-            
+            mg_phi = M[:,5]
             
             """           
             (Total) wall shear stress is used to check maximum numerical resolutions (mesh spacings and viscous time).
@@ -447,12 +448,14 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             # Convert to needed variable type (integer or boolean)
             sh_vel_x   = np.float64(sh_vel_x)
             sh_vel_tot = np.float64(sh_vel_tot)
+            
+            
                                
     print()
  
     return (
     mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
-    vort_x, vort_y, vort_z, mg_x, mg_z,
+    vort_x, vort_y, vort_z, mg_x, mg_z, mg_phi, 
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
     snap_numb, i_switch_plot, ts, sh_vel_x, sh_vel_tot
