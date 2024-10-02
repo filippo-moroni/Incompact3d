@@ -330,9 +330,19 @@ subroutine parameter(input_i3d)
   ! Creating /checkpoints folder inside /data
   if (nrank == 0) call execute_command_line('mkdir -p data/checkpoints')
   
-  ! Creating /mean_stats_runtime folder inside /data if we are simulating a TTBL
-  if (nrank == 0 .and. itype .eq. itype_ttbl) call execute_command_line('mkdir -p data/mean_stats_runtime')
+  ! Creating /mean_stats_runtime folder and subfolders inside /data if we are simulating a TTBL
+  if (nrank == 0 .and. itype .eq. itype_ttbl) then
   
+      ! Main folder for runtime mean statistics
+      call execute_command_line('mkdir -p data/mean_stats_runtime')
+      
+      ! Subfolder for velocity field statistics
+      call execute_command_line('mkdir -p data/mean_stats_runtime/velocity')  
+  
+      ! Subfolder for scalar field statistics
+      if (iscalar .eq. 1) call execute_command_line('mkdir -p data/mean_stats_runtime/scalar') 
+  
+  end if
   !------------------------!
   
 #ifdef DEBG

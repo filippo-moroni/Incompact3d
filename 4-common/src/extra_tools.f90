@@ -11,6 +11,7 @@
 !              - 'calculate_ubulk' 
 !              - 'calculate_bl_thick'
 !              - 'print_mean_stats'
+!              - 'print_mean_stats_scalar'
 !              - 'write_scalar_plane_z'
 !              - 'write_vortx_plane_x'.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
@@ -20,7 +21,9 @@
 ! DESCRIPTION: Write shear velocities, skin friction coefficient, viscous 
 !              time unit, time unit, bulk velocity (channel only), boundary 
 !              layer thickness (delta_99) and Re_tau (TTBL only) and stores
-!              them in a .txt file (used for TTBLs and Channels).    
+!              them in a .txt file (used for TTBLs and Channels). 
+!              We are also calling subroutines to print runtime mean 
+!              statistics (TTBL only).    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 subroutine print_cf(ux,uy,uz,phi)
@@ -70,6 +73,9 @@ subroutine print_cf(ux,uy,uz,phi)
   
       ! Write mean statistics runtime in case of a TTBL
       call print_mean_stats(ux,uy,uz)
+      
+      ! Write mean statistics runtime for scalar field in case of a TTBL 
+      if(iscalar .eq. 1) call print_mean_stats_scalar(ux,uy,uz,phi) 
       
       ! We can add here the runtime saving of mean stats for the scalar field
       ! we can print mean phi, mixed fluctuations and scalar gradient     
@@ -739,13 +745,13 @@ subroutine print_mean_stats(ux,uy,uz)
   call MPI_REDUCE(uwmeanH1,uwmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   call MPI_REDUCE(vwmeanH1,vwmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   
-  ! Print mean velocity profile
+  ! Print mean statistics for velocity field 
   if(nrank .eq. 0) then
 
       ! Write filename 
-      write(filename, "('data/mean_stats_runtime/mean_stats_runtime-ts',I7.7,'.txt')") itime
+      write(filename, "('data/mean_stats_runtime/velocity/mean_stats_runtime-ts',I7.7,'.txt')") itime
             
-      ! Open and write the mean velocity profile
+      ! Open and write the mean statistics for velocity field
       open(newunit=iunit, file=filename, status="unknown", form="formatted")
 
       ! Header
@@ -757,7 +763,7 @@ subroutine print_mean_stats(ux,uy,uz)
       write(iunit, *) 'Only var[u] needs to be finalized later by subtracting (mean[u])**2,'
       write(iunit, *) 'due to the symmetries of the TTBL.'
       write(iunit, *) ' '     
-      write(iunit, *) 'The finalization of all 2nd order statistics can be performed in order to check'
+      write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway in order to check'
       write(iunit, *) 'the correctness of the calculations.' 
       write(iunit, *) ' '
       write(iunit, '(9(A14, A1, 1X))') 'umean(y,t,nr)',  ',', &
@@ -789,9 +795,130 @@ subroutine print_mean_stats(ux,uy,uz)
   
 end subroutine print_mean_stats
 
-! add and create 'print_mean_stats_scalar'
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: Calculate runtime mean statistics for the scalar field
+!              (mean[phi], var[phi] and mixed fluctuations) for a TTBL.
+!              This subroutine is called inside 'print_cf'. 
+!              These statistics must be averaged with different flow 
+!              realizations. 2nd order statistics must be finalized after 
+!              the averaging procedure (subtraction of averages).  
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!       
+subroutine print_mean_stats_scalar(ux,uy,uz,phi)
+  
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  
+  use MPI
+  
+  use var,       only : ux2,uy2,uz2,phi2
+  use param,     only : zero,itime
+  use variables, only : nx,ny,nz
+    
+  implicit none
+  
+  ! Inputs
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)          ) :: ux,uy,uz
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
+     
+  ! Local variables
+  real(mytype)                      :: den
+  integer                           :: code,i,j,k,iunit
+  character(99)                     :: filename 
+  
+  ! Mean statistics for scalar field
+  real(mytype), dimension(ysize(2)) :: phi1meanH1,phi1meanHT  ! mean scalar field
+  real(mytype), dimension(ysize(2)) :: phi2meanH1,phi2meanHT  ! scalar field variance
+  
+  ! Mixed fluctuations (velocity/scalar)
+  real(mytype), dimension(ysize(2)) :: uphimeanH1,uphimeanHT  ! Mixed fluctuations <u'phi'>
+  real(mytype), dimension(ysize(2)) :: vphimeanH1,vphimeanHT  ! Mixed fluctuations <v'phi'>
+  real(mytype), dimension(ysize(2)) :: wphimeanH1,wphimeanHT  ! Mixed fluctuations <w'phi'>
+  
+  ! Set again variables to zero
+  phi1meanH1 = zero; phi1meanHT = zero
+  phi2meanH1 = zero; phi2meanHT = zero  
 
-! ... re-adapt 'print_mean_stats'
+  uphimeanH1 = zero; uphimeanHT = zero
+  vphimeanH1 = zero; vphimeanHT = zero  
+  wphimeanH1 = zero; wphimeanHT = zero
+  
+  ! Denominator of the divisions
+  den = real(nx*nz,mytype)
+      
+  ! Transpose data to y-pencils 
+  call transpose_x_to_y(ux,ux2)
+  call transpose_x_to_y(uy,uy2)
+  call transpose_x_to_y(uz,uz2)
+  call transpose_x_to_y(phi,phi2)
+    
+  ! Summation over x and z directions
+  do k=1,ysize(3)
+      do i=1,ysize(1)
+          do j=1,ysize(2)
+          
+              ! Mean scalar field          
+              phi1meanH1(j)=phi1meanH1(j)+phi2(i,j,k)/den
+              
+              ! Variance
+              phi2meanH1(j)=phi2meanH1(j)+phi2(i,j,k)*phi2(i,j,k)/den                                                             
+          
+              ! Mixed fluctuations
+              uphimeanH1(j)=uphimeanH1(j)+ux2(i,j,k)*phi2(i,j,k)/den
+              vphimeanH1(j)=vphimeanH1(j)+uy2(i,j,k)*phi2(i,j,k)/den
+              wphimeanH1(j)=wphimeanH1(j)+uz2(i,j,k)*phi2(i,j,k)/den
+                                      
+          enddo          
+      enddo
+  enddo
+
+  ! Summation over all MPI processes
+  call MPI_REDUCE(phi1meanH1,phi1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  call MPI_REDUCE(phi2meanH1,phi2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+
+  call MPI_REDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  call MPI_REDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  call MPI_REDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  
+  ! Print mean statistics for scalar field
+  if(nrank .eq. 0) then
+
+      ! Write filename 
+      write(filename, "('data/mean_stats_runtime/scalar/mean_stats_scalar_runtime-ts',I7.7,'.txt')") itime
+            
+      ! Open and write mean statistics for scalar field
+      open(newunit=iunit, file=filename, status="unknown", form="formatted")
+
+      ! Header
+      write(iunit, *) 'Mean statistics for scalar field calculated runtime.'
+      write(iunit, *) ' '
+      write(iunit, *) 'Pay attention that these statistics need to be averaged later'
+      write(iunit, *) 'with different flow realizations.'
+      write(iunit, *) ' '    
+      write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway in order to check'
+      write(iunit, *) 'the correctness of the calculations.' 
+      write(iunit, *) ' '
+      write(iunit, '(5(A17, A1, 1X))') 'mean[phi](y,t,nr)', ',', &
+                                       'var[phi](y,t,nr)' , ',', &
+                                       "<u'phi'>(y,t,nr)" , ',', &
+                                       "<v'phi'>(y,t,nr)" , ',', &
+                                       "<w'phi'>(y,t,nr)"
+
+      ! Write mean scalar field statistics, function of y-direction, time and specific realization
+      do j=1,ny
+          write(iunit, '(5(F17.9, A1, 1X))') phi1meanHT(j), ',', &  ! Mean scalar field
+                                             phi2meanHT(j), ',', &  ! Scalar field variance
+                                             uphimeanHT(j), ',', &  ! Mixed fluctuations <u'phi'>
+                                             vphimeanHT(j), ',', &  ! Mixed fluctuations <v'phi'>
+                                             wphimeanHT(j)          ! Mixed fluctuations <w'phi'>
+      enddo
+      
+      close(iunit)
+                      
+  end if
+  
+end subroutine print_mean_stats_scalar
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Write an instantaneous plane with z-dir. normal of the scalar 
