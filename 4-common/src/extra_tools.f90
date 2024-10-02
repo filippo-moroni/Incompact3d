@@ -333,7 +333,7 @@ subroutine calculate_shear_velocity(ux,uz,sh_velx,sh_velz)
   integer      :: ierr
   integer      :: i,k
 
-  ! Set again variables to zero
+  ! Set variables to zero
   mean_gwx = zero
   mean_gwz = zero
   sh_velx  = zero
@@ -581,7 +581,7 @@ subroutine calculate_bl_thick(ux,delta_99,counter)
   real(mytype)                      :: temp, den
   integer                           :: code,i,j,k,iunit
   
-  ! Set again variables to zero
+  ! Set variables to zero
   u1meanH1 = zero
   u1meanHT = zero
     
@@ -687,7 +687,7 @@ subroutine print_mean_stats(ux,uy,uz)
   real(mytype), dimension(ysize(2)) :: uwmeanH1,uwmeanHT  ! Reynolds stress <u'w'>
   real(mytype), dimension(ysize(2)) :: vwmeanH1,vwmeanHT  ! Reynolds stress <v'w'>
   
-  ! Set again variables to zero
+  ! Set variables to zero
   u1meanH1 = zero; u1meanHT = zero
   v1meanH1 = zero; v1meanHT = zero  
   w1meanH1 = zero; w1meanHT = zero
@@ -766,9 +766,9 @@ subroutine print_mean_stats(ux,uy,uz)
       write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway in order to check'
       write(iunit, *) 'the correctness of the calculations.' 
       write(iunit, *) ' '
-      write(iunit, '(9(A14, A1, 1X))') 'umean(y,t,nr)',  ',', &
-                                       'vmean(y,t,nr)',  ',', &
-                                       'wmean(y,t,nr)',  ',', &
+      write(iunit, '(9(A14, A1, 1X))') 'umean(y,t,nr)' , ',', &
+                                       'vmean(y,t,nr)' , ',', &
+                                       'wmean(y,t,nr)' , ',', &
                                        'var[u](y,t,nr)', ',', &
                                        'var[v](y,t,nr)', ',', &
                                        'var[w](y,t,nr)', ',', &
@@ -836,7 +836,7 @@ subroutine print_mean_stats_scalar(ux,uy,uz,phi)
   real(mytype), dimension(ysize(2)) :: vphimeanH1,vphimeanHT  ! Mixed fluctuations <v'phi'>
   real(mytype), dimension(ysize(2)) :: wphimeanH1,wphimeanHT  ! Mixed fluctuations <w'phi'>
   
-  ! Set again variables to zero
+  ! Set variables to zero
   phi1meanH1 = zero; phi1meanHT = zero
   phi2meanH1 = zero; phi2meanHT = zero  
 
