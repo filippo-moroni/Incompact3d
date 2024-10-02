@@ -418,7 +418,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
            
             # Read mean stats averaged with different flow realizations.
             # These are time-dependent statistics.
-            M = np.loadtxt(f'data_post_te/mean_stats_realiz-ts{ts}.txt', skiprows=6, delimiter=',', dtype=np.float64)
+            M = np.loadtxt(f'data_post_te/velocity/mean_stats_realiz-ts{ts}.txt', skiprows=6, delimiter=',', dtype=np.float64)
                         
             mean_u  = M[:,0]
             mean_w  = M[:,2]   
@@ -428,7 +428,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             mean_uv = M[:,6]
             
             # Opening of 'mean_stats_realiz-ts' file
-            with open(f'data_post_te/mean_stats_realiz-ts{ts}.txt', 'r') as file:
+            with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts}.txt', 'r') as file:
     
                 # Read all lines into a list
                 lines = file.readlines()

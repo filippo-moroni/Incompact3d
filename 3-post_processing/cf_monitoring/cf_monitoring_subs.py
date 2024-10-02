@@ -50,7 +50,9 @@ from ttbl_subs import calculate_ttbl_thick_params
 def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
 
     # Create folder to store later results (te: time evolution)
-    os.makedirs('data_post_te', mode=0o777, exist_ok=True)
+    os.makedirs('data_post_te',          mode=0o777, exist_ok=True)
+    os.makedirs('data_post_te/velocity', mode=0o777, exist_ok=True)
+    os.makedirs('data_post_te/scalar',   mode=0o777, exist_ok=True)
 
     #!--- Reading of files section and setup of flow parameters ---!
 
@@ -75,8 +77,8 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
     # we have 9 different statistics (mean, var, Reynolds stress) (function of y)
     mean_stats = np.zeros((ny, 9))
     
-    # Initialize mean statistics array, function of y and time
-    mean_stats_realiz = np.zeros((ny, 9, nsavings))
+    # Initialize mean statistics array, function of y and time (r: realizations)
+    mean_stats_r = np.zeros((ny, 9, nsavings))
 
     # Initialize arrays for TTBL thickness parameters
     delta_99   = np.zeros(nsavings)   # BL thickness delta_99
@@ -115,7 +117,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
         for i in range(1, nr+1, 1):
                
             # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime' folder
-            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
+            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
                         
             # Summing mean statistics array with different realizations into the overall array for time-evolution
             mean_stats_realiz[:,:,ti] = mean_stats_realiz[:,:,ti] + mean_stats[:,:] / nr
@@ -123,17 +125,17 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
         #!--- Finalize 2nd order statistics ---!
         
         # Variances
-        mean_stats_realiz[:,3,ti] = mean_stats_realiz[:,3,ti] - mean_stats_realiz[:,0,ti]**2  # streamwise  velocity variance
-        mean_stats_realiz[:,4,ti] = mean_stats_realiz[:,4,ti] - mean_stats_realiz[:,1,ti]**2  # wall-normal velocity variance
-        mean_stats_realiz[:,5,ti] = mean_stats_realiz[:,5,ti] - mean_stats_realiz[:,2,ti]**2  # spanwise    velocity variance    
+        mean_stats_r[:,3,ti] = mean_stats_r[:,3,ti] - mean_stats_r[:,0,ti]**2  # streamwise  velocity variance
+        mean_stats_r[:,4,ti] = mean_stats_r[:,4,ti] - mean_stats_r[:,1,ti]**2  # wall-normal velocity variance
+        mean_stats_r[:,5,ti] = mean_stats_r[:,5,ti] - mean_stats_r[:,2,ti]**2  # spanwise    velocity variance    
         
         # Reynolds stress
-        mean_stats_realiz[:,6,ti] = mean_stats_realiz[:,6,ti] - mean_stats_realiz[:,0,ti]*mean_stats_realiz[:,1,ti]  # Reynolds stress <u'v'>
-        mean_stats_realiz[:,7,ti] = mean_stats_realiz[:,7,ti] - mean_stats_realiz[:,0,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <u'w'>
-        mean_stats_realiz[:,8,ti] = mean_stats_realiz[:,8,ti] - mean_stats_realiz[:,1,ti]*mean_stats_realiz[:,2,ti]  # Reynolds stress <v'w'>
+        mean_stats_r[:,6,ti] = mean_stats_r[:,6,ti] - mean_stats_r[:,0,ti]*mean_stats_r[:,1,ti]  # Reynolds stress <u'v'>
+        mean_stats_r[:,7,ti] = mean_stats_r[:,7,ti] - mean_stats_r[:,0,ti]*mean_stats_r[:,2,ti]  # Reynolds stress <u'w'>
+        mean_stats_r[:,8,ti] = mean_stats_r[:,8,ti] - mean_stats_r[:,1,ti]*mean_stats_r[:,2,ti]  # Reynolds stress <v'w'>
 
         # Create the file and write; we are adding at each file the shear velocities coming from the main function 
-        with open(f'data_post_te/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
+        with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
             f.write(f'Mean statistics at ts={ts_iter}.\n')        
             f.write('\n')
             f.write(f"{'sh_vel_x':>{pp.c_w}} = {sh_vel_x[ti]:{pp.fs6}}\n")
@@ -150,15 +152,15 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
                     f"{'mean[vw]':>{pp.c_w}}\n"   )
                 
             for j in range(0, ny):
-                f.write(f"{mean_stats_realiz[j,0,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,1,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,2,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,3,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,4,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,5,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,6,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,7,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_realiz[j,8,ti]:{pp.fs6}}\n" )
+                f.write(f"{mean_stats_r[j,0,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,1,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,2,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,3,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,4,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,5,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,6,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,7,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,8,ti]:{pp.fs6}}\n" )
 
         #!--- Calculation of thickness parameters ---!
         
