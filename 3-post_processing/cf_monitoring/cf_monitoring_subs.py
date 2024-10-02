@@ -79,6 +79,16 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
     
     # Initialize mean statistics array, function of y and time (r: realizations)
     mean_stats_r = np.zeros((ny, 9, nsavings))
+    
+    # Initialize scalar arrays if present
+    if numscalar == 1:
+    
+        # Initialize instantaneous mean statistics array for scalar field, not averaged with different flow realizations
+        # we have 5 different statistics (mean, var, mixed fluctuations) (function of y)
+        mean_stats_scalar = np.zeros((ny, 5))
+        
+        # Initialize mean statistics array for scalar field, function of y and time (r: realizations)
+        mean_stats_scalar_r = np.zeros((ny, 5, nsavings))
 
     # Initialize arrays for TTBL thickness parameters
     delta_99   = np.zeros(nsavings)   # BL thickness delta_99
@@ -116,12 +126,21 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
         # Do loop over different realizations, from 1 to nr
         for i in range(1, nr+1, 1):
                
-            # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime' folder
+            # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/velocity' folder
             mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
                         
             # Summing mean statistics array with different realizations into the overall array for time-evolution
-            mean_stats_realiz[:,:,ti] = mean_stats_realiz[:,:,ti] + mean_stats[:,:] / nr
+            mean_stats_r[:,:,ti] = mean_stats_r[:,:,ti] + mean_stats[:,:] / nr
             
+            #!--- If present, do the same for the scalar field ---!
+            if numscalar == 1:
+            
+                # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/scalar' folder
+                mean_stats_scalar = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/scalar/mean_stats_scalar_runtime-ts{ts_iter:07d}.txt', skiprows=9, delimiter=',', dtype=np.float64)
+                        
+                # Summing mean statistics array with different realizations into the overall array for time-evolution
+                mean_stats_scalar_r[:,:,ti] = mean_stats_scalar_r[:,:,ti] + mean_stats_scalar[:,:] / nr
+                               
         #!--- Finalize 2nd order statistics ---!
         
         # Variances
@@ -133,6 +152,17 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
         mean_stats_r[:,6,ti] = mean_stats_r[:,6,ti] - mean_stats_r[:,0,ti]*mean_stats_r[:,1,ti]  # Reynolds stress <u'v'>
         mean_stats_r[:,7,ti] = mean_stats_r[:,7,ti] - mean_stats_r[:,0,ti]*mean_stats_r[:,2,ti]  # Reynolds stress <u'w'>
         mean_stats_r[:,8,ti] = mean_stats_r[:,8,ti] - mean_stats_r[:,1,ti]*mean_stats_r[:,2,ti]  # Reynolds stress <v'w'>
+        
+        # Scalar field
+        if numscalar == 1:
+        
+            # Variance
+            mean_stats_scalar_r[:,1,ti] = mean_stats_scalar_r[:,1,ti] - mean_stats_scalar_r[:,0,ti]**2  # scalar field variance
+            
+            # Mixed fluctuations
+            mean_stats_scalar_r[:,2,ti] = mean_stats_scalar_r[:,2,ti] - mean_stats_r[:,0,ti]*mean_stats_scalar_r[:,0,ti]  # mixed fluctuation <u'phi'>
+            mean_stats_scalar_r[:,3,ti] = mean_stats_scalar_r[:,3,ti] - mean_stats_r[:,1,ti]*mean_stats_scalar_r[:,0,ti]  # mixed fluctuation <u'phi'>
+            mean_stats_scalar_r[:,4,ti] = mean_stats_scalar_r[:,4,ti] - mean_stats_r[:,2,ti]*mean_stats_scalar_r[:,0,ti]  # mixed fluctuation <u'phi'>
 
         # Create the file and write; we are adding at each file the shear velocities coming from the main function 
         with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
@@ -161,6 +191,37 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x):
                         f"{mean_stats_r[j,6,ti]:{pp.fs6}}, " +
                         f"{mean_stats_r[j,7,ti]:{pp.fs6}}, " +
                         f"{mean_stats_r[j,8,ti]:{pp.fs6}}\n" )
+        
+        
+        # Create the file and write; we are adding at each file the shear velocities coming from the main function 
+        with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
+            f.write(f'Mean statistics at ts={ts_iter}.\n')        
+            f.write('\n')
+            f.write(f"{'sh_vel_x':>{pp.c_w}} = {sh_vel_x[ti]:{pp.fs6}}\n")
+            f.write(f"{'sh_vel_tot':>{pp.c_w}} = {sh_vel_tot[ti]:{pp.fs6}}\n")
+            f.write('\n') 
+            f.write(f"{'mean[u]':>{pp.c_w}}, "    +
+                    f"{'mean[v]':>{pp.c_w}}, "    +
+                    f"{'mean[w]':>{pp.c_w}}, "    +
+                    f"{'var[u]':>{pp.c_w}}, "     +
+                    f"{'var[v]':>{pp.c_w}}, "     +
+                    f"{'var[w]':>{pp.c_w}}, "     +
+                    f"{'mean[uv]':>{pp.c_w}}, "   +
+                    f"{'mean[uw]':>{pp.c_w}}, "   +
+                    f"{'mean[vw]':>{pp.c_w}}\n"   )
+                
+            for j in range(0, ny):
+                f.write(f"{mean_stats_r[j,0,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,1,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,2,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,3,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,4,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,5,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,6,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,7,ti]:{pp.fs6}}, " +
+                        f"{mean_stats_r[j,8,ti]:{pp.fs6}}\n" )
+        
+        
 
         #!--- Calculation of thickness parameters ---!
         
