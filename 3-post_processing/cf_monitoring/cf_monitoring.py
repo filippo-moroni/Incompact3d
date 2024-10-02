@@ -126,6 +126,7 @@ if itype == 13:
 
             sh_vel_tot_sq_sum = np.zeros(len(time_unit))    
             sh_vel_x_sq_sum   = np.zeros(len(time_unit))
+            mg_phi_sum        = np.zeros(len(time_unit))
             a_fact_sum        = np.zeros(len(time_unit))
             power_in_sum      = np.zeros(len(time_unit))
 
@@ -134,6 +135,9 @@ if itype == 13:
 
         # Average the square of the longitudinal shear velocity over the realizations 
         sh_vel_x_sq_sum = sh_vel_x_sq_sum + (sh_vel_x**2 / nr)
+        
+        # Average the mean scalar gradient at the wall
+        mg_phi_sum = mg_phi_sum + mg_phi / nr
 
         # Average the Reynolds analogy factor over the realizations
         a_fact_sum = a_fact_sum + a_fact / nr
@@ -144,6 +148,7 @@ if itype == 13:
     # Finalize the averages
     sh_vel_tot = np.sqrt(sh_vel_tot_sq_sum)
     sh_vel_x   = np.sqrt(sh_vel_x_sq_sum)
+    mg_phi     = mg_phi_sum
     a_fact     = a_fact_sum
     power_in   = power_in_sum
         
@@ -162,7 +167,7 @@ if itype == 13:
      - TTBL thickness delta_99;
      - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
-    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x)
+    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi)
     
     print()
     print(">>> Average of runtime mean statistics with different flow realizations")
