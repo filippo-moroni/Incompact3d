@@ -103,7 +103,7 @@ elif itype == 3:
     # Steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004))
     cf = 0.00793
     
-    # Domain dimensions (as an example, xlx is the quantity used for calculations, while Lx is the read variable from 'input.i3d'
+    # Domain dimensions (as an example, xlx is the quantity used for calculations, while Lx is the read variable from 'input.i3d')
     xlx = Lx  # domain dimension in x direction
     yly = Ly  # domain dimension in y direction
     zlz = Lz  # domain dimension in z direction
