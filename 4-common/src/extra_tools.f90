@@ -116,10 +116,10 @@ subroutine print_cf(ux,uy,uz,phi)
               open(newunit=iunit, file=filename, status="old", position="append", action="write")
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,      ',', sh_velz, ',',                                                  & 
-                             fric_coeff, ',', mean_phigwtot ',', A_fact,  ',',                                                  &
-                             t_viscous,  ',', t,            ',', itime,   ',',                                                  &
-                             delta_99,   ',', re_tau_tbl,   ',', powerin                                         
+                             sh_vel,     ',', sh_velx,       ',', sh_velz, ',',                                                 & 
+                             fric_coeff, ',', mean_phigwtot, ',', A_fact,  ',',                                                 &
+                             t_viscous,  ',', t,             ',', itime,   ',',                                                 &
+                             delta_99,   ',', re_tau_tbl,    ',', powerin                                         
                              
           else
               open(newunit=iunit, file=filename, status="new", action="write")
@@ -132,10 +132,10 @@ subroutine print_cf(ux,uy,uz,phi)
                             
               
               write(iunit, '(F12.6,A,F12.6,A,F12.6,A, F16.10,A,F12.6,A,F12.6,A, F12.6,A,F12.4,A,I12,A, F12.6,A,F12.6,A,F12.6)') &
-                             sh_vel,     ',', sh_velx,      ',', sh_velz, ',',                                                  & 
-                             fric_coeff, ',', mean_phigwtot ',', A_fact,  ',',                                                  &
-                             t_viscous,  ',', t,            ',', itime,   ',',                                                  &
-                             delta_99,   ',', re_tau_tbl,   ',', powerin 
+                             sh_vel,     ',', sh_velx,       ',', sh_velz, ',',                                                 & 
+                             fric_coeff, ',', mean_phigwtot, ',', A_fact,  ',',                                                 &
+                             t_viscous,  ',', t,             ',', itime,   ',',                                                 &
+                             delta_99,   ',', re_tau_tbl,    ',', powerin 
           end if
               close(iunit)
       
