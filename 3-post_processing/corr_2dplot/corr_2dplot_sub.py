@@ -29,7 +29,7 @@ from plot_subs import set_plot_settings, save_and_show_plot
 #!--------------------------------------------------------------------------------------!
   
 # General subroutine to plot correlation functions
-def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau):
+def corr_2dplot(var,field_name,field_label,Lz,nz,sh_vel_x,nu,y,ny,cmap_name,pad_cbar_lab,size_cbar,add_string,snap_numb,re_tau):
     
     # Halve the domain size and the number of points in the periodic direction to avoid periodicity effects
     # Restriction is imposed also in y if we are dealing with a Channel. 
@@ -50,9 +50,8 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,mg_x,nu,y,ny,cmap_name,pad_cbar
     """
   
     # Calculate friction quantities and adimensionalize
-    sh_vel   = np.sqrt(nu * np.abs(mg_x[0]))  # shear velocity (based on streamwise mean gradient)  
-    delta_nu = nu / sh_vel                    # viscous length 
-    y_plus   = y / delta_nu                   
+    delta_nu = nu / sh_vel_x   # viscous length (based on streamwise shear velocity) 
+    y_plus   = y  / delta_nu                   
     Lz_plus  = Lz / delta_nu
 
     # Calculate the y+ of maximum correlation
