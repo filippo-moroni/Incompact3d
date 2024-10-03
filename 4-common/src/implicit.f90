@@ -576,6 +576,7 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      ! Start with explicit Euler (ts = 1)
      if ((itime.eq.1).and.(irestart.eq.0)) then
         ta1(:,:,:) = dt*dvar1(:,:,:,1)
+     
      ! Otherwise AB2
      else
         ta1(:,:,:) = adt(1)*dvar1(:,:,:,1) + bdt(1)*dvar1(:,:,:,2)
@@ -586,12 +587,15 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
 
   ! AB3
   else if (itimescheme.eq.3) then
+     
      ! Start with explicit Euler (ts = 1)
      if ((itime.eq.1).and.(irestart.eq.0)) then
         ta1(:,:,:) = dt*dvar1(:,:,:,1)
+     
      ! Then AB2 (ts = 2)
      else if ((itime.eq.2).and.(irestart.eq.0)) then
         ta1(:,:,:) = onepfive*dt*dvar1(:,:,:,1) - half*dt*dvar1(:,:,:,2)
+     
      ! Otherwise AB3
      else
         ta1(:,:,:) = adt(1)*dvar1(:,:,:,1) + bdt(1)*dvar1(:,:,:,2) &

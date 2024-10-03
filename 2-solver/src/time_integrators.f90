@@ -173,7 +173,7 @@ contains
     ! OUTPUTS
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),ntime) :: dux1, duy1, duz1
 
-    ! Semi-implicit diffusion
+    ! Semi-implicit y-diffusion
     if (iimplicit.ge.1) then
        
        ! x-dir. momentum
