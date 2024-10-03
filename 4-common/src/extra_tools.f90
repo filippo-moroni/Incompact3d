@@ -763,8 +763,8 @@ subroutine print_mean_stats(ux,uy,uz)
       write(iunit, *) 'Only var[u] needs to be finalized later by subtracting (mean[u])**2,'
       write(iunit, *) 'due to the symmetries of the TTBL.'
       write(iunit, *) ' '     
-      write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway in order to check'
-      write(iunit, *) 'the correctness of the calculations.' 
+      write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway'
+      write(iunit, *) 'in order to check the correctness of the calculations.' 
       write(iunit, *) ' '
       write(iunit, '(9(A14, A1, 1X))') 'umean(y,t,nr)' , ',', &
                                        'vmean(y,t,nr)' , ',', &
@@ -896,8 +896,8 @@ subroutine print_mean_stats_scalar(ux,uy,uz,phi)
       write(iunit, *) 'Pay attention that these statistics need to be averaged later'
       write(iunit, *) 'with different flow realizations.'
       write(iunit, *) ' '    
-      write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway in order to check'
-      write(iunit, *) 'the correctness of the calculations.' 
+      write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway'
+      write(iunit, *) 'in order to check the correctness of the calculations.' 
       write(iunit, *) ' '
       write(iunit, '(5(A17, A1, 1X))') 'mean[phi](y,t,nr)', ',', &
                                        'var[phi](y,t,nr)' , ',', &
