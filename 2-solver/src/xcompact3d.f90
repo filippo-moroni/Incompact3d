@@ -346,7 +346,6 @@ if (nrank==0) then
 #else
    write(*,*)'Git version : unknown'
 #endif
-   write(*,*)' '
 endif
   
 end subroutine program_header
