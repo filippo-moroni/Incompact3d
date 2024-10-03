@@ -64,14 +64,25 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
 
     """
     Reference from ARIES runs of TTBL simulations:
+    
+    >>> Test 1:
      - ntot ~ 66 mln points;
      - CPUh ~ 13300;
      - points / nranks ~ 600'000;
      - ts_tot = 320'000;
      - results obtained with AB3 and implicit y-diffusion with CN.
-     - when available, when can add an if section for simulations that 
-       are planning to use RK3.
+    
+    >>> Test 2:
+     - ntot ~ 32 mln points;
+     - CPUh ~ 1660;
+     - points / nranks ~ 150'000;
+     - ts_tot = 30'000;
+     - results obtained with RK3 and implicit y-diffusion with CN. 
+     
     """
+    
+    
+    
 
     # Ratio of CPUh of 1 flow realization by the product of number of points and number of total time-steps 
     performance_index = 13000.0 / (66.0 * (10**6) * 320000)  

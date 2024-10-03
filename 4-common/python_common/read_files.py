@@ -41,100 +41,105 @@ def read_input_files(filename1,filename2):
         lines = file.readlines()
     
     # Extract: itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, 
-    # Re, dt, ifirst, ilast, numscalar, ioutput, iswitch_wo 
+    # Re, dt, ifirst, ilast, numscalar, ioutput, ioutput_cf, iswitch_wo 
         
     # As always, index is 1 less of the line number (Python convention)
-    itype      = lines[7]  
-    nx         = lines[14]
-    ny         = lines[15]
-    nz         = lines[16]
-    istret     = lines[17]
-    beta       = lines[18]
-    Lx         = lines[21]
-    Ly         = lines[22]
-    Lz         = lines[23]
-    re         = lines[26]
-    dt         = lines[29]
-    ifirst     = lines[30]
-    ilast      = lines[31]
-    numscalar  = lines[35]
-    ioutput    = lines[73]
-    ioutput_cf = lines[74]
-    iswitch_wo = lines[90]
+    itype       = lines[7]  
+    nx          = lines[14]
+    ny          = lines[15]
+    nz          = lines[16]
+    istret      = lines[17]
+    beta        = lines[18]
+    Lx          = lines[21]
+    Ly          = lines[22]
+    Lz          = lines[23]
+    re          = lines[26]
+    dt          = lines[29]
+    ifirst      = lines[30]
+    ilast       = lines[31]
+    numscalar   = lines[35]
+    itimescheme = lines[61]
+    ioutput     = lines[73]
+    ioutput_cf  = lines[74]
+    iswitch_wo  = lines[90]
     
     # Removing characters in front of the extracted strings and the comments:
     # 1) split: the string is split when the specified character is encountered; 
     # 2) we select the portion of string with index inside square brackets;
     # 3) strip: removes leading or trailing whitespaces from the string. 
     
-    itype      = itype.split('=')[-1].strip()
+    itype       = itype.split('=')[-1].strip()
     
-    nx         = nx.split('!')[0]
-    nx         = nx.split('=')[-1].strip()
+    nx          = nx.split('!')[0]
+    nx          = nx.split('=')[-1].strip()
         
-    ny         = ny.split('!')[0]
-    ny         = ny.split('=')[-1].strip()
+    ny          = ny.split('!')[0]
+    ny          = ny.split('=')[-1].strip()
     
-    nz         = nz.split('!')[0]
-    nz         = nz.split('=')[-1].strip()
+    nz          = nz.split('!')[0]
+    nz          = nz.split('=')[-1].strip()
         
-    istret     = istret.split('!')[0]
-    istret     = istret.split('=')[-1].strip()
+    istret      = istret.split('!')[0]
+    istret      = istret.split('=')[-1].strip()
         
-    beta       = beta.split('!')[0]
-    beta       = beta.split('=')[-1].strip()
+    beta        = beta.split('!')[0]
+    beta        = beta.split('=')[-1].strip()
     
-    Lx         = Lx.split('!')[0]
-    Lx         = Lx.split('=')[-1].strip()
+    Lx          = Lx.split('!')[0]
+    Lx          = Lx.split('=')[-1].strip()
     
-    Ly         = Ly.split('!')[0]
-    Ly         = Ly.split('=')[-1].strip()
+    Ly          = Ly.split('!')[0]
+    Ly          = Ly.split('=')[-1].strip()
     
-    Lz         = Lz.split('!')[0]
-    Lz         = Lz.split('=')[-1].strip()
+    Lz          = Lz.split('!')[0]
+    Lz          = Lz.split('=')[-1].strip()
     
-    re         = re.split('!')[0]
-    re         = re.split('=')[-1].strip()
+    re          = re.split('!')[0]
+    re          = re.split('=')[-1].strip()
         
-    dt         = dt.split('!')[0]
-    dt         = dt.split('=')[-1].strip()
+    dt          = dt.split('!')[0]
+    dt          = dt.split('=')[-1].strip()
         
-    ifirst     = ifirst.split('!')[0]
-    ifirst     = ifirst.split('=')[-1].strip()
+    ifirst      = ifirst.split('!')[0]
+    ifirst      = ifirst.split('=')[-1].strip()
         
-    ilast      = ilast.split('!')[0]
-    ilast      = ilast.split('=')[-1].strip()
+    ilast       = ilast.split('!')[0]
+    ilast       = ilast.split('=')[-1].strip()
         
-    numscalar  = numscalar.split('!')[0]
-    numscalar  = numscalar.split('=')[-1].strip()
-        
-    ioutput    = ioutput.split('!')[0]
-    ioutput    = ioutput.split('=')[-1].strip()
-        
-    ioutput_cf = ioutput_cf.split('!')[0]
-    ioutput_cf = ioutput_cf.split('=')[-1].strip()
+    numscalar   = numscalar.split('!')[0]
+    numscalar   = numscalar.split('=')[-1].strip()
     
-    iswitch_wo = iswitch_wo.split('!')[0]
-    iswitch_wo = iswitch_wo.split('=')[-1].strip()
+    itimescheme = itimescheme.split('!')[0]
+    itimescheme = itimescheme.split('=')[-1].strip()
+        
+    ioutput     = ioutput.split('!')[0]
+    ioutput     = ioutput.split('=')[-1].strip()
+        
+    ioutput_cf  = ioutput_cf.split('!')[0]
+    ioutput_cf  = ioutput_cf.split('=')[-1].strip()
+    
+    iswitch_wo  = iswitch_wo.split('!')[0]
+    iswitch_wo  = iswitch_wo.split('=')[-1].strip()
     
     # Convert to needed variable type (integer, float, etc.)
-    itype      = int(itype)
-    nx         = int(nx)
-    ny         = int(ny)
-    nz         = int(nz)
-    istret     = int(istret)
-    beta       = np.float64(beta)
-    Lx         = np.float64(Lx)
-    Ly         = np.float64(Ly)
-    Lz         = np.float64(Lz)
-    re         = np.float64(re)
-    dt         = np.float64(dt)
-    ifirst     = int(ifirst)
-    ilast      = int(ilast)
-    numscalar  = int(numscalar)
-    ioutput    = int(ioutput)
-    ioutput_cf = int(ioutput_cf)
-    iswitch_wo = int(iswitch_wo)
+    itype       = int(itype)
+    nx          = int(nx)
+    ny          = int(ny)
+    nz          = int(nz)
+    istret      = int(istret)
+    beta        = np.float64(beta)
+    Lx          = np.float64(Lx)
+    Ly          = np.float64(Ly)
+    Lz          = np.float64(Lz)
+    re          = np.float64(re)
+    dt          = np.float64(dt)
+    ifirst      = int(ifirst)
+    ilast       = int(ilast)
+    numscalar   = int(numscalar)
+    itimescheme = int(itimescheme)
+    ioutput     = int(ioutput)
+    ioutput_cf  = int(ioutput_cf)
+    iswitch_wo  = int(iswitch_wo)
     
     # Opening of 'post.prm' file
     with open(filename2, 'r') as file:
@@ -189,7 +194,7 @@ def read_input_files(filename1,filename2):
     # Return to main program with extracted parameters
     return (
             # From 'input.i3d'
-            itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, ioutput, ioutput_cf, iswitch_wo,
+            itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, itimescheme, ioutput, ioutput_cf, iswitch_wo,
             
             # From 'post.prm' 
             add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
