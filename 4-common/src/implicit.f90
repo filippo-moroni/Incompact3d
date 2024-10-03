@@ -427,8 +427,7 @@ contains
                -zzm(j)*xsol(i,j-1,k)
           do kk=1,j-1
              xsol(i,j,k)=xsol(i,j,k)-l1m(kk)*xsol(i,kk,k)
-          enddo
-          !
+          enddo          
 
           !going up with triangle matrix up
           xsol(i,ny,k)=xsol(i,ny,k)/(ggm(ny)+u1m(ny))
@@ -473,8 +472,7 @@ contains
           do j=5,ny
              xSol(i,j,k)=bbb(i,j,k)-vvm(j)*xSol(i,j-4,k)-wwm(j)*xSol(i,j-3,k) &
                   -zzm(j)*xSol(i,j-2,k)-zzzm(j)*xSol(i,j-1,k);
-          enddo
-          !
+          enddo          
 
           !going up
           xSol(i,ny,k)=xSol(i,ny,k)/ggm(ny);
@@ -530,7 +528,7 @@ module ydiff_implicit
 
   contains
 !-----------------------------------------------------------------------------!
-! Time integration, (semi)implicit Y diffusion
+! Time integration, (semi) implicit Y diffusion
 !    var1, input  : variable at time n
 !          output : variable at time n+1
 !    dvar1        : r.h.s. of transport equation
@@ -632,10 +630,10 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
   !-----------------------------------------------------------------------------!
   ! Perform semi-implicit time integration only at the last iteration 
   ! of the RK cycle. 
-  ! For Adams-Bashforth schemes, we always enter into semi-implicit time integration, 
-  ! since we have no sub-time steps.
+  ! For Adams-Bashforth schemes, we always enter into semi-implicit time 
+  ! integration, since we have no sub-time steps.
   !-----------------------------------------------------------------------------!
-  if((itimescheme .le. 3) .or. (itimescheme.eq.5 .and. itr.eq.3)) then
+  if((itimescheme .le. 3) .or. (itimescheme .eq. 5 .and. itr .eq. 3)) then
 
   if (present(forcing1)) then
      if ( (irestart.eq.1).or.(itime.gt.1) ) then
@@ -708,12 +706,10 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
      endif
   endif
 
-  !Full second member BBB=A uhat+(A+xcst.B)u^n
+  ! Full second member BBB=A uhat+(A+xcst.B)u^n
   ta2(:,:,:)=td2(:,:,:)+ta2(:,:,:)
 
-  !
   ! Apply boundary conditions
-  !
   if ((isc.eq.0.and.ncly1.eq.2).or.(isc.gt.0.and.nclyS1.eq.2)) then
      ta2(:,1,:) = bcbot(:,:)
   endif
