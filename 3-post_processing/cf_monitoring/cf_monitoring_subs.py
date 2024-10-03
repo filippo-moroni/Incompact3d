@@ -127,7 +127,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w):
         for i in range(1, nr+1, 1):
                
             # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/velocity' folder
-            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=13, delimiter=',', dtype=np.float64)
+            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
                         
             # Summing mean statistics array with different realizations into the overall array for time-evolution
             mean_stats_r[:,:,ti] = mean_stats_r[:,:,ti] + mean_stats[:,:] / nr
@@ -136,7 +136,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w):
             if numscalar == 1:
             
                 # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/scalar' folder
-                mean_stats_scalar = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/scalar/mean_stats_scalar_runtime-ts{ts_iter:07d}.txt', skiprows=10, delimiter=',', dtype=np.float64)
+                mean_stats_scalar = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/scalar/mean_stats_scalar_runtime-ts{ts_iter:07d}.txt', skiprows=9, delimiter=',', dtype=np.float64)
                         
                 # Summing mean statistics array with different realizations into the overall array for time-evolution
                 mean_stats_scalar_r[:,:,ti] = mean_stats_scalar_r[:,:,ti] + mean_stats_scalar[:,:] / nr
