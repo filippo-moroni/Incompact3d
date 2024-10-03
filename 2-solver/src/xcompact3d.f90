@@ -340,10 +340,11 @@ if (nrank==0) then
    write(*,*) '!---------------------------------------------------------!'
      
 #if defined(VERSION)
-   write(*,*)'Git version        : ', VERSION
+   write(*,*)'Git version : ', VERSION
 #else
-   write(*,*)'Git version        : unknown'
+   write(*,*)'Git version : unknown'
 #endif
+   write(*,*)' '
 endif
   
 end subroutine program_header

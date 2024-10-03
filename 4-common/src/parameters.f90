@@ -295,19 +295,16 @@ subroutine parameter(input_i3d)
   if (iimplicit.ne.0) then
      
      ! Trial RK3 with implicit y-diffusion
-     if (itimescheme == 5) then
-        if (nrank==0) write(*,*) "Warning : implicit y-diffusion is     "
-        if (nrank==0) write(*,*) "          experimental with RK3.      "
+     if (itimescheme == 5) then  
+        if (nrank==0) write(*,*) "Warning : implicit y-diffusion is experimental with RK3.   "
      endif
           
      ! O6SVV: Order-6th Spectral Vanishing Viscosity operator 
      ! (hyperviscous scheme for 2nd order derivative)
-     if (isecondder==5) then
-        if (nrank==0) write(*,*) "Warning : implicit y-diffusion coupled"
-        if (nrank==0) write(*,*) "          with O6SVV is experimental  "
-        if (nrank==0) write(*,*) "          and available only for      "     
-        if (nrank==0) write(*,*) "          Dirichlet BCs on both       "
-        if (nrank==0) write(*,*) "          boundaries.                 "
+     if (isecondder==5) then     
+        if (nrank==0) write(*,*) "Warning : implicit y-diffusion coupled with O6SVV is       "
+        if (nrank==0) write(*,*) "          experimental and available only for Dirichlet    "
+        if (nrank==0) write(*,*) "          BCs on both boundaries.                          "     
      endif
      
      if (iimplicit==1) then
