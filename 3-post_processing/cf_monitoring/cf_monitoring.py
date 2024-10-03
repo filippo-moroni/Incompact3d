@@ -82,15 +82,8 @@ os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 #!--- Read reference data ---!
-(t_gboga, 
- retau_vs_time_gboga,
- retau_gboga,
- retheta_gboga,
- utau_gboga,
- delta_99_gboga,
- disp_t_gboga,
- cf_gboga    
- ) = read_ref_data_temp_evol()
+(t_gboga, retau_vs_time_gboga, retau_gboga, retheta_gboga, utau_gboga, delta_99_gboga, disp_t_gboga, cf_gboga    
+) = read_ref_data_temp_evol()
 
 #!--- Parameters and mesh ---!
 (uwall, nu, twd, y) = set_flow_parameters(itype, re)
@@ -100,6 +93,11 @@ if itype == 13:
 
     print()
     print(">>> Opening 'cf_history.txt' files over different flow realizations.")
+        
+    # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified';
+    # We can restrict the range to plot in order to be more flexible (e.g. if simulations have not been completed).
+    # 'ilast' can be changed from the input file 'input.i3d'.
+    nsavings = ilast // ioutput_cf + 1
     
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
@@ -108,13 +106,13 @@ if itype == 13:
         M = np.loadtxt(f'data_r{i:01d}/monitoring/cf_history.txt', skiprows=1, delimiter=',', dtype=np.float64)
   
         # Extracting quantities from the full matrix
-        sh_vel_tot = M[:,0]     # total shear velocity
-        sh_vel_x   = M[:,1]     # streamwise shear velocity
-        mg_phi_w   = M[:,4]     # mean scalar gradient at the wall
-        a_fact     = M[:,5]     # Reynolds analogy factor
-        time_unit  = M[:,7]     # time unit
-        ts         = M[:,8]     # time step
-        power_in   = M[:,11]    # power input
+        sh_vel_tot = M[:nsavings,0]     # total shear velocity
+        sh_vel_x   = M[:nsavings,1]     # streamwise shear velocity
+        mg_phi_w   = M[:nsavings,4]     # mean scalar gradient at the wall
+        a_fact     = M[:nsavings,5]     # Reynolds analogy factor
+        time_unit  = M[:nsavings,7]     # time unit
+        ts         = M[:nsavings,8]     # time step
+        power_in   = M[:nsavings,11]    # power input
                              
         """
         Initialize arrays for sum
@@ -124,11 +122,11 @@ if itype == 13:
         """
         if i == 1:
 
-            sh_vel_tot_sq_sum = np.zeros(len(time_unit))    
-            sh_vel_x_sq_sum   = np.zeros(len(time_unit))
-            mg_phi_w_sum      = np.zeros(len(time_unit))
-            a_fact_sum        = np.zeros(len(time_unit))
-            power_in_sum      = np.zeros(len(time_unit))
+            sh_vel_tot_sq_sum = np.zeros(nsavings)    
+            sh_vel_x_sq_sum   = np.zeros(nsavings)
+            mg_phi_w_sum      = np.zeros(nsavings)
+            a_fact_sum        = np.zeros(nsavings)
+            power_in_sum      = np.zeros(nsavings)
 
         # Average the square of the total shear velocity over the realizations 
         sh_vel_tot_sq_sum = sh_vel_tot_sq_sum + (sh_vel_tot**2 / nr)
@@ -156,7 +154,7 @@ if itype == 13:
     cfx = 2.0 * (sh_vel_x / uwall)**2
     
     print()
-    print(">>> Average of shear velocities, mean scalar gradient Reynolds analogy factor and power input: done.")
+    print(">>> Average of shear velocities, mean scalar gradient, Reynolds analogy factor and power input: done.")
     
     #!--------------------------------------------------------------------------------------------------------!
     
@@ -167,14 +165,14 @@ if itype == 13:
      - TTBL thickness delta_99;
      - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
-    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w)
+    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings)
     
     print()
     print(">>> Average of runtime mean statistics with different flow realizations")
     print("    and calculation of time evolution of TTBL thickness parameters: done.")
         
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
-    re_tau = np.zeros(len(time_unit)) 
+    re_tau = np.zeros(nsavings) 
     re_tau = sh_vel_x * delta_99 / nu
 
     # Calculate Reynolds numbers based on displacement thickness and momentum thickness
@@ -217,7 +215,7 @@ if itype == 13:
                 f"{'A_fact':>{pp.c_w}}, "       +
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
-        for j in range(0, len(time_unit)):
+        for j in range(0, end_index):
             f.write(f"{cfx[j]:{pp.fs8}}, "      +
                     f"{delta_99[j]:{pp.fs}}, "  +
                     f"{disp_t[j]:{pp.fs}}, "    +

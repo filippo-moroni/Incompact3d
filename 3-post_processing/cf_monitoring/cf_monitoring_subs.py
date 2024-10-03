@@ -41,13 +41,27 @@ from ttbl_subs import calculate_ttbl_thick_params
 !               - 6th order accurate calculations of integrals of TTBL 
 !                 thickness parameters (delta*, theta) and delta_99 using 
 !                 an external subroutine applied on the flow field averaged 
-!                 with different flow realizations.               
-!               
+!                 with different flow realizations.                              
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
 
-def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w):
+def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
+
+    """
+    Inputs: 
+    
+     - total shear velocity;
+     - streamwise shear velocity;
+     - mean scalar gradient at the wall;
+     - number of savings to plot (defined in the main function).
+    
+    Outputs:
+    
+     - mean statistics saved runtime averaged with different flow realizations;
+     - mean scalar statistics saved runtime averaged with different flow realizations; 
+     - TTBL thickness parameters to check the flow evolution.
+    """
 
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te',          mode=0o777, exist_ok=True)
@@ -65,10 +79,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w):
     (uwall, nu, twd, y) = set_flow_parameters(itype, re)
                           
     #!--------------------------------------------------------------------------------------!
-                    
-    # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified'
-    nsavings = ilast // ioutput_cf + 1
-    
+                        
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
     mean_u = np.zeros(ny)
