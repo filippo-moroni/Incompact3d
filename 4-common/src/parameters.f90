@@ -315,6 +315,10 @@ subroutine parameter(input_i3d)
         if (nrank==0) write(*,*)  'Error: wrong value for iimplicit ', iimplicit
         stop
      endif
+     
+     ! Divide by 3 if RK3 is selected
+     if (itimescheme == 5) xcst = xcst / three
+     
      if (iscalar.eq.1) xcst_sc = xcst / sc
   endif
   
