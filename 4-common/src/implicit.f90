@@ -631,13 +631,6 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
 
   endif
 
-  !-----------------------------------------------------------------------------!
-  ! Perform semi-implicit time integration only at the last iteration 
-  ! of the RK cycle. 
-  ! For Adams-Bashforth schemes, we always enter into semi-implicit time 
-  ! integration, since we have no sub-time steps.
-  !-----------------------------------------------------------------------------!
-  if((itimescheme .le. 3) .or. (itimescheme .eq. 5 .and. itr .eq. 3)) then
 
   if (present(forcing1)) then
      if ( (irestart.eq.1).or.(itime.gt.1) ) then
@@ -796,9 +789,6 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
         var1(:,:,:)=var1(:,:,:)+forcing1(:,:,:)
      endif
   endif
-
-  ! Closing of the if for semi-implicit time integration (only at last sub-time step for RK3)
-  end if
 
   return
 end subroutine inttimp
