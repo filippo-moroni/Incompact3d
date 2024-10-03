@@ -67,7 +67,10 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
      - ntot ~ 66 mln points;
      - CPUh ~ 13300;
      - points / nranks ~ 600'000;
-     - ts_tot = 320'000.
+     - ts_tot = 320'000;
+     - results obtained with AB3 and implicit y-diffusion with CN.
+     - when available, when can add an if section for simulations that 
+       are planning to use RK3.
     """
 
     # Ratio of CPUh of 1 flow realization by the product of number of points and number of total time-steps 

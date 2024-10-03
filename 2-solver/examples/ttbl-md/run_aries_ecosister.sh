@@ -13,8 +13,8 @@
 #------------------- End of SLURM directives -----------------#
 
 #!--- Description ---!
-# This is a .sh file for running 4 different flow realizations
-# on ECOSISTER partion with incompact3d in ARIES.
+# This is a .sh file for running on ECOSISTER partion
+# with incompact3d in ARIES.
 
 # Loading of modules (Intel)
 module load intel-2023.1/intel_Comps-2023.1
@@ -25,26 +25,7 @@ module load intel-2023.1/intel_MKL-2023.1
 TOTAL_TASKS=$((SLURM_NTASKS_PER_NODE * SLURM_NNODES))
 
 # Launching
-mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r1
+mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out
 
-# Renaming /data folder
-mv data data_r1
 
-# Launching
-mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r2
-
-# Renaming /data folder
-mv data data_r2
-
-# Launching
-mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r3
-
-# Renaming /data folder
-mv data data_r3
-
-# Launching
-mpirun -np $TOTAL_TASKS ../../build/bin/xcompact3d > out_r4
-
-# Renaming /data folder
-mv data data_r4
 
