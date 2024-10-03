@@ -48,7 +48,7 @@ from plot_subs import set_plot_settings, save_and_show_plot
 !-----------------------------------------------------------------------------!
 """
 
-def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
+def mem_and_cpuh(nx,ny,nz,ifirst,ilast,itimescheme,ioutput,nrealiz):
 
     # Total number of points
     n_tot = nx*ny*nz
@@ -81,11 +81,23 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,ioutput,nrealiz):
      
     """
     
+    # Adams-Bashforth 3
+    if itimescheme == 3:
+    
+        n_tot_test  = 66 * (10**6)
+        cpuh_test   = 13300
+        ts_tot_test = 320000
+    
+    # Runge-Kutta 3
+    elif itimescheme == 5:
+    
+        n_tot_test  = 32 * (10**6)
+        cpuh_test   = 1660
+        ts_tot_test = 30000
     
     
-
     # Ratio of CPUh of 1 flow realization by the product of number of points and number of total time-steps 
-    performance_index = 13000.0 / (66.0 * (10**6) * 320000)  
+    performance_index = cpuh_test / (n_tot_test * ts_tot_test)  
 
     # Safety factor for estimation of total CPUh required
     # In ARIES, clock-frequency is 2.20 GHz.
