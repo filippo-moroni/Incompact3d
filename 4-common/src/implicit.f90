@@ -537,6 +537,8 @@ module ydiff_implicit
 !    forcing1     : r.h.s. term not present in dvar1 (pressure gradient)
 !    wall_vel     : wall velocity, it depends on the direction of integration
 !-----------------------------------------------------------------------------!
+! MODIFIED BY: Filippo Moroni <filippo.moroni@unimore.it>                                                                                             
+!-----------------------------------------------------------------------------!
 subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
 
   use MPI

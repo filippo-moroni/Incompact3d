@@ -229,6 +229,7 @@ subroutine parameter(input_i3d)
   dy=yly/real(nym,mytype)
   dz=zlz/real(nzm,mytype)
 
+  ! Square of mesh spacings
   dx2 = dx * dx
   dy2 = dy * dy
   dz2 = dz * dz
@@ -352,6 +353,7 @@ subroutine parameter(input_i3d)
       if (iscalar .eq. 1) call execute_command_line('mkdir -p data/mean_stats_runtime/scalar') 
   
   end if
+  
   !------------------------!
   
 #ifdef DEBG
