@@ -229,8 +229,9 @@ if itype == 13:
     print("     - power input, P_in;")
     print("     - Reynolds analogy factor, A_fact.")
     print()
-    print(f'Statistics averaged on a time window of amplitude, T_avg = {2.0*twi*dt*ioutput_cf},\n')        
-    print(f'with number of snapshots in time, nt = {nt}.\n') 
+    print(">>> Statistics averaged on a time window of amplitude")
+    print(f"   T_avg = {2.0*twi*dt*ioutput_cf},")        
+    print(f"   with number of snapshots in time, nt = {nt}.') 
     print()
 
     # Create the file and write  
