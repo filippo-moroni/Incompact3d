@@ -46,7 +46,7 @@ from ttbl_subs import calculate_ttbl_thick_params
 !-----------------------------------------------------------------------------!
 """
 
-def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index):
+def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index, nt):
 
     """
     Inputs: 
@@ -57,7 +57,9 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
      - nsavings          : number of savings to plot (defined in the main function);
      - time_window_index : number of savings used to time-window average the temporal snapshots;
                            this index refers to half of the window excluding the central snapshot
-                           (e.g. if == 1: a window of 3 snapshots).     
+                           (e.g. if == 1: a window of 3 snapshots);
+     - nt                : number of snapshots used in the time-window average.     
+    
     Outputs:
     
      - mean statistics saved runtime averaged with different flow realizations;

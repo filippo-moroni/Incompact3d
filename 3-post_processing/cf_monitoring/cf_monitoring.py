@@ -143,7 +143,7 @@ if itype == 13:
         """
         
         # Cycle to sum with time-window average
-        for ti in range(0+twi, nsavings-twi, 1):
+        for ti in range(0+twi, nsavings-twi-1, 1):
             
             # Time-window average cycle
             for i in range(-twi, twi, 1):
@@ -185,7 +185,7 @@ if itype == 13:
      - TTBL thickness delta_99;
      - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
-    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index)
+    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index, nt)
     
     print()
     print(">>> Average of runtime mean statistics with different flow realizations")
