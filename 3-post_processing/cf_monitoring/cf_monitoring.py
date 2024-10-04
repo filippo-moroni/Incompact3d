@@ -178,6 +178,10 @@ if itype == 13:
     # Calculate Reynolds numbers based on displacement thickness and momentum thickness
     re_disp_t = disp_t * re
     re_mom_t  = mom_t  * re
+    
+    # Calculate viscous time unit
+    t_nu = np.zeros(nsavings)
+    t_nu = nu / (sh_vel_tot**2)
 
     print()
     print(">>> Saving 'time_evolution.txt' in time_evolution/.")
@@ -201,8 +205,9 @@ if itype == 13:
         f.write(f' - Re_delta* : Reynolds number based on displacement thickness;\n')        
         f.write(f' - Re_theta  : Reynolds number based on momentum thickness;\n')        
         f.write(f' - P_in      : power input (valid for both fixed and oscillating wall);\n')        
-        f.write(f' - A_fact    : Reynolds analogy factor.\n')        
-        f.write(f' - time_unit : non-dimensional outer time scale, based on wall velocity and trip wire diameter.\n')        
+        f.write(f' - A_fact    : Reynolds analogy factor.\n')
+        f.write(f' - t_nu      : viscous time unit, based on total shear velocity.\n')        
+        f.write(f' - time_unit : non-dimensional outer time scale, based on wall velocity and trip wire diameter.\n')            
         f.write('\n')
         f.write(f"{'cfx':>{pp.c_w}}, "          +
                 f"{'delta_99':>{pp.c_w}}, "     +
@@ -213,6 +218,7 @@ if itype == 13:
                 f"{'Re_theta':>{pp.c_w}}, "     +
                 f"{'P_in':>{pp.c_w}}, "         +
                 f"{'A_fact':>{pp.c_w}}, "       +
+                f"{'t_nu':>{pp.c_w}}, "         +                
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
         for j in range(0, nsavings):
@@ -225,6 +231,7 @@ if itype == 13:
                     f"{re_mom_t[j]:{pp.fs}}, "  +
                     f"{power_in[j]:{pp.fs6}}, " +
                     f"{a_fact[j]:{pp.fs}}, "    +
+                    f"{t_nu[j]:{pp.fs}}, "      +                    
                     f"{time_unit[j]:{pp.fs}}\n" )
     
     #!--------------------------------------------------------------------------------------------------------!
