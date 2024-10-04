@@ -246,8 +246,8 @@ if itype == 13:
         f.write(f' - t_nu      : viscous time unit, based on total shear velocity.\n')        
         f.write(f' - time_unit : non-dimensional outer time scale, based on wall velocity and trip wire diameter.\n')            
         f.write('\n')
-        f.write(f'Statistics averaged on a time window of amplitude = {2.0*twi*dt*ioutput_cf},\n')        
-        f.write(f'with number of snapshots                          = {2*twi}.\n')                
+        f.write(f'Statistics averaged on a time window of amplitude, T_avg = {2.0*twi*dt*ioutput_cf},\n')        
+        f.write(f'with number of snapshots in time, nt = {nt}.\n')                
         f.write('\n')
         f.write(f"{'cfx':>{pp.c_w}}, "          +
                 f"{'delta_99':>{pp.c_w}}, "     +
