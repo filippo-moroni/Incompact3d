@@ -308,8 +308,12 @@ subroutine parameter(input_i3d)
         if (nrank==0) write(*,*) "          BCs on both boundaries.                          "     
      endif
      
+     ! xcst: coefficient for the implicit y-diffusion terms (it involves viscosity and time-step)
+     
+     ! Implicit diffusion in y-direction, backward Euler
      if (iimplicit==1) then
         xcst = dt * xnu
+     ! Implicit diffusion in y-direction, Crank-Nicolson   
      else if (iimplicit==2) then
         xcst = dt * xnu * half
      else
@@ -317,7 +321,7 @@ subroutine parameter(input_i3d)
         stop
      endif
      
-     ! Divide by 3 if RK3 is selected
+     ! Divide by 3 if RK3 is selected (we are assuming a time-step divided by 3)
      if (itimescheme == 5) xcst = xcst / three
      
      if (iscalar.eq.1) xcst_sc = xcst / sc
