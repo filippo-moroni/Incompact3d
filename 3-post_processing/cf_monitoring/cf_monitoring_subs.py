@@ -67,6 +67,9 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
      - TTBL thickness parameters to check the flow evolution.
     """
     
+    # Delete the folder of time-evolution results to be sure we are looking at new results
+    os.rmdir('data_post_te')
+    
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te',          mode=0o777, exist_ok=True)
     os.makedirs('data_post_te/velocity', mode=0o777, exist_ok=True)
