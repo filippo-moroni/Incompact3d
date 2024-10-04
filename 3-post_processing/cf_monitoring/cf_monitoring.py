@@ -147,7 +147,7 @@ if itype == 13:
         """
         
         # Cycle to sum with time-window average
-        for ti in range(0+twi, nsavings-twi+1, 1):
+        for ti in range(0+twi, nsavings-twi, 1):
             
             # Time-window average cycle
             for i in range(-twi, twi+1, 1):

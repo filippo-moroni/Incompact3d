@@ -153,7 +153,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
         twi = time_window_index        
         
         # Cycle to sum with time-window average
-        for ti in range(0+twi, nsavings-twi+1, 1):
+        for ti in range(0+twi, nsavings-twi, 1):
             
             # Time-window average cycle
             for i in range(-twi, twi+1, 1):
