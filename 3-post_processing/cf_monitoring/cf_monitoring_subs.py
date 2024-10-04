@@ -31,6 +31,9 @@ from set_flow_parameters import set_flow_parameters
 # Import function to calculate TTBL thickness parameters
 from ttbl_subs import calculate_ttbl_thick_params
 
+# Import shutil to delete folders with contents inside and subfolders
+import shutil
+
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this subroutine we perform:
@@ -68,7 +71,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     """
     
     # Delete the folder of time-evolution results to be sure we are looking at new results
-    os.rmdir('data_post_te')
+    shutil.rmtree('data_post_te')
     
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te',          mode=0o777, exist_ok=True)
@@ -125,9 +128,9 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     Index for the cycle is ti: time index.
     """
     
-    #!--- Save averaged mean statistics ---!
+    #!--- Average mean statistics with different flow realizations ---!
     print()
-    print(">>> Saving 'mean_stats_realiz-ts' files in /data_post_te.")
+    print(">>> Averaging 'mean_stats_runtime' files with different flow realizations.")
     print()
     
     # Do loop over different realizations, from 1 to nr
@@ -166,8 +169,13 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
             
                 # Summing mean statistics array with different realizations into the overall array for time-evolution
                 if numscalar == 1: mean_stats_scalar_r[:,:,ti-twi] = mean_stats_scalar_r[:,:,ti-twi] + mean_stats_scalar[:,:,ti+i] / nr / nt
-              
-        
+    
+    
+    #!--- Save averaged mean statistics ---!
+    print()
+    print(">>> Finalizing and saving 'mean_stats_realiz-ts' files in /data_post_te.")
+    print()
+                    
     # Do loop from 0 to number of savings (ti: time index, that represents the different savings in time) 
     for ti in range(0, nsavings_red, 1):
     
