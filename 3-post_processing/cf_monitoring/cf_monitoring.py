@@ -169,6 +169,14 @@ if itype == 13:
                 
                 # Average the power input over the realizations
                 power_in_sum[ti] = power_in_sum[ti] + power_in[ti+i] / nr / nt 
+    
+    # Resize arrays
+    sh_vel_tot_sq = np.zeros(nsavings_red)    
+    sh_vel_x_sq   = np.zeros(nsavings_red)
+    mg_phi_w      = np.zeros(nsavings_red)
+    a_fact        = np.zeros(nsavings_red)
+    time_unit     = np.zeros(nsavings_red)
+    power_in      = np.zeros(nsavings_red)
                 
     # Finalize the averages
     sh_vel_tot = np.sqrt(sh_vel_tot_sq_sum)
@@ -200,7 +208,7 @@ if itype == 13:
     print("    and calculation of time evolution of TTBL thickness parameters: done.")
         
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
-    re_tau = np.zeros(nsavings - 2*time_window_index) 
+    re_tau = np.zeros(nsavings_red) 
     re_tau = sh_vel_x * delta_99 / nu
 
     # Calculate Reynolds numbers based on displacement thickness and momentum thickness
@@ -428,10 +436,10 @@ elif itype == 3:
                 f"{n_snap:{pp.fs}}\n"       )
 
 # y-axis label
-ax.set_ylabel(r'$c_{f x}$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+ax.set_ylabel(r'$c_f$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
 # Description
-description = 'Time evolution of streamwise friction coefficient.'
+description = 'Time evolution of (streamwise) friction coefficient.'
     
 # Set the plot parameters using the function 'set_plot_settings'
 # Last argument is the switcher for semilog plot (1: yes, 0: no)
