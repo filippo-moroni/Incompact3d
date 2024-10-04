@@ -29,7 +29,7 @@ re  = 500.0           ! nu=1/re (kinematic viscosity, since unitary reference sc
 ! Time stepping
 dt = 0.05             ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 30000         ! Last iteration
+ilast = 32000         ! Last iteration
 irestart = 0          ! Read initial flow field? (0: no, 1: yes)
 
 ! Enable modelling tools
@@ -70,8 +70,8 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 &InOutParam
 !====================
 
-icheckpoint = 2500    ! Frequency for writing backup files
-ioutput = 2500        ! Frequency for saving snapshots
+icheckpoint = 4000    ! Frequency for writing backup files
+ioutput = 4000        ! Frequency for saving snapshots
 ioutput_cf = 20       ! Frequency for saving cf and related quantities
 ioutput_plane = 20    ! Frequency for saving planes for visualization
 ilist = 5             ! Frequency for writing to screen (out/log file)
