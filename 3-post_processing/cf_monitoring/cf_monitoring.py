@@ -93,6 +93,7 @@ if itype == 13:
 
     print()
     print(">>> Opening 'cf_history.txt' files over different flow realizations.")
+    print()
         
     # Number of savings due to 'print_cf' subroutine of Incompact3d solver 'modified';
     # We can restrict the range to plot in order to be more flexible (e.g. if simulations have not been completed).
@@ -103,6 +104,7 @@ if itype == 13:
     print(">>> Enter the number of snapshots to be used for centered time-window average: ")
     print("    0   : time-window average is not performed;")
     print("    twi : time-window index (half number of snapshots excluding the central one).")
+    print()
     
     # Input from the user
     time_window_index = int(input())
@@ -147,19 +149,19 @@ if itype == 13:
             for i in range(-twi, twi, 1):
                                         
                 # Average the square of the total shear velocity over the realizations 
-                sh_vel_tot_sq_sum[:,:,ti] = sh_vel_tot_sq_sum[:,:,ti] + (sh_vel_tot[:,:,ti+i]**2 / nr / nt)
+                sh_vel_tot_sq_sum[ti] = sh_vel_tot_sq_sum[ti] + (sh_vel_tot[ti+i]**2 / nr / nt)
                 
                 # Average the square of the longitudinal shear velocity over the realizations 
-                sh_vel_x_sq_sum[:,:,ti] = sh_vel_x_sq_sum[:,:,ti] + (sh_vel_x[:,:,ti+i]**2 / nr / nt)
+                sh_vel_x_sq_sum[ti] = sh_vel_x_sq_sum[ti] + (sh_vel_x[ti+i]**2 / nr / nt)
                 
                 # Average the mean scalar gradient at the wall
-                mg_phi_w_sum[:,:,ti] = mg_phi_w_sum[:,:,ti] + mg_phi_w[:,:,ti+i] / nr / nt
+                mg_phi_w_sum[ti] = mg_phi_w_sum[ti] + mg_phi_w[ti+i] / nr / nt
                 
                 # Average the Reynolds analogy factor over the realizations
-                a_fact_sum[:,:,ti] = a_fact_sum[:,:,ti] + a_fact[:,:,ti+i] / nr / nt
+                a_fact_sum[ti] = a_fact_sum[ti] + a_fact[ti+i] / nr / nt
                 
                 # Average the power input over the realizations
-                power_in_sum[:,:,ti] = power_in_sum[:,:,ti] + power_in[:,;,ti+i] / nr / nt 
+                power_in_sum[ti] = power_in_sum[ti] + power_in[ti+i] / nr / nt 
                 
     # Finalize the averages
     sh_vel_tot = np.sqrt(sh_vel_tot_sq_sum)
