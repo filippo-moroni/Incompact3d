@@ -86,8 +86,11 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
                            snapshot at generic index ti (time index). 
     """
     
-    # Time-window of 3 snapshots
+    # Time-window index (e.g. 1 is a centered average in time with 3 snapshots)
     time_window_index = 1
+    
+    # Number of snapshots used to window averaging in time
+    nt = time_window_index * 2 + 1
                         
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
@@ -95,7 +98,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
 
     # Initialize instantaneous mean statistics array, not averaged with different flow realizations
     # we have 9 different statistics (mean, var, Reynolds stress) (function of y)
-    mean_stats = np.zeros((ny, 9))
+    mean_stats = np.zeros((ny, 9, nsavings))
     
     # Initialize mean statistics array, function of y and time (r: realizations)
     mean_stats_r = np.zeros((ny, 9, nsavings - 2*time_window_index))
@@ -105,7 +108,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
     
         # Initialize instantaneous mean statistics array for scalar field, not averaged with different flow realizations
         # we have 5 different statistics (mean, var, mixed fluctuations) (function of y)
-        mean_stats_scalar = np.zeros((ny, 5))
+        mean_stats_scalar = np.zeros((ny, 5, nsavings))
         
         # Initialize mean statistics array for scalar field, function of y and time (r: realizations)
         mean_stats_scalar_r = np.zeros((ny, 5, nsavings - 2*time_window_index))
@@ -129,29 +132,40 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
     print(">>> Saving 'mean_stats_realiz-ts' files in /data_post_te.")
     print()
     
-    # Do loop from 0 to number of savings (ti: time index, that represents the different savings in time)    
-    for ti in range(0, nsavings, 1):
+    # Do loop over different realizations, from 1 to nr
+    for i in range(1, nr+1, 1):
+    
+        # Do loop from 0 to number of savings (ti: time index, that represents the different savings in time)    
+        for ti in range(0, nsavings, 1):
       
-        #!--- Calculate ts to open 'mean_stats_runtime-ts' file (ts_iter: time-step of the iterations) ---!
+            #!--- Calculate ts to open 'mean_stats_runtime-ts' file (ts_iter: time-step of the iterations) ---!
         
-        # ts of the initial condition is ts = 1
-        if ti == 0:
+            # ts of the initial condition is ts = 1
+            if ti == 0:
 
-            ts_iter = 1
+                ts_iter = 1
 
-        # All the other ts are multiples of 'output_cf'
-        else:
+            # All the other ts are multiples of 'output_cf'
+            else:
 
-            ts_iter = ti*ioutput_cf
+                ts_iter = ti*ioutput_cf
         
-        # Do loop over different realizations, from 1 to nr
-        for i in range(1, nr+1, 1):
-               
+        
             # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/velocity' folder
-            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
+            mean_stats[:,:,ti] = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
+            
+        # Take alias for time-window index
+        twi = time_window_index        
+        
+        # Cycle to sum with time-window average
+        for ti in range(0+twi, nsavings-twi, 1):
+            
+            # Time-window average cycle
+            for i in range(-twi, twi, 1):
                         
-            # Summing mean statistics array with different realizations into the overall array for time-evolution
-            mean_stats_r[:,:,ti] = mean_stats_r[:,:,ti] + mean_stats[:,:] / nr
+                # Summing mean statistics array with different realizations into the overall array for time-evolution
+                mean_stats_r[:,:,ti] = mean_stats_r[:,:,ti] + mean_stats[:,:,ti+i] / nr / nt
+            
             
             #!--- If present, do the same for the scalar field ---!
             if numscalar == 1:
