@@ -46,16 +46,18 @@ from ttbl_subs import calculate_ttbl_thick_params
 !-----------------------------------------------------------------------------!
 """
 
-def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
+def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index):
 
     """
     Inputs: 
     
-     - total shear velocity;
-     - streamwise shear velocity;
-     - mean scalar gradient at the wall;
-     - number of savings to plot (defined in the main function).
-    
+     - sh_vel_tot        : total shear velocity;
+     - sh_vel_x          : streamwise shear velocity;
+     - mg_phi_w          : mean scalar gradient at the wall;
+     - nsavings          : number of savings to plot (defined in the main function);
+     - time_window_index : number of savings used to time-window average the temporal snapshots;
+                           this index refers to half of the window excluding the central snapshot
+                           (e.g. if == 1: a window of 3 snapshots).     
     Outputs:
     
      - mean statistics saved runtime averaged with different flow realizations;
@@ -79,19 +81,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
     (uwall, nu, twd, y) = set_flow_parameters(itype, re)
                           
     #!--------------------------------------------------------------------------------------!
-    
-    """
-         - time_window_index : number of savings used to time-window average the temporal snapshots;
-                           this index refers to half of the windows, since it is centered on the
-                           snapshot at generic index ti (time index). 
-    """
-    
-    # Time-window index (e.g. 1 is a centered average in time with 3 snapshots)
-    time_window_index = 1
-    
-    # Number of snapshots used to window averaging in time
-    nt = 2 * time_window_index + 1
-                        
+                                
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
     mean_u = np.zeros(ny)

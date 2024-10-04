@@ -99,12 +99,26 @@ if itype == 13:
     # 'ilast' can be changed from the input file 'input.i3d'.
     nsavings = ilast // ioutput_cf + 1
     
+    # Asking to the user the width of the time-window average (number of indexes)
+    print(">>> Enter the number of snapshots to be used for centered time-window average: ")
+    print("    0   : time-window average is not performed;")
+    print("    twi : time-window index (half number of snapshots excluding the central one).")
+    
+    # Input from the user
+    time_window_index = int(input())
+    
+    # Take alias
+    twi = time_window_index
+            
+    # Number of snapshots used to window averaging in time
+    nt = 2 * time_window_index + 1
+        
     # Initialise arrays for sum
-    sh_vel_tot_sq_sum = np.zeros(nsavings)    
-    sh_vel_x_sq_sum   = np.zeros(nsavings)
-    mg_phi_w_sum      = np.zeros(nsavings)
-    a_fact_sum        = np.zeros(nsavings)
-    power_in_sum      = np.zeros(nsavings)
+    sh_vel_tot_sq_sum = np.zeros(nsavings - 2*time_window_index)    
+    sh_vel_x_sq_sum   = np.zeros(nsavings - 2*time_window_index)
+    mg_phi_w_sum      = np.zeros(nsavings - 2*time_window_index)
+    a_fact_sum        = np.zeros(nsavings - 2*time_window_index)
+    power_in_sum      = np.zeros(nsavings - 2*time_window_index)
     
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
@@ -125,21 +139,27 @@ if itype == 13:
         For shear velocities, we sum their square value, in order to recover the exact arithmetic average. 
         (Summation between linear quantities, gradients multiplied by kinematic viscosity).
         """
-
-        # Average the square of the total shear velocity over the realizations 
-        sh_vel_tot_sq_sum = sh_vel_tot_sq_sum + (sh_vel_tot**2 / nr)
-
-        # Average the square of the longitudinal shear velocity over the realizations 
-        sh_vel_x_sq_sum = sh_vel_x_sq_sum + (sh_vel_x**2 / nr)
         
-        # Average the mean scalar gradient at the wall
-        mg_phi_w_sum = mg_phi_w_sum + mg_phi_w / nr
-
-        # Average the Reynolds analogy factor over the realizations
-        a_fact_sum = a_fact_sum + a_fact / nr
+        # Cycle to sum with time-window average
+        for ti in range(0+twi, nsavings-twi, 1):
+            
+            # Time-window average cycle
+            for i in range(-twi, twi, 1):
+                                        
+                # Average the square of the total shear velocity over the realizations 
+                sh_vel_tot_sq_sum[:,:,ti] = sh_vel_tot_sq_sum[:,:,ti] + (sh_vel_tot[:,:,ti+i]**2 / nr / nt)
                 
-        # Average the power input over the realizations
-        power_in_sum = power_in_sum + power_in / nr 
+                # Average the square of the longitudinal shear velocity over the realizations 
+                sh_vel_x_sq_sum[:,:,ti] = sh_vel_x_sq_sum[:,:,ti] + (sh_vel_x[:,:,ti+i]**2 / nr / nt)
+                
+                # Average the mean scalar gradient at the wall
+                mg_phi_w_sum[:,:,ti] = mg_phi_w_sum[:,:,ti] + mg_phi_w[:,:,ti+i] / nr / nt
+                
+                # Average the Reynolds analogy factor over the realizations
+                a_fact_sum[:,:,ti] = a_fact_sum[:,:,ti] + a_fact[:,:,ti+i] / nr / nt
+                
+                # Average the power input over the realizations
+                power_in_sum[:,:,ti] = power_in_sum[:,:,ti] + power_in[:,;,ti+i] / nr / nt 
                 
     # Finalize the averages
     sh_vel_tot = np.sqrt(sh_vel_tot_sq_sum)
@@ -163,14 +183,14 @@ if itype == 13:
      - TTBL thickness delta_99;
      - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
-    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings)
+    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index)
     
     print()
     print(">>> Average of runtime mean statistics with different flow realizations")
     print("    and calculation of time evolution of TTBL thickness parameters: done.")
         
     # Calculate the (streamwise) friction Reynolds number (averaged over the realizations)
-    re_tau = np.zeros(nsavings) 
+    re_tau = np.zeros(nsavings - 2*time_window_index) 
     re_tau = sh_vel_x * delta_99 / nu
 
     # Calculate Reynolds numbers based on displacement thickness and momentum thickness
@@ -178,7 +198,7 @@ if itype == 13:
     re_mom_t  = mom_t  * re
     
     # Calculate viscous time unit
-    t_nu = np.zeros(nsavings)
+    t_nu = np.zeros(nsavings - 2*time_window_index)
     t_nu = nu / (sh_vel_tot**2)
 
     print()
@@ -219,7 +239,7 @@ if itype == 13:
                 f"{'t_nu':>{pp.c_w}}, "         +                
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
-        for j in range(0, nsavings):
+        for j in range(0, nsavings - 2*time_window_index):
             f.write(f"{cfx[j]:{pp.fs8}}, "      +
                     f"{delta_99[j]:{pp.fs}}, "  +
                     f"{disp_t[j]:{pp.fs}}, "    +
