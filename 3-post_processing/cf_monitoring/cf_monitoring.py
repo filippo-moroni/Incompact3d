@@ -215,7 +215,7 @@ if itype == 13:
                 f"{'A_fact':>{pp.c_w}}, "       +
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
-        for j in range(0, end_index):
+        for j in range(0, nsavings):
             f.write(f"{cfx[j]:{pp.fs8}}, "      +
                     f"{delta_99[j]:{pp.fs}}, "  +
                     f"{disp_t[j]:{pp.fs}}, "    +
