@@ -83,6 +83,9 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     (uwall, nu, twd, y) = set_flow_parameters(itype, re)
                           
     #!--------------------------------------------------------------------------------------!
+    
+    # Number of elements in the reduced arrays (number of savings reduced)
+    nsavings_red = nsavings - 2*time_window_index
                                 
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
@@ -93,7 +96,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     mean_stats = np.zeros((ny, 9, nsavings))
     
     # Initialize mean statistics array, function of y and time (r: realizations)
-    mean_stats_r = np.zeros((ny, 9, nsavings - 2*time_window_index))
+    mean_stats_r = np.zeros((ny, 9, nsavings_red))
     
     # Initialize scalar arrays if present
     if numscalar == 1:
@@ -103,12 +106,12 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
         mean_stats_scalar = np.zeros((ny, 5, nsavings))
         
         # Initialize mean statistics array for scalar field, function of y and time (r: realizations)
-        mean_stats_scalar_r = np.zeros((ny, 5, nsavings - 2*time_window_index))
+        mean_stats_scalar_r = np.zeros((ny, 5, nsavings_red))
 
     # Initialize arrays for TTBL thickness parameters
-    delta_99   = np.zeros(nsavings - 2*time_window_index)   # BL thickness delta_99
-    disp_t     = np.zeros(nsavings - 2*time_window_index)   # displacement thickness, delta*
-    mom_t      = np.zeros(nsavings - 2*time_window_index)   # momentum     thickness, theta
+    delta_99   = np.zeros(nsavings_red)   # BL thickness delta_99
+    disp_t     = np.zeros(nsavings_red)   # displacement thickness, delta*
+    mom_t      = np.zeros(nsavings_red)   # momentum     thickness, theta
     
     # Initialize maximum Delta y+ at the BL edge for grid resolutions monitoring
     max_delta_yd_plus = 0.0
@@ -150,7 +153,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
         twi = time_window_index        
         
         # Cycle to sum with time-window average
-        for ti in range(0+twi, nsavings-twi-1, 1):
+        for ti in range(0+twi, nsavings_red-twi, 1):
             
             # Time-window average cycle
             for i in range(-twi, twi, 1):

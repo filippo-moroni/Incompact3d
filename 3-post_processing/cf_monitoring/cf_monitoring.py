@@ -114,14 +114,17 @@ if itype == 13:
             
     # Number of snapshots used to window averaging in time
     nt = 2 * time_window_index + 1
+    
+    # Number of elements in the reduced arrays (number of savings reduced)
+    nsavings_red = nsavings - 2*time_window_index
         
     # Initialise arrays for sum
-    sh_vel_tot_sq_sum = np.zeros(nsavings - 2*time_window_index)    
-    sh_vel_x_sq_sum   = np.zeros(nsavings - 2*time_window_index)
-    mg_phi_w_sum      = np.zeros(nsavings - 2*time_window_index)
-    a_fact_sum        = np.zeros(nsavings - 2*time_window_index)
-    power_in_sum      = np.zeros(nsavings - 2*time_window_index)
-    
+    sh_vel_tot_sq_sum = np.zeros(nsavings_red)    
+    sh_vel_x_sq_sum   = np.zeros(nsavings_red)
+    mg_phi_w_sum      = np.zeros(nsavings_red)
+    a_fact_sum        = np.zeros(nsavings_red)
+    power_in_sum      = np.zeros(nsavings_red)
+      
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
 
@@ -143,7 +146,7 @@ if itype == 13:
         """
         
         # Cycle to sum with time-window average
-        for ti in range(0+twi, nsavings-twi-1, 1):
+        for ti in range(0+twi, nsavings_red-twi, 1):
             
             # Time-window average cycle
             for i in range(-twi, twi, 1):
