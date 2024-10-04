@@ -107,7 +107,7 @@ if itype == 13:
     print()
     
     # Input from the user
-    time_window_index = int(input())
+    time_window_index = int(input("Time window index = "))
     
     # Take alias
     twi = time_window_index
@@ -115,7 +115,7 @@ if itype == 13:
     # Number of snapshots used to window averaging in time
     nt = 2 * time_window_index + 1
     
-    # Number of elements in the reduced arrays (number of savings reduced)
+    # Number of elements in the reduced arrays (number of savings reduced) (red: reduced)
     nsavings_red = nsavings - 2*time_window_index
         
     # Initialise arrays for sum
@@ -144,12 +144,13 @@ if itype == 13:
         """
         For shear velocities, we sum their square value, in order to recover the exact arithmetic average. 
         (Summation between linear quantities, gradients multiplied by kinematic viscosity).
+        
         """
         
-        # Cycle to sum with time-window average
+        # Cycle on ti: time index, with restriction at the limits of the interval if time-window averaging is enabled
         for ti in range(0+twi, nsavings-twi, 1):
             
-            # Time-window average cycle
+            # Time-window average cycle (we are summing centered on time index 'ti')
             for i in range(-twi, twi+1, 1):
                                         
                 # Average the square of the total shear velocity over the realizations 
@@ -216,7 +217,7 @@ if itype == 13:
     re_mom_t  = mom_t  * re
     
     # Calculate viscous time unit
-    t_nu = np.zeros(nsavings - 2*time_window_index)
+    t_nu = np.zeros(nsavings_red)
     t_nu = nu / (sh_vel_tot**2)
 
     print()
@@ -244,6 +245,9 @@ if itype == 13:
         f.write(f' - A_fact    : Reynolds analogy factor.\n')
         f.write(f' - t_nu      : viscous time unit, based on total shear velocity.\n')        
         f.write(f' - time_unit : non-dimensional outer time scale, based on wall velocity and trip wire diameter.\n')            
+        f.write('\n')
+        f.write(f'Statistics averaged on a time window of amplitude = {2.0*twi*dt},\n')        
+        f.write(f'with number of snapshots                          = {2*twi}.\n')                
         f.write('\n')
         f.write(f"{'cfx':>{pp.c_w}}, "          +
                 f"{'delta_99':>{pp.c_w}}, "     +
