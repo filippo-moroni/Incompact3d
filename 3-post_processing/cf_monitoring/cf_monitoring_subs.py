@@ -166,7 +166,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
               
         
     # Do loop from 0 to number of savings (ti: time index, that represents the different savings in time) 
-    for ti in range(0+twi, nsavings-twi-1, 1):    
+    for ti in range(0, nsavings_red, 1):    
                                
         #!--- Finalize 2nd order statistics ---!
         
