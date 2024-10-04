@@ -99,6 +99,13 @@ if itype == 13:
     # 'ilast' can be changed from the input file 'input.i3d'.
     nsavings = ilast // ioutput_cf + 1
     
+    # Initialise arrays for sum
+    sh_vel_tot_sq_sum = np.zeros(nsavings)    
+    sh_vel_x_sq_sum   = np.zeros(nsavings)
+    mg_phi_w_sum      = np.zeros(nsavings)
+    a_fact_sum        = np.zeros(nsavings)
+    power_in_sum      = np.zeros(nsavings)
+    
     # Do loop over different realizations
     for i in range(1, nr + 1, 1):
 
@@ -115,18 +122,9 @@ if itype == 13:
         power_in   = M[:nsavings,11]    # power input
                              
         """
-        Initialize arrays for sum
-        Shear velocities, sq_sum: sum of the square, gradient multiplied by kinematic viscosity.
-        This is made in order to recover the exact arithmetic average 
-        (that is between gradients) (summation between linear quantities).
+        For shear velocities, we sum their square value, in order to recover the exact arithmetic average. 
+        (Summation between linear quantities, gradients multiplied by kinematic viscosity).
         """
-        if i == 1:
-
-            sh_vel_tot_sq_sum = np.zeros(nsavings)    
-            sh_vel_x_sq_sum   = np.zeros(nsavings)
-            mg_phi_w_sum      = np.zeros(nsavings)
-            a_fact_sum        = np.zeros(nsavings)
-            power_in_sum      = np.zeros(nsavings)
 
         # Average the square of the total shear velocity over the realizations 
         sh_vel_tot_sq_sum = sh_vel_tot_sq_sum + (sh_vel_tot**2 / nr)

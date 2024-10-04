@@ -79,6 +79,12 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
     (uwall, nu, twd, y) = set_flow_parameters(itype, re)
                           
     #!--------------------------------------------------------------------------------------!
+    
+    """
+         - time_window_index : number of savings used to time-window average the temporal snapshots;
+                           this index refers to half of the windows, since it is centered on the
+                           snapshot at generic index ti (time index). 
+    """
                         
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
@@ -119,7 +125,8 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
     print()
     print(">>> Saving 'mean_stats_realiz-ts' files in /data_post_te.")
     print()
-        
+    
+    # Do loop from 0 to number of savings (ti: time index, that represents the different savings in time)    
     for ti in range(0, nsavings, 1):
       
         #!--- Calculate ts to open 'mean_stats_runtime-ts' file (ts_iter: time-step of the iterations) ---!
@@ -151,6 +158,12 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
                         
                 # Summing mean statistics array with different realizations into the overall array for time-evolution
                 mean_stats_scalar_r[:,:,ti] = mean_stats_scalar_r[:,:,ti] + mean_stats_scalar[:,:] / nr
+        
+        #!
+        
+        
+    # Do loop from 0 to number of savings (ti: time index, that represents the different savings in time) 
+    for ti in range(0, nsavings, 1):    
                                
         #!--- Finalize 2nd order statistics ---!
         
