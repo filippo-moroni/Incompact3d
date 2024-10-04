@@ -123,6 +123,7 @@ if itype == 13:
     sh_vel_x_sq_sum   = np.zeros(nsavings_red)
     mg_phi_w_sum      = np.zeros(nsavings_red)
     a_fact_sum        = np.zeros(nsavings_red)
+    time_unit_sum     = np.zeros(nsavings_red)
     power_in_sum      = np.zeros(nsavings_red)
       
     # Do loop over different realizations
@@ -163,6 +164,9 @@ if itype == 13:
                 # Average the Reynolds analogy factor over the realizations
                 a_fact_sum[ti] = a_fact_sum[ti] + a_fact[ti+i] / nr / nt
                 
+                # Time-unit sum in order to check time-window averaging
+                time_unit_sum[ti] = time_unit_sum[ti] + time_unit[ti+i] / nr / nt
+                
                 # Average the power input over the realizations
                 power_in_sum[ti] = power_in_sum[ti] + power_in[ti+i] / nr / nt 
                 
@@ -170,6 +174,7 @@ if itype == 13:
     sh_vel_tot = np.sqrt(sh_vel_tot_sq_sum)
     sh_vel_x   = np.sqrt(sh_vel_x_sq_sum)
     mg_phi_w   = mg_phi_w_sum
+    time_unit  = time_unit_sum
     a_fact     = a_fact_sum
     power_in   = power_in_sum
         
@@ -372,8 +377,8 @@ print(">>> Plotting streamwise friction coefficient as function of time.")
 print()
 
 # Axes ranges
-xliminf = time_unit[0]
-xlimsup = time_unit[-1]
+xliminf = np.min(time_unit)
+xlimsup = np.max(time_unit)
 yliminf = np.min(cfx) * 0.0
 ylimsup = np.max(cfx) * 1.2 
 

@@ -66,7 +66,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
      - mean scalar statistics saved runtime averaged with different flow realizations; 
      - TTBL thickness parameters to check the flow evolution.
     """
-
+    
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te',          mode=0o777, exist_ok=True)
     os.makedirs('data_post_te/velocity', mode=0o777, exist_ok=True)
@@ -166,7 +166,10 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
               
         
     # Do loop from 0 to number of savings (ti: time index, that represents the different savings in time) 
-    for ti in range(0, nsavings_red, 1):    
+    for ti in range(0, nsavings_red, 1):
+    
+        # Time-step of central saving
+        ts_iter = ti*ioutput_cf    
                                
         #!--- Finalize 2nd order statistics ---!
         
