@@ -147,28 +147,28 @@ if itype == 13:
         """
         
         # Cycle to sum with time-window average
-        for ti in range(0+twi, nsavings_red-twi, 1):
+        for ti in range(0+twi, nsavings-twi, 1):
             
             # Time-window average cycle
             for i in range(-twi, twi, 1):
                                         
                 # Average the square of the total shear velocity over the realizations 
-                sh_vel_tot_sq_sum[ti] = sh_vel_tot_sq_sum[ti] + (sh_vel_tot[ti+i]**2 / nr / nt)
+                sh_vel_tot_sq_sum[ti-twi] = sh_vel_tot_sq_sum[ti-twi] + (sh_vel_tot[ti+i]**2 / nr / nt)
                 
                 # Average the square of the longitudinal shear velocity over the realizations 
-                sh_vel_x_sq_sum[ti] = sh_vel_x_sq_sum[ti] + (sh_vel_x[ti+i]**2 / nr / nt)
+                sh_vel_x_sq_sum[ti-twi] = sh_vel_x_sq_sum[ti-twi] + (sh_vel_x[ti+i]**2 / nr / nt)
                 
                 # Average the mean scalar gradient at the wall
-                mg_phi_w_sum[ti] = mg_phi_w_sum[ti] + mg_phi_w[ti+i] / nr / nt
+                mg_phi_w_sum[ti-twi] = mg_phi_w_sum[ti-twi] + mg_phi_w[ti+i] / nr / nt
                 
                 # Average the Reynolds analogy factor over the realizations
-                a_fact_sum[ti] = a_fact_sum[ti] + a_fact[ti+i] / nr / nt
+                a_fact_sum[ti-twi] = a_fact_sum[ti-twi] + a_fact[ti+i] / nr / nt
                 
                 # Time-unit sum in order to check time-window averaging
-                time_unit_sum[ti] = time_unit_sum[ti] + time_unit[ti+i] / nr / nt
+                time_unit_sum[ti-twi] = time_unit_sum[ti-twi] + time_unit[ti+i] / nr / nt
                 
                 # Average the power input over the realizations
-                power_in_sum[ti] = power_in_sum[ti] + power_in[ti+i] / nr / nt 
+                power_in_sum[ti-twi] = power_in_sum[ti-twi] + power_in[ti+i] / nr / nt 
     
     # Resize arrays
     sh_vel_tot_sq = np.zeros(nsavings_red)    
@@ -257,7 +257,7 @@ if itype == 13:
                 f"{'t_nu':>{pp.c_w}}, "         +                
                 f"{'time_unit':>{pp.c_w}}\n"    )
 
-        for j in range(0, nsavings - 2*time_window_index):
+        for j in range(0, nsavings_red):
             f.write(f"{cfx[j]:{pp.fs8}}, "      +
                     f"{delta_99[j]:{pp.fs}}, "  +
                     f"{disp_t[j]:{pp.fs}}, "    +
