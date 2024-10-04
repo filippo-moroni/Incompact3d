@@ -172,7 +172,6 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     
     
     #!--- Save averaged mean statistics ---!
-    print()
     print(">>> Finalizing and saving 'mean_stats_realiz-ts' files in /data_post_te.")
     print()
                     
