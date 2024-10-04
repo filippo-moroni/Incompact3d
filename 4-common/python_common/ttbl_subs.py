@@ -66,6 +66,12 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 
 def calculate_ttbl_thick_params(mean_u,y,uwall):
 
+    # Initialise variables
+    delta_99   = None
+    delta_99_j = None
+    disp_t     = None
+    mom_t      = None
+
     """
     !-----------------------------------------------------------!
      TTBL thickness delta_99 calculation (Kozul et al. (2016)). 
