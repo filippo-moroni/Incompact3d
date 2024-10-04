@@ -10,6 +10,7 @@
 !              finalisation of the code.
 !-----------------------------------------------------------------------------!
 
+! Main file
 program xcompact3d
 
   use var

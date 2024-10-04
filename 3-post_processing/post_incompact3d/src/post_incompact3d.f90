@@ -23,6 +23,7 @@
 !              Roberto Corsini <roberto.corsini@unimore.it> 
 !-----------------------------------------------------------------------------!
 
+! Main file
 program post
 
   use decomp_2d_constants

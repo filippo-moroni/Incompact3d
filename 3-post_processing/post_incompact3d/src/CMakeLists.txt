@@ -13,7 +13,7 @@ add_executable(post_incompact3d
                     ../../../4-common/src/implicit.f90
                     ../../../4-common/src/module_param.f90
                     ../../../4-common/src/parameters.f90
-                    post.f90
+                    post_incompact3d.f90
                     post_processing_mod.f90
                     ../../../4-common/src/schemes.f90
                     statistics_subs.f90
