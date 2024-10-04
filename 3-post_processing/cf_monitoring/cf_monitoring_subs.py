@@ -85,6 +85,9 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
                            this index refers to half of the windows, since it is centered on the
                            snapshot at generic index ti (time index). 
     """
+    
+    # Time-window of 3 snapshots
+    time_window_index = 1
                         
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
@@ -95,7 +98,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
     mean_stats = np.zeros((ny, 9))
     
     # Initialize mean statistics array, function of y and time (r: realizations)
-    mean_stats_r = np.zeros((ny, 9, nsavings))
+    mean_stats_r = np.zeros((ny, 9, nsavings - 2*time_window_index))
     
     # Initialize scalar arrays if present
     if numscalar == 1:
@@ -105,12 +108,12 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings):
         mean_stats_scalar = np.zeros((ny, 5))
         
         # Initialize mean statistics array for scalar field, function of y and time (r: realizations)
-        mean_stats_scalar_r = np.zeros((ny, 5, nsavings))
+        mean_stats_scalar_r = np.zeros((ny, 5, nsavings - 2*time_window_index))
 
     # Initialize arrays for TTBL thickness parameters
-    delta_99   = np.zeros(nsavings)   # BL thickness delta_99
-    disp_t     = np.zeros(nsavings)   # displacement thickness, delta*
-    mom_t      = np.zeros(nsavings)   # momentum     thickness, theta
+    delta_99   = np.zeros(nsavings - 2*time_window_index)   # BL thickness delta_99
+    disp_t     = np.zeros(nsavings - 2*time_window_index)   # displacement thickness, delta*
+    mom_t      = np.zeros(nsavings - 2*time_window_index)   # momentum     thickness, theta
     
     # Initialize maximum Delta y+ at the BL edge for grid resolutions monitoring
     max_delta_yd_plus = 0.0
