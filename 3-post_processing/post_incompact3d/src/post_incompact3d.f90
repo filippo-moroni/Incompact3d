@@ -569,6 +569,7 @@ end if
       endif    
             
       if(post_tke_eq) then
+      
           do j=1,ysize(2)
                                                               
               !--- Diffusive transport of TKE (this is TKE only at the moment) ---!
@@ -584,7 +585,7 @@ end if
               
           ! 1D derivative in y          
           call dery1D(temp_dery,kvprime_meanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
-                        
+                                  
           kvprime_meanHT = temp_dery
           
           !--- Pressure-velocity coupling term (pressure transport) (assuming unitary density) ---!
@@ -604,7 +605,7 @@ end if
           !--- Production term ---!
                         
           ! 1D derivative in y          
-          call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),0)
+          call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
               
           ! Reynolds stress <u'v'> times mean streamwise velocity gradient dU/dy
           tke_prodHT = - uvmeanHT * temp_dery 
