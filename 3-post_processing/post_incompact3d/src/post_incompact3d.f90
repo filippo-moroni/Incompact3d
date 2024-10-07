@@ -596,6 +596,8 @@ end if
                                    
           ! 1D derivative in y (2 times) 
           call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfyp,ssyp,swyp,ysize(2),1)
+          
+          call deryy1D (td2, ux2, di2, sy, sfyp, ssyp, swyp, ysize(2),1)
                     
           tke_diffHT = xnu * temp_dery
           
