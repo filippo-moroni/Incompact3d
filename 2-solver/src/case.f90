@@ -185,10 +185,10 @@ contains
     T = phi1
 
     ! Writing snapshots only if some conditions are met
-    if ( ( isnap .ne. 0 )                                        .and. &  ! Snapshots enabled by the switcher 'isnap'
-         ((itime .eq. ifirst) .or. (mod(itime, ioutput) .eq. 0)) .and. &  ! Save at the first time step or at every 'ioutput' time-steps  
-         ( itime .ge. start_output)                              .and. &  ! Save snapshots if time-step is greater or equal to 'start_output' 
-         ( itime .le. end_output  )                                    &  ! Save snapshots if time-step is less or equal to 'end_output' 
+    if ( ( isnap .ne. 0 )                                   .and. &  ! Snapshots enabled by the switcher 'isnap'
+         ((itime .eq. 1) .or. (mod(itime, ioutput) .eq. 0)) .and. &  ! Save at the first time step or at every 'ioutput' time-steps  
+         ( itime .ge. start_output)                         .and. &  ! Save snapshots if time-step is greater or equal to 'start_output' 
+         ( itime .le. end_output  )                               &  ! Save snapshots if time-step is less or equal to 'end_output' 
        ) then
        
        ! Write snapshot
