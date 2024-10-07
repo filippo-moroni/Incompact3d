@@ -332,8 +332,8 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             in this case, only mean statistics can be plotted. 
         """
         print(">>> Specify the type of results to plot: ")
-        print(">>> 0: from 'post_incompact3d' ")  
-        print(">>> 1: from 'cf_monitoring' ")          
+        print("    - 0: from 'post_incompact3d' ")  
+        print("    - 1: from 'cf_monitoring' ")          
         print()
         
         # Switcher for plotting different sources of statistics

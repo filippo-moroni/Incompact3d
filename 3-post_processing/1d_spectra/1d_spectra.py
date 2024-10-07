@@ -129,7 +129,7 @@ i_premult = int(input(">>> Plot pre-multiplied spectra? (0: no, 1: yes) "))
 print()
 
 # Call external subroutine to determine the closest y+ location to what we want and its index 
-(y_plus_index, y_plus_name) = y_plus_location(y_plus, ny)
+(y_plus_index, y_plus_name, y_plus_in) = y_plus_location(y_plus, ny)
 
 #!-------------------------------!
 

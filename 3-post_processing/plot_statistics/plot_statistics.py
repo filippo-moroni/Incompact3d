@@ -31,6 +31,7 @@ import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.interpolate import InterpolatedUnivariateSpline
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -812,7 +813,7 @@ if post_diss and i_switch_plot == False:
 if post_corz and i_switch_plot == False:
 
     # Call external subroutine to determine the closest y+ location to what we want and its index 
-    (y_plus_index, y_plus_name) = y_plus_location(y_plus, ny)
+    (y_plus_index, y_plus_name, y_plus_in) = y_plus_location(y_plus, ny)
 
     # Take the correlation functions value at rz = 0 and rescale to obtain correlation coefficients
     temp = Ruuz[y_plus_index,0]
