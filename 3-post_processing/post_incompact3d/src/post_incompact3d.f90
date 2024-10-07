@@ -577,6 +577,8 @@ end if
           enddo
                     
           !----- Perform derivatives -----!
+          
+          ! Last input of derivatives subroutines is npaire (used only with Neumann BCs)
                     
           !--- Turbulent transport term ---!
               
@@ -595,10 +597,8 @@ end if
           !--- Diffusive transport of TKE ---!
                                    
           ! 1D derivative in y (2 times) 
-          call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfyp,ssyp,swyp,ysize(2),1)
-          
-          call deryy1D (td2, ux2, di2, sy, sfyp, ssyp, swyp, ysize(2),1)
-                    
+          call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfy,ssy,swy,ysize(2),0)
+                              
           tke_diffHT = xnu * temp_dery
           
           !--- Production term ---!
