@@ -71,7 +71,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     """
     
     # Delete the folder of time-evolution results to be sure we are looking at new results
-    shutil.rmtree('data_post_te')
+    shutil.rmtree('data_post_te', ignore_errors=not os.path.exists('data_post_te'))
     
     # Create folder to store later results (te: time evolution)
     os.makedirs('data_post_te',          mode=0o777, exist_ok=True)

@@ -231,7 +231,7 @@ if itype == 13:
     print()
     print(">>> Statistics averaged on a time window of amplitude")
     print(f"   T_avg = {2.0*twi*dt*ioutput_cf},")        
-    print(f"   with number of snapshots in time, nt = {nt}.') 
+    print(f"   with number of snapshots in time, nt = {nt}.") 
     print()
 
     # Create the file and write  
