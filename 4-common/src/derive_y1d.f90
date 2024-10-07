@@ -957,20 +957,13 @@ subroutine deryy1D_22(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
   real(mytype) :: sy
   real(mytype), dimension(ny) :: sfy,ssy,swy
      
-  ty(1)=as1y*uy(1)+bs1y*uy(2)&
-       +cs1y*uy(3)+ds1y*uy(4)
-  ty(2)=as2y*(uy(3)-uy(2)&
-       -uy(2)+uy(1))
-  ty(3)=as3y*(uy(4)-uy(3)&
-       -uy(3)+uy(2))&
-       +bs3y*(uy(5)-uy(3)&
-       -uy(3)+uy(1))
-  ty(4)=as4y*(uy(5)-uy(4)&
-       -uy(4)+uy(3))&
-       +bs4y*(uy(6)-uy(4)&
-       -uy(4)+uy(2))&
-       +cs4y*(uy(7)-uy(4)&
-       -uy(4)+uy(1))
+  ty(1)=as1y*uy(1)+bs1y*uy(2)+cs1y*uy(3)+ds1y*uy(4)
+  
+  ty(2)=as2y*(uy(3)-uy(2)-uy(2)+uy(1))
+  
+  ty(3)=as3y*(uy(4)-uy(3)-uy(3)+uy(2))+bs3y*(uy(5)-uy(3)-uy(3)+uy(1))
+  
+  ty(4)=as4y*(uy(5)-uy(4)-uy(4)+uy(3))+bs4y*(uy(6)-uy(4)-uy(4)+uy(2))+cs4y*(uy(7)-uy(4)-uy(4)+uy(1))
   
   do j=5,ny-4
      ty(j)=asjy*(uy(j+1)-uy(j)&
@@ -997,6 +990,7 @@ subroutine deryy1D_22(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
        -uy(ny-1)+uy(ny-2))
   ty(ny)=asny*uy(ny)+bsny*uy(ny-1)&
        +csny*uy(ny-2)+dsny*uy(ny-3)
+  
   if (iimplicit.ge.1) return
   
      do j=2,ny
@@ -1008,6 +1002,7 @@ subroutine deryy1D_22(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
      do j=ny-1,1,-1
         ty(j)=(ty(j)-sfy(j)*ty(j+1))*swy(j)
      enddo
+     
   return
 end subroutine deryy1D_22
 !---------------------------------------------------------------------------!

@@ -602,7 +602,7 @@ end if
           !--- Production term ---!
                         
           ! 1D derivative in y          
-          call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),1)
+          call dery1D(temp_dery,u1meanHT,di1d,sy1d,ffyp,fsyp,fwyp,ppy,ysize(2),0)
               
           ! Reynolds stress <u'v'> times mean streamwise velocity gradient dU/dy
           tke_prodHT = - uvmeanHT * temp_dery 

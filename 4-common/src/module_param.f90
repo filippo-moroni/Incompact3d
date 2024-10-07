@@ -140,7 +140,9 @@ module variables
   real(mytype), allocatable, target, dimension(:,:) :: aam211t,bbm211t,ccm211t,ddm211t,eem211t,ggm211t,hhm211t,wwm211t,zzm211t
   real(mytype), allocatable, target, dimension(:,:) :: rrm211t,qqm211t,vvm211t,ssm211t
 
-  ! interface for derivatives subroutines
+  !--- Interface for derivatives subroutines ---!
+  
+  ! npaire: integer variable used when Neumann BC is imposed (ncl = 1)
   abstract interface
   
      subroutine derivative_x(t,u,r,s,ff,fs,fw,nx,ny,nz,npaire,lind)
