@@ -945,6 +945,9 @@ subroutine deryy1D_21(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire)
 end subroutine deryy1D_21
 
 !---------------------------------------------------------------------------!
+! Obtain 2nd derivative for a field 'uy', with Dirichlet BCs.
+! Inputs sy and npaire have no effect on the solution.
+!---------------------------------------------------------------------------!
 subroutine deryy1D_22(ty,uy,ry,sy,sfy,ssy,swy,ny,npaire) 
 
   use param

@@ -1127,7 +1127,10 @@ contains
       xp(i)=real(i-1,mytype)*dx
       xpi(i)=(real(i,mytype)-half)*dx
     enddo
-    ! y-position
+    
+    !--- y-position ---!
+    
+    ! Uniform mesh 
     if (istret.eq.0) then
        do j=1,ny
           yp(j)=real(j-1,mytype)*dy
@@ -1140,17 +1143,24 @@ contains
        if (nclyn.eq.1 .or. nclyn.eq.2) then
           ppy(ny) = two
        endif
+    
+    ! Stretched mesh in y
     else
+       
+       ! Call subroutine for the stretching of the mesh in y-direction
        call stretching()
 
        allocate(dyp(ny))
-       ! compute dy for stretched mesh - Kay
+       
+       ! compute dy for stretched mesh (Kay Schäfer)
        do j=2,ny-1
           dyp(j) = half*(yp(j+1)-yp(j-1))
        enddo
+       
        dyp(1)  = yp(2) -yp(1)
        dyp(ny) = yp(ny)-yp(ny-1)
     endif
+    
     ! z-position
     do k=1,nz
        zp(k)=real(k-1,mytype)*dz
