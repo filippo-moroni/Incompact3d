@@ -2,7 +2,7 @@
 #SBATCH --job-name=test           # job name
 #SBATCH --account=fluids          # account name
 #SBATCH --partition=ulow          # partition name
-#SBATCH --time=13-23:59:59        # format HH : MM : SS
+#SBATCH --time=13-23:59:59        # format DD : HH : MM : SS
 #SBATCH --nodes=2                 # node number
 #SBATCH --ntasks-per-node=52      # tasks out of 52
 #SBATCH --cpus-per-task=1         # CPUs per task

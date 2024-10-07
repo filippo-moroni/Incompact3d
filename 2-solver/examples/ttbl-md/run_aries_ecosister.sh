@@ -3,7 +3,7 @@
 #SBATCH --qos=nolimits            # QOS
 #SBATCH --account=ecosister       # account name
 #SBATCH --partition=ecosister     # partition name
-#SBATCH --time=5-23:59:59         # format HH : MM : SS
+#SBATCH --time=5-23:59:59         # format DD : HH : MM : SS (max 6 days)
 #SBATCH --nodes=4                 # node number
 #SBATCH --ntasks-per-node=52      # tasks out of 52
 #SBATCH --cpus-per-task=1         # CPUs per task
