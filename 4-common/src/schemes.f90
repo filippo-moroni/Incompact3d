@@ -486,26 +486,7 @@ subroutine second_derivative(alsa1,as1,bs1,&
      bsi = (2115._mytype * xnpi2 - 1792._mytype * xmpi2 - 280._mytype * xnpi2 * xmpi2 + 1328._mytype) / den / (four * d2)
      csi = -(7695._mytype * xnpi2 / eight + 288._mytype * xmpi2 - 180._mytype * xnpi2 * xmpi2 - 2574._mytype) / den / (nine * d2)
      dsi = (198._mytype * xnpi2 + 128._mytype * xmpi2 - 40._mytype * xnpi2 * xmpi2 - 736._mytype) / den / (four**2 * d2)
-   
-  ! Base option for second order derivative from Incompact3d v2.0  
-  elseif(isecondder==6) then  
      
-     alsai=(45._mytype*fpi2*pi*pi-272._mytype)/(two*(45._mytype*fpi2*pi*pi-208._mytype))
-     asi  =((six-nine*alsai)/four)/d2
-     bsi  =((-three+twentyfour*alsai)/five)/(four*d2)
-     csi  =((two-eleven*alsai)/twenty)/(nine*d2)
-     dsi = zero
-
-     alsa4= alsai
-     as4  = asi
-     bs4  = bsi
-     cs4  = csi
-
-     alsatt = alsai
-     astt = asi
-     bstt = bsi
-     cstt = csi
-  
   else
      
      if (nrank==0) then
