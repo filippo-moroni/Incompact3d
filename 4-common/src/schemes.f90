@@ -421,12 +421,14 @@ subroutine second_derivative(alsa1,as1,bs1,&
 
   sf=zero;ss=zero;sw=zero;sfp=zero;ssp=zero;swp=zero
 
-  ! Define coefficients based on the desired formal accuracy of the numerical schemes
-  if (isecondder==1) then    ! Second-order central
+  !--- Define coefficients based on the desired formal accuracy of the numerical schemes ---!
+  
+  ! Second-order central
+  if (isecondder==1) then   
      alsai=zero
      asi  =one/d2  !((six-nine*alsai)/four)/d2
-     bsi  =zero !((-three+twentyfour*alsai)/five)/(four*d2)
-     csi  =zero !((two-eleven*alsai)/twenty)/(nine*d2)
+     bsi  =zero    !((-three+twentyfour*alsai)/five)/(four*d2)
+     csi  =zero    !((two-eleven*alsai)/twenty)/(nine*d2)
      dsi  =zero
 
      alsa4= alsai
@@ -438,29 +440,38 @@ subroutine second_derivative(alsa1,as1,bs1,&
      astt = asi
      bstt = bsi
      cstt = csi
-  elseif(isecondder==2) then ! Fourth-order central
+  
+  ! Fourth-order central
+  elseif(isecondder==2) then 
      if (nrank==0) write(*,*)'Set of coefficients not ready yet'
      call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
-  elseif(isecondder==3) then ! Fourth-order compact
+  
+  ! Fourth-order compact
+  elseif(isecondder==3) then 
      if (nrank==0) write(*,*)'Set of coefficients not ready yet'
      call MPI_ABORT(MPI_COMM_WORLD,code,ierror); stop
-  elseif(isecondder==4) then ! Sixth-order compact Lele style (no extra dissipation)
-     alsai= two / eleven
-     asi  = (twelve / eleven)/d2
-     bsi  = (three / 44.0_mytype )/d2
-     csi  = zero
-     dsi = zero
+     
+  ! Sixth-order compact Lele style (no extra dissipation)
+  elseif(isecondder==4) then 
+     
+     alsai = two / eleven
+     asi   = (twelve / eleven)/d2
+     bsi   = (three / 44.0_mytype )/d2
+     csi   = zero
+     dsi   = zero
 
-     alsa4= alsai
-     as4  = asi
-     bs4  = bsi
-     cs4  = csi
+     alsa4 = alsai
+     as4   = asi
+     bs4   = bsi
+     cs4   = csi
 
      alsatt = alsai
-     astt = asi
-     bstt = bsi
-     cstt = csi
-  elseif(isecondder==5) then ! Sixth-order Hyperviscous operator
+     astt   = asi
+     bstt   = bsi
+     cstt   = csi
+  
+  ! Sixth-order Hyperviscous operator   
+  elseif(isecondder==5) then 
 
      dpis3=two*pi/three
      kppkc=pi*pi*(one+nu0nu)
@@ -475,53 +486,75 @@ subroutine second_derivative(alsa1,as1,bs1,&
      bsi = (2115._mytype * xnpi2 - 1792._mytype * xmpi2 - 280._mytype * xnpi2 * xmpi2 + 1328._mytype) / den / (four * d2)
      csi = -(7695._mytype * xnpi2 / eight + 288._mytype * xmpi2 - 180._mytype * xnpi2 * xmpi2 - 2574._mytype) / den / (nine * d2)
      dsi = (198._mytype * xnpi2 + 128._mytype * xmpi2 - 40._mytype * xnpi2 * xmpi2 - 736._mytype) / den / (four**2 * d2)
+   
+  ! Base option for second order derivative from Incompact3d v2.0  
+  elseif(isecondder==6) then  
+     
+     alsai=(45._mytype*fpi2*pi*pi-272._mytype)/(two*(45._mytype*fpi2*pi*pi-208._mytype))
+     asi  =((six-nine*alsai)/four)/d2
+     bsi  =((-three+twentyfour*alsai)/five)/(four*d2)
+     csi  =((two-eleven*alsai)/twenty)/(nine*d2)
+     dsi = zero
+
+     alsa4= alsai
+     as4  = asi
+     bs4  = bsi
+     cs4  = csi
+
+     alsatt = alsai
+     astt = asi
+     bstt = bsi
+     cstt = csi
+  
   else
+     
      if (nrank==0) then
         write(*,*) 'This is not an option.'
      endif
+     
   endif
 
   ! Defined for the boundaries when Dirichlet conditions are used
-  alsa1= eleven
-  as1  = (thirteen)/d2
-  bs1  =-(twentyseven)/d2
-  cs1  = (fifteen)/d2
-  ds1  =-(one)/d2
+  alsa1 = eleven
+  as1   = (thirteen)/d2
+  bs1   =-(twentyseven)/d2
+  cs1   = (fifteen)/d2
+  ds1   =-(one)/d2
 
   if (isecondder==1) then
      alsa2 = zero
      as2   = one / d2
   else
-     alsa2= zpone
-     as2  = (six/five)/d2
+     alsa2 = zpone
+     as2   = (six/five)/d2
   endif
 
-  alsa3= two/eleven
-  as3  = (twelve/eleven)/d2
-  bs3  = (three/fortyfour)/d2
+  alsa3 = two/eleven
+  as3   = (twelve/eleven)/d2
+  bs3   = (three/fortyfour)/d2
 
-  alsa4= two/eleven
-  as4  = (twelve/eleven)/d2
-  bs4  = (three/fortyfour)/d2
-  cs4  = zero
+  alsa4 = two/eleven
+  as4   = (twelve/eleven)/d2
+  bs4   = (three/fortyfour)/d2
+  cs4   = zero
 
-  alsan= eleven
-  asn  = (thirteen)/d2
-  bsn  =-(twentyseven)/d2
-  csn  = (fifteen)/d2
-  dsn  =-(one)/d2
+  alsan = eleven
+  asn   = (thirteen)/d2
+  bsn   =-(twentyseven)/d2
+  csn   = (fifteen)/d2
+  dsn   =-(one)/d2
 
   if (isecondder==1) then
      alsam = zero
      asm   = one / d2
   else
-     alsam= zpone
-     asm  = (six/five)/d2
+     alsam = zpone
+     asm   = (six/five)/d2
   endif
 
-  alsat= two/eleven
-  ast  = (twelve/eleven)/d2
-  bst  = (three/fortyfour)/d2
+  alsat = two/eleven
+  ast   = (twelve/eleven)/d2
+  bst   = (three/fortyfour)/d2
 
   alsatt = two/eleven
   astt = (twelve/eleven)/d2
