@@ -96,10 +96,15 @@ program post
   call init_coarser_mesh_statS(nstat,nstat,nstat,.true.)      ! start from 1 == true
   call init_coarser_mesh_statV(nvisu,nvisu,nvisu,.true.)      ! start from 1 == true
   
+  ! Initialize standard Incompact3d variables
+  call init_variables()
+  
   ! Initialize post-processing variables
   call init_post_variables()
   
+  ! Initialize schemes for derivatives
   call schemes()
+  
   call decomp_info_init(nxm,nym,nzm,phG)
   
   ! Start of the post-processing  
