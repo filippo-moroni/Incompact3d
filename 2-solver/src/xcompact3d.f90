@@ -68,10 +68,16 @@ program xcompact3d
         ! Time-integration
         call int_time(rho1,ux1,uy1,uz1,phi1,drho1,dux1,duy1,duz1,dphi1)
         
+        ! Application of pressure grandient and BCs
         call pre_correc(ux1,uy1,uz1,ep1)
 
         call calc_divu_constraint(divu3,rho1,phi1)
+        
+        ! Solution of Poisson equation for pressure in spectral space with 3D FFT
         call solve_poisson(pp3,px1,py1,pz1,rho1,ux1,uy1,uz1,ep1,drho1,divu3)
+        
+        ! Correct velocity through pressure field obtained from the Poisson solver in order to
+        ! enforce mass-conservation.
         call cor_vel(ux1,uy1,uz1,px1,py1,pz1)
 
         !if (ilmn) then
