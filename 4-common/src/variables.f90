@@ -1178,7 +1178,9 @@ contains
 
     ! AB2
     elseif (itimescheme.eq.2) then 
+       
        iadvance_time=1
+       
        adt(1)=onepfive*dt
        bdt(1)=-half*dt
        gdt(1)=adt(1)+bdt(1)
@@ -1189,6 +1191,7 @@ contains
 
     ! AB3
     elseif (itimescheme.eq.3) then 
+       
        iadvance_time=1
 
        adt(1)= (twentythree/twelve)*dt
@@ -1202,6 +1205,7 @@ contains
 
     ! AB4
     elseif(itimescheme==4) then  
+       
        iadvance_time=1
 
        adt(1)= (  fiftyfive/twentyfour)*dt
@@ -1214,8 +1218,9 @@ contains
        ntime    = 4
        nrhotime = 5
    
-    ! RK3
+    ! RK3 (Williamson (1980))
     elseif(itimescheme.eq.5) then 
+       
        iadvance_time=3
 
        adt(1)=(eight/fifteen)*dt
@@ -1233,7 +1238,9 @@ contains
       
     ! RK4 Carpenter and Kennedy
     elseif(itimescheme.eq.6) then 
+       
        iadvance_time=5
+       
        adt(1)=zero
        adt(2)=-0.4178904745_mytype
        adt(3)=-1.192151694643_mytype

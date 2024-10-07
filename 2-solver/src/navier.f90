@@ -131,7 +131,7 @@ contains
 #endif
 
           ! Need to update pressure gradient here for varcoeff
-          CALL gradp(px1,py1,pz1,pp3(:,:,:,1))
+          call gradp(px1,py1,pz1,pp3(:,:,:,1))
 
 #ifdef DEBG
           avg_param = zero
@@ -149,13 +149,13 @@ contains
 #endif
          
 
-          IF ((.NOT.ilmn).OR.(.NOT.ivarcoeff)) THEN
+          if ((.not.ilmn).or.(.not.ivarcoeff)) then
              !! Once-through solver
              !! - Incompressible flow
              !! - LMN - constant-coefficient solver
-             converged = .TRUE.
-          ENDIF
-       ENDIF
+             converged = .true.
+          endif
+       endif
 
        poissiter = poissiter + 1
     enddo
@@ -166,7 +166,7 @@ contains
     !   CALL velocity_to_momentum(rho1, ux1, uy1, uz1)
     !ENDIF
 
-  END SUBROUTINE solve_poisson
+  end subroutine solve_poisson
   !-----------------------------------------------------------------------------!
   !  SUBROUTINE: lmn_t_to_rho_trans
   ! DESCRIPTION: Converts the temperature transient to the density transient
@@ -416,7 +416,7 @@ contains
 
     !********NCLX==2*************************************
     !we are in X pencils:
-    if ((itype.eq.itype_channel).and.(nclx1==2.and.nclxn==2)) then
+    if ((itype.eq.itype_channel).and.(nclx1 == 2 .and. nclxn == 2)) then
 
        !Computation of the flow rate Inflow/Outflow
        ut1=zero
@@ -480,7 +480,7 @@ contains
     if (nclx1==1) then
        do k=1,xsize(3)
           do j=1,xsize(2)
-             ux(1 ,j,k)=zero
+             ux(1,j,k)=zero
           enddo
        enddo
     endif
@@ -655,7 +655,7 @@ contains
   subroutine velocity_to_momentum (rho1, ux1, uy1, uz1)
 
     use param, only : nrhotime
-    use var, only : ilmn
+    use var,   only : ilmn
 
     implicit none
 
