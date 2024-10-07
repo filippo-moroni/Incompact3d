@@ -247,13 +247,16 @@ end if
                                                 phi1meanHT(j)
              end do                  
              close(iunit)
+             
+             ! Display that reading was successful
+             if (nrank.eq.0) print *, 'File read.'
          
          end if
      
      end if
       
 !---------Start of the ensemble average cycle--------------!
-
+             
   do ii=1,nr 
      
      ! Writing the directories where snapshots are saved (different realizations)
