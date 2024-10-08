@@ -258,7 +258,7 @@ elif itype == 3:
 
     # Delta y+ at the channel center
     delta_yc = yp[nyh] - yp[nyh-1]
-    delta_yc_nd = delta_yc / delta_nu_peak
+    delta_yc_nd = delta_yc / delta_nu_max
 
              
 #!--- Printing useful information to the screen ---!
@@ -529,9 +529,9 @@ elif itype == 3:
     # Create data arrays with outputs
     data1 = [
              ["Lx+/Ly+/Lz+", "dx+/dyw+/dz+/dyc+" ],
-             [ xlx_nd_peak,   delta_x_nd_max     ],
-             [ yly_nd_peak,   delta_y1_nd_max    ],
-             [ zlz_nd_peak,   delta_z_nd_max     ],
+             [ xlx_nd_max,    delta_x_nd_max     ],
+             [ yly_nd_max,    delta_y1_nd_max    ],
+             [ zlz_nd_max,    delta_z_nd_max     ],
              ["/",            delta_yc_nd        ],
             ]
            
