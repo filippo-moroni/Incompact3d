@@ -501,10 +501,13 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         # Shear velocities
         sh_vel_x   = np.sqrt(tau_wx)     # streamwise shear velocity (based on streamwise mean gradient)  
         sh_vel_tot = np.sqrt(tau_wtot)   # total shear velocity (based on total mean gradient)
-            
-        # Scalar friction quantity phi_tau (counterpart of u_tau) (see Kozul et al. (2016) for example)
-        # To be verified the correct rescaling for wall oscillations (u_taux or u_tau)
-        phi_tau = nu * (mg_phi[0] / sh_vel_tot) 
+        
+        # One scalar field
+        if numscalar == 1:    
+        
+            # Scalar friction quantity phi_tau (counterpart of u_tau) (see Kozul et al. (2016) for example)
+            # To be verified the correct rescaling for wall oscillations (u_taux or u_tau)
+            phi_tau = nu * (mg_phi[0] / sh_vel_tot) 
                  
     print()
  
