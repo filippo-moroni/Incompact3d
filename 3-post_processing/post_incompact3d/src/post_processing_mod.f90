@@ -21,10 +21,11 @@ module post_processing
   implicit none
   
   ! Variables declaration
-  integer :: FS
-  character(len=100) :: fileformat
-  character(len=1), parameter :: NL=char(10) !new line character
+  !integer :: FS
+  !character(len=100) :: fileformat
+  !character(len=1), parameter :: NL=char(10) !new line character
 
+  ! Logicals for if conditions during post-processing
   logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
   logical, save :: read_vel,read_pre,read_phi 
 
@@ -123,9 +124,15 @@ module post_processing
 contains
 
   !-----------------------------------------------------------------------------!
+  ! DESCRIPTION: Subroutine to allocate memory for working arrays used only
+  !              during post-processing. 
+  !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
+  !-----------------------------------------------------------------------------!
   subroutine init_post_variables
-
+  
     use var
+    
+    implicit none
        
     ! Allocate y-pencil pressure array (not allocated in the solver)
     call alloc_y(pre2)
