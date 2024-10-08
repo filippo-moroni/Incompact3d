@@ -14,18 +14,14 @@ module post_processing
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
+  
   use variables
   use param
   use var
 
   implicit none
   
-  ! Variables declaration
-  !integer :: FS
-  !character(len=100) :: fileformat
-  !character(len=1), parameter :: NL=char(10) !new line character
-
-  ! Logicals for if conditions during post-processing
+  ! Logicals for 'if' conditions during post-processing
   logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
   logical, save :: read_vel,read_pre,read_phi 
 
