@@ -29,7 +29,8 @@ program post
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
-  use decomp_2d_io
+  use decomp_2d_io, only : decomp_2d_io_init, decomp_2d_io_finalise
+  
   use variables
   use param
   use var
@@ -331,7 +332,12 @@ end if
                      uy2 (i,j,k)   = uy2 (i,j,k)   - v1meanHT(j)
                      uz2 (i,j,k)   = uz2 (i,j,k)   - w1meanHT(j)
                      pre2(i,j,k)   = pre2(i,j,k)   - pre1meanHT(j)
-                     phi2(i,j,k,1) = phi2(i,j,k,1) - phi1meanHT(j)
+                     
+                     ! Scalar fluctuations
+                     if (numscalar == 1) then
+                         phi2(i,j,k,1) = phi2(i,j,k,1) - phi1meanHT(j)
+                     end if
+                 
                  enddo
              enddo
          enddo
@@ -1068,7 +1074,7 @@ end if
      
   endif
 
-  call decomp_2d_finalize
+  call decomp_2d_finalise
   call MPI_FINALIZE(code)
 
 end program post
