@@ -434,10 +434,20 @@ elif itype == 3:
            
     # Create the file and write  
     with open('cf_stats/cf_mean.txt', 'w') as f:
-        f.write(f"{'cf_mean':<{pp.c_w}}, "  +
-                f"{'t_tot':<{pp.c_w}}, "    +
-                f"{'delta_TU':<{pp.c_w}}, " +
-                f"{'n_snap':<{pp.c_w}}\n"   )
+        f.write('Average of friction coeffiecient for a Channel.\n')
+        f.write('\n')
+        f.write(f'Flowcase: {add_string}.\n')
+        f.write('\n')
+        f.write('Abbreviations:\n')
+        f.write(' - cf_mean  : friction coefficient average;\n')
+        f.write(' - t_tot    : total time of average (outer time, based on channel half-height and centerline velocity of relative laminar Poiseuille flow;\n')
+        f.write(' - delta_TU : delta of time units (TU) between different savings of cf;\n')
+        f.write(' - n_snap   : number of snapshots used in the average.\n')
+        f.write('\n')
+        f.write(f"{'cf_mean':>{pp.c_w}}, "  +
+                f"{'t_tot':>{pp.c_w}}, "    +
+                f"{'delta_TU':>{pp.c_w}}, " +
+                f"{'n_snap':>{pp.c_w}}\n"   )
 
         f.write(f"{mean_cf:{pp.fs8}}, "     +
                 f"{t_tot:{pp.fs}}, "        +
