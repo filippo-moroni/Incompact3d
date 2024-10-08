@@ -27,9 +27,9 @@ zlz = 4.0             ! Lz (Size of the box in z-direction)
 re  = 4225.96         ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) 
 
 ! Time stepping
-dt = 0.005            ! Time step
+dt = 0.01             ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 100000        ! Last iteration
+ilast = 200000        ! Last iteration
 irestart = 0          ! Read initial flow field? (0: no, 1: yes)
 
 ! Enable modelling tools
@@ -59,7 +59,7 @@ isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th
 ipinter = 2           ! Interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2, spectral-like behaviour)
 
 ! Time scheme
-itimescheme = 3       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 4->AB4, 5->RK3, 6->RK4, 7-->CN2+AB3
+itimescheme = 5       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 4->AB4, 5->RK3, 6->RK4, 7-->CN2+AB3
 iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0->Same as convective, 1->Backward Euler, 2->CN
                       ! Implicit diffusion in y is valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
                       ! and it is experimental with the hyperviscous operator.
@@ -72,8 +72,8 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 
 icheckpoint = 5000    ! Frequency for writing backup files
 ioutput = 5000        ! Frequency for saving snapshots
-ioutput_cf = 5000     ! Frequency for saving cf and related quantities
-ioutput_plane = 100   ! Frequency for saving planes for visualization
+ioutput_cf = 100      ! Frequency for saving cf and related quantities
+ioutput_plane = 5000  ! Frequency for saving planes for visualization
 ilist = 25            ! Frequency for writing to screen (out/log file)
 isnap = 1             ! Save snapshots (0: no, 1: yes)
 ivisu = 1             ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)      
