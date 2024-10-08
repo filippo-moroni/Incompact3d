@@ -252,7 +252,7 @@ contains
     allocate(uvisu(xstV(1):xenV(1),xstV(2):xenV(2),xstV(3):xenV(3)))
     uvisu=zero
 
-    !Y PENCILS
+    ! Allocate y-pencils arrays
     call alloc_y(ux2)
     ux2=zero
     call alloc_y(uy2)
