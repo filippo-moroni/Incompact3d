@@ -499,12 +499,15 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
                   RuvzH1(j,rr) = RuvzH1(j,rr) + ta3(i,j,k)/den
                   
                   !--- Scalar fluctuations correlation (phi'phi') ---!
+                  if (numscalar == 1) then
                   
-                  ! Product of fluctuations at distance 'r'
-                  ta3(i,j,k) = phi3(i,j,k,1)*phi3(i,j,kpr,1)
+                      ! Product of fluctuations at distance 'r'
+                      ta3(i,j,k) = phi3(i,j,k,1)*phi3(i,j,kpr,1)
                   
-                  ! Accumulation inside the correlation function variable (at each subdomain)
-                  RppzH1(j,rr) = RppzH1(j,rr) + ta3(i,j,k)/den
+                      ! Accumulation inside the correlation function variable (at each subdomain)
+                      RppzH1(j,rr) = RppzH1(j,rr) + ta3(i,j,k)/den
+                  
+                  end if
                   
               enddo
           enddo
