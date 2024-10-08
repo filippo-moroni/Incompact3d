@@ -193,6 +193,10 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   use param
   use variables
   
+  use var,  only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+  use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2
+  use var,  only : ta3,tb3,tc3,td3,te3,tf3,di3
+  
   implicit none
   
   ! Variables definition (velocity components and scalar field)
@@ -202,11 +206,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   ! Number of flow realizations and number of snapshots
   integer,     intent(in) :: nr,nt                                                                                                  
   integer                 :: i,j,k
-  
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
-  
+    
   real(mytype) :: den  ! denominator of the divisions 
   real(mytype) :: lind
   
@@ -331,6 +331,10 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   use param
   use variables
   
+  use var,  only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+  use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2
+  use var,  only : ta3,tb3,tc3,td3,te3,tf3,di3
+  
   implicit none
   
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
@@ -338,11 +342,7 @@ subroutine stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean2)
   ! Number of flow realizations and number of snapshots
   integer,     intent(in) :: nr,nt 
   integer                 :: i,j,k
-  
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
-  
+    
   real(mytype) :: den  ! denominator of the divisions 
   real(mytype) :: lind
   
@@ -532,6 +532,10 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   use param
   use variables
   
+  use var,  only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+  use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2
+  use var,  only : ta3,tb3,tc3,td3,te3,tf3,di3
+  
   implicit none
   
   ! Fluctuations
@@ -543,10 +547,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   
   ! Arrays for derivative calculations
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
-  real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
-  real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,di2
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,di3
-  
+    
   ! Denominator of the divisions  
   real(mytype) :: den   
   real(mytype) :: lind
