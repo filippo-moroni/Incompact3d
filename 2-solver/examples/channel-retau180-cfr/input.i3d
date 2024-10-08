@@ -70,10 +70,10 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 &InOutParam
 !====================
 
-icheckpoint = 5000    ! Frequency for writing backup files
-ioutput = 5000        ! Frequency for saving snapshots
+icheckpoint = 1250    ! Frequency for writing backup files
+ioutput = 1250        ! Frequency for saving snapshots
 ioutput_cf = 100      ! Frequency for saving cf and related quantities
-ioutput_plane = 5000  ! Frequency for saving planes for visualization
+ioutput_plane = 100   ! Frequency for saving planes for visualization
 ilist = 25            ! Frequency for writing to screen (out/log file)
 isnap = 1             ! Save snapshots (0: no, 1: yes)
 ivisu = 1             ! Save case-specific field for visualization (e.g. Q-criterion) (0: no, 1: yes)      
