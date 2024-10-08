@@ -29,7 +29,7 @@ re  = 4225.96         ! nu=1/re (kinematic viscosity, since unitary reference sc
 ! Time stepping
 dt = 0.025            ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 100000        ! Last iteration
+ilast = 50000         ! Last iteration
 irestart = 0          ! Read initial flow field? (0: no, 1: yes)
 
 ! Enable modelling tools
