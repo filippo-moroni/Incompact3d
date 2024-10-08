@@ -378,7 +378,7 @@ if itype == 3:
 
     # Average (lower TU is included)
     mean_cf = np.mean(cfx[lower_index:])
-    mean_cf = 1000.0
+    mean_cf = mean_cf*1000.0
     print(f"Mean cf value, <cf> x 10^3 = {mean_cf:.2f}")
     print()
     
@@ -397,7 +397,7 @@ print()
 xliminf = np.min(time_unit)
 xlimsup = np.max(time_unit)
 yliminf = np.min(cfx) * 0.0
-ylimsup = np.max(cfx) * 1.2 
+ylimsup = np.max(cfx) * 1.2  
 
 # Subplots environment
 fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
@@ -427,7 +427,7 @@ elif itype == 3:
     ax.add_patch(rect)
     
     # Horizontal line to show mean cf value
-    ax.hlines(y=mean_cf, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
+    ax.hlines(y=mean_cf/1000.0, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
     
     # Create folder to store cf_mean 
     os.makedirs('cf_stats', mode=0o777, exist_ok=True)
@@ -439,7 +439,7 @@ elif itype == 3:
         f.write(f'Flowcase: {add_string}.\n')
         f.write('\n')
         f.write('Abbreviations:\n')
-        f.write(' - cf_mean  : friction coefficient average;\n')
+        f.write(' - cf_mean  : friction coefficient average (times 10^3);\n')
         f.write(' - t_tot    : total time of average (outer time, based on channel half-height and centerline velocity of relative laminar Poiseuille flow;\n')
         f.write(' - delta_TU : delta of time units (TU) between different savings of cf;\n')
         f.write(' - n_snap   : number of snapshots used in the average.\n')
