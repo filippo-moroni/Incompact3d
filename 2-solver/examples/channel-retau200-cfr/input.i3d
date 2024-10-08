@@ -111,7 +111,7 @@ start_wo = 1          ! Time-step at which we start (>=) to apply spanwise wall 
 cpg = F               ! If cpg=T, then re is friction Reynolds number Re_tau
 idir_stream = 1       ! Streamwise direction (1: x-dir, 3: z-dir, 2: y-dir, not available)
 wrotation = 0.12      ! Rotation speed to trigger turbulence
-spinup_time = 10000   ! Number of time steps with rotation to trigger turbulence
+spinup_time = 10000   ! Number of time steps with rotation to trigger turbulence (according to default Incompact3d, we need at least 25 time units)
 
 /End
 
