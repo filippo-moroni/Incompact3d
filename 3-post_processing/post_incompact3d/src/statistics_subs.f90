@@ -425,15 +425,14 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
   implicit none
    
   ! Variables definition (velocity and scalar field fluctuations, y-pencils)
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2          
-  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: phi2 
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3))           :: ux2,uy2,uz2          
+  real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi2 
   
   ! Number of points in homogeneous directions, number of snapshots and number of realizations
   integer,     intent(in) :: nx,nz,nt,nr
   
   ! Local work arrays
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
-  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: phi3
+  real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3,tb3
   
   ! Correlation functions (first index: j (rows); second index: r (columns))
   real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1, RuvzH1, RppzH1
@@ -452,7 +451,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
   call transpose_y_to_z(uy2,uy3)
   call transpose_y_to_z(uz2,uz3)
   
-  if(read_phi) call transpose_y_to_z(phi2(:,:,:,1),phi3(:,:,:,1))
+  if(read_phi) call transpose_y_to_z(phi2(:,:,:,1),tb3(:,:,:))
 
   ! Correlation function calculation
   do k=1,zsize(3)
@@ -502,7 +501,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
                   if (numscalar == 1) then
                   
                       ! Product of fluctuations at distance 'r'
-                      ta3(i,j,k) = phi3(i,j,k,1)*phi3(i,j,kpr,1)
+                      ta3(i,j,k) = tb3(i,j,k)*tb3(i,j,kpr)
                   
                       ! Accumulation inside the correlation function variable (at each subdomain)
                       RppzH1(j,rr) = RppzH1(j,rr) + ta3(i,j,k)/den
