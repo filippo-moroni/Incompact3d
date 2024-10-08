@@ -377,9 +377,9 @@ subroutine parameter(input_i3d)
      if (itype.eq.itype_channel) then
        if (.not.cpg) then
          write(*,*) 'Channel forcing with constant flow rate (CFR)'
-         write(*,"(' Re_0 (centerline)             : ',F17.3)") re
-         write(*,"(' Re_B (bulk, estimated)        : ',F17.3)") re_bulk
-         write(*,"(' Re_tau (estimated)            : ',F17.3)") re_tau
+         write(*,"(' Re_0 (centerline)      : ',F17.3)") re
+         write(*,"(' Re_B (bulk, estimated) : ',F17.3)") re_bulk
+         write(*,"(' Re_tau (estimated)     : ',F17.3)") re_tau              
        else 
          write(*,*) 'Channel forcing with constant pressure gradient (CPG)'
          write(*,"(' Re_tau                        : ',F17.3)") re
@@ -390,6 +390,8 @@ subroutine parameter(input_i3d)
      else
        write(*,"(' Reynolds number Re     : ',F17.3)") re
      endif
+     
+     write(*,*) '==========================================================='
      write(*,"(' xnu                    : ',F17.8)") xnu
      
      ! Displaying if we are using wall oscillations and if open or closed loop strategy
