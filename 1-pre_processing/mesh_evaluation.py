@@ -116,6 +116,9 @@ elif itype == 3:
         
     # Number of points in the channel half (h: half) 
     nyh = ((ny - 1) // 2) + 1
+    
+    # For a Channel it is supposed that we have only 1 flow realization
+    nrealiz = 1
 
 #!--- Calculations valid for both TTBL and Channel ---!
 
