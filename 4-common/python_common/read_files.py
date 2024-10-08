@@ -274,6 +274,9 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     if itype == 3:
     
         print(">>> Plotting of statistics for a channel.")
+        
+        # Channel statistics are only from 'post_incompact3d' at the moment
+        i_switch_plot = False
 
         # Reading of mean statistics
         if post_mean:        
