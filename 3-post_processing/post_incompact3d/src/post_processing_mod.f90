@@ -133,6 +133,10 @@ contains
     use var
     
     implicit none
+    
+    ! Print that we are initializing post-processing work variables
+    if (nrank == 0) write(*,*) '==========================================================='
+    if (nrank == 0) write(*,*) 'Initializing post-processing work variables ...'
        
     ! Allocate y-pencil pressure array (not allocated in the solver)
     call alloc_y(pre2)
@@ -147,7 +151,11 @@ contains
   !-----------------------------------------------------------------------------!
   subroutine init_statistics()
     
-  implicit none
+    implicit none
+  
+    ! Print that we are initializing post-processing statistics variables
+    if (nrank == 0) write(*,*) '==========================================================='
+    if (nrank == 0) write(*,*) 'Initializing post-processing statistics variables ...'
       
     if (post_mean) then
        
