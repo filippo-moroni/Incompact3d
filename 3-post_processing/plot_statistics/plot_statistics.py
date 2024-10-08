@@ -148,6 +148,9 @@ re_tau = int(re_tau)
 print(">>> Friction Reynolds number, Re_tau = ", re_tau)
 print()
 
+# Set friction Reynolds number to none to avoid to save it in filename for channel
+re_tau = None
+
 # Channel only
 if itype == 3:
 
