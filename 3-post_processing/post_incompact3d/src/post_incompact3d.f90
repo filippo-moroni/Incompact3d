@@ -163,7 +163,7 @@ program post
   ! Total number of Snapshots in time
   nt = (filen-file1)/icrfile+1
   
-  ! Initialize statistics
+  ! Initialize statistics arrays
   call init_statistics()
     
 !-----------------------------!
