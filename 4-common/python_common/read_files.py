@@ -480,7 +480,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     
     
     # Shear velocities calculation for statistics obtained from 'post_incompact3d', valid for both Channel and TTBL
-    if iswitch_plot == False:
+    if i_switch_plot == False:
     
         """           
         (Total) wall shear stress is used to check maximum numerical resolutions (mesh spacings and viscous time).
