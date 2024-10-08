@@ -1074,7 +1074,8 @@ end if
      
   endif
 
-  call decomp_2d_finalise
+  call decomp_2d_io_finalise()
+  call decomp_2d_finalize
   call MPI_FINALIZE(code)
 
 end program post
