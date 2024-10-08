@@ -138,6 +138,9 @@ sh_vel_max = np.sqrt((cf/2.0)) * uref
 # Viscous length at peak cf or at steady state
 delta_nu_max = nu / sh_vel_max
 
+# Viscous time at peak cf or at steady state
+t_nu_min = nu / (sh_vel_max**2)
+
 # First element y-dimension
 delta_y1 = yp[1] - yp[0]
 
@@ -339,6 +342,12 @@ print()
 print('Mesh size x-direction: delta_x+ = ', delta_x_nd_max)
 print('Mesh size y-direction at the first element near the wall: delta_y1+ = ', delta_y1_nd_max)
 print('Mesh size z-direction: delta_z+ = ', delta_z_nd_max)
+print()
+print('!--- Time resolution ---!')
+print()
+print('Estimated minimum viscous time, t_nu = ', t_nu_min)
+print('Time step,                        dt = ', dt)
+print('Ratio minimum viscous time and dt    = ', t_nu_min / dt)
 print()
 
 if itype == 13:
