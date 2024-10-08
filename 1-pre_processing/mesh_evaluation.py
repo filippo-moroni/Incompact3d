@@ -445,10 +445,10 @@ if itype == 13:
             ]
             
     data5 = [
-             ["n_tot", "nsnap", "mem_tot [GB]",  "CPUh" ],
-             [ n_tot,   nsnap,   mem_tot,         cpuh  ],                     
-            ] 
-
+             ["n_tot", "nsnap", "mem_tot [GB]",  "CPUh", "t_nu_min" ],
+             [ n_tot,   nsnap,   mem_tot,         cpuh,   t_nu_min  ],                     
+            ]
+    
     # Create the tables using tabulate
     table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
     table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
@@ -502,6 +502,7 @@ if itype == 13:
          f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
          f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
          f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")
+         f.write("t_nu_min:      Estimated minimum viscous time unit.\n")         
          f.write("\n")
          f.write("!-------------------------------------!\n")
          f.write("\n")
@@ -550,8 +551,8 @@ elif itype == 3:
             ]
                        
     data3 = [
-             ["sh_vel",    "n_tot", "nsnap", "mem_tot [GB]",  "CPUh" ],
-             [ sh_vel_max,  n_tot,   nsnap,   mem_tot,         cpuh  ],
+             ["sh_vel",    "n_tot", "nsnap", "mem_tot [GB]", "CPUh", "t_nu_min" ],
+             [ sh_vel_max,  n_tot,   nsnap,   mem_tot,        cpuh,   t_nu_min  ],
             ]
             
     # Create the tables using tabulate
