@@ -27,9 +27,9 @@ zlz = 4.0             ! Lz (Size of the box in z-direction)
 re  = 4225.96         ! nu=1/re (kinematic viscosity, since unitary reference scales are assumed) 
 
 ! Time stepping
-dt = 0.025            ! Time step
+dt = 0.01             ! Time step
 ifirst = 1            ! First iteration (set to n+1 if we have a checkpoint at time step n)
-ilast = 50000         ! Last iteration
+ilast = 100000        ! Last iteration
 irestart = 0          ! Read initial flow field? (0: no, 1: yes)
 
 ! Enable modelling tools
@@ -70,8 +70,8 @@ iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0
 &InOutParam
 !====================
 
-icheckpoint = 500     ! Frequency for writing backup files
-ioutput = 500         ! Frequency for saving snapshots
+icheckpoint = 1250    ! Frequency for writing backup files
+ioutput = 1250        ! Frequency for saving snapshots
 ioutput_cf = 100      ! Frequency for saving cf and related quantities
 ioutput_plane = 100   ! Frequency for saving planes for visualization
 ilist = 25            ! Frequency for writing to screen (out/log file)
@@ -111,7 +111,7 @@ start_wo = 1          ! Time-step at which we start (>=) to apply spanwise wall 
 cpg = F               ! If cpg=T, then re is friction Reynolds number Re_tau
 idir_stream = 1       ! Streamwise direction (1: x-dir, 3: z-dir, 2: y-dir, not available)
 wrotation = 0.12      ! Rotation speed to trigger turbulence
-spinup_time = 2500    ! Number of time steps with rotation to trigger turbulence (according to default Incompact3d, we need 25 time units)
+spinup_time = 5000    ! Number of time steps with rotation to trigger turbulence (according to default Incompact3d, we need at least 25 time units)
 
 /End
 
