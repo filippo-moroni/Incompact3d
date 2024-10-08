@@ -263,6 +263,7 @@ elif itype == 3:
     # Delta y+ at the channel center
     delta_yc = yp[nyh] - yp[nyh-1]
     delta_yc_nd = delta_yc / delta_nu_max
+    delta_yc_nd = round(delta_yc_nd, 3)
 
              
 #!--- Printing useful information to the screen ---!
