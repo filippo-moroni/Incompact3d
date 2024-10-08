@@ -140,6 +140,7 @@ delta_nu_max = nu / sh_vel_max
 
 # Viscous time at peak cf or at steady state
 t_nu_min = nu / (sh_vel_max**2)
+t_nu_min = round(t_nu_min, 4)
 
 # First element y-dimension
 delta_y1 = yp[1] - yp[0]
@@ -551,8 +552,8 @@ elif itype == 3:
             ]
                        
     data3 = [
-             ["sh_vel",    "n_tot", "nsnap", "mem_tot [GB]", "CPUh", "t_nu_min" ],
-             [ sh_vel_max,  n_tot,   nsnap,   mem_tot,        cpuh,   t_nu_min  ],
+             ["sh_vel",    "npvis", "n_tot", "nsnap", "mem_tot [GB]", "CPUh", "t_nu_min" ],
+             [ sh_vel_max,  npvis,   n_tot,   nsnap,   mem_tot,        cpuh,   t_nu_min  ],
             ]
             
     # Create the tables using tabulate
@@ -573,6 +574,22 @@ elif itype == 3:
          f.write("\n")
          f.write("!--- Miscellaneous ---!\n")
          f.write(table3) 
+         f.write("\n")
+         f.write("!-------------------------------------!\n")
+         f.write("\n")
+         f.write("\n")
+         f.write("!--- List of acronyms & variables: ---!\n")
+         f.write("\n")
+         f.write("nrealiz:       Number of flow realizations considered.\n")
+         f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")
+         f.write("sh_vel:        Shear velocity at steady state according to Quadrio & Ricco (2004).\n")
+         f.write("npvis:         Number of points viscous sublayer at cf steady state (y+ < 5).\n")
+         f.write("n_tot:         Total number of grid points.\n")
+         f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
+         f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
+         f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
+         f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")
+         f.write("t_nu_min:      Estimated minimum viscous time unit.\n")         
          f.write("\n")
          f.write("!-------------------------------------!\n")
          f.write("\n")
