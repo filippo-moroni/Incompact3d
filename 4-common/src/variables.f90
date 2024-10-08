@@ -83,8 +83,9 @@ contains
     if (nrank == 0) write(*,*) 'Init_variables start'
 #endif
 
+    ! Print that we are initializing variables
     if (nrank == 0) write(*,*) '==========================================================='
-    if (nrank == 0) write(*,*) 'Initializing variables...'
+    if (nrank == 0) write(*,*) 'Initializing variables ...'
 
     if (nclx) then
        nxmsize = xsize(1)
