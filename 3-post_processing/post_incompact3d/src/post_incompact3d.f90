@@ -29,7 +29,7 @@ program post
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
-  use decomp_2d_io, only : decomp_2d_io_init, decomp_2d_io_finalise
+  use decomp_2d_io
   
   use variables
   use param
