@@ -378,7 +378,8 @@ if itype == 3:
 
     # Average (lower TU is included)
     mean_cf = np.mean(cfx[lower_index:])
-    print("Mean cf value:", mean_cf)
+    mean_cf = round(mean_cf, 6) * 1000.0
+    print("Mean cf value, <cf> x 10^3 = ", mean_cf)
     print()
     
     # Number of snapshots used and total average time (lower TU is included)
