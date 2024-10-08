@@ -265,6 +265,9 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     # Time-step
     ts = None
     
+    # Switcher to select the source of statistics for a TTBL (0: from 'post_incompact3d', 1: from 'cf_monitoring')
+    i_switch_plot = None
+    
     print()
 
     # Channel
