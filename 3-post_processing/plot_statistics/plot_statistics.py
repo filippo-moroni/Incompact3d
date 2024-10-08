@@ -140,8 +140,13 @@ Lx_plus = Lx / delta_nu_tot
 Ly_plus = Ly / delta_nu_tot 
 Lz_plus = Lz / delta_nu_tot
 
-# Friction Reynolds number
-re_tau = None
+# Calculate friction Reynolds number
+re_tau = sh_vel_x * 1.0 / nu
+re_tau = int(re_tau)
+
+# Print friction Reynolds number
+print(">>> Friction Reynolds number, Re_tau = ", re_tau)
+print()
 
 # Channel only
 if itype == 3:
@@ -168,10 +173,7 @@ elif itype == 13:
     re_tau = sh_vel_x * delta_99 / nu
     re_tau = int(re_tau)
         
-    # Print friction Reynolds number, boundary layer thickness and
-    # domain height in viscous units
-    print(">>> Friction Reynolds number, Re_tau = ", re_tau)
-    print()
+    # Print boundary layer thickness and domain height in viscous units
     print(">>> Boundary layer thickness, delta_99 = ", round(delta_99,1))
     print()
     print(">>> Domain height in wall units, Ly+ = ", round(Ly_plus,1))
