@@ -297,7 +297,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         vort_z = M[:,2]
         mg_x   = M[:,3]
         mg_z   = M[:,4]
-    
+            
         # Reading of the mean total dissipation
         if post_diss:
             eps = np.loadtxt('data_post/diss_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -376,29 +376,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             mg_x   = M[:,3]
             mg_z   = M[:,4]
             mg_phi = M[:,5]
-            
-            """           
-            (Total) wall shear stress is used to check maximum numerical resolutions (mesh spacings and viscous time).
-            In case of fixed wall(s), the mean spanwise gradient 'mg_z' is zero, so the total wall shear stress 
-            is equivalent to the streamwise wall shear stress.
-            """
-            tau_wtot  = nu*np.sqrt(mg_x[0]**2 + mg_z[0]**2) 
-
-            """
-            Streamwise wall shear stress is used to rescale statistics in wall units 
-            (with or without wall oscillations).
-            """
-            tau_wx   = nu*np.abs(mg_x[0])
-
-            # Shear velocities
-            sh_vel_x   = np.sqrt(tau_wx)     # streamwise shear velocity (based on streamwise mean gradient)  
-            sh_vel_tot = np.sqrt(tau_wtot)   # total shear velocity (based on total mean gradient)
-            
-            # Scalar friction quantity phi_tau (counterpart of u_tau) (see Kozul et al. (2016) for example)
-            # To be verified the correct rescaling for wall oscillations (u_taux or u_tau)
-            phi_tau = nu * (mg_phi[0] / sh_vel_tot) 
-    
-    
+                
             # Reading of the mean total dissipation
             if post_diss:
                 eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
@@ -499,6 +477,31 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
                 # We are assuming unitary molecular Prandtl number (thus we are multiplying by kinematic viscosity) 
                 # To be verified the correct rescaling for wall oscillations (u_taux or u_tau)
                 phi_tau = nu * mg_phi_w / sh_vel_tot
+    
+    
+    # Shear velocities calculation for statistics obtained from 'post_incompact3d', valid for both Channel and TTBL
+    if iswitch_plot == False:
+    
+        """           
+        (Total) wall shear stress is used to check maximum numerical resolutions (mesh spacings and viscous time).
+        In case of fixed wall(s), the mean spanwise gradient 'mg_z' is zero, so the total wall shear stress 
+        is equivalent to the streamwise wall shear stress.
+        """
+        tau_wtot  = nu*np.sqrt(mg_x[0]**2 + mg_z[0]**2) 
+
+        """
+        Streamwise wall shear stress is used to rescale statistics in wall units 
+        (with or without wall oscillations).
+        """
+        tau_wx   = nu*np.abs(mg_x[0])
+
+        # Shear velocities
+        sh_vel_x   = np.sqrt(tau_wx)     # streamwise shear velocity (based on streamwise mean gradient)  
+        sh_vel_tot = np.sqrt(tau_wtot)   # total shear velocity (based on total mean gradient)
+            
+        # Scalar friction quantity phi_tau (counterpart of u_tau) (see Kozul et al. (2016) for example)
+        # To be verified the correct rescaling for wall oscillations (u_taux or u_tau)
+        phi_tau = nu * (mg_phi[0] / sh_vel_tot) 
                  
     print()
  
