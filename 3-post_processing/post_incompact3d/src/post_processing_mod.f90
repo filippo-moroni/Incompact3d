@@ -129,37 +129,9 @@ contains
     
     integer :: i,j,k
 
-    TYPE(DECOMP_INFO), save :: ph  ! decomposition object
-
-    if (nrank==0) print *,'Initializing post-processing variables...'
-
-    if (nclx) then
-       nxmsize = xsize(1)
-    else
-       nxmsize = xsize(1) -1
-    endif
-    if (ncly) then
-       nymsize = ysize(2)
-    else
-       nymsize = ysize(2) -1
-    endif
-    if (nclz) then
-       nzmsize = zsize(3)
-    else
-       nzmsize = zsize(3) -1
-    endif
     
-    call decomp_info_init(nxmsize, nymsize, nzmsize, ph)
-        
-    ! xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. 
-    ! The first letter refers to the pencil orientation and the three 1D array elements contain the sub-domain sizes in X, Y and Z directions, respectively. 
-    ! In a 2D pencil decomposition, there is always one dimension which completely resides in local memory. 
-    ! So by definition xsize(1)==nx_global, ysize(2)==ny_global and zsize(3)==nz_global.
-
-    ! xstart(i), ystart(i), zstart(i), xend(i), yend(i), zend(i), i=1,2,3 - the starting and ending indices for each sub-domain, as in the global coordinate system.
-    ! Obviously, it can be seen that xsize(i)=xend(i)-xstart(i)+1. 
-    ! It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain, 
-    ! it is easier to know which process owns the plane if global index is used).
+    
+   
     
     ! Allocate x-pencils arrays using global indices (temporary array is not necessary as x-pencil)
     call alloc_x(ux1, opt_global=.true.)  !global indices

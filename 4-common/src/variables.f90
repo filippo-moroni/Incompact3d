@@ -74,9 +74,10 @@ module var
 
 contains
 
+  !-----------------------------------------------------------------------------!
   subroutine init_variables
 
-    TYPE(DECOMP_INFO), save :: ph! decomposition object
+    TYPE(DECOMP_INFO), save :: ph ! decomposition object
 
 #ifdef DEBG
     if (nrank == 0) write(*,*) 'Init_variables start'
@@ -100,6 +101,7 @@ contains
     else
        nzmsize = zsize(3) -1
     endif
+    
     call decomp_info_init(nxmsize, nymsize, nzmsize, ph)
     
     ! xsize(i), ysize(i), zsize(i), i=1,2,3 - sizes of the sub-domains held by the current process. 
@@ -112,7 +114,7 @@ contains
     ! It may be convenient for certain applications to use global coordinate (for example when extracting a 2D plane from a 3D domain,
     ! it is easier to know which process owns the plane if global index is used).
 
-    !X PENCILS
+    ! Allocate x-pencils arrays using global indices 
     call alloc_x(ux1, opt_global=.true.) !global indices
     ux1 = zero
     call alloc_x(uy1, opt_global=.true.) !global indices
