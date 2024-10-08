@@ -21,9 +21,11 @@
 ! DESCRIPTION: Write shear velocities, skin friction coefficient, viscous 
 !              time unit, time unit, bulk velocity (channel only), boundary 
 !              layer thickness (delta_99) and Re_tau (TTBL only) and stores
-!              them in a .txt file (used for TTBLs and Channels). 
+!              them in a .txt file. 
 !              We are also calling subroutines to print runtime mean 
-!              statistics (TTBL only).    
+!              statistics (TTBL only).
+!              We finally save runtime wall oscillation parameters in case of 
+!              a TTBL without feedback control (A^+, T^+, Ww).    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 subroutine print_cf(ux,uy,uz,phi)
@@ -126,7 +128,7 @@ subroutine print_cf(ux,uy,uz,phi)
               ! Header
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A,A12,A, A12,A,A12,A,A12,A, A12,A,A12,A,A12)') &
                             'sh_vel',    ',', 'sh_velx',    ',', 'sh_velz', ',',                         &
-                            'cfx',       ',', '(dPhi/dy)w', ',', 'A_fact',  ',',                         &
+                            'cf',        ',', '(dPhi/dy)w', ',', 'A_fact',  ',',                         &
                             't_nu',      ',', 't',          ',', 'ts',      ',',                         &
                             'delta_99',  ',', 'Re_tau',     ',', 'P_in'                                      
                             
@@ -167,7 +169,7 @@ subroutine print_cf(ux,uy,uz,phi)
               ! Header
               write(iunit, '(A12,A,A12,A,A12,A, A16,A,A12,A, A12,A,A12,A,A12,A)') &
                             'sh_vel',    ',', 'sh_velx',   ',', 'sh_velz', ',',   &
-                            'cfx',       ',', 'Ubulk',     ',',                   &
+                            'cf',        ',', 'Ubulk',     ',',                   &
                             't_nu',      ',', 't',         ',', 'ts'
                                       
               
