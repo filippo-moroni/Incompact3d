@@ -100,9 +100,11 @@ elif itype == 3:
     # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
     re_tau = 0.116*re**0.88
     
+    print('We are employing cf from Quadrio & Ricco (2004), Re_tau = 200.')
+    
     # Steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004))
     cf = 0.00793
-    
+        
     # Domain dimensions (as an example, xlx is the quantity used for calculations, while Lx is the read variable from 'input.i3d')
     xlx = Lx  # domain dimension in x direction
     yly = Ly  # domain dimension in y direction
@@ -113,10 +115,7 @@ elif itype == 3:
     
     # Revert to total number of ny points for channel (they are halved in 'read_input_files')
     ny = (ny - 1) * 2 + 1          
-        
-    # Number of points in the channel half (h: half) 
-    nyh = ((ny - 1) // 2) + 1
-    
+            
     # For a Channel it is supposed that we have only 1 flow realization
     nrealiz = 1
 
@@ -259,6 +258,9 @@ if itype == 13:
 
 # This part is valid for Channels 
 elif itype == 3:
+
+    # Number of points in the channel half (h: half) 
+    nyh = ((ny - 1) // 2) + 1
 
     # Delta y+ at the channel center
     delta_yc = yp[nyh] - yp[nyh-1]
