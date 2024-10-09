@@ -360,8 +360,6 @@ data_output_common_2 = [
                         [ n_tot,   nsnap,   mem_tot,        cpuh,   sh_vel_max,  t_nu_min, npvis  ],                     
                        ]
 
-
-
 # Data only for TTBLs
 if itype == 13:
          
@@ -381,13 +379,6 @@ if itype == 13:
 
 # Data only for Channel
 elif itype == 3:
-
-    data_input_channel = [
-                          ["Lx,Ly,Lz/delta_99" ],
-                          [ xlx/bl_thickness   ],
-                          [ yly/bl_thickness   ],
-                          [ zlz/bl_thickness   ],
-                         ]
         
     data_channel = [
                     ["dx+/dyw+/dz+/dyc+", "Lx,Ly,Lz/h" ],
