@@ -166,9 +166,12 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     max_delta_yd_plus = 0.0
 
     """
-    Do loop over all savings of 'mean_stats_runtime' files. 
-    The ts goes from the first saving (IC, ts = 1) to the last one, ilast, with increment ioutput_cf.
-    Index for the cycle is ti: time index.
+    !---------------------------------------------------------------------------------------------------------------------!
+     Do loop over all savings of 'mean_stats_runtime' files. 
+     The ts goes from the first saving (IC, ts = 1) to the last one, ilast, with increment ioutput_cf.
+     Index for the cycle is ti: time index.
+    !---------------------------------------------------------------------------------------------------------------------!
+    
     """
     
     #!--- Average mean statistics with different flow realizations ---!
@@ -223,12 +226,25 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
             # Time-window average cycle
             for i in range(-twi, twi+1, 1):
                         
-                # Summing mean statistics array with different realizations into the overall array for time-evolution
-                mean_stats_r[:,:,ti-twi] = mean_stats_r[:,:,ti-twi] + mean_stats[:,:,ti+i] / nr / nt
+                # Summing mean statistics arrays with different realizations into the overall arrays for time-evolution
+                mean_u_r [:,ti-twi] = mean_u_r [:,ti-twi] + mean_u [:,ti+i] / nr / nt
+                mean_v_r [:,ti-twi] = mean_v_r [:,ti-twi] + mean_v [:,ti+i] / nr / nt
+                mean_w_r [:,ti-twi] = mean_w_r [:,ti-twi] + mean_w [:,ti+i] / nr / nt
+                var_u_r  [:,ti-twi] = var_u_r  [:,ti-twi] + var_u  [:,ti+i] / nr / nt
+                var_v_r  [:,ti-twi] = var_v_r  [:,ti-twi] + var_v  [:,ti+i] / nr / nt                
+                var_w_r  [:,ti-twi] = var_w_r  [:,ti-twi] + var_w  [:,ti+i] / nr / nt
+                mean_uv_r[:,ti-twi] = mean_uv_r[:,ti-twi] + mean_uv[:,ti+i] / nr / nt            
+                mean_uw_r[:,ti-twi] = mean_uw_r[:,ti-twi] + mean_uw[:,ti+i] / nr / nt            
+                mean_vw_r[:,ti-twi] = mean_vw_r[:,ti-twi] + mean_vw[:,ti+i] / nr / nt            
             
-                # Summing mean statistics array with different realizations into the overall array for time-evolution
-                if numscalar == 1: mean_stats_scalar_r[:,:,ti-twi] = mean_stats_scalar_r[:,:,ti-twi] + mean_stats_scalar[:,:,ti+i] / nr / nt
-    
+                # Summing mean scalar statistics arrays with different realizations into the overall arrays for time-evolution
+                if numscalar == 1:
+                
+                    mean_phi_r [:,ti-twi] = mean_phi_r [:,ti-twi] + mean_phi [:,ti+i] / nr / nt
+                    var_phi_r  [:,ti-twi] = var_phi_r  [:,ti-twi] + var_phi  [:,ti+i] / nr / nt                
+                    mean_uphi_r[:,ti-twi] = mean_uphi_r[:,ti-twi] + mean_uphi[:,ti+i] / nr / nt
+                    mean_vphi_r[:,ti-twi] = mean_vphi_r[:,ti-twi] + mean_vphi[:,ti+i] / nr / nt
+                    mean_wphi_r[:,ti-twi] = mean_wphi_r[:,ti-twi] + mean_wphi[:,ti+i] / nr / nt    
     
     #!--- Save averaged mean statistics ---!
     print(">>> Finalizing and saving 'mean_stats_realiz-ts' files in /data_post_te.")
