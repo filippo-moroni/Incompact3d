@@ -6,6 +6,7 @@
 !-----------------------------------------------------------------------------!
 """
 
+# Libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -59,7 +60,7 @@ c_w = 16
 """
 fs  = f">{c_w}.3f"   # 3 decimal digits
 fs6 = f">{c_w}.6f"   # 6 decimal digits
-fs8 = f">{c_w}.8f"   # 8 decimal digits (used mainly for cf)
+fs8 = f">{c_w}.8f"   # 8 decimal digits (used mainly for friction coefficient cf)
 
 # Parameters for contourf plots
 nlvl = 256           # number of isolevels

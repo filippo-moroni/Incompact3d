@@ -7,7 +7,7 @@
 !               - read_data:               to read statistics data;               
 !               - read_ref_data:           to read reference data;
 !               - read_ref_data_temp_evol: to read TTBL temporal evolution 
-!                                          quantities.  
+!                                          reference quantities.  
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -209,8 +209,7 @@ def read_input_files(filename1,filename2):
 !              statistics from 'cf_monitoring'. 
 !              For data from 'post_incompact3d', shear velocities are also 
 !              calculated from mean gradients. On the other hand, 
-!              'cf_monitoring' data contains already directly the shear 
-!              velocities.
+!              'cf_monitoring' data contains directly the shear velocities.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
@@ -231,12 +230,12 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     mean_uv     = 0.0
     
     # Mean vorticity and mean gradients
-    vort_x      = 0.0   # streamwise mean vorticity
-    vort_y      = 0.0   # wall-normal mean vorticity
-    vort_z      = 0.0   # spanwise mean vorticity
-    mg_x        = 0.0   # streamwise mean gradient
-    mg_z        = 0.0   # spanwise mean gradient
-    mg_phi      = 0.0   # scalar mean gradient
+    vort_x      = 0.0   # mean streamwise vorticity (x)
+    vort_y      = 0.0   # mean wall-normal vorticity (y)
+    vort_z      = 0.0   # mean spanwise vorticity (z)
+    mg_x        = 0.0   # mean streamwise gradient, dU/dy
+    mg_z        = 0.0   # mean spanwise gradient, dW/dy
+    mg_phi      = 0.0   # mean scalar gradient, dPhi/dy
     
     # Total dissipation
     eps         = 0.0
@@ -259,7 +258,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     sh_vel_x   = 0.0  
     sh_vel_tot = 0.0
     
-    # Scalar field friction quantities
+    # Shear velocity equivalent for the scalar field
     phi_tau = 0.0
     
     # Time-step

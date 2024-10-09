@@ -7,7 +7,7 @@
 !-----------------------------------------------------------------------------!
 """
 
-# Common libraries
+# Libraries
 import sys
 import os
 import numpy as np
@@ -193,7 +193,7 @@ def get_ref_mean_vel_profile(itype,iswitch):
 !               - we insert a desired y+ value to plot correlations or 
 !                 spectra;
 !               - the closest effective value of y+ is found, as well as 
-!                 its index.
+!                 its index (starting from y+ = 0).
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """    
