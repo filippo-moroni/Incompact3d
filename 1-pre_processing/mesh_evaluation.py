@@ -13,7 +13,6 @@
 import sys
 import os
 import numpy as np
-from tabulate import tabulate
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
@@ -35,6 +34,9 @@ from mesh_subs import stretching_mesh_y, calculate_geometric_quantities
 # initial velocity profile
 from pre_processing_tools import mem_and_cpuh, plot_initial_vel_profile
 
+# Import fuction to create tables, add a title and write them to .txt files
+from write_txt_tables import write_txt_tables
+
 #!--------------------------------------------------------------------------------------!
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
@@ -54,6 +56,10 @@ if itype == 13:
     
     # Reference velocity (TTBL: wall velocity)
     uref = uwall
+    
+    print('>>> We are employing final BL thickness delta_99 and ') 
+    print('    max cf from Cimarelli et al. (2024a),            ')
+    print('    for a TTBL with final Re_tau = 500.              ')
     
     # BL thickness delta_99 of the temporal TBL at Re_tau = 500 (Cimarelli et al. (2024))  
     bl_thickness = 22.1*twd  
@@ -91,8 +97,8 @@ elif itype == 3:
     # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
     re_tau = 0.116*re**0.88
     
-    print('>>> We are employing cf value from Quadrio & Ricco (2004),') 
-    print('    for a channel at Re_tau = 200.')
+    print('>>> We are employing cf value from Quadrio & Ricco (2004), ') 
+    print('    for a channel at Re_tau = 200.                         ')
     
     # Steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004))
     cf = 0.00793
@@ -377,31 +383,48 @@ print('Estimated CPUh: cpuh = ', cpuh)
 print()
 
 #!-------------------------------------------------!
+
+
+# table in common to both TTBL and Channel
+
+data_input_common = [
+                     ["beta", "nu", "Re", "dt", "nrealiz"],
+                     [ beta,   nu,   re,   dt,   nrealiz ],
+                    ]
+
+
+
+
+# Data only for TTBLs
+if itype == 13:
+ 
+    data_input_ttbl_1 = [
+                         ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
+                         [ nx,         xlx,        xlx/bl_thickness               ],
+                         [ ny,         yly,        yly/bl_thickness               ],
+                         [ nz,         zlz,        zlz/bl_thickness               ],
+                        ]
+    
+    data_input_ttbl_2 = [
+                         ["bl_thickness", "cf_max", "Uwall", "twd"],
+                         [ bl_thickness,   cf,       uwall,   twd ],
+                        ]
+
+
+
     
 # File creation and saving for TTBL
 if itype == 13: 
-    data1 = [
-             ["nx/ny/nz", "Lx/Ly/Lz", "(Lx/bl_t)/(Ly/bl_t)/(Lz/bl_t)" ],
-             [ nx,         xlx,        xlx/bl_thickness               ],
-             [ ny,         yly,        yly/bl_thickness               ],
-             [ nz,         zlz,        zlz/bl_thickness               ],
-            ] 
-   
-    data2 = [
-             ["beta", "nu", "Uwall", "dt", "twd", "Re", "nrealiz"],
-             [ beta,   nu,   uwall,   dt,   twd,   re,   nrealiz ],
-            ]
-    
-    data3 = [
-             ["bl_thickness", "cf_max"],
-             [ bl_thickness,   cf     ],
-            ]
-                   
-    # Create the tables using tabulate
-    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
-    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
-    table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
-    
+
+    # Inside your main code, where you want to create the tables
+    data_arrays = [data1, data2, data3]
+    titles = ["Inputs", "Numerics-related parameters", "Outputs"]
+
+    with open("sim_settings.txt", "w") as f:
+        f.write("!----- Simulation Settings -----!\n\n")
+        write_txt_tables(f, data_arrays, titles)
+
+                       
     # Save the tables as a text file 
     with open("sim_settings.txt", "w") as f:
          f.write("!----- Temporal TBL setting parameters -----!\n")
