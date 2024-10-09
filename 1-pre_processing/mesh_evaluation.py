@@ -13,9 +13,6 @@
 import sys
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-import math
-import csv
 from tabulate import tabulate
 
 # Get the current directory
@@ -24,12 +21,6 @@ current_dir = os.path.dirname(__file__)
 # Add the path to the 'python_common' directory relative to the current directory 
 config_path = os.path.abspath(os.path.join(current_dir, '../', '4-common/python_common'))
 sys.path.append(config_path)
-
-# Import the plotting_params module
-import plot_params as pp
-
-# Import function to setting up, save and show plots 
-from plot_subs import set_plot_settings, save_and_show_plot
 
 # Import functions to read 'input.i3d', 'post.prm' files
 from read_files import read_input_files

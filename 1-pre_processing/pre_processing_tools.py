@@ -70,17 +70,15 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,itimescheme,ioutput,nrealiz):
      - CPUh ~ 13300;
      - points / nranks ~ 600'000;
      - ts_tot = 320'000;
-     - results obtained with AB3 and implicit y-diffusion with CN;
-     - FFT (probably Intel MKL).
+     - results obtained with AB3 and implicit y-diffusion with CN.
     
     >>> Test 2:
      - ntot ~ 32 mln points;
      - CPUh ~ 1660;
      - points / nranks ~ 150'000;
      - ts_tot = 30'000;
-     - results obtained with RK3 and implicit y-diffusion with CN;
-     - generic FFT. 
-     
+     - results obtained with RK3 and implicit y-diffusion with CN.
+
     """
     
     # Adams-Bashforth 3
