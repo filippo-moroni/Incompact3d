@@ -97,12 +97,33 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     # at a certain time unit
     mean_u = np.zeros(ny)
 
-    # Initialize instantaneous mean statistics array, not averaged with different flow realizations
+    
+    #Initialize instantaneous mean statistics array, not averaged with different flow realizations
     # we have 9 different statistics (mean, var, Reynolds stress) (function of y)
     mean_stats = np.zeros((ny, 9, nsavings))
     
+    """
+    Arrays for time-evolution of mean statistics of a specific flow realization
+     
+     - ny:       number of points in y-direction; 
+     - nsavings: number of savings in time due to the Incompact3d 'modified' solver 'print_cf' (see 'extra_tools.f90'). 
+    
+    """
+    
+    mean_u  = np.zeros((ny, nsavings))     # mean streamwise  velocity
+    mean_v  = np.zeros((ny, nsavings))     # mean wall-normal velocity
+    mean_w  = np.zeros((ny, nsavings))     # mean spanwise    velocity
+    var_u   = np.zeros((ny, nsavings))     # streamwise  variance
+    var_v   = np.zeros((ny, nsavings))     # wall-normal variance
+    var_w   = np.zeros((ny, nsavings))     # spanwise    variance
+    mean_uv = np.zeros((ny, nsavings))     # Reynolds stress <u'v'>
+    mean_uw = np.zeros((ny, nsavings))     # Reynolds stress <u'w'>
+    mean_vw = np.zeros((ny, nsavings))     # Reynolds stress <v'w'>
+    
     # Initialize mean statistics array, function of y and time (r: realizations)
     mean_stats_r = np.zeros((ny, 9, nsavings_red))
+    
+    
     
     # Initialize scalar arrays if present
     if numscalar == 1:
@@ -148,7 +169,17 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
             else: ts_iter = ti*ioutput_cf
                 
             # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/velocity' folder
-            mean_stats[:,:,ti] = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
+            mean_stats = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/velocity/mean_stats_runtime-ts{ts_iter:07d}.txt', skiprows=12, delimiter=',', dtype=np.float64)
+            
+            mean_u [:,ti] = mean_stats[:,0]
+            mean_v [:,ti] = mean_stats[:,1]
+            mean_w [:,ti] = mean_stats[:,2]
+            var_u  [:,ti] = mean_stats[:,3]
+            var_v  [:,ti] = mean_stats[:,4]           
+            var_w  [:,ti] = mean_stats[:,5]
+            mean_uv[:,ti] = mean_stats[:,6]
+            mean_uw[:,ti] = mean_stats[:,7]
+            mean_vw[:,ti] = mean_stats[:,8]            
             
             # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/scalar' folder
             if numscalar == 1:
