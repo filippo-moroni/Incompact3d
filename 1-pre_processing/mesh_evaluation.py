@@ -52,7 +52,7 @@ from pre_processing_tools import mem_and_cpuh, plot_initial_vel_profile
 ) = read_input_files('input.i3d','post.prm')
 
 #!--- Parameters and mesh ---!
-(uwall, nu, twd, y) = set_flow_parameters(itype, re)
+(uwall, nu, twd, y) = set_flow_parameters(re)
 
 #!--------------------------------------------------------------------------------------!
 

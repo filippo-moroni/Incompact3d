@@ -96,7 +96,7 @@ os.makedirs('num_resolutions', mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
 
 #!--- Parameters and mesh ---!
-(uwall, nu, twd, y) = set_flow_parameters(itype, re)
+(uwall, nu, twd, y) = set_flow_parameters(re)
 
 # Mesh spacings
 delta_x = Lx / nx
