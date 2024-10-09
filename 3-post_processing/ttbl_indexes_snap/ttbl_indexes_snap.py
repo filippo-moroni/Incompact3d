@@ -151,10 +151,11 @@ else:
 
     
 """
-Calculations start here, for the calculation of TTBL thickness
-parameters, we are employing a SciPy spline function that passes 
-through all provided points.
-
+!------------------------------------------------------------------!
+ Calculations start here, for the calculation of TTBL thickness
+ parameters, we are employing a SciPy spline function that passes 
+ through all provided points.
+!------------------------------------------------------------------!
 """
 
 print(">>> Calculations start now.")
@@ -208,8 +209,9 @@ for i in range(file1, filen + icrfile, icrfile):
     
     
     """
-    Extra section for calculations of grid spacings.
-        
+    !------------------------------------------------------------------!
+     Extra section for calculations of grid spacings.
+    !------------------------------------------------------------------!    
     """
     
     # Total shear velocity
@@ -235,9 +237,10 @@ for i in range(file1, filen + icrfile, icrfile):
     
     
     """
-    Extra section to calculate time scales: 
-    minimum Kolmogorov time scale and viscous time unit.
-    
+    !------------------------------------------------------------------!
+     Extra section to calculate time scales: 
+     minimum Kolmogorov time scale and viscous time unit.
+    !------------------------------------------------------------------!
     """
     
     # Reading of total dissipation
