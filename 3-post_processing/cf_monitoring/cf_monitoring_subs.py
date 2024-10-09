@@ -97,17 +97,15 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     # at a certain time unit
     mean_u = np.zeros(ny)
 
-    
-    #Initialize instantaneous mean statistics array, not averaged with different flow realizations
-    # we have 9 different statistics (mean, var, Reynolds stress) (function of y)
-    mean_stats = np.zeros((ny, 9, nsavings))
-    
+        
     """
-    Arrays for time-evolution of mean statistics of a specific flow realization
+    !---------------------------------------------------------------------------------------------------------------------!
+     Arrays for time-evolution of (instantaneous) mean statistics of a specific flow realization.
+     These statistics are averaged only in homogeneous directions (x and z).
      
-     - ny:       number of points in y-direction; 
-     - nsavings: number of savings in time due to the Incompact3d 'modified' solver 'print_cf' (see 'extra_tools.f90'). 
-    
+      - ny       : number of points in y-direction; 
+      - nsavings : number of savings in time due to the Incompact3d 'modified' solver 'print_cf' (see 'extra_tools.f90'). 
+    !---------------------------------------------------------------------------------------------------------------------!
     """
     
     mean_u  = np.zeros((ny, nsavings))     # mean streamwise  velocity
@@ -120,11 +118,27 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     mean_uw = np.zeros((ny, nsavings))     # Reynolds stress <u'w'>
     mean_vw = np.zeros((ny, nsavings))     # Reynolds stress <v'w'>
     
-    # Initialize mean statistics array, function of y and time (r: realizations)
-    mean_stats_r = np.zeros((ny, 9, nsavings_red))
+    """
+    !---------------------------------------------------------------------------------------------------------------------!
+     Arrays for time-evolution of mean statistics, averaged with different flow realizations and time-window average 
+     if requested.
+     
+      - ny           : number of points in y-direction; 
+      - nsavings_red : number of savings in time; if time-window average is requested, the first and the last savings are
+                       not stored, since the time-window average is centered in a generic time step ts. 
+    !---------------------------------------------------------------------------------------------------------------------!
+    """
     
-    
-    
+    mean_u_r  = np.zeros((ny, nsavings_red))     # mean streamwise  velocity
+    mean_v_r  = np.zeros((ny, nsavings_red))     # mean wall-normal velocity
+    mean_w_r  = np.zeros((ny, nsavings_red))     # mean spanwise    velocity
+    var_u_r   = np.zeros((ny, nsavings_red))     # streamwise  variance
+    var_v_r   = np.zeros((ny, nsavings_red))     # wall-normal variance
+    var_w_r   = np.zeros((ny, nsavings_red))     # spanwise    variance
+    mean_uv_r = np.zeros((ny, nsavings_red))     # Reynolds stress <u'v'>
+    mean_uw_r = np.zeros((ny, nsavings_red))     # Reynolds stress <u'w'>
+    mean_vw_r = np.zeros((ny, nsavings_red))     # Reynolds stress <v'w'>
+        
     # Initialize scalar arrays if present
     if numscalar == 1:
     
