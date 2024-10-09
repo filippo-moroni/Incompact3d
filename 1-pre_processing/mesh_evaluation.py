@@ -386,37 +386,37 @@ elif itype == 3:
                 ]
 
     
-# File creation and saving for TTBL
-if itype == 13: 
+ 
 
-    # Inside your main code, where you want to create the tables
-    data_arrays = [data_input_1, data_output_1, data_output_2]
-    titles = ["Inputs", "Numerics-related parameters", "Outputs"]
+# Creation of unique array and titles
+data_arrays = [data_input_1, data_output_1, data_output_2]
+titles = ["Inputs", "Numerics-related parameters", "Outputs"]
 
-    with open("sim_settings.txt", "w") as f:
-        f.write("!----- Simulation Settings -----!\n\n")
-        write_txt_tables(f, data_arrays, titles)       
-        f.write("!--- Reference data: ---!\n")
-        f.write("\n")
-        f.write("Temporal Turbulent Boundary Layer (TTBL): Cimarelli et al. (2024a).\n")
-        f.write("Channel: Quadrio & Ricco (2004).\n")
-        f.write("\n")                              
-        f.write("!--- List of acronyms & variables: ---!\n")
-        f.write("\n")
-        f.write("nrealiz:       Number of flow realizations considered.\n")
-        f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")        
-        f.write("n_tot:         Total number of grid points.\n")
-        f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
-        f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
-        f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
-        f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")         
-        f.write("sh_vel:        Shear velocity peak (TTBL) or at steady state (Channel).\n")
-        f.write("t_nu_min:      Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).\n")                                             
-        f.write("npvis:         Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).\n")
-        f.write("\n")
-        f.write("!-------------------------------------!\n")
-        f.write("\n")
-        f.write("\n")
+# File creation and writing
+with open("sim_settings.txt", "w") as f:
+    f.write("!----- Simulation Settings -----!\n\n")
+    write_txt_tables(f, data_arrays, titles)       
+    f.write("!--- Reference data: ---!\n")
+    f.write("\n")
+    f.write("Temporal Turbulent Boundary Layer (TTBL): Cimarelli et al. (2024a).\n")
+    f.write("Channel: Quadrio & Ricco (2004).\n")
+    f.write("\n")                              
+    f.write("!--- List of acronyms & variables: ---!\n")
+    f.write("\n")
+    f.write("nrealiz:       Number of flow realizations considered.\n")
+    f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")        
+    f.write("n_tot:         Total number of grid points.\n")
+    f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
+    f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
+    f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
+    f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")         
+    f.write("sh_vel:        Shear velocity peak (TTBL) or at steady state (Channel).\n")
+    f.write("t_nu_min:      Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).\n")                                             
+    f.write("npvis:         Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).\n")
+    f.write("\n")
+    f.write("!-------------------------------------!\n")
+    f.write("\n")
+    f.write("\n")
          
 
            
