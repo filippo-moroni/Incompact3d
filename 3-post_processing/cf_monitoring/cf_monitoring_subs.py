@@ -211,7 +211,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
                 var_phi  [:,ti] = mean_stats_scalar[:,1]
                 mean_uphi[:,ti] = mean_stats_scalar[:,2]
                 mean_vphi[:,ti] = mean_stats_scalar[:,3]               
-                mean_wphi[:,ti] = mean_stats_scalar[:,3]
+                mean_wphi[:,ti] = mean_stats_scalar[:,4]
                 
         # Take alias for time-window index
         twi = time_window_index        
