@@ -576,6 +576,7 @@ end if
               uphimeanHT(j)=uphimeanHT(j)-u1meanHT(j)*phi1meanHT(j)
               vphimeanHT(j)=vphimeanHT(j)-v1meanHT(j)*phi1meanHT(j)
               wphimeanHT(j)=wphimeanHT(j)-w1meanHT(j)*phi1meanHT(j)
+          
           enddo      
       endif    
             

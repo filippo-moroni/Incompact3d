@@ -6,19 +6,18 @@
 !              following statistics:
 !              1) One-point statistics:
 !                 - average, variance, skewness and kurtosis of velocity 
-!                   components
-!                 - Reynolds stresses
+!                   components;
+!                 - Reynolds stress;
 !                 - average and variance of pressure, scalar field and mixed 
-!                   fluctuations
-!                 - vorticity and mean gradients 
-!                   (velocity parallel to the wall, x, z and scalar field)
-!                 - total dissipation rate
+!                   fluctuations (velocity-scalar);
+!                 - mean vorticity (x, y, z) and mean gradients 
+!                   (x, z and scalar field);
+!                 - total dissipation rate;
 !                 - terms of TKE equation that cannot be obtained by mean 
 !                   flow statistics. 
-!
 !              2) Two-points statistics:
 !                 - spanwise correlation functions for velocity components 
-!                   (Ruuz, Rvvz, Rwwz, Ruvz)
+!                   (Ruuz, Rvvz, Rwwz, Ruvz);
 !                 - spanwise correlation function for scalar field (s: scalar)
 !                   (Rssz).
 !              Adapted from original Incompact3d file (v2.0) of R. Corsini. 

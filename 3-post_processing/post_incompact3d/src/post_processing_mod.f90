@@ -99,7 +99,7 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: epsmeanH1
   real(mytype), save, allocatable, dimension(:)     :: epsmeanHT
   
-  ! Arrays for correlation functions (velocity and scalar (p: phi)) 
+  ! Arrays for correlation functions (velocity and scalar (s: scalar)) 
   real(mytype), save, allocatable, dimension(:,:)   :: RuuzH1,RvvzH1,RwwzH1,RuvzH1,RsszH1
   real(mytype), save, allocatable, dimension(:,:)   :: RuuzHT,RvvzHT,RwwzHT,RuvzHT,RsszHT
   
@@ -388,8 +388,8 @@ contains
   end subroutine reset_averages
 
   !-----------------------------------------------------------------------------!
-  ! DESCRIPTION: Subroutine to reset to zero the arrays of averages on subdomains
-  !              and on total domain. 
+  ! DESCRIPTION: Subroutine to reset to zero the arrays of averages on 
+  !              subdomains and on total domain. 
   !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
   !-----------------------------------------------------------------------------!  
   subroutine reset_subdomains_and_domain()
