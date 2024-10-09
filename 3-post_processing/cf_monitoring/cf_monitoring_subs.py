@@ -49,7 +49,7 @@ import shutil
 !-----------------------------------------------------------------------------!
 """
 
-def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index, nt):
+def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index, den):
 
     """
     Inputs: 
@@ -57,11 +57,12 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
      - sh_vel_tot        : total shear velocity;
      - sh_vel_x          : streamwise shear velocity;
      - mg_phi_w          : mean scalar gradient at the wall;
-     - nsavings          : number of savings to plot (defined in the main function);
+     - nsavings          : number of savings in time (defined in the main function);
      - time_window_index : number of savings used to time-window average the temporal snapshots;
                            this index refers to half of the window excluding the central snapshot
                            (e.g. if == 1: a window of 3 snapshots);
-     - nt                : number of snapshots used in the time-window average.     
+     - den               : denominator of the divisions (number of snapshots in the time window average times
+                           number of flow realizations).      
     
     Outputs:
     
@@ -89,11 +90,10 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     (uwall, nu, twd, y) = set_flow_parameters(re)
                           
     #!--------------------------------------------------------------------------------------!
-                               
+                            
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
     mean_u = np.zeros(ny)
-
         
     """
     !---------------------------------------------------------------------------------------------------------------------!
@@ -227,24 +227,24 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
             for i in range(-twi, twi+1, 1):
                         
                 # Summing mean statistics arrays with different realizations into the overall arrays for time-evolution
-                mean_u_r [:,ti-twi] = mean_u_r [:,ti-twi] + mean_u [:,ti+i] / nr / nt
-                mean_v_r [:,ti-twi] = mean_v_r [:,ti-twi] + mean_v [:,ti+i] / nr / nt
-                mean_w_r [:,ti-twi] = mean_w_r [:,ti-twi] + mean_w [:,ti+i] / nr / nt
-                var_u_r  [:,ti-twi] = var_u_r  [:,ti-twi] + var_u  [:,ti+i] / nr / nt
-                var_v_r  [:,ti-twi] = var_v_r  [:,ti-twi] + var_v  [:,ti+i] / nr / nt                
-                var_w_r  [:,ti-twi] = var_w_r  [:,ti-twi] + var_w  [:,ti+i] / nr / nt
-                mean_uv_r[:,ti-twi] = mean_uv_r[:,ti-twi] + mean_uv[:,ti+i] / nr / nt            
-                mean_uw_r[:,ti-twi] = mean_uw_r[:,ti-twi] + mean_uw[:,ti+i] / nr / nt            
-                mean_vw_r[:,ti-twi] = mean_vw_r[:,ti-twi] + mean_vw[:,ti+i] / nr / nt            
+                mean_u_r [:,ti-twi] = mean_u_r [:,ti-twi] + mean_u [:,ti+i] / den
+                mean_v_r [:,ti-twi] = mean_v_r [:,ti-twi] + mean_v [:,ti+i] / den
+                mean_w_r [:,ti-twi] = mean_w_r [:,ti-twi] + mean_w [:,ti+i] / den
+                var_u_r  [:,ti-twi] = var_u_r  [:,ti-twi] + var_u  [:,ti+i] / den
+                var_v_r  [:,ti-twi] = var_v_r  [:,ti-twi] + var_v  [:,ti+i] / den                
+                var_w_r  [:,ti-twi] = var_w_r  [:,ti-twi] + var_w  [:,ti+i] / den
+                mean_uv_r[:,ti-twi] = mean_uv_r[:,ti-twi] + mean_uv[:,ti+i] / den           
+                mean_uw_r[:,ti-twi] = mean_uw_r[:,ti-twi] + mean_uw[:,ti+i] / den            
+                mean_vw_r[:,ti-twi] = mean_vw_r[:,ti-twi] + mean_vw[:,ti+i] / den            
             
                 # Summing mean scalar statistics arrays with different realizations into the overall arrays for time-evolution
                 if numscalar == 1:
                 
-                    mean_phi_r [:,ti-twi] = mean_phi_r [:,ti-twi] + mean_phi [:,ti+i] / nr / nt
-                    var_phi_r  [:,ti-twi] = var_phi_r  [:,ti-twi] + var_phi  [:,ti+i] / nr / nt                
-                    mean_uphi_r[:,ti-twi] = mean_uphi_r[:,ti-twi] + mean_uphi[:,ti+i] / nr / nt
-                    mean_vphi_r[:,ti-twi] = mean_vphi_r[:,ti-twi] + mean_vphi[:,ti+i] / nr / nt
-                    mean_wphi_r[:,ti-twi] = mean_wphi_r[:,ti-twi] + mean_wphi[:,ti+i] / nr / nt    
+                    mean_phi_r [:,ti-twi] = mean_phi_r [:,ti-twi] + mean_phi [:,ti+i] / den
+                    var_phi_r  [:,ti-twi] = var_phi_r  [:,ti-twi] + var_phi  [:,ti+i] / den                
+                    mean_uphi_r[:,ti-twi] = mean_uphi_r[:,ti-twi] + mean_uphi[:,ti+i] / den
+                    mean_vphi_r[:,ti-twi] = mean_vphi_r[:,ti-twi] + mean_vphi[:,ti+i] / den
+                    mean_wphi_r[:,ti-twi] = mean_wphi_r[:,ti-twi] + mean_wphi[:,ti+i] / den    
     
     #!--- Save averaged mean statistics ---!
     print(">>> Finalizing and saving 'mean_stats_realiz-ts' files in /data_post_te.")
@@ -259,15 +259,15 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
         #!--- Finalize 2nd order statistics ---!
         
         # Variances
-        mean_stats_r[:,3,ti] = mean_stats_r[:,3,ti] - mean_stats_r[:,0,ti]**2  # streamwise  velocity variance
-        mean_stats_r[:,4,ti] = mean_stats_r[:,4,ti] - mean_stats_r[:,1,ti]**2  # wall-normal velocity variance
-        mean_stats_r[:,5,ti] = mean_stats_r[:,5,ti] - mean_stats_r[:,2,ti]**2  # spanwise    velocity variance    
+        var_u_r[:,ti] = var_u_r[:,ti] - mean_u_r[:,ti]**2  # streamwise  velocity variance
+        var_v_r[:,ti] = var_v_r[:,ti] - mean_v_r[:,ti]**2  # wall-normal velocity variance
+        var_w_r[:,ti] = var_w_r[:,ti] - mean_w_r[:,ti]**2  # spanwise    velocity variance 
         
         # Reynolds stress
-        mean_stats_r[:,6,ti] = mean_stats_r[:,6,ti] - mean_stats_r[:,0,ti]*mean_stats_r[:,1,ti]  # Reynolds stress <u'v'>
-        mean_stats_r[:,7,ti] = mean_stats_r[:,7,ti] - mean_stats_r[:,0,ti]*mean_stats_r[:,2,ti]  # Reynolds stress <u'w'>
-        mean_stats_r[:,8,ti] = mean_stats_r[:,8,ti] - mean_stats_r[:,1,ti]*mean_stats_r[:,2,ti]  # Reynolds stress <v'w'>
-        
+        mean_uv_r[:,ti] = mean_uv_r[:,ti] - mean_u_r[:,ti]*mean_v_r[:,ti]  # Reynolds stress <u'v'>
+        mean_uw_r[:,ti] = mean_uw_r[:,ti] - mean_u_r[:,ti]*mean_w_r[:,ti]  # Reynolds stress <u'w'>
+        mean_vw_r[:,ti] = mean_vw_r[:,ti] - mean_v_r[:,ti]*mean_w_r[:,ti]  # Reynolds stress <v'w'>
+                                
         # Scalar field
         if numscalar == 1:
         

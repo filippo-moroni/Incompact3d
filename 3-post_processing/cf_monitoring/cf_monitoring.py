@@ -113,7 +113,10 @@ if itype == 13:
     twi = time_window_index
             
     # Number of snapshots used to window averaging in time
-    nt = 2 * time_window_index + 1
+    nt = (2 * time_window_index) + 1
+    
+    # Denominator of the divisions (number of snapshots in the time window average times number of flow realizations) 
+    den = nt * nr
     
     # Number of elements in the reduced arrays (number of savings reduced) (red: reduced)
     nsavings_red = nsavings - 2*time_window_index
@@ -154,22 +157,22 @@ if itype == 13:
             for i in range(-twi, twi+1, 1):
                                         
                 # Average the square of the total shear velocity over the realizations 
-                sh_vel_tot_sq_sum[ti-twi] = sh_vel_tot_sq_sum[ti-twi] + (sh_vel_tot[ti+i]**2 / nr / nt)
+                sh_vel_tot_sq_sum[ti-twi] = sh_vel_tot_sq_sum[ti-twi] + sh_vel_tot[ti+i]**2 / den
                 
                 # Average the square of the longitudinal shear velocity over the realizations 
-                sh_vel_x_sq_sum[ti-twi] = sh_vel_x_sq_sum[ti-twi] + (sh_vel_x[ti+i]**2 / nr / nt)
+                sh_vel_x_sq_sum[ti-twi] = sh_vel_x_sq_sum[ti-twi] + sh_vel_x[ti+i]**2 / den
                 
                 # Average the mean scalar gradient at the wall
-                mg_phi_w_sum[ti-twi] = mg_phi_w_sum[ti-twi] + mg_phi_w[ti+i] / nr / nt
+                mg_phi_w_sum[ti-twi] = mg_phi_w_sum[ti-twi] + mg_phi_w[ti+i] / den
                 
                 # Average the Reynolds analogy factor over the realizations
-                a_fact_sum[ti-twi] = a_fact_sum[ti-twi] + a_fact[ti+i] / nr / nt
+                a_fact_sum[ti-twi] = a_fact_sum[ti-twi] + a_fact[ti+i] / den
                 
                 # Time-unit sum in order to check time-window averaging
-                time_unit_sum[ti-twi] = time_unit_sum[ti-twi] + time_unit[ti+i] / nr / nt
+                time_unit_sum[ti-twi] = time_unit_sum[ti-twi] + time_unit[ti+i] / den
                 
                 # Average the power input over the realizations
-                power_in_sum[ti-twi] = power_in_sum[ti-twi] + power_in[ti+i] / nr / nt 
+                power_in_sum[ti-twi] = power_in_sum[ti-twi] + power_in[ti+i] / den 
     
     # Resize arrays
     sh_vel_tot_sq = np.zeros(nsavings_red)    
@@ -202,7 +205,7 @@ if itype == 13:
      - TTBL thickness delta_99;
      - maximum mesh spacing in y-direction at the BL interface in viscous units.     
     """
-    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index, nt)
+    (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index, den)
     
     print()
     print(">>> Average of runtime mean statistics with different flow realizations")
