@@ -344,21 +344,11 @@ print()
 
 #!-------------------------------------------------!
 
-
-# table in common to both TTBL and Channel
-
+# Data common to both TTBL and Channel
 data_input_common_1 = [
-                       ["beta", "nu", "Re", "U_ref", "dt", "nrealiz", "cf", "Re_tau"],
-                       [ beta,   nu,   re,   uref,    dt,   nrealiz,   cf,   re_tau ],
+                       ["beta", "nu", "Re", "U_ref", "dt", "nrealiz", "cf", "Re_tau", "nx", "ny", "nz"],
+                       [ beta,   nu,   re,   uref,    dt,   nrealiz,   cf,   re_tau,   nx,   ny,   nz ],
                       ]
-
-data_input_common_2 = [
-                       ["nx/ny/nz", "Lx/Ly/Lz" ],
-                       [ nx,         xlx       ],
-                       [ ny,         yly       ],
-                       [ nz,         zlz       ],
-                      ]  
-
 
 data_output_common = [
                       ["CFL,x", "D,y", "Pe,x", "S,x"],
@@ -366,28 +356,46 @@ data_output_common = [
                      ]
  
 data_output_common_2 = [
-                        ["n_tot", "nsnap", "mem_tot [GB]", "CPUh", "sh_vel",     "t_nu",   "npvis" ],
-                        [ n_tot,   nsnap,   mem_tot,        cpuh,   sh_vel_max,   t_nu_min, npvis  ],                     
+                        ["n_tot", "nsnap", "mem_tot [GB]", "CPUh", "sh_vel",    "t_nu",   "npvis" ],
+                        [ n_tot,   nsnap,   mem_tot,        cpuh,   sh_vel_max,  t_nu_min, npvis  ],                     
                        ]
 
 
 
 # Data only for TTBLs
 if itype == 13:
- 
-    data_input_ttbl_1 = [
-                         ["Lx,Ly,Lz/delta_99" ],
-                         [ xlx/bl_thickness   ],
-                         [ yly/bl_thickness   ],
-                         [ zlz/bl_thickness   ],
-                        ]
-    
-    data_input_ttbl_2 = [
-                         ["delta_99 @ Re_tau = 500", "sh_vel @ Re_tau = 500" ],
-                         [ bl_thickness,              sh_vel_500             ],
-                        ]
+         
+    data_ttbl = [
+                 ["/",           "peak cf",        "Re_tau = 500"   ],
+                 ["delta_x+",     delta_x_nd_max,   delta_x_nd_500  ],
+                 ["delta_y1+",    delta_y1_nd_max,  delta_y1_nd_500 ],
+                 ["delta_z+",     delta_z_nd_max,   delta_z_nd_500  ],
+                 ["delta_yd+",   "/",               delta_yd_nd_500 ],       
+                 ["delta_99",    "/",               bl_thickness    ],
+                 ["u_tau",        sh_vel_max,       sh_vel_500      ],
+                 ["Lx/delta_99", "/",               xlx/bl_thickness],
+                 ["Ly/delta_99", "/",               yly/bl_thickness],
+                 ["Lz/delta_99", "/",               zlz/bl_thickness],                                               
+                ]
 
 
+# Data only for Channel
+elif itype == 3:
+
+    data_input_channel = [
+                          ["Lx,Ly,Lz/delta_99" ],
+                          [ xlx/bl_thickness   ],
+                          [ yly/bl_thickness   ],
+                          [ zlz/bl_thickness   ],
+                         ]
+        
+    data_channel = [
+                    ["dx+/dyw+/dz+/dyc+", "Lx,Ly,Lz/h" ],
+                    [ delta_x_nd_max       xlx         ],
+                    [ delta_y1_nd_max      yly         ],
+                    [ delta_z_nd_max       zlz         ],
+                    [ delta_yc_nd         "/"          ],
+                   ]
 
     
 # File creation and saving for TTBL
@@ -396,6 +404,8 @@ if itype == 13:
     # Inside your main code, where you want to create the tables
     data_arrays = [data1, data2, data3]
     titles = ["Inputs", "Numerics-related parameters", "Outputs"]
+
+
 
     with open("sim_settings.txt", "w") as f:
         f.write("!----- Simulation Settings -----!\n\n")
@@ -414,50 +424,16 @@ if itype == 13:
          f.write("!--- BL thickness delta_99 (bl_t) @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!\n")
          f.write(table3)
                  
-    # Create data arrays with outputs
 
-    data3 = [
-             ["/",           "peak cf",        "Re_tau = 500"   ],
-             ["delta_x+",     delta_x_nd_max,   delta_x_nd_500  ],
-             ["delta_y1+",    delta_y1_nd_max,  delta_y1_nd_500 ],
-             ["delta_z+",     delta_z_nd_max,   delta_z_nd_500  ],
-             ["delta_yd+",   "/",               delta_yd_nd_500 ],       
-            ]
+
+
            
           
     
 
 
-    # Save the table as a text file and final informations
-    with open("sim_settings.txt", "a") as f:
-         f.write("\n")
-         f.write("!----- Outputs: -----!\n")
-         f.write("\n")
-         f.write("!--- Non-dimensional domain dimensions: ---!\n")
-         f.write(table1) 
-         f.write("\n")
-         f.write("!--- Numerics-related parameters: ---!\n")
-         f.write(table2) 
-         f.write("\n")
-         f.write("!--- Mesh sizes at IC, at peak cf and at Re_tau = 500: ---!\n")
-         f.write(table3) 
-         f.write("\n")
-         f.write("!--- Miscellaneous ---!\n")
-         f.write(table4) 
-         f.write("\n")
-         f.write("!--- Memory (storage) requirement and CPUh ---!\n")
-         f.write(table5) 
-         f.write("\n")
-         f.write("\n")
-         f.write("!--- INFO: ---!\n")
-         f.write("We are employing 3 different cf values:\n")
-         f.write("\n")
-         f.write("1) Value obtained from the derivative at the wall due to the IC.\n")
-         f.write("\n")     
-         f.write("2) Peak value found in literature (e.g. 0.007, see Cimarelli et al. (2024)).\n")
-         f.write("\n")
-         f.write("3) Value at Re_tau = 500, again according to Cimarelli et al. (2024).\n")
-         f.write("\n")
+
+
          f.write("!--- List of acronyms & variables: ---!\n")
          f.write("\n")
          f.write("nrealiz:       Number of flow realizations considered.\n")
@@ -480,84 +456,8 @@ if itype == 13:
          f.write("\n")
          f.write("\n")
          
-# File creation and saving for Channel
-elif itype == 3:
-    
 
-
-
-
-    # Create the tables using tabulate
-    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
-    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
-    
-    # Save the tables as a text file 
-    with open("sim_settings.txt", "w") as f:
-         f.write("!----- Channel setting parameters -----!\n")
-         f.write("\n")
-         f.write("!----- Inputs: -----!\n")
-         f.write(table1)
-         f.write("\n")
-         f.write(table2)
-    
-    # Create data arrays with outputs
-    data1 = [
-             ["Lx+/Ly+/Lz+", "dx+/dyw+/dz+/dyc+" ],
-             [ xlx_nd_max,    delta_x_nd_max     ],
-             [ yly_nd_max,    delta_y1_nd_max    ],
-             [ zlz_nd_max,    delta_z_nd_max     ],
-             ["/",            delta_yc_nd        ],
-            ]
            
-    data2 = [
-             ["CFL,x", "D,y", "Pe,x", "S,x"],
-             [ CFL,     D,     Pe,     S   ],
-            ]
-                       
-    data3 = [
-             ["sh_vel",    "npvis", "n_tot", "nsnap", "mem_tot [GB]", "CPUh", "t_nu_min" ],
-             [ sh_vel_max,  npvis,   n_tot,   nsnap,   mem_tot,        cpuh,   t_nu_min  ],
-            ]
-            
-    # Create the tables using tabulate
-    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
-    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
-    table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
-    
-    # Save the table as a text file and final informations
-    with open("sim_settings.txt", "a") as f:
-         f.write("\n")
-         f.write("!----- Outputs: -----!\n")
-         f.write("\n")
-         f.write("!--- Non-dimensional domain dimensions and grid spacings: ---!\n")
-         f.write(table1) 
-         f.write("\n")
-         f.write("!--- Numerics-related parameters: ---!\n")
-         f.write(table2) 
-         f.write("\n")
-         f.write("!--- Miscellaneous ---!\n")
-         f.write(table3) 
-         f.write("\n")
-         f.write("!-------------------------------------!\n")
-         f.write("\n")
-         f.write("\n")
-         f.write("!--- List of acronyms & variables: ---!\n")
-         f.write("\n")
-         f.write("nrealiz:       Number of flow realizations considered.\n")
-         f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")
-         f.write("sh_vel:        Shear velocity at steady state according to Quadrio & Ricco (2004).\n")
-         f.write("npvis:         Number of points viscous sublayer at cf steady state (y+ < 5).\n")
-         f.write("n_tot:         Total number of grid points.\n")
-         f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
-         f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
-         f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
-         f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")
-         f.write("t_nu_min:      Estimated minimum viscous time unit.\n")         
-         f.write("\n")
-         f.write("!-------------------------------------!\n")
-         f.write("\n")
-         f.write("\n") 
-
          
          
     
