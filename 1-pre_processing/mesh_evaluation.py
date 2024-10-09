@@ -91,7 +91,8 @@ elif itype == 3:
     # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
     re_tau = 0.116*re**0.88
     
-    print('We are employing cf from Quadrio & Ricco (2004), for a channel at Re_tau = 200.')
+    print('>>> We are employing cf value from Quadrio & Ricco (2004),') 
+    print('    for a channel at Re_tau = 200.')
     
     # Steady state cf of a channel flow at Re_tau = 200 (Quadrio & Ricco (2004))
     cf = 0.00793

@@ -20,7 +20,11 @@ def set_flow_parameters(re):
     # Handles the case where the file is not found (pre-processing)
     except OSError:  
         
-        print("Warning: 'yp.dat' not found. Defaulting y to an empty array.")
+        print()
+        print(">>> Warning: 'yp.dat' not found. Defaulting y to an empty array.   ")
+        print()
+        print(">>> If you are in pre-processing, this is not a problem since      ")
+        print("    y-coordinates employed are calculated with a Python subroutine.")
         
         # Default to an empty array
         y = np.array([])  
