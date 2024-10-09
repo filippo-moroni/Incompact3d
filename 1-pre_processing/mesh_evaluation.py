@@ -366,10 +366,9 @@ data_output_common = [
                      ]
  
 data_output_common_2 = [
-                        ["n_tot", "nsnap", "mem_tot [GB]", "CPUh", "sh_vel",     "t_nu"    ],
-                        [ n_tot,   nsnap,   mem_tot,        cpuh,   sh_vel_max,   t_nu_min ],                     
+                        ["n_tot", "nsnap", "mem_tot [GB]", "CPUh", "sh_vel",     "t_nu",   "npvis" ],
+                        [ n_tot,   nsnap,   mem_tot,        cpuh,   sh_vel_max,   t_nu_min, npvis  ],                     
                        ]
-
 
 
 
@@ -384,8 +383,8 @@ if itype == 13:
                         ]
     
     data_input_ttbl_2 = [
-                         ["delta_99 @ Re_tau = 500"],
-                         [ bl_thickness,           ],
+                         ["delta_99 @ Re_tau = 500", "sh_vel @ Re_tau = 500" ],
+                         [ bl_thickness,              sh_vel_500             ],
                         ]
 
 
@@ -416,33 +415,18 @@ if itype == 13:
          f.write(table3)
                  
     # Create data arrays with outputs
-    data1 = [
-             ["Lx+/Ly+/Lz+ at IC", "Lx+/Ly+/Lz+ at peak cf", "Lx+/Ly+/Lz+ at Re_tau = 500" ],
-             [ xlx_nd_ic,           xlx_nd_max,               xlx_nd_500                   ],
-             [ yly_nd_ic,           yly_nd_max,               yly_nd_500                   ],
-             [ zlz_nd_ic,           zlz_nd_max,               zlz_nd_500                   ],
-            ]
 
     data3 = [
-             ["/",           "IC",           "peak cf",        "Re_tau = 500"   ],
-             ["delta_x+",     delta_x_nd_ic,  delta_x_nd_max,   delta_x_nd_500  ],
-             ["delta_y1+",    delta_y1_nd_ic, delta_y1_nd_max,  delta_y1_nd_500 ],
-             ["delta_z+",     delta_z_nd_ic,  delta_z_nd_max,   delta_z_nd_500  ],
-             ["delta_yd+",   "/",            "/",               delta_yd_nd_500 ],       
+             ["/",           "peak cf",        "Re_tau = 500"   ],
+             ["delta_x+",     delta_x_nd_max,   delta_x_nd_500  ],
+             ["delta_y1+",    delta_y1_nd_max,  delta_y1_nd_500 ],
+             ["delta_z+",     delta_z_nd_max,   delta_z_nd_500  ],
+             ["delta_yd+",   "/",               delta_yd_nd_500 ],       
             ]
            
-    data4 = [
-             ["npvis", "sh_vel_peak", "sh_vel_500" ],
-             [ npvis,   sh_vel_max,    sh_vel_500, ],                     
-            ]
-            
+          
     
-    # Create the tables using tabulate
-    table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
-    table2 = tabulate(data2, headers="firstrow", tablefmt="fancy_grid")
-    table3 = tabulate(data3, headers="firstrow", tablefmt="fancy_grid")
-    table4 = tabulate(data4, headers="firstrow", tablefmt="fancy_grid")
-    table5 = tabulate(data5, headers="firstrow", tablefmt="fancy_grid")
+
 
     # Save the table as a text file and final informations
     with open("sim_settings.txt", "a") as f:
@@ -499,17 +483,9 @@ if itype == 13:
 # File creation and saving for Channel
 elif itype == 3:
     
-    data1 = [
-             ["nx/ny/nz", "Lx/Ly/Lz" ],
-             [ nx,       f"{xlx}h"   ],
-             [ ny,       f"{yly}h"   ],
-             [ nz,       f"{zlz}h"   ],
-            ] 
 
-    data2 = [
-             ["beta", "nu", "U_ref", "dt", "Re", "Re_tau", "cf"],
-             [ beta,   nu,   uref,    dt,   re,   re_tau,   cf ],
-            ]
+
+
 
     # Create the tables using tabulate
     table1 = tabulate(data1, headers="firstrow", tablefmt="fancy_grid")
