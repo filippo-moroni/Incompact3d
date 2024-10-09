@@ -310,8 +310,8 @@ print()
 print('!--- Time resolution ---!')
 print()
 print('Estimated minimum viscous time, t_nu = ', t_nu_min)
-print('Time step,                        dt = ', dt)
-print('Ratio minimum viscous time and dt    = ', t_nu_min / dt)
+print('                       Time step, dt = ', dt)
+print('                     Ratio t_nu / dt = ', t_nu_min / dt)
 print()
 
 if itype == 13:
@@ -328,8 +328,6 @@ if itype == 13:
     print('Number of mesh nodes in the viscous sublayer at cf peak: ', npvis)
     print()
     
-
-
 elif itype == 3:
     print('Mesh size y-direction at the channel center: delta_yc+ = ', delta_yc_nd)
     
@@ -345,25 +343,25 @@ print()
 #!-------------------------------------------------!
 
 # Data common to both TTBL and Channel
-data_input_common_1 = [
-                       ["beta", "nu", "Re", "U_ref", "dt", "nrealiz", "cf", "Re_tau", "nx", "ny", "nz"],
-                       [ beta,   nu,   re,   uref,    dt,   nrealiz,   cf,   re_tau,   nx,   ny,   nz ],
-                      ]
+data_input_1 = [
+                ["beta", "nu", "Re", "U_ref", "dt", "nrealiz", "cf", "Re_tau", "nx", "ny", "nz"],
+                [ beta,   nu,   re,   uref,    dt,   nrealiz,   cf,   re_tau,   nx,   ny,   nz ],
+               ]
 
-data_output_common = [
-                      ["CFL,x", "D,y", "Pe,x", "S,x"],
-                      [ CFL,     D,     Pe,     S   ],
-                     ]
+data_output_1 = [
+                 ["CFL,x", "D,y", "Pe,x", "S,x"],
+                 [ CFL,     D,     Pe,     S   ],
+                ]
  
-data_output_common_2 = [
-                        ["n_tot", "nsnap", "mem_tot [GB]", "CPUh", "sh_vel",    "t_nu",   "npvis" ],
-                        [ n_tot,   nsnap,   mem_tot,        cpuh,   sh_vel_max,  t_nu_min, npvis  ],                     
-                       ]
+data_output_2 = [
+                 ["n_tot", "nsnap", "mem_tot [GB]", "CPUh", "sh_vel",    "t_nu",   "npvis" ],
+                 [ n_tot,   nsnap,   mem_tot,        cpuh,   sh_vel_max,  t_nu_min, npvis  ],                     
+                ]
 
 # Data only for TTBLs
 if itype == 13:
          
-    data_ttbl = [
+    data_case = [
                  ["/",           "peak cf",        "Re_tau = 500"   ],
                  ["delta_x+",     delta_x_nd_max,   delta_x_nd_500  ],
                  ["delta_y1+",    delta_y1_nd_max,  delta_y1_nd_500 ],
@@ -380,72 +378,46 @@ if itype == 13:
 # Data only for Channel
 elif itype == 3:
         
-    data_channel = [
-                    ["dx+/dyw+/dz+/dyc+", "Lx,Ly,Lz/h" ],
-                    [ delta_x_nd_max       xlx         ],
-                    [ delta_y1_nd_max      yly         ],
-                    [ delta_z_nd_max       zlz         ],
-                    [ delta_yc_nd         "/"          ],
-                   ]
+    data_case = [
+                 ["dx+/dyw+/dz+/dyc+", "Lx,Ly,Lz/h"],
+                 [ delta_x_nd_max       xlx        ],
+                 [ delta_y1_nd_max      yly        ],
+                 [ delta_z_nd_max       zlz        ],
+                 [ delta_yc_nd         "/"         ],
+                ]
 
     
 # File creation and saving for TTBL
 if itype == 13: 
 
     # Inside your main code, where you want to create the tables
-    data_arrays = [data1, data2, data3]
+    data_arrays = [data_input_1, data_output_1, data_output_2]
     titles = ["Inputs", "Numerics-related parameters", "Outputs"]
-
-
 
     with open("sim_settings.txt", "w") as f:
         f.write("!----- Simulation Settings -----!\n\n")
-        write_txt_tables(f, data_arrays, titles)
-
-                       
-    # Save the tables as a text file 
-    with open("sim_settings.txt", "w") as f:
-         f.write("!----- Temporal TBL setting parameters -----!\n")
-         f.write("\n")
-         f.write("!----- Inputs: -----!\n")
-         f.write(table1)
-         f.write("\n")
-         f.write(table2)
-         f.write("\n")
-         f.write("!--- BL thickness delta_99 (bl_t) @ Re_tau = 500 and cf peak, according to Cimarelli et al. (2024) ---!\n")
-         f.write(table3)
-                 
-
-
-
-           
-          
-    
-
-
-
-
-         f.write("!--- List of acronyms & variables: ---!\n")
-         f.write("\n")
-         f.write("nrealiz:       Number of flow realizations considered.\n")
-         f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")
-         f.write("npvis:         Number of points viscous sublayer at cf peak (y+ < 5).\n")
-         f.write("npsl:          Number of points initial shear layer (y+ < sl_99^+_IC).\n")
-         f.write("theta_sl:      Estimated  initial momentum thickness of the shear layer (approx. 54*nu/U_wall) (dimensional).\n")
-         f.write("sl_99^+_IC:    Calculated initial thickness of the shear layer (y+ where Umean < 0.01 Uwall) (non-dimensional).\n")
-         f.write("sh_vel_IC:     Shear velocity of the initial condition.\n")
-         f.write("sh_vel_peak:   Shear velocity at peak cf, according to Cimarelli et al. (2024).\n")
-         f.write("sh_vel_500:    Shear velocity at Re_tau = 500, according to Cimarelli et al. (2024).\n")
-         f.write("n_tot:         Total number of grid points.\n")
-         f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
-         f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
-         f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
-         f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")
-         f.write("t_nu_min:      Estimated minimum viscous time unit.\n")         
-         f.write("\n")
-         f.write("!-------------------------------------!\n")
-         f.write("\n")
-         f.write("\n")
+        write_txt_tables(f, data_arrays, titles)       
+        f.write("!--- Reference data: ---!\n")
+        f.write("\n")
+        f.write("Temporal Turbulent Boundary Layer (TTBL): Cimarelli et al. (2024a).\n")
+        f.write("Channel: Quadrio & Ricco (2004).\n")
+        f.write("\n")                              
+        f.write("!--- List of acronyms & variables: ---!\n")
+        f.write("\n")
+        f.write("nrealiz:       Number of flow realizations considered.\n")
+        f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")        
+        f.write("n_tot:         Total number of grid points.\n")
+        f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
+        f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
+        f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
+        f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")         
+        f.write("sh_vel:        Shear velocity peak (TTBL) or at steady state (Channel).\n")
+        f.write("t_nu_min:      Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).\n")                                             
+        f.write("npvis:         Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).\n")
+        f.write("\n")
+        f.write("!-------------------------------------!\n")
+        f.write("\n")
+        f.write("\n")
          
 
            
