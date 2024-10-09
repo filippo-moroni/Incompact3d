@@ -359,6 +359,8 @@ data_output_2 = [
 
 # Data only for TTBLs
 if itype == 13:
+      
+    title_case = "TTBL-specific setup parameters"    
          
     data_case = [
                  ["/",           "peak cf",        "Re_tau = 500"   ],
@@ -376,7 +378,9 @@ if itype == 13:
 
 # Data only for Channel
 elif itype == 3:
-        
+    
+    title_case = "Channel-specific setup parameters"    
+    
     data_case = [
                  ["dx+/dyw+/dz+/dyc+", "Lx,Ly,Lz/h"],
                  [ delta_x_nd_max,      xlx        ],
@@ -385,12 +389,9 @@ elif itype == 3:
                  [ delta_yc_nd,        "/"         ],
                 ]
 
-    
- 
-
 # Creation of unique array and titles
-data_arrays = [data_input_1, data_output_1, data_output_2]
-titles = ["Inputs", "Numerics-related parameters", "Outputs"]
+data_arrays = [data_input_1, data_output_1, data_output_2, data_case]
+titles = ["Inputs", "Numerics-related parameters", "Outputs", title_case]
 
 # File creation and writing
 with open("sim_settings.txt", "w") as f:
@@ -403,16 +404,16 @@ with open("sim_settings.txt", "w") as f:
     f.write("\n")                              
     f.write("!--- List of acronyms & variables: ---!\n")
     f.write("\n")
-    f.write("nrealiz:       Number of flow realizations considered.\n")
-    f.write("S:             Stability parameter, S < 1 (Thompson et al. (1985)).\n")        
-    f.write("n_tot:         Total number of grid points.\n")
-    f.write("nsnap:         Number of snapshots for a single flow realization.\n")     
-    f.write("mem_tot:       Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
-    f.write("CPUh:          Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
-    f.write("               Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")         
-    f.write("sh_vel:        Shear velocity peak (TTBL) or at steady state (Channel).\n")
-    f.write("t_nu_min:      Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).\n")                                             
-    f.write("npvis:         Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).\n")
+    f.write("nrealiz: Number of flow realizations considered.\n")
+    f.write("S:       Stability parameter, S < 1 (Thompson et al. (1985)).\n")        
+    f.write("n_tot:   Total number of grid points.\n")
+    f.write("nsnap:   Number of snapshots for a single flow realization.\n")     
+    f.write("mem_tot: Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
+    f.write("CPUh:    Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
+    f.write("         Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")         
+    f.write("sh_vel:  Shear velocity peak (TTBL) or at steady state (Channel).\n")
+    f.write("t_nu:    Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).\n")                                             
+    f.write("npvis:   Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).\n")
     f.write("\n")
     f.write("!-------------------------------------!\n")
     f.write("\n")

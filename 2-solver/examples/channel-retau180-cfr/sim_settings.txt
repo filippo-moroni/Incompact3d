@@ -1,0 +1,57 @@
+!----- Simulation Settings -----!
+
+!----- Inputs -----!
+╒══════════╤═════════════╤═════════╤═════════╤══════╤═══════════╤═════════╤══════════╤══════╤══════╤══════╕
+│     beta │          nu │      Re │   U_ref │   dt │   nrealiz │      cf │   Re_tau │   nx │   ny │   nz │
+╞══════════╪═════════════╪═════════╪═════════╪══════╪═══════════╪═════════╪══════════╪══════╪══════╪══════╡
+│ 0.259065 │ 0.000236633 │ 4225.96 │   0.667 │ 0.01 │         1 │ 0.00793 │      180 │  128 │  257 │  128 │
+╘══════════╧═════════════╧═════════╧═════════╧══════╧═══════════╧═════════╧══════════╧══════╧══════╧══════╛
+
+!----- Numerics-related parameters -----!
+╒═════════╤═══════╤════════╤═══════╕
+│   CFL,x │   D,y │   Pe,x │   S,x │
+╞═════════╪═══════╪════════╪═══════╡
+│    0.11 │  0.31 │ 176.17 │   9.4 │
+╘═════════╧═══════╧════════╧═══════╛
+
+!----- Outputs -----!
+╒═════════╤═════════╤════════════════╤════════╤═══════════╤════════╤═════════╕
+│   n_tot │   nsnap │   mem_tot [GB] │   CPUh │    sh_vel │   t_nu │   npvis │
+╞═════════╪═════════╪════════════════╪════════╪═══════════╪════════╪═════════╡
+│ 4210688 │      81 │         13.643 │  873.7 │ 0.0419998 │ 0.1341 │      10 │
+╘═════════╧═════════╧════════════════╧════════╧═══════════╧════════╧═════════╛
+
+!----- Channel-specific setup parameters -----!
+╒═════════════════════╤══════════════╕
+│   dx+/dyw+/dz+/dyc+ │ Lx,Ly,Lz/h   │
+╞═════════════════════╪══════════════╡
+│              11.09  │ 8.0          │
+├─────────────────────┼──────────────┤
+│               0.49  │ 2.0          │
+├─────────────────────┼──────────────┤
+│               5.55  │ 4.0          │
+├─────────────────────┼──────────────┤
+│               3.899 │ /            │
+╘═════════════════════╧══════════════╛
+
+!--- Reference data: ---!
+
+Temporal Turbulent Boundary Layer (TTBL): Cimarelli et al. (2024a).
+Channel: Quadrio & Ricco (2004).
+
+!--- List of acronyms & variables: ---!
+
+nrealiz: Number of flow realizations considered.
+S:       Stability parameter, S < 1 (Thompson et al. (1985)).
+n_tot:   Total number of grid points.
+nsnap:   Number of snapshots for a single flow realization.
+mem_tot: Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).
+CPUh:    Estimated total CPUh required to complete the simulation (including different flow realizations).
+         Number of elements per CPU must be higher than 100'000 and a safety factor is included.
+sh_vel:  Shear velocity peak (TTBL) or at steady state (Channel).
+t_nu:    Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).
+npvis:   Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).
+
+!-------------------------------------!
+
+
