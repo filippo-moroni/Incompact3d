@@ -89,10 +89,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     (uwall, nu, twd, y) = set_flow_parameters(re)
                           
     #!--------------------------------------------------------------------------------------!
-    
-    # Number of elements in the reduced arrays (number of savings reduced)
-    nsavings_red = nsavings - 2*time_window_index
-                                
+                               
     # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
     # at a certain time unit
     mean_u = np.zeros(ny)
@@ -121,13 +118,17 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     """
     !---------------------------------------------------------------------------------------------------------------------!
      Arrays for time-evolution of mean statistics, averaged with different flow realizations and time-window average 
-     if requested.
+     if requested (r: averaged on flow realizations).
      
       - ny           : number of points in y-direction; 
-      - nsavings_red : number of savings in time; if time-window average is requested, the first and the last savings are
-                       not stored, since the time-window average is centered in a generic time step ts. 
+      - nsavings_red : number of savings in time; if time-window average is requested, the first and the last savings of 
+                       the entire time evolution are not stored, since the time-window average is centered on a generic 
+                       time step ts . 
     !---------------------------------------------------------------------------------------------------------------------!
     """
+    
+    # Number of elements in the reduced arrays (number of savings reduced)
+    nsavings_red = nsavings - 2*time_window_index
     
     mean_u_r  = np.zeros((ny, nsavings_red))     # mean streamwise  velocity
     mean_v_r  = np.zeros((ny, nsavings_red))     # mean wall-normal velocity
