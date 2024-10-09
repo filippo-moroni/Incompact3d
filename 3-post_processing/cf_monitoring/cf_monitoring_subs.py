@@ -101,7 +101,8 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
      These statistics are averaged only in homogeneous directions (x and z).
      
       - ny       : number of points in y-direction; 
-      - nsavings : number of savings in time due to the Incompact3d 'modified' solver 'print_cf' (see 'extra_tools.f90'). 
+      - nsavings : number of savings in time due to the Incompact3d 'modified' solver 'print_cf' (see 'extra_tools.f90').
+                   This is an external input of the subroutine, calculated from 'cf_history.txt'. 
     !---------------------------------------------------------------------------------------------------------------------!
     """
     
@@ -130,26 +131,32 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     # Number of elements in the reduced arrays (number of savings reduced)
     nsavings_red = nsavings - 2*time_window_index
     
-    mean_u_r  = np.zeros((ny, nsavings_red))     # mean streamwise  velocity
-    mean_v_r  = np.zeros((ny, nsavings_red))     # mean wall-normal velocity
-    mean_w_r  = np.zeros((ny, nsavings_red))     # mean spanwise    velocity
-    var_u_r   = np.zeros((ny, nsavings_red))     # streamwise  variance
-    var_v_r   = np.zeros((ny, nsavings_red))     # wall-normal variance
-    var_w_r   = np.zeros((ny, nsavings_red))     # spanwise    variance
-    mean_uv_r = np.zeros((ny, nsavings_red))     # Reynolds stress <u'v'>
-    mean_uw_r = np.zeros((ny, nsavings_red))     # Reynolds stress <u'w'>
-    mean_vw_r = np.zeros((ny, nsavings_red))     # Reynolds stress <v'w'>
+    mean_u_r  = np.zeros((ny, nsavings_red))  # mean streamwise  velocity, flow realizations and time-window averaged
+    mean_v_r  = np.zeros((ny, nsavings_red))  # mean wall-normal velocity, flow realizations and time-window averaged
+    mean_w_r  = np.zeros((ny, nsavings_red))  # mean spanwise    velocity, flow realizations and time-window averaged
+    var_u_r   = np.zeros((ny, nsavings_red))  # streamwise  variance,      flow realizations and time-window averaged
+    var_v_r   = np.zeros((ny, nsavings_red))  # wall-normal variance,      flow realizations and time-window averaged
+    var_w_r   = np.zeros((ny, nsavings_red))  # spanwise    variance,      flow realizations and time-window averaged
+    mean_uv_r = np.zeros((ny, nsavings_red))  # Reynolds stress <u'v'>,    flow realizations and time-window averaged
+    mean_uw_r = np.zeros((ny, nsavings_red))  # Reynolds stress <u'w'>,    flow realizations and time-window averaged
+    mean_vw_r = np.zeros((ny, nsavings_red))  # Reynolds stress <v'w'>,    flow realizations and time-window averaged
         
     # Initialize scalar arrays if present
     if numscalar == 1:
-    
-        # Initialize instantaneous mean statistics array for scalar field, not averaged with different flow realizations
-        # we have 5 different statistics (mean, var, mixed fluctuations) (function of y)
-        mean_stats_scalar = np.zeros((ny, 5, nsavings))
+            
+        mean_phi  = np.zeros((ny, nsavings))  # mean scalar field
+        var_phi   = np.zeros((ny, nsavings))  # scalar variance
+        mean_uphi = np.zeros((ny, nsavings))  # mixed fluctuations <u'phi'>
+        mean_vphi = np.zeros((ny, nsavings))  # mixed fluctuations <v'phi'>
+        mean_wphi = np.zeros((ny, nsavings))  # mixed fluctuations <w'phi'>
         
-        # Initialize mean statistics array for scalar field, function of y and time (r: realizations)
-        mean_stats_scalar_r = np.zeros((ny, 5, nsavings_red))
-
+        mean_phi_r  = np.zeros((ny, nsavings_red))  # mean scalar field,           flow realizations and time-window averaged
+        var_phi_r   = np.zeros((ny, nsavings_red))  # scalar variance,             flow realizations and time-window averaged
+        mean_uphi_r = np.zeros((ny, nsavings_red))  # mixed fluctuations <u'phi'>, flow realizations and time-window averaged
+        mean_vphi_r = np.zeros((ny, nsavings_red))  # mixed fluctuations <v'phi'>, flow realizations and time-window averaged
+        mean_wphi_r = np.zeros((ny, nsavings_red))  # mixed fluctuations <w'phi'>, flow realizations and time-window averaged
+        
+        
     # Initialize arrays for TTBL thickness parameters
     delta_99   = np.zeros(nsavings_red)   # BL thickness delta_99
     disp_t     = np.zeros(nsavings_red)   # displacement thickness, delta*
@@ -196,11 +203,17 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
             mean_uw[:,ti] = mean_stats[:,7]
             mean_vw[:,ti] = mean_stats[:,8]            
             
-            # Read of mean statistics calculated runtime data from 'data/mean_stats_runtime/scalar' folder
+            # Read of mean scalar statistics calculated runtime data from 'data/mean_stats_runtime/scalar' folder
             if numscalar == 1:
                        
-                mean_stats_scalar[:,:,ti] = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/scalar/mean_stats_scalar_runtime-ts{ts_iter:07d}.txt', skiprows=9, delimiter=',', dtype=np.float64)
+                mean_stats_scalar = np.loadtxt(f'data_r{i:01d}/mean_stats_runtime/scalar/mean_stats_scalar_runtime-ts{ts_iter:07d}.txt', skiprows=9, delimiter=',', dtype=np.float64)
             
+                mean_phi [:,ti] = mean_stats_scalar[:,0]
+                var_phi  [:,ti] = mean_stats_scalar[:,1]
+                mean_uphi[:,ti] = mean_stats_scalar[:,2]
+                mean_vphi[:,ti] = mean_stats_scalar[:,3]               
+                mean_wphi[:,ti] = mean_stats_scalar[:,3]
+                
         # Take alias for time-window index
         twi = time_window_index        
         
