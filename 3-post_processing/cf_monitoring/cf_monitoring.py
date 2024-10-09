@@ -351,11 +351,13 @@ if itype == 13:
 #!--------------------------------------------------------------------------------------!
 
 """
-Calculations for a channel (at the moment, we are limited to 1 flow realization only;
-however, it is not so common to make different channel flow realizations.
-
+!--------------------------------------------------------------------------------------!
+ Calculations for a channel (at the moment, we are limited to 1 flow realization only;
+ however, it is not so common to make different channel flow realizations.
+!--------------------------------------------------------------------------------------!
 """
 
+# Channel
 if itype == 3:
    
     # Read cf data from /data folder

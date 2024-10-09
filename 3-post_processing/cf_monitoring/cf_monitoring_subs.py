@@ -90,11 +90,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     (uwall, nu, twd, y) = set_flow_parameters(re)
                           
     #!--------------------------------------------------------------------------------------!
-                            
-    # Initialize the array for alias of mean streamwise velocity profile averaged with different flow realizations
-    # at a certain time unit
-    mean_u = np.zeros(ny)
-        
+                                    
     """
     !---------------------------------------------------------------------------------------------------------------------!
      Arrays for time-evolution of (instantaneous) mean statistics of a specific flow realization.
@@ -272,13 +268,13 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
         if numscalar == 1:
         
             # Variance
-            mean_stats_scalar_r[:,1,ti] = mean_stats_scalar_r[:,1,ti] - mean_stats_scalar_r[:,0,ti]**2  # scalar field variance
-            
+            var_phi_r[:,ti] = var_phi_r[:,ti] - mean_phi_r[:,ti]**2  # scalar field variance
+                        
             # Mixed fluctuations
-            mean_stats_scalar_r[:,2,ti] = mean_stats_scalar_r[:,2,ti] - mean_stats_r[:,0,ti]*mean_stats_scalar_r[:,0,ti]  # mixed fluctuation <u'phi'>
-            mean_stats_scalar_r[:,3,ti] = mean_stats_scalar_r[:,3,ti] - mean_stats_r[:,1,ti]*mean_stats_scalar_r[:,0,ti]  # mixed fluctuation <u'phi'>
-            mean_stats_scalar_r[:,4,ti] = mean_stats_scalar_r[:,4,ti] - mean_stats_r[:,2,ti]*mean_stats_scalar_r[:,0,ti]  # mixed fluctuation <u'phi'>
-
+            mean_uphi_r[:,ti] = mean_uphi_r[:,ti] - mean_u_r[:,ti]*mean_phi_r[:,ti]  # mixed fluctuations <u'phi'>
+            mean_vphi_r[:,ti] = mean_vphi_r[:,ti] - mean_v_r[:,ti]*mean_phi_r[:,ti]  # mixed fluctuations <v'phi'>            
+            mean_wphi_r[:,ti] = mean_wphi_r[:,ti] - mean_w_r[:,ti]*mean_phi_r[:,ti]  # mixed fluctuations <w'phi'>
+            
         # Create the file and write; we are adding at each file the shear velocities coming from the main function 
         with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts_iter:07d}.txt', 'w') as f:
             f.write(f'Mean statistics at ts={ts_iter}.\n')        
@@ -297,15 +293,15 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
                     f"{'mean[vw]':>{pp.c_w}}\n" )
                 
             for j in range(0, ny):
-                f.write(f"{mean_stats_r[j,0,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,1,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,2,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,3,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,4,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,5,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,6,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,7,ti]:{pp.fs6}}, " +
-                        f"{mean_stats_r[j,8,ti]:{pp.fs6}}\n" )
+                f.write(f"{mean_u_r[j,ti]:{pp.fs6}}, "  +
+                        f"{mean_v_r[j,ti]:{pp.fs6}}, "  +
+                        f"{mean_w_r[j,ti]:{pp.fs6}}, "  +
+                        f"{var_u_r[j,ti]:{pp.fs6}}, "   +
+                        f"{var_v_r[j,ti]:{pp.fs6}}, "   +
+                        f"{var_w_r[j,ti]:{pp.fs6}}, "   +
+                        f"{mean_uv_r[j,ti]:{pp.fs6}}, " +
+                        f"{mean_uw_r[j,ti]:{pp.fs6}}, " +
+                        f"{mean_vw_r[j,ti]:{pp.fs6}}\n" )
         
         # Save runtime statistics averaged on flow realizations for scalar field
         if numscalar == 1:
@@ -323,20 +319,17 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
                         f"{'<w phi>':>{pp.c_w}}\n"   )
                 
                 for j in range(0, ny):
-                    f.write(f"{mean_stats_scalar_r[j,0,ti]:{pp.fs6}}, " +
-                            f"{mean_stats_scalar_r[j,1,ti]:{pp.fs6}}, " +
-                            f"{mean_stats_scalar_r[j,2,ti]:{pp.fs6}}, " +
-                            f"{mean_stats_scalar_r[j,3,ti]:{pp.fs6}}, " +
-                            f"{mean_stats_scalar_r[j,4,ti]:{pp.fs6}}\n" )
+                    f.write(f"{mean_phi_r[j,ti]:{pp.fs6}}, "  +
+                            f"{var_phi_r[j,ti]:{pp.fs6}}, "   +
+                            f"{mean_uphi_r[j,ti]:{pp.fs6}}, " +
+                            f"{mean_vphi_r[j,ti]:{pp.fs6}}, " +
+                            f"{mean_wphi_r[j,ti]:{pp.fs6}}\n" )
       
       
         #!--- Calculation of thickness parameters ---!
-        
-        # Take alias for mean streamwise velocity profile
-        mean_u[:] = mean_stats_r[:,0,ti]
-        
+                
         # Call of external subroutine for the calculation of TTBL thickness parameters
-        (delta_99[ti], delta_99_j, disp_t[ti], mom_t[ti]) = calculate_ttbl_thick_params(mean_u,y,uwall)
+        (delta_99[ti], delta_99_j, disp_t[ti], mom_t[ti]) = calculate_ttbl_thick_params(mean_u_r[:,ti],y,uwall)
         
         # Delta y+ at the BL edge
         delta_yd_plus = (y[delta_99_j] - y[delta_99_j-1]) * sh_vel_tot[ti] / nu
@@ -345,7 +338,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
         if max_delta_yd_plus < delta_yd_plus:
             max_delta_yd_plus = delta_yd_plus
                
-    # Return to main program
+    # Return to main program with TTBL thickness parameters time evolution and delta y+ at the BL interface
     return (delta_99, disp_t, mom_t, max_delta_yd_plus)
 
 
