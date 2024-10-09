@@ -199,11 +199,13 @@ if itype == 13:
     #!--------------------------------------------------------------------------------------------------------!
     
     """
-    Call subroutine for calculations of:
-     - mean_stats runtime averaged with different flow realizations;
+    !---------------------------------------------------------------------------------------------------------!
+    Call subroutine for the calculations of:
+     - mean_stats runtime averaged with different flow realizations (and time-window average possibility);
      - 6th order integrals for TTBL thickness parameters delta* and theta;
      - TTBL thickness delta_99;
-     - maximum mesh spacing in y-direction at the BL interface in viscous units.     
+     - maximum mesh spacing in y-direction at the BL interface in viscous units.
+    !---------------------------------------------------------------------------------------------------------!     
     """
     (delta_99, disp_t, mom_t, max_delta_yd_plus) = average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_window_index, den)
     
