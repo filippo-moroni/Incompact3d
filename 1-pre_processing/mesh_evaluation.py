@@ -30,9 +30,8 @@ from set_flow_parameters import set_flow_parameters
 # Import function to calculate stretching of the mesh
 from mesh_subs import stretching_mesh_y, calculate_geometric_quantities
 
-# Import functions to calculate memory and CPUh of simulation and to show 
-# initial velocity profile
-from pre_processing_tools import mem_and_cpuh, plot_initial_vel_profile
+# Import functions to calculate memory and CPUh of simulation
+from pre_processing_tools import mem_and_cpuh
 
 # Import fuction to create tables, add a title and write them to .txt files
 from write_txt_tables import write_txt_tables
@@ -257,14 +256,14 @@ print('!--- Flow case specific info ---!')
 print()
 
 if itype == 3:
-    print('Reference velocity U_ref is the bulk velocity, U_bulk = ' uref)
+    print('Reference velocity U_ref is the bulk velocity, U_bulk = ', uref)
     print()
     print('Skin friction coefficient at steady state, cf = ', cf)
     print()
     print('Estimated friction Reynolds number, Re_tau ~ ', re_tau)
     
 elif itype == 13:
-    print('Reference velocity U_ref is the wall velocity, Uwall = ' uref)
+    print('Reference velocity U_ref is the wall velocity, Uwall = ', uref)
     print()
     print('Trip wire diameter, twd (or D) = ', twd)
     print()
@@ -380,10 +379,10 @@ elif itype == 3:
         
     data_case = [
                  ["dx+/dyw+/dz+/dyc+", "Lx,Ly,Lz/h"],
-                 [ delta_x_nd_max       xlx        ],
-                 [ delta_y1_nd_max      yly        ],
-                 [ delta_z_nd_max       zlz        ],
-                 [ delta_yc_nd         "/"         ],
+                 [ delta_x_nd_max,      xlx        ],
+                 [ delta_y1_nd_max,     yly        ],
+                 [ delta_z_nd_max,      zlz        ],
+                 [ delta_yc_nd,        "/"         ],
                 ]
 
     
