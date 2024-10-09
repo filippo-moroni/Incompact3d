@@ -338,8 +338,9 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
         if max_delta_yd_plus < delta_yd_plus:
             max_delta_yd_plus = delta_yd_plus
                
-    # Return to main program with TTBL thickness parameters time evolution and delta y+ at the BL interface
+    # Return to main program with TTBL thickness parameters time evolution and maximum delta y+ at the BL interface
     return (delta_99, disp_t, mom_t, max_delta_yd_plus)
+    
 
 
 
