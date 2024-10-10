@@ -45,6 +45,7 @@ subroutine schemes()
   if (nclz1.eq.1.and.nclzn.eq.2) derz => derz_12
   if (nclz1.eq.2.and.nclzn.eq.1) derz => derz_21
   if (nclz1.eq.2.and.nclzn.eq.2) derz => derz_22
+  
   ! Second derivative
   !x
   if (nclx1.eq.0.and.nclxn.eq.0) derxx => derxx_00
