@@ -55,6 +55,9 @@ if itype == 13:
     
     # Reference velocity (TTBL: wall velocity)
     uref = uwall
+
+    # Create also a string with it
+    uref_string = "Uw"
     
     print('>>> We are employing final BL thickness delta_99 and ') 
     print('    max cf from Cimarelli et al. (2024a),            ')
@@ -94,7 +97,10 @@ if itype == 13:
 elif itype == 3:
     
     # Reference velocity (Channel: bulk velocity)
-    uref = 0.667  
+    uref = 0.667
+
+    # Create also a string with it
+    uref_string = "Ub"  
     
     # Friction Reynolds number for a channel, considering the centerline Reynolds number of a laminar Poiseuille flow
     re_tau = 0.116*re**0.88
@@ -133,6 +139,7 @@ calculate_geometric_quantities(ny, yp, delta_x)
 
 # Shear velocity at peak cf or at steady state 
 sh_vel_max = np.sqrt((cf/2.0)) * uref
+sh_vel_max = round(sh_vel_max, 4)
 
 # Viscous length at peak cf or at steady state
 delta_nu_max = nu / sh_vel_max
@@ -154,13 +161,13 @@ xlx_nd_max = round(xlx / delta_nu_max, 1)
 yly_nd_max = round(yly / delta_nu_max, 1)
 zlz_nd_max = round(zlz / delta_nu_max, 1)
 
-#!--- Estimation of numerics-related parameters (CFL, D, Pé, S) at IC or at steady state ---!
+#!--- Estimation of numerics-related parameters (CFL, D, Pé, S) with reference velocity ---!
    
-CFL = round(uref * dt / delta_x,       2)      
-D =   round(nu   * dt / (delta_y1**2), 2)    
-Pe =  round(uref * delta_x / nu,       2)
+CFL = round(uref * dt / delta_x,       2)  # Courant-Friedrichs-Lewy (Courant) number, x-direction
+D =   round(nu   * dt / (delta_y1**2), 2)  # Numerical Fourier number, y-direction
+Pe =  round(uref * delta_x / nu,       2)  # Numerical Péclet number, x-direction
         
-# Stability parameter (S < 1) (see Thompson et al. (1985)) 
+# Estimation of stability parameter (S < 1) (see Thompson et al. (1985)) 
 S = round(((uref**2)*dt)/(2.0*nu), 2)
 
 # Calculate total number of points, number of snapshots of a single flow realization, 
@@ -192,6 +199,7 @@ if itype == 13:
     
     # Value from G. Boga data
     sh_vel_500 = 0.04468
+    sh_vel_500 = round(sh_vel_500, 4)
     
     #!--------------------------------------------------------!
 
@@ -293,7 +301,7 @@ if itype == 3:
     print('Domain dimension, Ly/h = ', yly)
     print('Domain dimension, Lz/h = ', zlz)
 
-print('!--- Numerics-related parameters based on reference velocity U_ref: ---!')
+print(f'!--- Numerics-related parameters based on reference velocity {uref_string}: ---!')
 print()
 print('Estimated CFL,x: ', CFL)
 print('Estimated D,y  : ', D)
@@ -322,14 +330,14 @@ if itype == 13:
     print()
     print('Mesh size (y) at the estimated BL edge @ Re_tau = 500: delta_yd+ = ', delta_yd_nd_500)
     print()
-    print('!--- Number of discretization points ---!')
-    print()
-    print('Number of mesh nodes in the viscous sublayer at cf peak: ', npvis)
-    print()
-    
+
 elif itype == 3:
     print('Mesh size y-direction at the channel center: delta_yc+ = ', delta_yc_nd)
-    
+
+print('!--- Miscellaneous ---!')
+print()
+print('Number of mesh nodes in the viscous sublayer at cf peak/steady state: ', npvis)
+print()
 print('Total number of points: n_tot = ', n_tot)
 print()
 print('Number of snapshots for a single flow realization: nsnap = ', nsnap)
@@ -363,16 +371,16 @@ if itype == 13:
     title_case = "TTBL-specific setup parameters"    
          
     data_case = [
-                 ["/",           "peak cf",        "Re_tau = 500"   ],
-                 ["delta_x+",     delta_x_nd_max,   delta_x_nd_500  ],
-                 ["delta_y1+",    delta_y1_nd_max,  delta_y1_nd_500 ],
-                 ["delta_z+",     delta_z_nd_max,   delta_z_nd_500  ],
-                 ["delta_yd+",   "/",               delta_yd_nd_500 ],       
-                 ["delta_99",    "/",               bl_thickness    ],
-                 ["u_tau",        sh_vel_max,       sh_vel_500      ],
-                 ["Lx/delta_99", "/",               xlx/bl_thickness],
-                 ["Ly/delta_99", "/",               yly/bl_thickness],
-                 ["Lz/delta_99", "/",               zlz/bl_thickness],                                               
+                 ["/",           "peak cf",         "Re_tau = 500"   ],
+                 ["delta_x+",     delta_x_nd_max,    delta_x_nd_500  ],
+                 ["delta_y1+",    delta_y1_nd_max,   delta_y1_nd_500 ],
+                 ["delta_z+",     delta_z_nd_max,    delta_z_nd_500  ],
+                 ["delta_yd+",    "/",               delta_yd_nd_500 ],       
+                 ["delta_99",     "/",               bl_thickness    ],
+                 ["u_tau",        sh_vel_max,        sh_vel_500      ],
+                 ["Lx/delta_99",  "/",               xlx/bl_thickness],
+                 ["Ly/delta_99",  "/",               yly/bl_thickness],
+                 ["Lz/delta_99",  "/",               zlz/bl_thickness],                                               
                 ]
 
 
@@ -386,10 +394,10 @@ elif itype == 3:
                  [ delta_x_nd_max,      xlx        ],
                  [ delta_y1_nd_max,     yly        ],
                  [ delta_z_nd_max,      zlz        ],
-                 [ delta_yc_nd,        "/"         ],
+                 [ delta_yc_nd,         "/"        ],
                 ]
 
-# Creation of unique array and titles
+# Creation of unique array and titles (title case depends on the specific flow-case)
 data_arrays = [data_input_1, data_output_1, data_output_2, data_case]
 titles = ["Inputs", "Numerics-related parameters", "Outputs", title_case]
 
@@ -399,11 +407,12 @@ with open("sim_settings.txt", "w") as f:
     write_txt_tables(f, data_arrays, titles)       
     f.write("!--- Reference data: ---!\n")
     f.write("\n")
-    f.write("Temporal Turbulent Boundary Layer (TTBL): Cimarelli et al. (2024a).\n")
-    f.write("Channel: Quadrio & Ricco (2004).\n")
+    f.write("Temporal Turbulent Boundary Layer (TTBL) : Cimarelli et al. (2024a). \n")
+    f.write("Turbulent Channel                        : Quadrio & Ricco (2004).   \n")
     f.write("\n")                              
     f.write("!--- List of acronyms & variables: ---!\n")
     f.write("\n")
+    f.write("beta:    Beta parameter of the stretching function for y-direction.\n")
     f.write("nrealiz: Number of flow realizations considered.\n")
     f.write("S:       Stability parameter, S < 1 (Thompson et al. (1985)).\n")        
     f.write("n_tot:   Total number of grid points.\n")
