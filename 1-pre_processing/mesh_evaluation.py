@@ -411,6 +411,7 @@ with open("sim_settings.txt", "w") as f:
     f.write("mem_tot: Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).\n")
     f.write("CPUh:    Estimated total CPUh required to complete the simulation (including different flow realizations).\n")
     f.write("         Number of elements per CPU must be higher than 100'000 and a safety factor is included.\n")         
+    f.write("         The related subroutine automatically distinguish between RK3 and AB3.\n")            
     f.write("sh_vel:  Shear velocity peak (TTBL) or at steady state (Channel).\n")
     f.write("t_nu:    Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).\n")                                             
     f.write("npvis:   Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).\n")
