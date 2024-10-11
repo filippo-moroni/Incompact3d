@@ -611,6 +611,7 @@ end if
                                    
           ! 1D derivative in y (2 times) 
           call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfy,ssy,swy,ysize(2),0)
+          
           !di1d,sy1d,sfyp,ssyp,swyp,ysize(2),1              
           
           tke_diffHT = xnu * temp_dery
@@ -719,12 +720,12 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Header
-        write(iunit, '(7(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
+        write(iunit, '(6(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
                                          'dU/dy'        , ',', 'dW/dy',         ',', 'dPhi/dy'   
         
         do j = 1, ysize(2) 
                 
-            write(iunit, '(7(F13.9, A1, 1X))') vortxmeanHT(j),      ',',  &
+            write(iunit, '(6(F13.9, A1, 1X))') vortxmeanHT(j),      ',',  &
                                                vortymeanHT(j),      ',',  &       
                                                vortzmeanHT(j),      ',',  &
                                                mean_gradientxHT(j), ',',  &

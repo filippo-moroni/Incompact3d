@@ -321,7 +321,7 @@ if post_mean:
             ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
                         
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -342,7 +342,7 @@ if post_mean:
         ax.plot(y_plus_lm, mean_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += ' Reference data Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -452,7 +452,7 @@ if post_mean:
             ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
         
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -473,7 +473,7 @@ if post_mean:
         ax.plot(y_plus_lm, var_u_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += ' Reference data Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -529,7 +529,7 @@ if post_mean:
             ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
             
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -550,7 +550,7 @@ if post_mean:
         ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += ' Reference data Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -606,7 +606,7 @@ if post_mean:
             ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
             
     # Channel    
     elif itype == 3:
@@ -618,7 +618,7 @@ if post_mean:
         ax.plot(y_plus_lm, var_w_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += ' Reference data Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
     
         # If wall oscillations are present
         if iswitch_wo == 1:
@@ -677,7 +677,7 @@ if post_mean:
             ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
             
             # Completing description
-            description += ' Reference data Lee & Moser (2015).'
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
             
         # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
         elif 400 < re_tau < 450:
@@ -698,7 +698,7 @@ if post_mean:
         ax.plot(y_plus_lm, mean_uv_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
-        description += ' Reference data Lee & Moser (2015).'
+        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
        
         # y-axis label
         ax.set_ylabel(r'$-\langle u^{\prime} v^{\prime}\rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)

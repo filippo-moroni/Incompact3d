@@ -273,6 +273,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     if itype == 3:
     
         print(">>> Plotting of statistics for a channel.")
+        print()
         
         # Channel statistics are only from 'post_incompact3d' at the moment
         i_switch_plot = False
@@ -288,10 +289,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             mean_uv = - M[:,12]  # Change sign for Reynolds stress <u'v'> for a Channel
     
         """
-        Reading of vorticity components and mean gradients
-        (always performed since we need the mean gradients to calculate
-        total shear velocity).
-        
+        !----------------------------------------------------------------!
+         Reading of vorticity components and mean gradients
+         (always performed since we need the mean gradients to calculate
+         total shear velocity).
+        !----------------------------------------------------------------!
         """
         M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
         vort_x = M[:,0]
@@ -299,6 +301,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         vort_z = M[:,2]
         mg_x   = M[:,3]
         mg_z   = M[:,4]
+        mg_phi = M[:,5]
             
         # Reading of the mean total dissipation
         if post_diss:
@@ -331,10 +334,12 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
         print()
 
         """
-        Asking to the user if he wants to plot statistics calculated from:
-         - 'post_incompact3d', that employs full snapshots;
-         - 'cf_monitoring', that employs mean statistics calculated runtime;
-            in this case, only mean statistics can be plotted. 
+        !---------------------------------------------------------------------!
+         Asking to the user if he wants to plot statistics calculated from:
+          - 'post_incompact3d', that employs full snapshots;
+          - 'cf_monitoring', that employs mean statistics calculated runtime;
+             in this case, only mean statistics can be plotted. 
+        !---------------------------------------------------------------------!
         """
         print(">>> Specify the type of results to plot: ")
         print("    - 0: from 'post_incompact3d' ")  
@@ -354,9 +359,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             snap_numb = snap_numb.zfill(4)
                      
             """
-            Reading of mean statistics. For a TTBL it is always done since 
-            we need to calculate the boundary layer thickness delta_99 to display
-            friction Reynolds number.
+            !-----------------------------------------------------------------------!
+             Reading of mean statistics. For a TTBL it is always done since 
+             we need to calculate the boundary layer thickness delta_99 to display
+             friction Reynolds number.
+            !-----------------------------------------------------------------------!
             """
             M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
             mean_u  = M[:,0]
@@ -367,9 +374,11 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
             mean_uv = M[:,12]
     
             """
-            Reading of vorticity components and mean gradients
-            (always performed since we need the mean gradients to calculate
-            total shear velocity).
+            !-----------------------------------------------------------------------!
+             Reading of vorticity components and mean gradients
+             (always performed since we need the mean gradients to calculate
+             total shear velocity).
+            !-----------------------------------------------------------------------!
             """
             M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
             vort_x = M[:,0]
