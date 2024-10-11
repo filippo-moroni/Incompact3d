@@ -219,7 +219,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: mean_gradphi2
         
   ! x-derivatives
-  call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
+  call derx (ta1,ux1,di1,sx,ffx, fsx, fwx, xsize(1),xsize(2),xsize(3),0,lind)
   call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   call derx (tc1,uz1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   
@@ -228,7 +228,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   call transpose_x_to_y(uy1,te2)
   call transpose_x_to_y(uz1,tf2)
   call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
-  call dery (tb2,te2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0,lind)
+  call dery (tb2,te2,di2,sy,ffy, fsy, fwy, ppy,ysize(1),ysize(2),ysize(3),0,lind)
   call dery (tc2,tf2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
   
   ! z-derivatives
@@ -237,7 +237,7 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   call transpose_y_to_z(tf2,tf3)
   call derz (ta3,td3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tb3,te3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
-  call derz (tc3,tf3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0,lind)
+  call derz (tc3,tf3,di3,sz,ffz, fsz, fwz, zsize(1),zsize(2),zsize(3),0,lind)
   
   ! all back to x-pencils
   call transpose_z_to_y(ta3,td2)
@@ -304,16 +304,19 @@ subroutine stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,                          &
   vortzmean2 = vortzmean2 + di2/den
   
   !--- Scalar gradient ---!
+  if (numscalar == 1) then
   
-  ! Transpose to y-pencils
-  call transpose_x_to_y(phi1(:,:,:,1),td2)
+      ! Transpose to y-pencils
+      call transpose_x_to_y(phi1(:,:,:,1),td2)
   
-  ! y-derivative
-  call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
+      ! y-derivative
+      call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
   
-  ! Summation
-  mean_gradphi2 = mean_gradphi2 + ta2/den
+      ! Summation
+      mean_gradphi2 = mean_gradphi2 + ta2/den
    
+  end if
+
 end subroutine stat_vorticity
 
 !-----------------------------------------------------------------------------!
@@ -574,7 +577,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   call transpose_y_to_x(uz2,uz1)
       
   ! x-derivatives
-  call derx (ta1,ux1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0,lind)
+  call derx (ta1,ux1,di1,sx,ffx, fsx, fwx, xsize(1),xsize(2),xsize(3),0,lind)
   call derx (tb1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   call derx (tc1,uz1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1,lind)
   
@@ -583,7 +586,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   call transpose_x_to_y(uy1,te2)
   call transpose_x_to_y(uz1,tf2)
   call dery (ta2,td2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
-  call dery (tb2,te2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0,lind)
+  call dery (tb2,te2,di2,sy,ffy, fsy, fwy, ppy,ysize(1),ysize(2),ysize(3),0,lind)
   call dery (tc2,tf2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1,lind)
   
   ! z-derivatives
@@ -592,7 +595,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   call transpose_y_to_z(tf2,tf3)
   call derz (ta3,td3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
   call derz (tb3,te3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1,lind)
-  call derz (tc3,tf3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0,lind)
+  call derz (tc3,tf3,di3,sz,ffz, fsz, fwz, zsize(1),zsize(2),zsize(3),0,lind)
   
   ! all back to x-pencils
   call transpose_z_to_y(ta3,td2)
