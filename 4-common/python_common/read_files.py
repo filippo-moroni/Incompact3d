@@ -41,7 +41,7 @@ def read_input_files(filename1,filename2):
         lines = file.readlines()
     
     # Extract: itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, 
-    # Re, dt, ifirst, ilast, numscalar, ioutput, ioutput_cf, iswitch_wo 
+    # Re, dt, ifirst, ilast, numscalar, itimescheme, ioutput, ioutput_cf, iswitch_wo 
         
     # As always, index is 1 less of the line number (Python convention)
     itype       = lines[7]  
