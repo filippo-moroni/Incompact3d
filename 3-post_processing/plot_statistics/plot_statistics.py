@@ -651,6 +651,13 @@ if post_mean:
     tke = 0.5*(var_u + var_v + var_w)
     tke_lm = 0.5*(var_u_lm + var_v_lm + var_w_lm)
 
+    # Find the index at which we have maximum TKE and the related y+
+    tke_max_index = np.argmax(tke)
+    y_plus_max_tke = y_plus[tke_max_index]
+
+    # Vertical line to show the TKE peak location
+    ax.vlines(x=y_plus_max_tke, ymin=0.0, ymax=np.max(tke), linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+
     # Limits for axes
     xliminf = 0.1
     xlimsup = Ly_plus*1.5
