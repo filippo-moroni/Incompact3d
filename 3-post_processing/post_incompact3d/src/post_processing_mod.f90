@@ -23,7 +23,25 @@ module post_processing
   
   ! Logicals for 'if' conditions during post-processing
   logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
-  logical, save :: read_vel,read_pre,read_phi 
+  logical, save :: read_vel,read_pre,read_phi
+
+  ! Variables to count time spent to post-process data
+  real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0
+
+  ! Integer for MPI
+  integer :: code
+  
+  ! Format for snapshots numbers
+  character(len=9) :: ifilenameformat = '(I4.4)'
+  
+  ! Format for correlations
+  character(len=50) :: format_string
+
+  ! String for time value extraction from .xdmf files 
+  character(len=20) :: time_value
+
+  ! Logical if time value is found in a .xdmf file
+  logical :: time_found
 
   !--- Arrays for statistic collection ---!
 

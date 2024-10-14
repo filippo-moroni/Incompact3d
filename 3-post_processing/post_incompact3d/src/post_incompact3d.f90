@@ -47,7 +47,6 @@ program post
   integer :: nr                                      ! total number of flow realizations
   integer :: ifile                                   ! index to open different snapshots in time
   
-  real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0     ! variables to count time spent to post-process data
   real(mytype) :: den                                ! denominator of the divisions
   real(mytype) :: temp                               ! temporary variable
    
@@ -59,16 +58,7 @@ program post
   character(99) :: snap_index,snap_n_index,printing  ! characters to print to screen and to read snapshots' indexes
   
   character(1)  :: a
-  
-  ! Format for snapshots numbers
-  character(len=9) :: ifilenameformat = '(I4.4)'
-  
-  ! Format for correlations
-  character(len=50) :: format_string
-  
-  ! Integer for MPI
-  integer :: code
-  
+      
   ! Save the initial time of post-processing work
   call cpu_time(tstart)
     
@@ -187,7 +177,16 @@ end if
      ! Writing the snapshot index as character
      write(snap_index, ifilenameformat) ifile 
      snap_index = adjustl(snap_index) 
-                       
+
+     ! Call the subroutine to read time from the XDMF file
+     call read_xdmf_time('snapshot-.xdmf', time_value, time_found)
+
+     if (time_found) then
+         print *, 'Time found:', time_value
+     else
+         print *, 'Time not found in the XDMF file.'
+     end if
+
      ! Show progress on post-processing    
      if (nrank==0) then
         write(*,*) '----------------------------------------------------'
