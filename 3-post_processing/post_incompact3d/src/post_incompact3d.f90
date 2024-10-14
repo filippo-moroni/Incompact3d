@@ -131,10 +131,13 @@ end if
      ! Call the subroutine to read time from the .xdmf file
      call read_xdmf_time(filename, time_value, time_found)
 
-     if (time_found) then
-         print *, 'Time found:', time_value
-     else
-         print *, 'Time not found in the .xdmf file.'
+     if(nrank .eq. 0) then
+     
+         if (time_found) then
+             print *, 'Time found:', time_value
+         else
+             print *, 'Time not found in the .xdmf file.'
+         end if
      end if
 
      ! Show progress on post-processing    
