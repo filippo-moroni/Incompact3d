@@ -42,8 +42,12 @@ program post
   implicit none
 
   integer :: i,j,k,is
-  real(mytype) :: den                                ! denominator of the divisions
-  real(mytype) :: temp                               ! temporary variable
+  
+  ! Denominator of the divisions
+  real(mytype) :: den
+  
+  ! Temporary variable                                
+  real(mytype) :: temp                               
         
   ! Save the initial time of post-processing work
   call cpu_time(tstart)
@@ -86,27 +90,6 @@ program post
   
   ! Reading of 'post.prm' file
   call read_post_file()
-  
-
-  
-
-
-
-  
-  ! Logicals for reading Snapshots
-  if (post_mean) then
-     read_vel=.true.
-     read_pre=.true.
-  endif
-  
-  ! Reading of velocity only if necessary
-  if (post_vort .or. post_diss .or. post_corz .or. post_tke_eq) read_vel=.true.
-  
-  ! Read of scalar field only if necessary
-  if (iscalar==1) read_phi=.true. 
-  
-  ! Total number of Snapshots in time
-  nt = (filen-file1)/icrfile+1
   
   ! Initialize statistics arrays
   call init_statistics()

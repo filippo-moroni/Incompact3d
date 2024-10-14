@@ -9,10 +9,20 @@
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: This subroutine is used to read the post-processing file
-!              'post.prm'.   
+!              'post.prm' and to continue the initialization of 
+!              post-processing work variables.   
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine read_post_file
+subroutine read_post_file()
+
+  use decomp_2d_constants
+  use decomp_2d_mpi
+  use decomp_2d
+  use decomp_2d_io
+  
+  use variables
+  use param
+  use var
 
   use post_processing
 
@@ -20,25 +30,26 @@ subroutine read_post_file
 
   ! Index for the number of post-processing selections employed (selector index)
   integer,dimension(5) :: sel
+  integer              :: i
                     
   ! Reading of the input file of post-processing ('post.prm')
   open(newunit=iunit,file='post.prm',status='old',form='formatted')
     
-     read (10,'(A1)') a
-     read (10,'(A1)') a
-     read (10,'(A1)') a 
-     read (10,'(A1)') a
-     read (10,'(A1)') a
-     read (10,*) file1
-     read (10,*) filen
-     read (10,*) icrfile
-     read (10,*) nr 
-     read (10,'(A1)') a
-     read (10,'(A1)') a
-     read (10,'(A1)') a
+     read (iunit,'(A1)') a
+     read (iunit,'(A1)') a
+     read (iunit,'(A1)') a 
+     read (iunit,'(A1)') a
+     read (iunit,'(A1)') a
+     read (iunit,*) file1
+     read (iunit,*) filen
+     read (iunit,*) icrfile
+     read (iunit,*) nr 
+     read (iunit,'(A1)') a
+     read (iunit,'(A1)') a
+     read (iunit,'(A1)') a
      
      do i=1,size(sel)
-        read (10,*) sel(i)
+        read (iunit,*) sel(i)
      enddo
      
   close(iunit)
@@ -50,18 +61,32 @@ subroutine read_post_file
   if (sel(4)==1) post_corz   = .true.
   if (sel(5)==1) post_tke_eq = .true.
   
+  ! Return an error if all switchers are set to zero
   if (nrank==0) then
      if ((.not.post_mean   ) .and. &
          (.not.post_vort   ) .and. &
          (.not.post_diss   ) .and. &
          (.not.post_corz   ) .and. &
          (.not.post_tke_eq))       &
-        call decomp_2d_abort(10,'Invalid post-processing switchers specified, no work to be done here!')
-  endif                         
-
+        call decomp_2d_abort(iunit,'Invalid post-processing switchers specified, no work to be done here!')
+  endif
+  
+  ! Logicals for reading snapshots
+  if (post_mean) then
+     read_vel=.true.
+     read_pre=.true.
+  endif
+  
+  ! Reading of velocity only if necessary
+  if (post_vort .or. post_diss .or. post_corz .or. post_tke_eq) read_vel=.true.
+  
+  ! Read of scalar field only if necessary
+  if (iscalar==1) read_phi=.true. 
+  
+  ! Total number of snapshots in time
+  nt = (filen-file1)/icrfile+1                         
 
 end subroutine read_post_file
-
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: This subroutine is used to read the 'time' attribute in a
