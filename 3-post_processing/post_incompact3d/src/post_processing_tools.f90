@@ -3,7 +3,7 @@
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: This file is used to store useful subroutines for 
-!              post-processing (pp) program 'post_incompact3d'.   
+!              post-processing program 'post_incompact3d'.   
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 
