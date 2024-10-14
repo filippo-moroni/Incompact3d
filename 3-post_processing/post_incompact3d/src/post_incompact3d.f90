@@ -607,7 +607,7 @@ end if
 
 #ifdef TTBL_MODE  
         ! Add the time unit to the header
-        write(iunit, '(A, F12.4)') 'Time unit, t = ', time_value
+        write(iunit, '(A, A)') 'Time unit, t = ', time_value
         write(iunit, *) ' '
 #endif 
         
@@ -676,7 +676,7 @@ end if
 
 #ifdef TTBL_MODE  
         ! Add the time unit to the header
-        write(iunit, '(A, F12.4)') 'Time unit, t = ', time_value
+        write(iunit, '(A, A)') 'Time unit, t = ', time_value
         write(iunit, *) ' '
 #endif 
         
@@ -720,7 +720,7 @@ end if
 
 #ifdef TTBL_MODE  
         ! Add the time unit to the header
-        write(iunit, '(A, F12.4)') 'Time unit, t = ', time_value
+        write(iunit, '(A, A)') 'Time unit, t = ', time_value
         write(iunit, *) ' '
 #endif 
         
@@ -913,7 +913,7 @@ end if
 
 #ifdef TTBL_MODE  
         ! Add the time unit to the header
-        write(iunit, '(A, F12.4)') 'Time unit, t = ', time_value
+        write(iunit, '(A, A)') 'Time unit, t = ', time_value
         write(iunit, *) ' '
 #endif        
  
