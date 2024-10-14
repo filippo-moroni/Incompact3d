@@ -47,10 +47,7 @@ program post
   integer :: iunit                                   ! unit for the file to open (assigned by the compiler)
     
   integer,dimension(5) :: sel                        ! index for the number of post-processing selections employed (selector index) 
- 
-  character(99) :: filename,dirname
-  character(99) :: snap_index,snap_n_index,printing  ! characters to print to screen and to read snapshots' indexes
-  
+
   character(1)  :: a
       
   ! Save the initial time of post-processing work
@@ -61,9 +58,9 @@ program post
   call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,code) 
   call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)     
   
-  ! Reading of input.i3d file
+  ! Reading of 'input.i3d' file
   call reading_input_file()
-
+  
   ! Manually setting explicit time-integration and 6th order 
   ! accurate compact scheme for 2nd order derivate
   ! to avoid problems with calculation of derivatives.
@@ -91,6 +88,9 @@ program post
   call schemes()
   
   call decomp_info_init(nxm,nym,nzm,phG)
+  
+  ! Reading of 'post.prm' file
+  call read_post_file()
   
   ! Start of the post-processing  
   post_mean   = .false.; post_vort = .false.

@@ -28,6 +28,12 @@ module post_processing
   integer :: nr                      ! total number of flow realizations
   integer :: ifile                   ! index to open different snapshots in time ('file index')
   
+  ! Strings for names of files and directories
+  character(99) :: filename,dirname
+  
+  ! Strings to print to screen and to read snapshots' indexes
+  character(99) :: snap_index,snap_n_index,printing  
+  
   ! Logicals for 'if' conditions during post-processing
   logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
   logical, save :: read_vel,read_pre,read_phi
