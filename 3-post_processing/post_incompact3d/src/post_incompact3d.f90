@@ -41,12 +41,6 @@ program post
   implicit none
 
   integer :: i,j,k,is
-  integer :: ii = 1,ie = 1                           ! internal and external loops 
-  integer :: file1,filen,icrfile                     ! indexes for opening snapshots (first, last & increment)
-  integer :: nt                                      ! total number of time units
-  integer :: nr                                      ! total number of flow realizations
-  integer :: ifile                                   ! index to open different snapshots in time
-  
   real(mytype) :: den                                ! denominator of the divisions
   real(mytype) :: temp                               ! temporary variable
    
@@ -176,15 +170,18 @@ end if
      
      ! Writing the snapshot index as character
      write(snap_index, ifilenameformat) ifile 
-     snap_index = adjustl(snap_index) 
+     snap_index = adjustl(snap_index)
+     
+     ! Write .xdmf file filename
+     filename = 'snapshot-' // snap_index // '.xdmf'
 
-     ! Call the subroutine to read time from the XDMF file
-     call read_xdmf_time('snapshot-.xdmf', time_value, time_found)
+     ! Call the subroutine to read time from the .xdmf file
+     call read_xdmf_time(filename, time_value, time_found)
 
      if (time_found) then
          print *, 'Time found:', time_value
      else
-         print *, 'Time not found in the XDMF file.'
+         print *, 'Time not found in the .xdmf file.'
      end if
 
      ! Show progress on post-processing    

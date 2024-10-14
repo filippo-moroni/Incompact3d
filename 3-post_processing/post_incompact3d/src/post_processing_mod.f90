@@ -20,6 +20,13 @@ module post_processing
   use var
 
   implicit none
+
+  ! Work variables for statistics
+  integer :: ii = 1,ie = 1           ! internal and external loops 
+  integer :: file1,filen,icrfile     ! indexes for opening snapshots (first, last & increment)
+  integer :: nt                      ! total number of time units
+  integer :: nr                      ! total number of flow realizations
+  integer :: ifile                   ! index to open different snapshots in time
   
   ! Logicals for 'if' conditions during post-processing
   logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
