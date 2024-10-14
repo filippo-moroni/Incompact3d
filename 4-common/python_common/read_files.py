@@ -365,7 +365,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
              friction Reynolds number.
             !-----------------------------------------------------------------------!
             """
-            M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=3, delimiter=',', dtype=np.float64)
             mean_u  = M[:,0]
             mean_w  = M[:,2]   
             var_u   = M[:,3]
@@ -380,7 +380,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
              total shear velocity).
             !-----------------------------------------------------------------------!
             """
-            M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            M = np.loadtxt(f'data_post/vort_stats-{snap_numb}.txt', skiprows=3, delimiter=',', dtype=np.float64)
             vort_x = M[:,0]
             vort_y = M[:,1]
             vort_z = M[:,2]
@@ -390,7 +390,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
                 
             # Reading of the mean total dissipation
             if post_diss:
-                eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+                eps = np.loadtxt(f'data_post/diss_stats-{snap_numb}.txt', skiprows=3, delimiter=',', dtype=np.float64)
         
             # Reading of correlations
             if post_corz:
