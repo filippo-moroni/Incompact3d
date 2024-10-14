@@ -22,11 +22,11 @@ module post_processing
   implicit none
 
   ! Work variables for statistics
-  integer :: ii = 1,ie = 1           ! internal and external loops 
+  integer :: ii = 1,ie = 1           ! internal (ii) and external (ie) loops 
   integer :: file1,filen,icrfile     ! indexes for opening snapshots (first, last & increment)
-  integer :: nt                      ! total number of time units
+  integer :: nt                      ! total number of savings in time
   integer :: nr                      ! total number of flow realizations
-  integer :: ifile                   ! index to open different snapshots in time
+  integer :: ifile                   ! index to open different snapshots in time ('file index')
   
   ! Logicals for 'if' conditions during post-processing
   logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
