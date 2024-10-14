@@ -594,6 +594,12 @@ end if
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+
+#ifdef TTBL_MODE  
+        ! Add the time unit to the header
+        write(iunit, '(A, F12.4') 'Time unit, t = ', time_value
+        write(iunit, *) ' '
+#endif 
         
         ! Header
         write(iunit, '(23(A13, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
@@ -657,6 +663,12 @@ end if
                
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+
+#ifdef TTBL_MODE  
+        ! Add the time unit to the header
+        write(iunit, '(A, F12.4') 'Time unit, t = ', time_value
+        write(iunit, *) ' '
+#endif 
         
         ! Header
         write(iunit, '(6(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
@@ -695,6 +707,12 @@ end if
                
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+
+#ifdef TTBL_MODE  
+        ! Add the time unit to the header
+        write(iunit, '(A, F12.4') 'Time unit, t = ', time_value
+        write(iunit, *) ' '
+#endif 
         
         ! Header
         write(iunit, '(1(A13, A1, 1X))') 'mean[eps]'
@@ -882,7 +900,13 @@ end if
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
-        
+
+#ifdef TTBL_MODE  
+        ! Add the time unit to the header
+        write(iunit, '(A, F12.4') 'Time unit, t = ', time_value
+        write(iunit, *) ' '
+#endif        
+ 
         ! Header 
         write(iunit, '(5(A13, A1, 1X))') 'tke_turbt' , ',', 'tke_presst', ',', 'tke_difft', ',', &
                                          'tke_prod'  , ',', 'tke_pseps' 
