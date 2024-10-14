@@ -116,10 +116,10 @@ end if
      write(snap_index, ifilenameformat) ifile 
      snap_index = adjustl(snap_index)
      snap_index = trim(snap_index)
-     
+
+#ifdef TTBL_MODE    
      ! Use /data or /data_r1 to read time-units
-     if(nr .eq. 1) then
-     
+     if(nr .eq. 1) then    
         ! nr = 1, /data folder only is present
         write(dirname,"('./data')")  
      else
@@ -141,6 +141,7 @@ end if
              print *, 'Time not found in the .xdmf file.'
          end if
      end if
+#endif
 
      ! Show progress on post-processing    
      if (nrank==0) then
