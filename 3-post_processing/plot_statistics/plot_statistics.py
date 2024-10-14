@@ -1178,6 +1178,12 @@ if post_tke_eq and i_switch_plot == False:
 
     # Residual of TKE (excluding unsteady term if present)
     tke_residual = -tke_turbt - tke_presst + tke_difft + tke_prod - tke_pseps
+
+    # Find the maximum of the residual and print it to terminal
+    max_tke_residual = np.max(tke_residual)
+
+    print(">>> Maximum of TKE residual in wall units: ", max_tke_residual)
+    print()
     
     # Description of .pdf file
     description = 'Budget terms for Turbulent Kinetic Energy (TKE) equation. Reference data Mansour et al. (1988).'
