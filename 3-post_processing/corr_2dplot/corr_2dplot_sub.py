@@ -120,7 +120,7 @@ def corr_2dplot(var,field_name,field_label,Lz,nz,sh_vel_x,nu,y,ny,cmap_name,pad_
     # Round y* value
     ystar = round(ystar, 1)
     
-    # Text to show value of maximum correlation  
+    # Text to show the y+ of maximum correlation  
     ax.text(xlimsup*0.2, ystar*1.2, fr'$y^+ = {ystar}$', color='k', fontsize=4, ha='center')
     
     # Colorbar

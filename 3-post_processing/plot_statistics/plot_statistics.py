@@ -658,6 +658,12 @@ if post_mean:
     # Vertical line to show the TKE peak location
     ax.vlines(x=y_plus_max_tke, ymin=0.0, ymax=np.max(tke), linewidth=pp.lw, color=pp.grey, linestyles='dashed')
 
+    # y* (y location of the y+ label, half of TKE peak)
+    y_star = np.max(tke) / 2.0
+
+    # Text to show the y+ of maximum TKE
+    ax.text(y_plus_max_tke*0.2, y_star, fr'$y^+ = {y_plus_max_tke}$', color='k', fontsize=4, ha='center')
+
     # Limits for axes
     xliminf = 0.1
     xlimsup = Ly_plus*1.5
