@@ -102,6 +102,7 @@ program post
 if (nrank==0) then
     write(snap_n_index, ifilenameformat) filen 
     snap_n_index = adjustl(snap_n_index)
+    snap_n_index = trim(snap_n_index)
 end if
 
 !------------Start of the time average cycle---------------!
@@ -114,6 +115,7 @@ end if
      ! Writing the snapshot index as character
      write(snap_index, ifilenameformat) ifile 
      snap_index = adjustl(snap_index)
+     snap_index = trim(snap_index)
      
      ! Use /data or /data_r1 to read time-units
      if(nr .eq. 1) then
@@ -126,7 +128,7 @@ end if
      end if
      
      ! Write .xdmf file filename
-     filename = dirname // '/snapshot-' // trim(snap_index) // '.xdmf'
+     filename = dirname // '/snapshot-' // snap_index // '.xdmf'
 
      ! Call the subroutine to read time from the .xdmf file
      call read_xdmf_time(filename, time_value, time_found)
@@ -145,7 +147,7 @@ end if
         write(*,*) '----------------------------------------------------'
 
         ! Print the snapshot currently being processed         
-        write(printing, '(A,A,A,A)') 'We are averaging snapshot = ', trim(snap_index), ' / ', trim(snap_n_index) 
+        write(printing, '(A,A,A,A)') 'We are averaging snapshot = ', snap_index, ' / ', snap_n_index 
         printing = adjustl(printing) 
         write(*,*) printing
                  
@@ -162,7 +164,7 @@ end if
         
 #ifdef TTBL_MODE          
          ! Write the mean_stats filename for TTBL
-         write(filename, '(A,A,A)') 'mean_stats-', trim(snap_index), '.txt'
+         write(filename, '(A,A,A)') 'mean_stats-', snap_index, '.txt'
          filename = adjustl(filename)
 #else
          ! Write the mean_stats filename for channel flow
@@ -231,17 +233,17 @@ end if
      if (read_vel) then  
           
          ! Reading the x-pencils (snapshots have metadata of the default saving along x)    
-         write(filename, '(A,A,A)') 'ux-', trim(snap_index), '.bin' 
+         write(filename, '(A,A,A)') 'ux-', snap_index, '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,ux1,dirname,filename,a)
          call transpose_x_to_y(ux1,ux2)
         
-         write(filename, '(A,A,A)') 'uy-', trim(snap_index), '.bin' 
+         write(filename, '(A,A,A)') 'uy-', snap_index, '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,uy1,dirname,filename,a)
          call transpose_x_to_y(uy1,uy2)
   
-         write(filename, '(A,A,A)') 'uz-', trim(snap_index), '.bin' 
+         write(filename, '(A,A,A)') 'uz-', snap_index, '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,uz1,dirname,filename,a)
          call transpose_x_to_y(uz1,uz2)
@@ -249,14 +251,14 @@ end if
      endif
      
      if (read_pre) then
-         write(filename, '(A,A,A)') 'pp-', trim(snap_index), '.bin' 
+         write(filename, '(A,A,A)') 'pp-', snap_index, '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,pre1,dirname,filename,a)
          call transpose_x_to_y(pre1,pre2)     
      endif
      
      if (read_phi) then   
-         write(filename, '(A,A,A)') 'phi01-', trim(snap_index), '.bin' 
+         write(filename, '(A,A,A)') 'phi01-', snap_index, '.bin' 
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,phi1(:,:,:,1),dirname,filename,a)       
          call transpose_x_to_y(phi1(:,:,:,1),phi2(:,:,:,1))
@@ -591,11 +593,7 @@ end if
      ! Mean statistics writing
      if (post_mean) then
 
-#ifdef TTBL_MODE  
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE         
         ! Write the mean_stats filename for TTBL
         write(filename, '(A,A,A)') 'mean_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -660,11 +658,7 @@ end if
      ! Vorticity mean statistics and mean gradients writing
      if (post_vort) then
 
-#ifdef TTBL_MODE  
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE          
         ! Write the vort_stats filename for TTBL
         write(filename, '(A,A,A)') 'vort_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -704,11 +698,7 @@ end if
      ! Mean dissipation writing
      if (post_diss) then
 
-#ifdef TTBL_MODE  
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE          
         ! Write the diss_stats filename for TTBL
         write(filename, '(A,A,A)') 'diss_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -743,11 +733,7 @@ end if
      if (post_corz) then
      
 !--- Streamwise autocorrelation function, Ruuz ---!     
-#ifdef TTBL_MODE
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE        
         ! Write the Ruuz filename for TTBL
         write(filename, '(A,A,A)') 'Ruuz-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -773,11 +759,7 @@ end if
         close(iunit)
 
 !--- Vertical autocorrelation function, Rvvz ---!
-#ifdef TTBL_MODE
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE        
         ! Write the Rvvz filename for TTBL
         write(filename, '(A,A,A)') 'Rvvz-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -803,11 +785,7 @@ end if
         close(iunit)
 
 !--- Spanwise autocorrelation function, Rwwz ---!
-#ifdef TTBL_MODE
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE        
         ! Write the Rwwz filename for TTBL
         write(filename, '(A,A,A)') 'Rwwz-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -833,11 +811,7 @@ end if
         close(iunit)
 
 !--- Mixed fluctuations correlation function, Ruvz ---!
-#ifdef TTBL_MODE
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE        
         ! Write the Ruvz filename for TTBL
         write(filename, '(A,A,A)') 'Ruvz-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -863,11 +837,7 @@ end if
         close(iunit)
         
 !--- Scalar field correlation function, Rssz ---!
-#ifdef TTBL_MODE
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE        
         ! Write the Rssz filename for TTBL
         write(filename, '(A,A,A)') 'Rssz-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -897,11 +867,7 @@ end if
      ! TKE terms (or budget) writing
      if (post_tke_eq) then
 
-#ifdef TTBL_MODE  
-        ! Writing the snapshot index as character
-        write(snap_index, ifilenameformat) ifile 
-        snap_index = adjustl(snap_index) 
-        
+#ifdef TTBL_MODE          
         ! Write the tke_stats filename for TTBL
         write(filename, '(A,A,A)') 'tke_stats-', trim(snap_index), '.txt'
         filename = adjustl(filename)
@@ -935,15 +901,16 @@ end if
                                
         close(iunit)
      endif
-                     
-  endif ! closing of the if-statement for processor 0
+  
+  ! Close of the if-statement for processor 0                   
+  endif 
 
 #ifdef TTBL_MODE   
       
    ! Reset to zero the average vectors on subdomains (H1) and on total domain (HT)
    call reset_subdomains_and_domain() 
    
-   ! Closing of the do-loop for the different time units (or SnapShots) (ie index)
+   ! Close of the do-loop for the different time units (or SnapShots) (ie index)
    enddo 
     
 #endif
