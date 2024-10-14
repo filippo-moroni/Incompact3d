@@ -648,7 +648,7 @@ def read_ref_data():
     y_plus_vvar_yao = M[:,0]
     var_v_yao       = M[:,1]
                 
-    M = np.loadtxt(dirname + '/yao2019/vvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    M = np.loadtxt(dirname + '/yao2019/wvar_yao2019.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_wvar_yao = M[:,0]
     var_w_yao       = M[:,1]
         
