@@ -32,17 +32,29 @@ module post_processing
   character(99) :: filename,dirname
   
   ! Strings to print to screen and to read snapshots' indexes
-  character(99) :: snap_index,snap_n_index,printing  
+  character(99) :: snap_index,snap_n_index,printing
   
-  ! Logicals for 'if' conditions during post-processing
-  logical, save :: post_mean,post_vort,post_diss,post_corz,post_tke_eq
-  logical, save :: read_vel,read_pre,read_phi
+  ! Dummy character
+  character(1)  :: a  
+  
+  ! Logicals for 'if' conditions during post-processing, initialised to 'false'
+  logical, save :: post_mean   = .false.
+  logical, save :: post_vort   = .false.
+  logical, save :: post_diss   = .false.
+  logical, save :: post_corz   = .false.
+  logical, save :: post_tke_eq = .false.
+  logical, save :: read_vel    = .false.
+  logical, save :: read_pre    = .false.
+  logical, save :: read_phi    = .false.
 
   ! Variables to count time spent to post-process data
   real(mytype) :: tstart=0.0,tend=0.0,ttotal=0.0
 
   ! Integer for MPI
   integer :: code
+  
+  ! Integer for the file unit (assigned by the compiler, I/O)
+  integer :: iunit                                   
   
   ! Format for snapshots numbers
   character(len=9) :: ifilenameformat = '(I4.4)'

@@ -34,6 +34,7 @@ program post
   use variables
   use param
   use var
+  
   use MPI
   use post_processing
   use iso_fortran_env
@@ -43,13 +44,7 @@ program post
   integer :: i,j,k,is
   real(mytype) :: den                                ! denominator of the divisions
   real(mytype) :: temp                               ! temporary variable
-   
-  integer :: iunit                                   ! unit for the file to open (assigned by the compiler)
-    
-  integer,dimension(5) :: sel                        ! index for the number of post-processing selections employed (selector index) 
-
-  character(1)  :: a
-      
+        
   ! Save the initial time of post-processing work
   call cpu_time(tstart)
     
@@ -92,46 +87,11 @@ program post
   ! Reading of 'post.prm' file
   call read_post_file()
   
-  ! Start of the post-processing  
-  post_mean   = .false.; post_vort = .false.
-  post_diss   = .false.; post_corz = .false.
-  post_tke_eq = .false.
-    
-  read_vel=.false.; read_pre=.false.; read_phi=.false.
-                  
-  ! Reading of the input file of post-processing (post.prm)
-  open(10,file='post.prm',status='old',form='formatted')
-  read (10,'(A1)') a
-  read (10,'(A1)') a
-  read (10,'(A1)') a 
-  read (10,'(A1)') a
-  read (10,'(A1)') a
-  read (10,*) file1
-  read (10,*) filen
-  read (10,*) icrfile
-  read (10,*) nr 
-  read (10,'(A1)') a
-  read (10,'(A1)') a
-  read (10,'(A1)') a
-  do i=1,size(sel)
-     read (10,*) sel(i)
-  enddo
-  close(10)
-  
-  if (sel(1)==1) post_mean   = .true.
-  if (sel(2)==1) post_vort   = .true.
-  if (sel(3)==1) post_diss   = .true.
-  if (sel(4)==1) post_corz   = .true.
-  if (sel(5)==1) post_tke_eq = .true.
 
-  if (nrank==0) then
-     if ((.not.post_mean   ) .and. &
-         (.not.post_vort   ) .and. &
-         (.not.post_diss   ) .and. &
-         (.not.post_corz   ) .and. &
-         (.not.post_tke_eq))       &
-        call decomp_2d_abort(10,'Invalid post-processing switchers specified, no work to be done here!')
-  endif
+  
+
+
+
   
   ! Logicals for reading Snapshots
   if (post_mean) then
