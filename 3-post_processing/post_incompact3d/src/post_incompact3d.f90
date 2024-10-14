@@ -115,8 +115,18 @@ end if
      write(snap_index, ifilenameformat) ifile 
      snap_index = adjustl(snap_index)
      
+     ! Writing the directories where snapshots are saved (different realizations)
+     if(nr .eq. 1) then
+     
+        ! nr = 1 (only /data folder is present)
+        write(dirname,"('./data')")  
+     else
+        ! nr > 1 (/data_r1, /data_r2, etc. folders) 
+        write(dirname,"('./data_r',I1.1)") ii
+     end if
+     
      ! Write .xdmf file filename
-     filename = 'snapshot-' // trim(snap_index) // '.xdmf'
+     filename = dirname + '/snapshot-' // trim(snap_index) // '.xdmf'
 
      ! Call the subroutine to read time from the .xdmf file
      call read_xdmf_time(filename, time_value, time_found)
