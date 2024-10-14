@@ -116,7 +116,7 @@ end if
      snap_index = adjustl(snap_index)
      
      ! Write .xdmf file filename
-     filename = 'snapshot-' // snap_index // '.xdmf'
+     filename = 'snapshot-' // trim(snap_index) // '.xdmf'
 
      ! Call the subroutine to read time from the .xdmf file
      call read_xdmf_time(filename, time_value, time_found)
