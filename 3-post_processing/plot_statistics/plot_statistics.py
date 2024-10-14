@@ -292,6 +292,7 @@ if post_mean:
 
     # Limits for axes
     xliminf = 0.1
+    xlimsup = Ly_plus*1.5
     yliminf = 0.0
 
     # Mean velocity profile 
@@ -311,7 +312,6 @@ if post_mean:
     # TTBL
     if itype == 13:
     
-        xlimsup = Ly_plus
         ylimsup = 30.0
      
         # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
@@ -335,7 +335,6 @@ if post_mean:
     # Channel    
     elif itype == 3:
 
-        xlimsup = 300.0
         ylimsup = 25.0
     
         # Lee & Moser (2015)
@@ -431,6 +430,7 @@ if post_mean:
 
     # Limits for axes
     xliminf = 0.1
+    xlimsup = Ly_plus*1.5
     yliminf = 0.0
 
     # <u'u'>
@@ -442,7 +442,6 @@ if post_mean:
     # TTBL
     if itype == 13:
     
-        xlimsup = Ly_plus
         ylimsup = 10.0
         
         # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
@@ -466,7 +465,6 @@ if post_mean:
     # Channel    
     elif itype == 3:
 
-        xlimsup = 300.0
         ylimsup = 8.0
     
         # Lee & Moser (2015)
@@ -508,6 +506,7 @@ if post_mean:
 
     # Limits for axes
     xliminf = 0.1
+    xlimsup = Ly_plus*1.5
     yliminf = 0.0
 
     # <v'v'>
@@ -519,7 +518,6 @@ if post_mean:
     # TTBL
     if itype == 13:
 
-        xlimsup = Ly_plus
         ylimsup = 1.5
         
         # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
@@ -543,7 +541,6 @@ if post_mean:
     # Channel    
     elif itype == 3:
 
-        xlimsup = 300.0
         ylimsup = 0.8
     
         # Lee & Moser (2015)
@@ -585,6 +582,7 @@ if post_mean:
 
     # Limits for axes
     xliminf = 0.1
+    xlimsup = Ly_plus*1.5
     yliminf = 0.0
 
     # <w'w'>
@@ -596,7 +594,6 @@ if post_mean:
     # TTBL
     if itype == 13:
 
-        xlimsup = Ly_plus
         ylimsup = 2.5
         
         # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
@@ -611,7 +608,6 @@ if post_mean:
     # Channel    
     elif itype == 3:
 
-        xlimsup = 300.0
         ylimsup = 1.5
     
         # Lee & Moser (2015)
@@ -644,6 +640,63 @@ if post_mean:
 
     #!--------------------------------------------------------------------------------------!
 
+    print(">>> Plotting Turbulent Kinetic Energy (TKE).")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
+
+    # TKE (<k>)
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # TKE calculation for our data and for Lee & Moser one
+    tke = 0.5*(var_u + var_v + var_w)
+    tke_lm = 0.5*(var_u_lm + var_v_lm + var_w_lm)
+
+    # Limits for axes
+    xliminf = 0.1
+    xlimsup = Ly_plus*1.5
+    yliminf = 0.0
+    ylimsup = 6.0
+
+    # <k>
+    ax.scatter(y_plus[:ny], tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Description of .pdf file
+    description = 'Turbulent Kinetic Energy (TKE).'
+
+    # TTBL
+    if itype == 13:
+        
+        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
+        if 150 < re_tau < 210:
+        
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, tke_lm, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
+            
+    # Channel    
+    elif itype == 3:
+    
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm, tke_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
+
+    # Axes labels
+    ax.set_xlabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$<k>^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+    # Save and show the figure
+    save_and_show_plot('tke', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+
+    #!--------------------------------------------------------------------------------------!
+
     print(">>> Plotting Reynolds stress <u'v'>.")
     print(">>> Folder: plots/mean_stats/.")
     print()
@@ -653,6 +706,7 @@ if post_mean:
 
     # Limits for axes
     xliminf = 0.1
+    xlimsup = Ly_plus*1.5
     yliminf = 0.0
 
     # <u'v'>
@@ -664,7 +718,6 @@ if post_mean:
     # TTBL
     if itype == 13:
 
-        xlimsup = Ly_plus
         ylimsup = 1.2
         
         # y-axis label
@@ -691,7 +744,6 @@ if post_mean:
     # Channel    
     elif itype == 3:
 
-        xlimsup = 300.0
         ylimsup = 0.8
         
         # Lee & Moser (2015)
@@ -797,7 +849,7 @@ if post_diss and i_switch_plot == False:
     
     # Limits for axes
     xliminf = 0.1
-    xlimsup = Ly_plus
+    xlimsup = Ly_plus*1.5
     yliminf = min(eps)*1.2    
     ylimsup = max(eps)*1.2
     
@@ -1057,6 +1109,7 @@ if post_tke_eq and i_switch_plot == False:
 
     # Limits for axes
     xliminf = 0.1
+    xlimsup = Ly_plus*1.5
     yliminf = 0.0
     ylimsup = 2.0
 
@@ -1068,8 +1121,6 @@ if post_tke_eq and i_switch_plot == False:
     
     # TTBL
     if itype == 13:
-
-        xlimsup = 520.0
         
         # Lee & Moser (2015)
         ax.plot(y_plus_lm1000, p_eps_ratio_lm1000 + 1.0, color='C1', linestyle='-', linewidth=pp.lw)
@@ -1079,8 +1130,6 @@ if post_tke_eq and i_switch_plot == False:
                 
     # Channel    
     elif itype == 3:
-
-        xlimsup = 300.0
         
         # Moser et al. (1999)
         ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
@@ -1110,19 +1159,23 @@ if post_tke_eq and i_switch_plot == False:
 
     # Limits for axes
     xliminf =  0.1
-    xlimsup = y_plus[ny-1]*1.5
+    xlimsup = Ly_plus*1.5
     yliminf = -0.3
     ylimsup =  0.4
+
+    # Residual of TKE (excluding unsteady term if present)
+    tke_residual = -tke_turbt - tke_presst + tke_difft + tke_prod - tke_pseps
     
     # Description of .pdf file
     description = 'Budget terms for Turbulent Kinetic Energy (TKE) equation. Reference data Mansour et al. (1988).'
 
-    # Transport terms
-    ax.scatter(y_plus[:ny], -tke_turbt [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
-    ax.scatter(y_plus[:ny], -tke_presst[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C1')
-    ax.scatter(y_plus[:ny],  tke_difft [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
-    ax.scatter(y_plus[:ny],  tke_prod  [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C3')
-    ax.scatter(y_plus[:ny], -tke_pseps [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C4')
+    # TKE transport terms and residual
+    ax.scatter(y_plus[:ny], -tke_turbt    [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    ax.scatter(y_plus[:ny], -tke_presst   [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C1')
+    ax.scatter(y_plus[:ny],  tke_difft    [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C2')
+    ax.scatter(y_plus[:ny],  tke_prod     [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C3')
+    ax.scatter(y_plus[:ny], -tke_pseps    [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C4')
+    ax.scatter(y_plus[:ny],  tke_residual [:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C5')
 
     # Mansour et al. (1988)            
     ax.plot(y_plus_tke_turbt_mansour,   tke_turbt_mansour,  color='C0', linestyle='-', linewidth=pp.lw)
