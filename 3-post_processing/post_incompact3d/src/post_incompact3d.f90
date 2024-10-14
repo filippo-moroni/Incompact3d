@@ -234,7 +234,7 @@ end if
      if (read_vel) then  
           
          ! Reading the x-pencils (snapshots have metadata of the default saving along x)    
-         write(filename, '(A,A,A)') 'ux-', snap_index, '.bin' 
+         filename = '/ux-' // snap_index // '.bin'
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,ux1,dirname,filename,a)
          call transpose_x_to_y(ux1,ux2)
