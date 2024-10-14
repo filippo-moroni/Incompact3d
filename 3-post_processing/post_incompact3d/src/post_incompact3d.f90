@@ -148,7 +148,7 @@ end if
         write(*,*) '----------------------------------------------------'
 
         ! Print the snapshot currently being processed         
-        write(printing, '(A,A,A,A)') 'We are averaging snapshot = ', snap_index, ' / ', snap_n_index 
+        printing = 'We are averaging snapshot = ' // snap_index // ' / ' // snap_n_index
         printing = adjustl(printing) 
         write(*,*) printing
                  
