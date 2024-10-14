@@ -126,7 +126,7 @@ end if
      end if
      
      ! Write .xdmf file filename
-     filename = dirname + '/snapshot-' // trim(snap_index) // '.xdmf'
+     filename = dirname // '/snapshot-' // trim(snap_index) // '.xdmf'
 
      ! Call the subroutine to read time from the .xdmf file
      call read_xdmf_time(filename, time_value, time_found)
