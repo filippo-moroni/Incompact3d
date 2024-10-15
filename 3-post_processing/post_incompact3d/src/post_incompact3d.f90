@@ -657,9 +657,7 @@ end if
                                
         close(iunit)
      endif
-     
-     
-     
+        
      ! Vorticity mean statistics and mean gradients writing
      if (post_vort) then
 
