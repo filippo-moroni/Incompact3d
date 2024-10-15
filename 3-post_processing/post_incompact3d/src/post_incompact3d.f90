@@ -232,33 +232,33 @@ end if
      if (read_vel) then  
           
          ! Reading the x-pencils (snapshots have metadata of the default saving along x)    
-         filename = 'ux-' // snap_index // '.bin'
+         filename = 'ux-' // trim(snap_index) // '.bin'
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,ux1,dirname,filename,a)
          call transpose_x_to_y(ux1,ux2)
         
-         write(filename, '(A,A,A)') 'uy-', snap_index, '.bin' 
+         filename = 'uy-' // trim(snap_index) // '.bin'
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,uy1,dirname,filename,a)
          call transpose_x_to_y(uy1,uy2)
   
-         write(filename, '(A,A,A)') 'uz-', snap_index, '.bin' 
-         filename = adjustl(filename)         
+         filename = 'uz-' // trim(snap_index) // '.bin'
+         filename = adjustl(filename)          
          call decomp_2d_read_one(1,uz1,dirname,filename,a)
          call transpose_x_to_y(uz1,uz2)
         
      endif
      
      if (read_pre) then
-         write(filename, '(A,A,A)') 'pp-', snap_index, '.bin' 
+         filename = 'pp-' // trim(snap_index) // '.bin'
          filename = adjustl(filename)         
          call decomp_2d_read_one(1,pre1,dirname,filename,a)
          call transpose_x_to_y(pre1,pre2)     
      endif
      
-     if (read_phi) then   
-         write(filename, '(A,A,A)') 'phi01-', snap_index, '.bin' 
-         filename = adjustl(filename)         
+     if (read_phi) then
+         filename = 'phi01-' // trim(snap_index) // '.bin'
+         filename = adjustl(filename)            
          call decomp_2d_read_one(1,phi1(:,:,:,1),dirname,filename,a)       
          call transpose_x_to_y(phi1(:,:,:,1),phi2(:,:,:,1))
      endif
@@ -593,14 +593,14 @@ end if
      if (post_mean) then
 
 #ifdef TTBL_MODE         
-        ! Write the mean_stats filename for TTBL
-        write(filename, '(A,A,A)') 'mean_stats-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+        ! Write the mean_stats filename for TTBL       
+        filename = 'mean_stats-' // trim(snap_index) // '.txt'
 #else
         ! Write the mean_stats filename for channel flow
-        write(filename, '(A)') 'mean_stats.txt'
-        filename = adjustl(filename)
+        filename = 'mean_stats.txt'
 #endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
