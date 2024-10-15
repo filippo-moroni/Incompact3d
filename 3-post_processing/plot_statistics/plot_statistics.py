@@ -662,7 +662,7 @@ if post_mean:
     y_star = np.max(tke) / 2.0
 
     # Text to show the y+ of maximum TKE
-    ax.text(y_plus_max_tke*0.2, y_star, fr'$y^+ = {y_plus_max_tke}$', color='k', fontsize=4, ha='center')
+    ax.text(y_plus_max_tke*1.2, y_star, fr'$y^+ = {y_plus_max_tke}$', color='k', fontsize=4, ha='center')
 
     # Limits for axes
     xliminf = 0.1
@@ -699,7 +699,7 @@ if post_mean:
 
     # Axes labels
     ax.set_xlabel(r'$y^+$',   fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$<k>^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\langle k \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
