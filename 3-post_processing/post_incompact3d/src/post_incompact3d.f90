@@ -41,6 +41,7 @@ program post
 
   implicit none
 
+  ! Integers for cycles
   integer :: i,j,k,is
   
   ! Denominator of the divisions
@@ -60,12 +61,6 @@ program post
   ! Reading of 'input.i3d' file
   call reading_input_file()
   
-  ! Manually setting explicit time-integration and 6th order 
-  ! accurate compact scheme for 2nd order derivate
-  ! to avoid problems with calculation of derivatives.
-  iimplicit = 0
-  isecondder = 4
-
   ! Imposing decomposition in slabs
   p_row=nproc; p_col=1
   
