@@ -114,17 +114,6 @@ end if
      ! Writing the snapshot index as character
      write(snap_index, ifilenameformat) ifile 
      snap_index = adjustl(snap_index)
-
-     ! Show progress on post-processing    
-     if (nrank==0) then
-        write(*,*) '----------------------------------------------------'
-
-        ! Print the snapshot currently being processed         
-        printing = 'We are averaging snapshot = ' // trim(snap_index) // ' / ' // trim(snap_n_index)
-        printing = adjustl(printing) 
-        write(*,*) printing
-                 
-     endif
      
 #ifdef TTBL_MODE    
      ! Use /data or /data_r1 to read time-units
@@ -214,6 +203,17 @@ end if
          end if
      
      end if
+     
+     ! Show progress on post-processing    
+     if (nrank==0) then
+        write(*,*) '----------------------------------------------------'
+
+        ! Print the snapshot currently being processed         
+        printing = 'We are averaging snapshot = ' // trim(snap_index) // ' / ' // trim(snap_n_index)
+        printing = adjustl(printing) 
+        write(*,*) printing
+                 
+     endif
       
 !---------Start of the ensemble average cycle--------------!
              
