@@ -282,10 +282,12 @@ end if
          do k=1,ysize(3)
              do i=1,ysize(1)
                  do j=1,ysize(2)
-                     ux2 (i,j,k)   = ux2 (i,j,k)   - u1meanHT(j)
-                     uy2 (i,j,k)   = uy2 (i,j,k)   - v1meanHT(j)
-                     uz2 (i,j,k)   = uz2 (i,j,k)   - w1meanHT(j)
-                     pre2(i,j,k)   = pre2(i,j,k)   - pre1meanHT(j)
+                     
+                     ! Velocity and pressure fluctuations
+                     ux2 (i,j,k)   = ux2 (i,j,k) - u1meanHT(j)
+                     uy2 (i,j,k)   = uy2 (i,j,k) - v1meanHT(j)
+                     uz2 (i,j,k)   = uz2 (i,j,k) - w1meanHT(j)
+                     pre2(i,j,k)   = pre2(i,j,k) - pre1meanHT(j)
                      
                      ! Scalar fluctuations
                      if (numscalar == 1) then
@@ -365,6 +367,7 @@ end if
               uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/den
               vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/den
               wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/den                                  
+           
            enddo          
         enddo
      enddo
@@ -384,6 +387,7 @@ end if
               mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/den 
               mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den 
               mean_gradphiH1  (j)=mean_gradphiH1  (j)+mean_gradphi  (i,j,k)/den                   
+           
            enddo
         enddo
      enddo
@@ -396,6 +400,7 @@ end if
            
               ! Total dissipation          
               epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/den                  
+           
            enddo
         enddo
      enddo
@@ -412,6 +417,7 @@ end if
                              
                   ! Pseudo-dissipation for TKE
                   pseudo_eps_tke_meanH1(j)=pseudo_eps_tke_meanH1(j)+pseudo_eps_tke_mean(i,j,k)/den    
+              
               end do
           end do
       end do
