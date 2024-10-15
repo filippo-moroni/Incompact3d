@@ -41,8 +41,8 @@ program post
 
   implicit none
 
-  ! Integers for cycles
-  integer :: i,j,k,is
+  ! Integers for cycles (x,y,z)
+  integer :: i,j,k
   
   ! Denominator of the divisions
   real(mytype) :: den
@@ -279,10 +279,10 @@ end if
                  do j=1,ysize(2)
                      
                      ! Velocity and pressure fluctuations
-                     ux2 (i,j,k)   = ux2 (i,j,k) - u1meanHT(j)
-                     uy2 (i,j,k)   = uy2 (i,j,k) - v1meanHT(j)
-                     uz2 (i,j,k)   = uz2 (i,j,k) - w1meanHT(j)
-                     pre2(i,j,k)   = pre2(i,j,k) - pre1meanHT(j)
+                     ux2 (i,j,k) = ux2 (i,j,k) - u1meanHT(j)
+                     uy2 (i,j,k) = uy2 (i,j,k) - v1meanHT(j)
+                     uz2 (i,j,k) = uz2 (i,j,k) - w1meanHT(j)
+                     pre2(i,j,k) = pre2(i,j,k) - pre1meanHT(j)
                      
                      ! Scalar fluctuations
                      if (numscalar == 1) then
