@@ -439,7 +439,7 @@ module param
   integer :: smagwalldamp
   real(mytype) :: smagcst,nSmag,walecst,FSGS,pr_t,maxdsmagcst
 
-  !! Gravity field (vector components)
+  ! Gravity field (vector components)
   real(mytype) :: gravx, gravy, gravz
 
   !! LMN
@@ -734,7 +734,7 @@ module ibm_param
 
   use decomp_2d_constants, only : mytype
   
-  real(mytype) :: cex,cey,cez,ra,ubcx,ubcy,ubcz,rads, c_air
+  real(mytype) :: cex,cey,cez,ra,ubcx,ubcy,ubcz,rads,c_air
   real(mytype) :: chord,thickness,omega
   integer :: inana ! Analytical BC as Input
   integer :: imove
