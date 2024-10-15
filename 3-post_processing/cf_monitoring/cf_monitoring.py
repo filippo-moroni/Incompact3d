@@ -389,17 +389,15 @@ if itype == 3:
     print(">>> Correspondent snapshot index on 'cf_history.txt' file:", lower_index)
     print()
 
-    # Average (lower TU is included)
-    cfx_red = cfx[lower_index:]
-    print(len(cfx_red))
+    # Average (lower TU is included) (a futher check on precision must be made, the plotted line seems to low wrt to data points)
+    mean_cf = np.mean(cfx[lower_index:], dtype=np.float128)
     
-    for i in len(cfx_red):
-    
-        mean_cf = mean_cf + cfx_red[i] / len(cfx_red)
-
-    #mean_cf = np.mean(cfx_red, dtype=np.float64)
-    mean_cf = mean_cf*1000.0
-    print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.2f}")
+    # Define 1000.0 with quad precision
+    onethousand = np.float128(1000.0)
+   
+    # Rescale friction coefficient by a factor of 1000.0
+    mean_cf = mean_cf*onethousand
+    print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.3f}")
     print()
     
     # Number of snapshots used and total average time (lower TU is included)
@@ -453,7 +451,7 @@ elif itype == 3:
     ax.text(lower_tu*1.1, mean_cf/2000.0, fr'$t = {lower_tu}$', color='k', fontsize=4, ha='left')
     
     # Horizontal line to show mean cf value
-    ax.hlines(y=mean_cf/1000.0, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
+    ax.hlines(y=mean_cf/onethousand, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
     
     # Create folder to store cf_mean 
     os.makedirs('cf_stats', mode=0o777, exist_ok=True)
