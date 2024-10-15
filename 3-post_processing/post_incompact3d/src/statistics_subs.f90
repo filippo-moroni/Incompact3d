@@ -20,7 +20,8 @@
 !                   (Ruuz, Rvvz, Rwwz, Ruvz);
 !                 - spanwise correlation function for scalar field (s: scalar)
 !                   (Rssz).
-!              Adapted from original Incompact3d file (v2.0) of R. Corsini. 
+!              Adapted from original Incompact3d file (v2.0) 
+!              of Roberto Corsini. 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
 !              Roberto Corsini <roberto.corsini@unimore.it> 
 !-----------------------------------------------------------------------------!

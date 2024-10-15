@@ -4,7 +4,7 @@
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: This program is used for post-processing of Incompact3d 
 !              snapshots. Adapted from original Incompact3d file (v2.0)       
-!              of R. Corsini.
+!              of Roberto Corsini.
 !              This program has the following files that are 
 !              shared with Incompact3d 'modified':
 !              - 'derive.f90'
@@ -52,7 +52,7 @@ program post
   ! Save the initial time of post-processing work
   call cpu_time(tstart)
     
-  ! Initialize MPI (same as R. Corsini & Xcompact3d)
+  ! Initialise MPI
   call MPI_INIT(code)
   call MPI_COMM_RANK(MPI_COMM_WORLD,nrank,code) 
   call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,code)     
@@ -88,7 +88,7 @@ program post
   
   call decomp_info_init(nxm,nym,nzm,phG)
   
-  ! Reading of 'post.prm' file
+  ! Reading of 'post.prm' file and setup some work variables
   call read_post_file()
   
   ! Initialize statistics arrays
@@ -907,11 +907,11 @@ end if
 
 #ifdef TTBL_MODE   
       
-   ! Reset to zero the average vectors on subdomains (H1) and on total domain (HT)
-   call reset_subdomains_and_domain() 
+ ! Reset to zero the average vectors on subdomains (H1) and on total domain (HT)
+ call reset_subdomains_and_domain() 
    
-   ! Close of the do-loop for the different time units (or SnapShots) (ie index)
-   enddo 
+ ! Close of the do-loop for the different time units (or SnapShots) (ie index)
+ enddo 
     
 #endif
      
