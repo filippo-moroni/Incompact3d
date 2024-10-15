@@ -161,15 +161,15 @@ end if
          ! Write directory name
          write(dirname,"('data_post/')")
         
-#ifdef TTBL_MODE          
-         ! Write the mean_stats filename for TTBL
-         write(filename, '(A,A,A)') 'mean_stats-', snap_index, '.txt'
-         filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the mean_stats filename for TTBL       
+        filename = 'mean_stats-' // trim(snap_index) // '.txt'
 #else
-         ! Write the mean_stats filename for channel flow
-         write(filename, '(A)') 'mean_stats.txt'
-         filename = adjustl(filename)
+        ! Write the mean_stats filename for channel flow
+        filename = 'mean_stats.txt'
 #endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)
 
          ! Read mean stats just the first time for Channel mode
          if((itype .eq. itype_channel .and. ie .eq. 1) .or. (itype .eq. itype_ttbl)) then 
