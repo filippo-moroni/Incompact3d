@@ -799,7 +799,7 @@ if post_diss and i_switch_plot == False:
 
     # Minimum Kolmogorov time scale and print it
     tau_eta = np.sqrt(nu/eps_max)
-    print("Minimum Kolmogorov time scale, tau_eta = ", tau_eta)
+    print("Minimum Kolmogorov time scale, tau_eta = ", round(tau_eta,3))
     print()
 
     #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
