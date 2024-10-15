@@ -179,7 +179,7 @@ re_tau = int(re_tau)
 print(">>> Friction Reynolds number, Re_tau = ", re_tau)
 print()
 
-# Set 're_tau' to 'None' to avoid to insert it in filenames for plots
+# Set 're_tau' to 'None' to avoid to insert it in filenames for plots of channels (Re_tau is unique)
 if itype == 3: re_tau = None
 
 # Print viscous time unit
