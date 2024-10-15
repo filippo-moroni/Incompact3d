@@ -145,8 +145,10 @@ if itype == 13:
         power_in   = M[:nsavings,11]    # power input
                              
         """
-        For shear velocities, we sum their square value, in order to recover the exact arithmetic average. 
-        (Summation between linear quantities, gradients multiplied by kinematic viscosity).
+        !--------------------------------------------------------------------------------------------------!
+         For shear velocities, we sum their square value, in order to recover the exact arithmetic average. 
+         (Summation between linear quantities, gradients multiplied by kinematic viscosity).
+        !--------------------------------------------------------------------------------------------------!
         
         """
         
@@ -304,9 +306,13 @@ if itype == 13:
     delta_z  = Lz / nz
 
     """
-    Non-dimensional mesh spacings and viscous time unit
-    (p: plus, tot: total shear velocity).
+    !----------------------------------------------------!
+     Non-dimensional mesh spacings and viscous time unit
+     (p: plus, tot: total shear velocity).
+    !----------------------------------------------------!
+    
     """
+            
     delta_x_p_tot  = delta_x  / delta_nu_tot
     delta_yw_p_tot = delta_yw / delta_nu_tot
     delta_z_p_tot  = delta_z  / delta_nu_tot
@@ -380,13 +386,13 @@ if itype == 3:
 
     # Calculating its related index and show it
     lower_index = int(lower_tu / delta)
-    print("Correspondent snapshot index:", lower_index)
+    print(">>> Correspondent snapshot index on 'cf_history.txt' file:", lower_index)
     print()
 
     # Average (lower TU is included)
     mean_cf = np.mean(cfx[lower_index:])
     mean_cf = mean_cf*1000.0
-    print(f"Mean cf value, <cf> x 10^3 = {mean_cf:.2f}")
+    print(f">>> Mean cf value, <cf> x 10^3 = {mean_cf:.2f}")
     print()
     
     # Number of snapshots used and total average time (lower TU is included)
