@@ -933,7 +933,7 @@ if post_corz and i_switch_plot == False:
     lambda_z = lambda_z / delta_nu_x
 
     # Print the integral length scale value
-    print(">>> Integral length scale in viscous units, lambda_z^+ = ", lambda_z)
+    print(">>> Integral length scale in viscous units, lambda_z^+ = ", round(lambda_z,4))
     print()
     
     #!--------------------------------------------------------------------------------------!
@@ -1182,7 +1182,7 @@ if post_tke_eq and i_switch_plot == False:
     # Find the absolute maximum of the residual and print it to terminal
     max_tke_residual = np.max(np.abs(tke_residual))
 
-    print(">>> Maximum of TKE residual in wall units (absolute value): ", max_tke_residual)
+    print(">>> Maximum of TKE residual in wall units (absolute value): ", round(max_tke_residual,4))
     print()
     
     # Description of .pdf file
