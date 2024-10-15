@@ -216,7 +216,7 @@ if post_tke_eq:
 #!--- Writing to file the non-dimensional grid spacings and domain dimensions ---!
 
 print(">>> Saving in 'grid_spacings_post' non-dimensional grid spacings")
-print(">>> and domain dimensions.")
+print("    and domain dimensions.")
 print(">>> Folder: /num_resolutions.")
 print()
 
@@ -799,12 +799,12 @@ if post_diss and i_switch_plot == False:
 
     # Minimum Kolmogorov time scale and print it
     tau_eta = np.sqrt(nu/eps_max)
-    print("Minimum Kolmogorov time scale, tau_eta = ", round(tau_eta,3))
+    print(">>> Minimum Kolmogorov time scale, tau_eta = ", round(tau_eta,3))
     print()
 
     #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
     print(">>> Saving in 'time_scales' viscous time unit and")
-    print(">>> Kolmogorov time scale.")
+    print("    Kolmogorov time scale.")
     print(">>> Folder: /num_resolutions.")
     print()
     
