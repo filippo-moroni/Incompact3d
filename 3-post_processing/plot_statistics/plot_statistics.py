@@ -933,7 +933,7 @@ if post_corz and i_switch_plot == False:
     lambda_z = lambda_z / delta_nu_x
 
     # Print the integral length scale value
-    print(">>> Integral length scale in viscous units, lambda_z^+ = ", round(lambda_z,4))
+    print(">>> Integral length scale in viscous units, lambda_z^+ = ", round(lambda_z,1))
     print()
     
     #!--------------------------------------------------------------------------------------!
