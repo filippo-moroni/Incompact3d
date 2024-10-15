@@ -102,11 +102,11 @@ subroutine read_xdmf_time(filename, time_value, time_found)
   logical, intent(out) :: time_found            ! Flag to indicate if the time value was found
     
   character(len=256) :: line                    ! Buffer for reading lines from the file
-  real    :: time_real                     ! Time value directly as real (real64 for precision)
-  real    :: rounded_time                  ! To store the rounded time as real for formatting
+  real    :: time_real                          ! Time value directly as real
+  real    :: rounded_time                       ! To store the rounded time as real for formatting
   integer :: start_pos, end_pos                 ! To find the position of the value in the string
   integer :: ios                                ! I/O status variable for reading the file
-  integer :: iunit
+  integer :: iunit                              ! Integer for fileunit
   
   ! Initialize output variables
   time_found = .false.
@@ -117,26 +117,33 @@ subroutine read_xdmf_time(filename, time_value, time_found)
 
   ! Loop through the file to find the <Time Value="..."> tag
   do while (.true.)
-    read(iunit, '(A)', iostat=ios) line  ! Read one line at a time
+  
+    ! Read one line at a time
+    read(iunit, '(A)', iostat=ios) line  
 
-    if (ios /= 0) exit                   ! Exit loop if we reach the end of the file
+    ! Exit loop if we reach the end of the file
+    if (ios /= 0) exit                   
 
     if (index(line, '<Time Value=') > 0) then
+        
         ! Find the position of the first and second quotes around the time value
         start_pos = index(line, '"') + 1
         end_pos = index(line(start_pos:), '"') + start_pos - 1
 
-        ! Extract the time value directly and convert to real (real64 for precision)
+        ! Extract the time value directly and convert to real
         read(line(start_pos:end_pos), *) time_real
 
         ! Round the real number without converting to integer
         rounded_time = nint(time_real * 100.0) / 100.0  ! Keep 2 decimal places
 
         ! Format the rounded time to 2 decimal places as a string
-        write(time_value, '(F6.2)') rounded_time  ! Format with 2 decimal places
+        write(time_value, '(F6.2)') rounded_time        ! Format with 2 decimal places
 
-        time_found = .true.  ! Set flag indicating that the time value was found
-        exit  ! Exit the loop once the time is found
+        ! Set flag indicating that the time value was found
+        time_found = .true.  
+        
+        ! Exit the loop once time is found
+        exit  
     endif
 
   end do
