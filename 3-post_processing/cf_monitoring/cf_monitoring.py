@@ -390,7 +390,14 @@ if itype == 3:
     print()
 
     # Average (lower TU is included)
-    mean_cf = np.mean(cfx[lower_index:])
+    cfx_red = cfx[lower_index:]
+    print(len(cfx_red))
+    
+    for i in len(cfx_red):
+    
+        mean_cf = mean_cf + cfx_red[i] / len(cfx_red)
+
+    #mean_cf = np.mean(cfx_red, dtype=np.float64)
     mean_cf = mean_cf*1000.0
     print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.2f}")
     print()
@@ -438,6 +445,12 @@ elif itype == 3:
     
     # Add the patch to the plot
     ax.add_patch(rect)
+            
+    # Vertical line to show the lower time-unit we have selected
+    ax.vlines(x=lower_tu, ymin=yliminf, ymax=ylimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+
+    # Text to show in the plot the lower time-unit
+    ax.text(lower_tu*1.1, mean_cf/2000.0, fr'$t = {lower_tu}$', color='k', fontsize=4, ha='left')
     
     # Horizontal line to show mean cf value
     ax.hlines(y=mean_cf/1000.0, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
