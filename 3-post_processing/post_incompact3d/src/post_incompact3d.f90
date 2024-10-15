@@ -657,15 +657,15 @@ end if
      ! Vorticity mean statistics and mean gradients writing
      if (post_vort) then
 
-#ifdef TTBL_MODE          
-        ! Write the vort_stats filename for TTBL
-        write(filename, '(A,A,A)') 'vort_stats-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the vort_stats filename for TTBL       
+        filename = 'vort_stats-' // trim(snap_index) // '.txt'
 #else
         ! Write the vort_stats filename for channel flow
-        write(filename, '(A)') 'vort_stats.txt'
-        filename = adjustl(filename)
+        filename = 'vort_stats.txt'
 #endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)
                
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
@@ -697,15 +697,15 @@ end if
      ! Mean dissipation writing
      if (post_diss) then
 
-#ifdef TTBL_MODE          
-        ! Write the diss_stats filename for TTBL
-        write(filename, '(A,A,A)') 'diss_stats-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the diss_stats filename for TTBL       
+        filename = 'diss_stats-' // trim(snap_index) // '.txt'
 #else
         ! Write the diss_stats filename for channel flow
-        write(filename, '(A)') 'diss_stats.txt'
-        filename = adjustl(filename)
+        filename = 'diss_stats.txt'
 #endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)
                
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
@@ -732,15 +732,15 @@ end if
      if (post_corz) then
      
 !--- Streamwise autocorrelation function, Ruuz ---!     
-#ifdef TTBL_MODE        
-        ! Write the Ruuz filename for TTBL
-        write(filename, '(A,A,A)') 'Ruuz-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the Ruuz filename for TTBL       
+        filename = 'Ruuz-' // trim(snap_index) // '.txt'
 #else
         ! Write the Ruuz filename for channel flow
-        write(filename, '(A)') 'Ruuz.txt'
-        filename = adjustl(filename)
-#endif       
+        filename = 'Ruuz.txt'
+#endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)       
 
         ! Construct the format string
         write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
@@ -758,15 +758,15 @@ end if
         close(iunit)
 
 !--- Vertical autocorrelation function, Rvvz ---!
-#ifdef TTBL_MODE        
-        ! Write the Rvvz filename for TTBL
-        write(filename, '(A,A,A)') 'Rvvz-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the Rvvz filename for TTBL       
+        filename = 'Rvvz-' // trim(snap_index) // '.txt'
 #else
         ! Write the Rvvz filename for channel flow
-        write(filename, '(A)') 'Rvvz.txt'
-        filename = adjustl(filename)
-#endif       
+        filename = 'Rvvz.txt'
+#endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)         
 
         ! Construct the format string
         write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
@@ -784,15 +784,15 @@ end if
         close(iunit)
 
 !--- Spanwise autocorrelation function, Rwwz ---!
-#ifdef TTBL_MODE        
-        ! Write the Rwwz filename for TTBL
-        write(filename, '(A,A,A)') 'Rwwz-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the Rwwz filename for TTBL       
+        filename = 'Rwwz-' // trim(snap_index) // '.txt'
 #else
         ! Write the Rwwz filename for channel flow
-        write(filename, '(A)') 'Rwwz.txt'
-        filename = adjustl(filename)
-#endif       
+        filename = 'Rwwz.txt'
+#endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)        
 
         ! Construct the format string
         write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
@@ -810,15 +810,15 @@ end if
         close(iunit)
 
 !--- Mixed fluctuations correlation function, Ruvz ---!
-#ifdef TTBL_MODE        
-        ! Write the Ruvz filename for TTBL
-        write(filename, '(A,A,A)') 'Ruvz-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the Ruvz filename for TTBL       
+        filename = 'Ruvz-' // trim(snap_index) // '.txt'
 #else
         ! Write the Ruvz filename for channel flow
-        write(filename, '(A)') 'Ruvz.txt'
-        filename = adjustl(filename)
-#endif       
+        filename = 'Ruvz.txt'
+#endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)        
 
         ! Construct the format string
         write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
@@ -836,15 +836,15 @@ end if
         close(iunit)
         
 !--- Scalar field correlation function, Rssz ---!
-#ifdef TTBL_MODE        
-        ! Write the Rssz filename for TTBL
-        write(filename, '(A,A,A)') 'Rssz-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the Rssz filename for TTBL       
+        filename = 'Rssz-' // trim(snap_index) // '.txt'
 #else
         ! Write the Rssz filename for channel flow
-        write(filename, '(A)') 'Rssz.txt'
-        filename = adjustl(filename)
-#endif       
+        filename = 'Rssz.txt'
+#endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)      
 
         ! Construct the format string
         write(format_string, '(A, I0, A)') '(', nz, '(F13.9, A1, 1X))'
@@ -866,15 +866,15 @@ end if
      ! TKE terms (or budget) writing
      if (post_tke_eq) then
 
-#ifdef TTBL_MODE          
-        ! Write the tke_stats filename for TTBL
-        write(filename, '(A,A,A)') 'tke_stats-', trim(snap_index), '.txt'
-        filename = adjustl(filename)
+#ifdef TTBL_MODE         
+        ! Write the tke_stats filename for TTBL       
+        filename = 'tke_stats-' // trim(snap_index) // '.txt'
 #else
         ! Write the tke_stats filename for channel flow
-        write(filename, '(A)') 'tke_stats.txt'
-        filename = adjustl(filename)
+        filename = 'tke_stats.txt'
 #endif
+        ! Left-adjust the filename
+        filename = adjustl(filename)
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
