@@ -102,7 +102,6 @@ program post
 if (nrank==0) then
     write(snap_n_index, ifilenameformat) filen 
     snap_n_index = adjustl(snap_n_index)
-    snap_n_index = trim(snap_n_index)
 end if
 
 !------------Start of the time average cycle---------------!
@@ -115,7 +114,6 @@ end if
      ! Writing the snapshot index as character
      write(snap_index, ifilenameformat) ifile 
      snap_index = adjustl(snap_index)
-     snap_index = trim(snap_index)
 
 #ifdef TTBL_MODE    
      ! Use /data or /data_r1 to read time-units
@@ -128,7 +126,7 @@ end if
      end if
      
      ! Write .xdmf file filename
-     filename = dirname // '/snapshot-' // snap_index // '.xdmf'
+     filename = trim(dirname) // '/snapshot-' // trim(snap_index) // '.xdmf'
 
      ! Call the subroutine to read time from the .xdmf file
      call read_xdmf_time(filename, time_value, time_found)
@@ -148,7 +146,7 @@ end if
         write(*,*) '----------------------------------------------------'
 
         ! Print the snapshot currently being processed         
-        printing = 'We are averaging snapshot = ' // snap_index // ' / ' // snap_n_index
+        printing = 'We are averaging snapshot = ' // trim(snap_index) // ' / ' // trim(snap_n_index)
         printing = adjustl(printing) 
         write(*,*) printing
                  

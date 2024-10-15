@@ -97,7 +97,7 @@ subroutine read_xdmf_time(filename, time_value, time_found)
     
   implicit none
     
-  character(len=*),  intent(in)  :: filename    ! Input filename of the .xdmf file
+  character(len=*),  intent(in)  :: filename    ! Input filename of the .xdmf file; len=* is equivalent to a dummy variable
   character(len=20), intent(out) :: time_value  ! Output variable for the extracted time value
   logical, intent(out) :: time_found            ! Flag to indicate if the time value was found
     
