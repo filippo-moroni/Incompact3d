@@ -148,9 +148,6 @@ re_tau = int(re_tau)
 print(">>> Friction Reynolds number, Re_tau = ", re_tau)
 print()
 
-# Set friction Reynolds number to none to avoid to save it in filename for channel
-re_tau = None
-
 # Channel only
 if itype == 3:
 
@@ -159,6 +156,9 @@ if itype == 3:
     
     # Halving Ly+
     Ly_plus = Ly_plus / 2.0
+    
+    # Set friction Reynolds number to none to avoid to save it in filenames for channel
+    re_tau = None
 
 # TTBL only
 elif itype == 13:
