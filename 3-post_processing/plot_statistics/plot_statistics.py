@@ -653,7 +653,7 @@ if post_mean:
 
     # Find the index at which we have maximum TKE and the related y+
     tke_max_index = np.argmax(tke)
-    y_plus_max_tke = y_plus[tke_max_index]
+    y_plus_max_tke = round(y_plus[tke_max_index],1)
 
     # Vertical line to show the TKE peak location
     ax.vlines(x=y_plus_max_tke, ymin=0.0, ymax=np.max(tke), linewidth=pp.lw, color=pp.grey, linestyles='dashed')
