@@ -140,14 +140,6 @@ Lx_plus = Lx / delta_nu_tot
 Ly_plus = Ly / delta_nu_tot 
 Lz_plus = Lz / delta_nu_tot
 
-# Calculate friction Reynolds number
-re_tau = sh_vel_x * 1.0 / nu
-re_tau = int(re_tau)
-
-# Print friction Reynolds number
-print(">>> Friction Reynolds number, Re_tau = ", re_tau)
-print()
-
 # Channel only
 if itype == 3:
 
@@ -157,8 +149,8 @@ if itype == 3:
     # Halving Ly+
     Ly_plus = Ly_plus / 2.0
     
-    # Set friction Reynolds number to none to avoid to save it in filenames for channel
-    re_tau = None
+    # Calculate friction Reynolds number
+    re_tau = sh_vel_x * 1.0 / nu
 
 # TTBL only
 elif itype == 13:
@@ -172,15 +164,20 @@ elif itype == 13:
     # Shift of mean streamwise velocity profile due to the translating wall
     mean_u = uwall - mean_u
 
-    # (Streamwise) friction Reynolds number
+    # Friction Reynolds number
     re_tau = sh_vel_x * delta_99 / nu
-    re_tau = int(re_tau)
         
     # Print boundary layer thickness and domain height in viscous units
     print(">>> Boundary layer thickness, delta_99 = ", round(delta_99,1))
     print()
     print(">>> Domain height in wall units, Ly+ = ", round(Ly_plus,1))
     print()
+    
+    
+# Print friction Reynolds number
+re_tau = int(re_tau)
+print(">>> Friction Reynolds number, Re_tau = ", re_tau)
+print()
 
 # Print viscous time unit
 print(">>> Viscous time unit, t_nu = ", round(t_nu_tot,3))
