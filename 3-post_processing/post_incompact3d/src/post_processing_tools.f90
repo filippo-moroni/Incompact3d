@@ -94,56 +94,49 @@ end subroutine read_post_file
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 subroutine read_xdmf_time(filename, time_value, time_found)
-    
+
   implicit none
-    
-  character(len=*),  intent(in)  :: filename    ! Input filename of the .xdmf file, len=* is a dummy variable
+
+  character(len=*),  intent(in)  :: filename    ! Input filename of the .xdmf file
   character(len=20), intent(out) :: time_value  ! Output variable for the extracted time value
   logical, intent(out) :: time_found            ! Flag to indicate if the time value was found
     
   character(len=256) :: line                    ! Buffer for reading lines from the file
-    
-  integer :: ios    ! I/O status variable
-  integer :: iunit  ! Unit number for file handling
-  integer :: start_pos, end_pos  ! To handle the position of quotes for extracting the time value
+  real    :: time_real                     ! Time value directly as real (real64 for precision)
+  real    :: rounded_time                  ! To store the rounded time as real for formatting
+  integer :: start_pos, end_pos                 ! To find the position of the value in the string
+  integer :: ios                                ! I/O status variable for reading the file
   
-  ! Declare a real variable to hold the time value for rounding
-  real :: time_real
-
   ! Initialize output variables
-  time_found = .false.  ! Set time_found to false initially
-  time_value = ''       ! Clear the time_value string
+  time_found = .false.
+  time_value = ''
 
-  ! Open the .xdmf file for reading using newunit
+  ! Open the file (assuming newunit is supported by your compiler)
   open(newunit=iunit, file=filename, status='old', action='read')
 
-  ! Read through the file line by line
+  ! Loop through the file to find the <Time Value="..."> tag
   do while (.true.)
+    read(iunit, '(A)', iostat=ios) line  ! Read one line at a time
 
-      ! Read a line from the file
-      read(iunit, '(A)', iostat=ios) line
-      
-      ! Exit the loop if end of file
-      if (ios /= 0) exit
+    if (ios /= 0) exit                   ! Exit loop if we reach the end of the file
 
-      ! Check if the line contains the <Time Value="..."> tag
-      if (index(line, '<Time Value=') > 0) then
-          ! Find the position of the first quote after the '=' sign
-          start_pos = index(line, '"') + 1
-          end_pos = index(line(start_pos:), '"') + start_pos - 1
-          
-          ! Extract the time value
-          time_value = line(start_pos:end_pos)
-          
-          ! Round the time value
-          time_real = round(time_real)
+    if (index(line, '<Time Value=') > 0) then
+        ! Find the position of the first and second quotes around the time value
+        start_pos = index(line, '"') + 1
+        end_pos = index(line(start_pos:), '"') + start_pos - 1
 
-          ! Convert the rounded value back to a string
-          write(time_value, '(F6.2)') time_real  ! Example format with 2 decimal places
-    
-          time_found = .true.
-          exit  ! Exit the loop once the time is found
-      endif
+        ! Extract the time value directly and convert to real (real64 for precision)
+        read(line(start_pos:end_pos), *) time_real
+
+        ! Round the real number without converting to integer
+        rounded_time = nint(time_real * 100.0) / 100.0  ! Keep 2 decimal places
+
+        ! Format the rounded time to 2 decimal places as a string
+        write(time_value, '(F6.2)') rounded_time  ! Format with 2 decimal places
+
+        time_found = .true.  ! Set flag indicating that the time value was found
+        exit  ! Exit the loop once the time is found
+    endif
 
   end do
 
@@ -151,5 +144,6 @@ subroutine read_xdmf_time(filename, time_value, time_found)
   close(iunit)
 
 end subroutine read_xdmf_time
+
 
 
