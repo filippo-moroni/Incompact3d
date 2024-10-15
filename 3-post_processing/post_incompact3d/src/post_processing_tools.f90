@@ -97,7 +97,7 @@ subroutine read_xdmf_time(filename, time_value, time_found)
     
   implicit none
     
-  character(len=*),  intent(in)  :: filename    ! Input filename of the .xdmf file; len=* is equivalent to a dummy variable
+  character(len=*),  intent(in)  :: filename    ! Input filename of the .xdmf file, len=* is a dummy variable
   character(len=20), intent(out) :: time_value  ! Output variable for the extracted time value
   logical, intent(out) :: time_found            ! Flag to indicate if the time value was found
     
@@ -105,6 +105,7 @@ subroutine read_xdmf_time(filename, time_value, time_found)
     
   integer :: ios    ! I/O status variable
   integer :: iunit  ! Unit number for file handling
+  integer :: start_pos, end_pos  ! To handle the position of quotes for extracting the time value
 
   ! Initialize output variables
   time_found = .false.  ! Set time_found to false initially
@@ -118,55 +119,27 @@ subroutine read_xdmf_time(filename, time_value, time_found)
 
       ! Read a line from the file
       read(iunit, '(A)', iostat=ios) line
-        
-      ! Exit loop if end of file is reached
-      if (ios /= 0) exit                  
+      
+      ! Exit the loop if end of file
+      if (ios /= 0) exit
 
-      ! Check if the line contains the <Time Value="> tag
-      if (index(line, '<Time Value="') > 0) then
-            
-          ! Extract the time value from the line
-          read(line, '(A)', iostat=ios) time_value  ! Read the line into time_value
-            
-          ! Clean up the time_value to extract only the numerical value
-          time_value = trim(adjustl(time_value))                       ! Trim leading spaces
-          time_value = trim(replace(time_value, '<Time Value="', ''))  ! Remove opening tag
-          time_value = trim(replace(time_value, '" />', ''))           ! Remove closing tag
-            
-          ! Set flag to true indicating time was found
-          time_found = .true.  
-            
-          ! Exit the loop after finding the time
-          exit  
-      end if
+      ! Check if the line contains the <Time Value="..."> tag
+      if (index(line, '<Time Value=') > 0) then
+          ! Find the position of the first quote after the '=' sign
+          start_pos = index(line, '"') + 1
+          end_pos = index(line(start_pos:), '"') + start_pos - 1
+          
+          ! Extract the time value
+          time_value = line(start_pos:end_pos)
+          time_found = .true.
+          exit  ! Exit the loop once the time is found
+      endif
+
   end do
 
   ! Close the file
-  close(iunit)  
-
-contains
-
-  ! Function to replace a substring in a string
-  function replace(str, old, new) result(res)
-        
-    character(len=*), intent(in) :: str, old, new  ! Input strings
-    character(len=len(str)) :: res                 ! Resulting string
-    integer :: pos                                 ! Position of the old substring
-
-    ! Initialize result to the original string
-    res = str
-
-    ! Find position of the old substring
-    pos = index(res, old)
-
-    if (pos > 0) then
-
-        ! Concatenate parts of the string to perform replacement
-        res = trim(adjustl(res(1:pos-1))) // new // trim(adjustl(res(pos + len(old):)))
-        
-    end if
-    
-  end function replace
+  close(iunit)
 
 end subroutine read_xdmf_time
+
 
