@@ -115,10 +115,21 @@ end if
      write(snap_index, ifilenameformat) ifile 
      snap_index = adjustl(snap_index)
 
+     ! Show progress on post-processing    
+     if (nrank==0) then
+        write(*,*) '----------------------------------------------------'
+
+        ! Print the snapshot currently being processed         
+        printing = 'We are averaging snapshot = ' // trim(snap_index) // ' / ' // trim(snap_n_index)
+        printing = adjustl(printing) 
+        write(*,*) printing
+                 
+     endif
+     
 #ifdef TTBL_MODE    
      ! Use /data or /data_r1 to read time-units
      if(nr .eq. 1) then    
-        ! nr = 1, /data folder only is present
+        ! nr = 1, only /data folder is present
         write(dirname,"('./data')")  
      else
         ! nr > 1, use /data_r1 to read time-units
@@ -131,26 +142,16 @@ end if
      ! Call the subroutine to read time from the .xdmf file
      call read_xdmf_time(filename, time_value, time_found)
 
+     ! Print to screen if time unit has been found and its value
      if(nrank .eq. 0) then
      
          if (time_found) then
-             print *, 'Time found:', time_value
+             print *, 'Time found: ', time_value
          else
              print *, 'Time not found in the .xdmf file.'
          end if
      end if
 #endif
-
-     ! Show progress on post-processing    
-     if (nrank==0) then
-        write(*,*) '----------------------------------------------------'
-
-        ! Print the snapshot currently being processed         
-        printing = 'We are averaging snapshot = ' // trim(snap_index) // ' / ' // trim(snap_n_index)
-        printing = adjustl(printing) 
-        write(*,*) printing
-                 
-     endif
                 
      !-----------------------------------------------------------------!
      ! Reading of previously calculated mean statistics,
