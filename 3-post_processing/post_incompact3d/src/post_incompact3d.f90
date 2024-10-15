@@ -563,11 +563,15 @@ end if
           
           !--- Diffusive transport of TKE ---!
                                    
-          ! 1D derivative in y (2 times) 
-          call deryy1D(temp_dery,tke_diffHT,di1d,sy1d,sfy,ssy,swy,ysize(2),0)
+          ! 1D derivative in y (2 times); we cannot use directly the subroutine 
+          ! for the 2nd derivative 'deryy1D' since at the moment it doesn't work                    
+          call dery1D(temp_dery,tke_diffHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)          
+          tke_diffHT = temp_dery
           
-          !di1d,sy1d,sfyp,ssyp,swyp,ysize(2),1              
+          call dery1D(temp_dery,tke_diffHT,di1d,sy1d,ffy,fsy,fwy,ppy,ysize(2),0)
+          tke_diffHT = temp_dery
           
+          ! Finalise TKE diffusive transport term
           tke_diffHT = xnu * temp_dery
           
           !--- Production term ---!
