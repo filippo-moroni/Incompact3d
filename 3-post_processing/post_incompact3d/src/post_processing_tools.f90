@@ -106,6 +106,7 @@ subroutine read_xdmf_time(filename, time_value, time_found)
   real    :: rounded_time                  ! To store the rounded time as real for formatting
   integer :: start_pos, end_pos                 ! To find the position of the value in the string
   integer :: ios                                ! I/O status variable for reading the file
+  integer :: iunit
   
   ! Initialize output variables
   time_found = .false.
