@@ -392,7 +392,7 @@ if itype == 3:
     # Average (lower TU is included)
     mean_cf = np.mean(cfx[lower_index:])
     mean_cf = mean_cf*1000.0
-    print(f">>> Mean cf value, <cf> x 10^3 = {mean_cf:.2f}")
+    print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.2f}")
     print()
     
     # Number of snapshots used and total average time (lower TU is included)
@@ -403,7 +403,7 @@ if itype == 3:
 #!--------------------------------------------------------------------------------------!
 
 print()
-print(">>> Plotting streamwise friction coefficient as function of time.")
+print(">>> Plotting friction coefficient as function of time.")
 print()
 
 # Axes ranges
@@ -447,22 +447,22 @@ elif itype == 3:
            
     # Create the file and write  
     with open('cf_stats/cf_mean.txt', 'w') as f:
-        f.write('Average of friction coeffiecient for a Channel.\n')
+        f.write('Average of friction coefficient for a Channel.\n')
         f.write('\n')
         f.write(f'Flowcase: {add_string}.\n')
         f.write('\n')
         f.write('Abbreviations:\n')
-        f.write(' - cf_mean  : friction coefficient average (times 10^3);\n')
-        f.write(' - t_tot    : total time of average (outer time, based on channel half-height and centerline velocity of relative laminar Poiseuille flow;\n')
-        f.write(' - delta_TU : delta of time units (TU) between different savings of cf;\n')
-        f.write(' - n_snap   : number of snapshots used in the average.\n')
+        f.write(' - 10^3 <cf> : friction coefficient average (times 10^3);\n')
+        f.write(' - t_tot     : total time of average (outer time, based on channel half-height and centerline velocity of the related laminar Poiseuille flow);\n')
+        f.write(' - delta_TU  : delta of time units (TU) between different savings of cf;\n')
+        f.write(' - n_snap    : number of snapshots used in the average.\n')
         f.write('\n')
-        f.write(f"{'cf_mean':>{pp.c_w}}, "  +
-                f"{'t_tot':>{pp.c_w}}, "    +
-                f"{'delta_TU':>{pp.c_w}}, " +
-                f"{'n_snap':>{pp.c_w}}\n"   )
+        f.write(f"{'10^3 <cf>':>{pp.c_w}}, " +
+                f"{'t_tot':>{pp.c_w}}, "     +
+                f"{'delta_TU':>{pp.c_w}}, "  +
+                f"{'n_snap':>{pp.c_w}}\n"    )
 
-        f.write(f"{mean_cf:{pp.fs8}}, "     +
+        f.write(f"{mean_cf:{pp.fs}}, "      +
                 f"{t_tot:{pp.fs}}, "        +
                 f"{delta:{pp.fs}}, "        +
                 f"{n_snap:{pp.fs}}\n"       )
@@ -478,7 +478,7 @@ description = 'Time evolution of (streamwise) friction coefficient.'
 set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
     
 # Save and show the figure
-save_and_show_plot('cfx_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
+save_and_show_plot('cf_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
 
 #!--------------------------------------------------------------------------------------!
 
@@ -486,7 +486,7 @@ save_and_show_plot('cfx_vs_time', add_string=add_string, subfolder='time_evoluti
 if itype == 13:
 
     print()
-    print(">>> Plotting (streamwise) friction Reynolds number as function of time.")
+    print(">>> Plotting friction Reynolds number as function of time.")
     print("    Reference data Cimarelli et al. (2024a), data with total shear velocity.")
     print()
 
@@ -518,12 +518,12 @@ if itype == 13:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
     
     # Save and show the figure
-    save_and_show_plot('retaux_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
+    save_and_show_plot('retau_vs_time', add_string=add_string, subfolder='time_evolution', description=description)
     
     #!--------------------------------------------------------------------------------------!
 
     print()
-    print(">>> Plotting streamwise friction coefficient as function of (streamwise) friction Reynolds number.")
+    print(">>> Plotting friction coefficient as function of friction Reynolds number.")
     print("    Reference data Cimarelli et al. (2024a), data with total shear velocity.")
     print()
 
@@ -556,7 +556,7 @@ if itype == 13:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 0)
     
     # Save and show the figure
-    save_and_show_plot('cfx_vs_retaux', add_string=add_string, subfolder='time_evolution', description=description)
+    save_and_show_plot('cf_vs_retau', add_string=add_string, subfolder='time_evolution', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
