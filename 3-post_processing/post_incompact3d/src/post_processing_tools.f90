@@ -106,6 +106,9 @@ subroutine read_xdmf_time(filename, time_value, time_found)
   integer :: ios    ! I/O status variable
   integer :: iunit  ! Unit number for file handling
   integer :: start_pos, end_pos  ! To handle the position of quotes for extracting the time value
+  
+  ! Declare a real variable to hold the time value for rounding
+  real :: time_real
 
   ! Initialize output variables
   time_found = .false.  ! Set time_found to false initially
@@ -131,6 +134,13 @@ subroutine read_xdmf_time(filename, time_value, time_found)
           
           ! Extract the time value
           time_value = line(start_pos:end_pos)
+          
+          ! Round the time value
+          time_real = round(time_real)
+
+          ! Convert the rounded value back to a string
+          write(time_value, '(F6.2)') time_real  ! Example format with 2 decimal places
+    
           time_found = .true.
           exit  ! Exit the loop once the time is found
       endif
