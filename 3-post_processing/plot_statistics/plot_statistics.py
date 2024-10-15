@@ -179,6 +179,9 @@ re_tau = int(re_tau)
 print(">>> Friction Reynolds number, Re_tau = ", re_tau)
 print()
 
+# Set 're_tau' to 'None' to avoid to insert it in filenames for plots
+if itype == 3: re_tau = None
+
 # Print viscous time unit
 print(">>> Viscous time unit, t_nu = ", round(t_nu_tot,3))
 print()
