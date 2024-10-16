@@ -233,7 +233,7 @@ contains
   end subroutine postprocess_case
   !-----------------------------------------------------------------------------!
   !  SUBROUTINE: visu_case_init
-  !      AUTHOR: PB
+  !      AUTHOR: Paul Bartholomew
   ! DESCRIPTION: Initialise case-specific visualization.
   !-----------------------------------------------------------------------------!
   subroutine visu_case_init
@@ -253,7 +253,7 @@ contains
   end subroutine visu_case_init
   !-----------------------------------------------------------------------------!
   !  SUBROUTINE: visu_case
-  !      AUTHOR: CF
+  !      AUTHOR: Cedric Flageul
   ! DESCRIPTION: Call case-specific visualization.
   !-----------------------------------------------------------------------------!
   subroutine visu_case(rho1,ux1,uy1,uz1,pp3,phi1,ep1,num)
