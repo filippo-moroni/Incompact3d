@@ -159,6 +159,7 @@ contains
     implicit none
 
     integer :: i,j,k
+    
     real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
     real(mytype),dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
 
@@ -221,7 +222,7 @@ contains
   !  SUBROUTINE: channel_cfr
   !      AUTHOR: Kay Schäfer
   ! DESCRIPTION: Inforces constant flow rate without need 
-  !              of data transposition
+  !              of data transposition.
   !---------------------------------------------------------------------------!
   subroutine channel_cfr (ux, constant)
 
@@ -248,15 +249,20 @@ contains
        enddo
     enddo
 
+    ! Bulk velocity at each processor
     ub = ub * coeff
 
+    ! Sum over all MPI processes and broadcast the result 
     call MPI_ALLREDUCE(ub,uball,1,real_type,MPI_SUM,MPI_COMM_WORLD,code)
 
+    ! Residual between the target bulk velocity (2/3) and the total bulk velocity
     can = - (constant - uball)
 
+    ! Print to screen the total bulk velocity and its residual
     if (nrank==0.and.(mod(itime, ilist) == 0 .or. itime == ifirst .or. itime == ilast)) &
        write(*,*) 'Ub:', uball, can
 
+    ! Correct the streamwise velocity based on the residual of the total bulk velocity
     do k=1,xsize(3)
       do j=1,xsize(2)
         do i=1,xsize(1)
