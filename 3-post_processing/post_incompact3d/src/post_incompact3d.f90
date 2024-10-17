@@ -266,10 +266,8 @@ end if
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,vpremean, &
                                    phi1mean,phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_vort) call stat_vorticity(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientx,mean_gradientz,mean_gradphi)
-     
-     if (post_diss) call stat_dissipation(ux1,uy1,uz1,nr,nt,epsmean)
-   
+     if (post_grad) call stat_gradients(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientx,mean_gradientz,mean_gradphi,epsmean)
+        
      !--- Correlations or fluctuating terms of TKE equation, mean statistics must be calculated in a previous post-processing run ---!
      if(post_corz .or. post_tke_eq) then
    
@@ -368,7 +366,7 @@ end if
      enddo
   endif
   
-  if (post_vort) then
+  if (post_grad) then
      do k=1,ysize(3)
         do i=1,ysize(1)
            do j=1,ysize(2)
@@ -381,26 +379,16 @@ end if
               ! Mean gradients
               mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/den 
               mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den 
-              mean_gradphiH1  (j)=mean_gradphiH1  (j)+mean_gradphi  (i,j,k)/den                   
-           
-           enddo
-        enddo
-     enddo
-  endif
-  
-  if (post_diss) then
-     do k=1,ysize(3)
-        do i=1,ysize(1)
-           do j=1,ysize(2)
-           
+              mean_gradphiH1  (j)=mean_gradphiH1  (j)+mean_gradphi  (i,j,k)/den
+              
               ! Total dissipation          
-              epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/den                  
+              epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/den                    
            
            enddo
         enddo
      enddo
   endif
-  
+    
   ! Fluctuating terms for TKE equation
   if(post_tke_eq) then
       do k=1,ysize(3)
@@ -426,6 +414,7 @@ end if
 !-------- Mean over all MPI processes (T = Total) ---------!
 
   if (post_mean) then
+      
       ! Velocity statistics
       call MPI_ALLREDUCE(u1meanH1,u1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(v1meanH1,v1meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -460,9 +449,11 @@ end if
       call MPI_ALLREDUCE(uphimeanH1,uphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(vphimeanH1,vphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(wphimeanH1,wphimeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)        
+  
   endif
   
-  if (post_vort) then
+  if (post_grad) then
+  
       ! Vorticity averages 
       call MPI_ALLREDUCE(vortxmeanH1,vortxmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(vortymeanH1,vortymeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
@@ -472,26 +463,29 @@ end if
       call MPI_ALLREDUCE(mean_gradientxH1,mean_gradientxHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(mean_gradientzH1,mean_gradientzHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(mean_gradphiH1,  mean_gradphiHT,  ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-  endif
-  
-  if (post_diss) then
+      
       ! Total dissipation
       call MPI_ALLREDUCE(epsmeanH1,epsmeanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
-  end if
-   
+  
+  endif
+     
   if(post_corz) then
-      ! Correlation functions
+  
+      ! Correlation functions in spanwise direction (z)
       call MPI_REDUCE(RuuzH1,RuuzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RvvzH1,RvvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RwwzH1,RwwzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RuvzH1,RuvzHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
       call MPI_REDUCE(RsszH1,RsszHT,zsize(2)*zsize(3),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  
   end if
   
   if(post_tke_eq) then
+  
       ! Fluctuating terms for TKE equation
       call MPI_ALLREDUCE(kvprime_meanH1,       kvprime_meanHT,       ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
       call MPI_ALLREDUCE(pseudo_eps_tke_meanH1,pseudo_eps_tke_meanHT,ysize(2),real_type,MPI_SUM,MPI_COMM_WORLD,code)
+  
   end if
 
 !------------- MPI process nrank = 0 at work --------------!
@@ -655,15 +649,15 @@ end if
         close(iunit)
      endif
         
-     ! Vorticity mean statistics and mean gradients writing
-     if (post_vort) then
+     ! Vorticity mean statistics, mean gradients and total dissipation writing
+     if (post_grad) then
 
 #ifdef TTBL_MODE         
-        ! Write the vort_stats filename for TTBL       
-        filename = 'vort_stats-' // trim(snap_index) // '.txt'
+        ! Write the grad_stats filename for TTBL       
+        filename = 'grad_stats-' // trim(snap_index) // '.txt'
 #else
-        ! Write the vort_stats filename for channel flow
-        filename = 'vort_stats.txt'
+        ! Write the grad_stats filename for channel flow
+        filename = 'grad_stats.txt'
 #endif
         ! Left-adjust the filename
         filename = adjustl(filename)
@@ -672,51 +666,25 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Header
-        write(iunit, '(6(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
-                                         'dU/dy'        , ',', 'dW/dy',         ',', 'dPhi/dy'   
+        write(iunit, '(7(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
+                                         'dU/dy'        , ',', 'dW/dy',         ',', 'dPhi/dy',       ',', &
+                                         'mean[eps]'   
         
         do j = 1, ysize(2) 
                 
-            write(iunit, '(6(F13.9, A1, 1X))') vortxmeanHT(j),      ',',  &
+            write(iunit, '(7(F13.9, A1, 1X))') vortxmeanHT(j),      ',',  &
                                                vortymeanHT(j),      ',',  &       
                                                vortzmeanHT(j),      ',',  &
                                                mean_gradientxHT(j), ',',  &
                                                mean_gradientzHT(j), ',',  &
-                                               mean_gradphiHT(j)      
+                                               mean_gradphiHT(j),   ',',  &
+                                               epsmeanHT(j)      
         
         end do
                                
         close(iunit)
      endif
-     
-     ! Mean dissipation writing
-     if (post_diss) then
-
-#ifdef TTBL_MODE         
-        ! Write the diss_stats filename for TTBL       
-        filename = 'diss_stats-' // trim(snap_index) // '.txt'
-#else
-        ! Write the diss_stats filename for channel flow
-        filename = 'diss_stats.txt'
-#endif
-        ! Left-adjust the filename
-        filename = adjustl(filename)
-               
-        ! Open the file and write      
-        open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
-        
-        ! Header
-        write(iunit, '(1(A13, A1, 1X))') 'mean[eps]'
-        
-        do j = 1, ysize(2) 
-      
-            write(iunit, '(1(F13.9, A1, 1X))') epsmeanHT(j)
-               
-        end do
-                               
-        close(iunit)
-     endif
-          
+                       
      ! Correlation functions along z writing
      if (post_corz) then
      

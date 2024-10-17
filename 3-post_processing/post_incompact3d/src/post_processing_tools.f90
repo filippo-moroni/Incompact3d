@@ -29,7 +29,7 @@ subroutine read_post_file()
   implicit none
 
   ! Index for the number of post-processing selections employed (selector index)
-  integer,dimension(5) :: sel
+  integer,dimension(4) :: sel
   integer              :: i
                     
   ! Reading of the input file of post-processing ('post.prm')
@@ -56,16 +56,14 @@ subroutine read_post_file()
   
   ! Set to 'true' logicals if they have been set to 1 in 'post.prm' file
   if (sel(1)==1) post_mean   = .true.
-  if (sel(2)==1) post_vort   = .true.
-  if (sel(3)==1) post_diss   = .true.
-  if (sel(4)==1) post_corz   = .true.
-  if (sel(5)==1) post_tke_eq = .true.
+  if (sel(2)==1) post_grad   = .true.
+  if (sel(3)==1) post_corz   = .true.
+  if (sel(4)==1) post_tke_eq = .true.
   
   ! Return an error if all switchers are set to zero
   if (nrank==0) then
      if ((.not.post_mean   ) .and. &
-         (.not.post_vort   ) .and. &
-         (.not.post_diss   ) .and. &
+         (.not.post_grad   ) .and. &
          (.not.post_corz   ) .and. &
          (.not.post_tke_eq))       &
         call decomp_2d_abort(iunit,'Invalid post-processing switchers specified, no work to be done here!')
@@ -78,7 +76,7 @@ subroutine read_post_file()
   endif
   
   ! Reading of velocity only if necessary
-  if (post_vort .or. post_diss .or. post_corz .or. post_tke_eq) read_vel=.true.
+  if (post_grad .or. post_corz .or. post_tke_eq) read_vel=.true.
   
   ! Read of scalar field only if necessary
   if (iscalar==1) read_phi=.true. 
