@@ -488,31 +488,31 @@ contains
          
          ! Open and write
          open (111,file=filename,action='write',status='replace')
-         write(111,'(A)')'!==========================='
+         write(111,'(A)')'!============================='
          write(111,'(A)')'&Time'
-         write(111,'(A)')'!==========================='
-         write(111,fmt3) 'tfield=     ',t
-         write(111,fmt2) 'itime=      ',itime
-         write(111,'(A)')'!==========================='
+         write(111,'(A)')'!============================='
+         write(111,fmt3) 't =           ',t
+         write(111,fmt2) 'itime =       ',itime
+         write(111,'(A)')'!============================='
          write(111,'(A)')'&NumParam'
-         write(111,'(A)')'!==========================='
-         write(111,fmt2) 'nx=         ',nx
-         write(111,fmt2) 'ny=         ',ny
-         write(111,fmt2) 'nz=         ',nz
-         write(111,fmt3) 'Lx=         ',xlx
-         write(111,fmt3) 'Ly=         ',yly
-         write(111,fmt3) 'Lz=         ',zlz
-         write(111,fmt2) 'istret=     ',istret
-         write(111,fmt4) 'beta=       ',beta
-         write(111,fmt2) 'numscalar=  ',numscalar
-         write(111,fmt2) 'itimescheme=',itimescheme
-         write(111,fmt2) 'iimplicit=  ',iimplicit
-         write(111,'(A)')'!==========================='
+         write(111,'(A)')'!============================='
+         write(111,fmt2) 'nx =          ',nx
+         write(111,fmt2) 'ny =          ',ny
+         write(111,fmt2) 'nz =          ',nz
+         write(111,fmt3) 'Lx =          ',xlx
+         write(111,fmt3) 'Ly =          ',yly
+         write(111,fmt3) 'Lz =          ',zlz
+         write(111,fmt2) 'istret =      ',istret
+         write(111,fmt4) 'beta =        ',beta
+         write(111,fmt2) 'numscalar =   ',numscalar
+         write(111,fmt2) 'itimescheme = ',itimescheme
+         write(111,fmt2) 'iimplicit =   ',iimplicit
+         write(111,'(A)')'!============================='
          write(111,'(A)')'&NumStability'
-         write(111,'(A)')'!==========================='
-         write(111,fmt3) 'dt=         ',dt
-         write(111,fmt3) 'CFL,max,sum=',cflmax        
-         write(111,'(A)')'!==========================='
+         write(111,'(A)')'!============================='
+         write(111,fmt3) 'dt =          ',dt
+         write(111,fmt3) 'CFL,max,sum = ',cflmax        
+         write(111,'(A)')'!============================='
          close(111)
        end if
     else
