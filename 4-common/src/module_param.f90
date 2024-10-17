@@ -352,7 +352,7 @@ module param
 
   ! Flow cases
   integer :: itype
-  integer, parameter :: itype_channel = 3,  &
+  integer, parameter :: itype_channel = 3, &
                         itype_ttbl    = 13
 
   ! Time step, first and last

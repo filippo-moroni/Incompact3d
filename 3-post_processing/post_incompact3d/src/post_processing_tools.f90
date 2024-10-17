@@ -160,7 +160,7 @@ end subroutine read_xdmf_time
 !-----------------------------------------------------------------------------!
 subroutine mean_stats_header(iunit)
 
-  use param, only : itype, itype_ttbl, itype_channel
+  use param
 
   implicit none
   
@@ -169,12 +169,16 @@ subroutine mean_stats_header(iunit)
   ! TTBL
   if (itype .eq. itype_ttbl) then
   
-      write(iunit, '(A)') 'Mean statistics for a Temporal Turbulent Boundary Layer (TTBL),'
-      write(iunit, '(A)') 'with initialisation as Kozul et al. (2016).'
-      write(iunit, '(A)') ' '      
-      write(iunit, '(A)') 'Simulation details:'      
-      write(iunit, '(A)') ' - Trip Reynolds number, Re_D = 500'      
-
+      write(iunit, '(A)')      'Mean statistics for a Temporal Turbulent Boundary Layer (TTBL),'
+      write(iunit, '(A)')      'with initialisation as Kozul et al. (2016).'
+      write(iunit, '(A)')      ' '      
+      write(iunit, '(A)')      'Simulation details:'      
+      write(iunit, '(A,F5.2)') ' - Trip Reynolds number, Re_D = ', re      
+      write(iunit, '(A)')      ' '      
+      write(iunit, '(A)')      'Domain dimensions:'      
+      write(iunit, '(A,F5.2)') ' - Lx = ', xlx         
+  end if
+  
 end subroutine mean_stats_header
 
 
