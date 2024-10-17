@@ -39,8 +39,7 @@ module post_processing
   
   ! Logicals for 'if' conditions during post-processing, initialised to 'false'
   logical, save :: post_mean   = .false.
-  logical, save :: post_vort   = .false.
-  logical, save :: post_diss   = .false.
+  logical, save :: post_grad   = .false.  
   logical, save :: post_corz   = .false.
   logical, save :: post_tke_eq = .false.
   logical, save :: read_vel    = .false.
@@ -285,7 +284,7 @@ contains
             
     end if
     
-    if (post_vort) then
+    if (post_grad) then
        
         ! Vorticity
         allocate(vortxmean(ysize(1),ysize(2),ysize(3))); vortxmean = zero
@@ -315,10 +314,6 @@ contains
         allocate(mean_gradphiH1  (ysize(2)));                   mean_gradphiH1 = zero
         allocate(mean_gradphiHT  (ysize(2)));                   mean_gradphiHT = zero
                                                                                                                                                                  
-    endif
-    
-    if (post_diss) then
-    
         ! Total dissipation rate
         allocate(epsmean  (ysize(1),ysize(2),ysize(3))); epsmean   = zero
         allocate(epsmeanH1(ysize(2)));                   epsmeanH1 = zero
@@ -414,13 +409,17 @@ contains
       
   end if
   
-  if (post_vort) then
-      vortxmean      = zero; vortymean      = zero; vortzmean    = zero
-      mean_gradientx = zero; mean_gradientz = zero; mean_gradphi = zero
-  end if
+  if (post_grad) then
   
-  if (post_diss) then
+      ! Vorticity
+      vortxmean      = zero; vortymean      = zero; vortzmean    = zero
+      
+      ! Mean gradients
+      mean_gradientx = zero; mean_gradientz = zero; mean_gradphi = zero
+      
+      ! Total dissipation rate
       epsmean = zero
+  
   end if
   
   if(post_tke_eq) then
@@ -473,25 +472,17 @@ contains
            
   end if
   
-  if (post_vort) then
+  if (post_grad) then
   
       ! Subdomains
       vortxmeanH1      = zero; vortymeanH1      = zero; vortzmeanH1    = zero
       mean_gradientxH1 = zero; mean_gradientzH1 = zero; mean_gradphiH1 = zero
-  
+      epsmeanH1 = zero
+            
       ! Total domain
       vortxmeanHT      = zero; vortymeanHT      = zero; vortzmeanHT    = zero
       mean_gradientxHT = zero; mean_gradientzHT = zero; mean_gradphiHT = zero
-  
-  end if
-  
-  if (post_diss) then
-  
-      ! Subdomains
-      epsmeanH1 = zero
-  
-      ! Total domain
-      epsmeanHT = zero
+      epsmeanHT = zero  
   
   end if
   

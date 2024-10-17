@@ -163,7 +163,7 @@ subroutine stats_header(iunit)
 
   use param
   use variables
-  use post_processing, only : nr, nt
+  use post_processing
 
   implicit none
   
