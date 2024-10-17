@@ -487,38 +487,47 @@ contains
          write(fmt4,'("(A,F16.12)")')
          
          ! Open and write
-         open (111,file=filename,action='write',status='replace')
-         write(111,'(A)')'!============================='
-         write(111,'(A)')'&Time'
-         write(111,'(A)')'!============================='
-         write(111,fmt3) 't =           ',t
-         write(111,fmt2) 'itime =       ',itime
-         write(111,'(A)')'!============================='
-         write(111,'(A)')'&NumParam'
-         write(111,'(A)')'!============================='
-         write(111,fmt2) 'nx =          ',nx
-         write(111,fmt2) 'ny =          ',ny
-         write(111,fmt2) 'nz =          ',nz
-         write(111,fmt3) 'Lx =          ',xlx
-         write(111,fmt3) 'Ly =          ',yly
-         write(111,fmt3) 'Lz =          ',zlz
-         write(111,fmt2) 'istret =      ',istret
-         write(111,fmt4) 'beta =        ',beta
-         write(111,fmt2) 'numscalar =   ',numscalar
-         write(111,fmt2) 'itimescheme = ',itimescheme
-         write(111,fmt2) 'iimplicit =   ',iimplicit
-         write(111,'(A)')'!============================='
-         write(111,'(A)')'&NumStability'
-         write(111,'(A)')'!============================='
-         write(111,fmt3) 'dt =          ',dt
-         write(111,fmt3) 'CFL,max,sum = ',cflmax        
-         write(111,'(A)')'!============================='
-         close(111)
+         open (newunit=iunit,file=filename,action='write',status='replace')
+         write(iunit,'(A)')'!============================='
+         write(iunit,'(A)')'&Time'
+         write(iunit,'(A)')'!============================='
+         write(iunit,fmt3) 't =           ',t
+         write(iunit,fmt2) 'itime =       ',itime
+         write(iunit,'(A)')' '
+         write(iunit,'(A)')'/End'
+         write(iunit,'(A)')' '
+         write(iunit,'(A)')'!============================='
+         write(iunit,'(A)')'&NumParam'
+         write(iunit,'(A)')'!============================='
+         write(iunit,fmt2) 'nx =          ',nx
+         write(iunit,fmt2) 'ny =          ',ny
+         write(iunit,fmt2) 'nz =          ',nz
+         write(iunit,fmt3) 'Lx =          ',xlx
+         write(iunit,fmt3) 'Ly =          ',yly
+         write(iunit,fmt3) 'Lz =          ',zlz
+         write(iunit,fmt2) 'istret =      ',istret
+         write(iunit,fmt4) 'beta =        ',beta
+         write(iunit,fmt2) 'numscalar =   ',numscalar
+         write(iunit,fmt2) 'itimescheme = ',itimescheme
+         write(iunit,fmt2) 'iimplicit =   ',iimplicit
+         write(iunit,'(A)')' '
+         write(iunit,'(A)')'/End'
+         write(iunit,'(A)')' '
+         write(iunit,'(A)')'!============================='
+         write(iunit,'(A)')'&NumStability'
+         write(iunit,'(A)')'!============================='
+         write(iunit,fmt3) 'dt =          ',dt
+         write(iunit,fmt3) 'CFL,max,sum = ',cflmax
+         write(iunit,'(A)')' '
+         write(iunit,'(A)')'/End'
+         write(iunit,'(A)')' '        
+         write(iunit,'(A)')'!============================='
+         close(iunit)
        end if
     else
        if (nrank==0) then
          write(*,*)'==========================================================='
-         write(*,*)'RESTART from file:', filestart
+         write(*,*)'Restart from file:', filestart
          write(*,*)'==========================================================='
        end if
        call decomp_2d_open_io(io_restart, resfile, decomp_2d_read_mode)
@@ -582,9 +591,9 @@ contains
        
        ! Check if file exists
        if (fexists) then
-         open(111, file=filename)
-         read(111, nml=Time)
-         close(111)
+         open(newunit=iunit, file=filename)
+         read(iunit, nml=Time)
+         close(iunit)
          t0 = t
        else
          t0 = zero
