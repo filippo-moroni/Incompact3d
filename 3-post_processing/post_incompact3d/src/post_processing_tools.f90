@@ -180,10 +180,25 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A,F6.2)') ' - Ly = ', yly                  
       write(iunit, '(A,F6.2)') ' - Lz = ', zlz         
       write(iunit, '(A)')      'Number of points:'      
-      write(iunit, '(A,I4)') ' - nx = ', nx
-      write(iunit, '(A,I4)') ' - ny = ', ny                  
-      write(iunit, '(A,I4)') ' - nz = ', nz     
-
+      write(iunit, '(A,I4)')   ' - nx = ', nx
+      write(iunit, '(A,I4)')   ' - ny = ', ny                  
+      write(iunit, '(A,I4)')   ' - nz = ', nz
+      write(iunit, '(A)')      ' '      
+      write(iunit, '(A)')      'Nomenclature:'
+      write(iunit, '(A)')      'u    : streamwise  velocity;'
+      write(iunit, '(A)')      'v    : wall-normal velocity;'      
+      write(iunit, '(A)')      'w    : spanwise    velocity;'
+      write(iunit, '(A)')      'p    : pressure;'
+      write(iunit, '(A)')      'phi  : passive scalar field;'
+      write(iunit, '(A)')      '< >  : average operator;'
+      write(iunit, '(A)')      'u    : streamwise  velocity;'      
+      write(iunit, '(A)')      'mean : mean/average;'
+      write(iunit, '(A)')      'var  : variance;'
+      write(iunit, '(A)')      'skew : skewness;'  
+      write(iunit, '(A)')      'kurt : kurtosis.'
+      write(iunit, '(A)')      ' '      
+      write(iunit, '(A)')      'Statistics are adimensionalised with wall velocity Uw and trip wire diameter D, both unitary.'
+      write(iunit, '(A)')      ' '                    
   end if
   
 end subroutine mean_stats_header
