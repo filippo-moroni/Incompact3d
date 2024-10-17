@@ -585,7 +585,7 @@ contains
          open(111, file=filename)
          read(111, nml=Time)
          close(111)
-         t0 = tfield
+         t0 = t
        else
          t0 = zero
        end if
