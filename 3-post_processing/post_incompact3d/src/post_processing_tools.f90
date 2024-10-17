@@ -199,6 +199,7 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      ' '      
       write(iunit, '(A)')      'Statistics are adimensionalised with wall velocity Uw and trip wire diameter D, both unitary.'
       write(iunit, '(A)')      ' '                    
+  
   end if
   
 end subroutine mean_stats_header
