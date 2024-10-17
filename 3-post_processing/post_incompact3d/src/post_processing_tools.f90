@@ -227,10 +227,10 @@ end subroutine mean_stats_header
 !-----------------------------------------------------------------------------!
 subroutine write_time_and_date(iunit)
 
-  integer, intent(in) :: iunit
-
   implicit none
 
+  integer, intent(in) :: iunit
+  
   ! Work variables to write the date and time to .txt files
   character(len=8)  :: date_str
   character(len=10) :: time_str
