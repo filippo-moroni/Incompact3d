@@ -173,10 +173,17 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      'with initialisation as Kozul et al. (2016).'
       write(iunit, '(A)')      ' '      
       write(iunit, '(A)')      'Simulation details:'      
-      write(iunit, '(A,F5.2)') ' - Trip Reynolds number, Re_D = ', re      
+      write(iunit, '(A,F5.1)') ' - Trip Reynolds number, Re_D = ', re      
       write(iunit, '(A)')      ' '      
       write(iunit, '(A)')      'Domain dimensions:'      
-      write(iunit, '(A,F5.2)') ' - Lx = ', xlx         
+      write(iunit, '(A,F6.2)') ' - Lx = ', xlx
+      write(iunit, '(A,F6.2)') ' - Ly = ', yly                  
+      write(iunit, '(A,F6.2)') ' - Lz = ', zlz         
+      write(iunit, '(A)')      'Number of points:'      
+      write(iunit, '(A,I4)') ' - nx = ', nx
+      write(iunit, '(A,I4)') ' - ny = ', ny                  
+      write(iunit, '(A,I4)') ' - nz = ', nz     
+
   end if
   
 end subroutine mean_stats_header
