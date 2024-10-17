@@ -162,6 +162,7 @@ subroutine mean_stats_header(iunit)
 
   use param
   use variables
+  use post_processing, only : nr, nt
 
   implicit none
   
@@ -175,8 +176,9 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      ' '
       write(iunit, '(A)')      ' Statistics are adimensionalised with wall velocity Uw and trip wire diameter D, both unitary.'
       write(iunit, '(A)')      ' '       
-      write(iunit, '(A)')      ' Simulation details:'      
-      write(iunit, '(A,F8.2)') '  - Trip Reynolds number, Re_D = ', re      
+      write(iunit, '(A)')      ' Simulation & post-processing details:'      
+      write(iunit, '(A,F8.2)') '  - Trip Reynolds number,      Re_D = ', re
+      write(iunit, '(A,I4)')   '  - Number of flow realizations, nr = ', nr 
   
   ! Channel
   else if (itype .eq. itype_channel) then
@@ -186,8 +188,9 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      ' Statistics are adimensionalised with centerline velocity of the related laminar Poiseuille flow'
       write(iunit, '(A)')      ' and channel half-height, both unitary.'
       write(iunit, '(A)')      ' '       
-      write(iunit, '(A)')      ' Simulation details:'      
-      write(iunit, '(A,F8.2)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
+      write(iunit, '(A)')      ' Simulation & post-processing details:'      
+      write(iunit, '(A,F8.2)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re
+      write(iunit, '(A,I4)')   '  - Number of snapshots in time, nt = ', nt  
   
   end if    
   
@@ -201,7 +204,7 @@ subroutine mean_stats_header(iunit)
   write(iunit, '(A,I4)')   '  - nx = ', nx
   write(iunit, '(A,I4)')   '  - ny = ', ny                  
   write(iunit, '(A,I4)')   '  - nz = ', nz
-  write(iunit, '(A)')      ' '      
+  write(iunit, '(A)')      ' '                      
   write(iunit, '(A)')      ' Nomenclature:'
   write(iunit, '(A)')      ' u    : streamwise  velocity;'
   write(iunit, '(A)')      ' v    : wall-normal velocity;'      
