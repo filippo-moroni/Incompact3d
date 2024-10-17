@@ -505,7 +505,7 @@ module param
   integer      :: icfllim             ! Index or switcher for enabling CFL limit constraint (0: no, 1: yes)
   real(mytype) :: cfl_limit           ! CFL limit to adjust the time-step
   
-  ! Variable to save and show the maximum CFL in the restart file
+  ! Variable to save and show the maximum CFL at the current time-step in the restart file
   real(mytype) :: cflmax
   
   !--- Wall oscillations namelist and related quantities ---!

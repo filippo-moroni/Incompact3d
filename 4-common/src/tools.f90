@@ -336,7 +336,8 @@ contains
   !  SUBROUTINE: restart
   ! DESCRIPTION: reads or writes restart file
   !      AUTHOR: ?
-  !    MODIFIED: Kay Schäfer
+  ! MODIFIED BY: Kay Schäfer, 
+  !              Filippo Moroni <filippo.moroni@unimore.it>                                                                                     
   !-----------------------------------------------------------------------------!
   subroutine restart(ux1,uy1,uz1,dux1,duy1,duz1,ep1,pp3,phi1,dphi1,px1,py1,pz1,rho1,drho1,mu1,iresflg)
 
@@ -357,7 +358,6 @@ contains
     real(mytype), dimension(xsize(1),xsize(2),xsize(3),nrhotime) :: rho1
     real(mytype), dimension(xsize(1),xsize(2),xsize(3),ntime) :: drho1
     real(mytype), dimension(xsize(1),xsize(2),xsize(3)) :: mu1
-    real(mytype) :: tfield
 
     logical :: fexists
     character(len=90) :: filestart
@@ -369,9 +369,14 @@ contains
     integer       :: iunit
     logical       :: exists
   
-    NAMELIST /Time/ tfield, itime
-    NAMELIST /NumParam/ nx, ny, nz, istret, beta, dt, itimescheme
-
+    NAMELIST /Time/     t, itime
+    NAMELIST /NumParam/ nx, ny, nz, xlx, yly, zlz, &
+                        istret, beta, numscalar,   &
+                        itimescheme, iimplicit
+    
+    NAMELIST /NumStability/ dt, cflmax                    
+                        
+    
     write(filename, "('restart',I7.7)") itime
     write(filestart,"('restart',I7.7)") ifirst-1
 
@@ -811,7 +816,8 @@ contains
     maxvalue_y  =-1609._mytype
     maxvalue_z  =-1609._mytype
     maxvalue_sum=-1609._mytype
-    !
+    
+    ! Homogeneous mesh in y-direction
     if (istret == 0) then
        do j = xstart(2), xend(2)
           jloc = j-xstart(2)+1
@@ -825,6 +831,8 @@ contains
           maxvalue_z   = maxval((/maxvalue_z,   value_z /))
           maxvalue_sum = maxval((/maxvalue_sum, value_sum /))
        end do
+    
+    ! Stretched mesh along y
     else
        do j = xstart(2), xend(2)
           jloc = j-xstart(2)+1
@@ -854,7 +862,7 @@ contains
       write(*,*) '-----------------------------------------------------------'
     end if
     
-    ! Store the maximum CFL
+    ! Store the maximum CFL at this time-step
     cflmax = cflmax_out(4) * dt
     
     ! Adjust time-step if adjustable time-step option is enabled and if we are exiting the specified interval (cfl_lim - 0.05, cfl_lim)
