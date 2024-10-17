@@ -167,14 +167,19 @@ subroutine mean_stats_header(iunit)
   
   integer, intent(in) :: iunit
   
-  character(len=8) :: date_str
+  ! Work variables to write the date and time to .txt files
+  character(len=8)  :: date_str
   character(len=10) :: time_str
-  integer :: values(8)
+  integer :: year, month, day, hour, minute, second
 
-    ! Get the current date and time
-    call date_and_time(date=date_str, time=time_str, values=values)
+  ! Get the current date and time
+  call date_and_time(date=date_str, time=time_str)
 
+  ! Extract year, month, day from the date string
+  read(date_str, '(I4, I2, I2)') year, month, day
 
+  ! Extract hour, minute, second from the time string
+  read(time_str, '(I2, I2, I2)') hour, minute, second
 
   ! TTBL
   if (itype .eq. itype_ttbl) then
@@ -185,7 +190,7 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      ' Statistics are adimensionalised with wall velocity Uw and trip wire diameter D, both unitary.'
       write(iunit, '(A)')      ' '       
       write(iunit, '(A)')      ' Simulation details:'      
-      write(iunit, '(A,F17.3)') '  - Trip Reynolds number, Re_D = ', re      
+      write(iunit, '(A,F8.2)') '  - Trip Reynolds number, Re_D = ', re      
   
   ! Channel
   else if (itype .eq. itype_channel) then
@@ -196,7 +201,7 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      ' and channel half-height, both unitary.'
       write(iunit, '(A)')      ' '       
       write(iunit, '(A)')      ' Simulation details:'      
-      write(iunit, '(A,F17.3)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
+      write(iunit, '(A,F8.2)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
   
   end if    
   
@@ -226,8 +231,8 @@ subroutine mean_stats_header(iunit)
   write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' Date and time of creation:'
-  write(iunit, '(A,A)')    '  - Date (YYYYMMDD) : ', date_str
-  write(iunit, '(A,A)')    '  - Time (HHMMSS)   : ', time_str  
+  write(iunit, '(A, I4, A, I2.2, A, I2.2)')   "  Date: ", year, "/", month, "/", day
+  write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') "  Time: ", hour, ":", minute, ":", second  
   write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' ' 
 
