@@ -172,7 +172,7 @@ subroutine mean_stats_header(iunit)
   character(len=10) :: time_str
   integer :: year, month, day, hour, minute, second
 
-  ! Get the current date and time
+  ! Get the current date and time with intrinsic subroutine of Fortran 90 and later versions
   call date_and_time(date=date_str, time=time_str)
 
   ! Extract year, month, day from the date string
