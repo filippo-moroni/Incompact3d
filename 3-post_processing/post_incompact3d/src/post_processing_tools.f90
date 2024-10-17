@@ -167,20 +167,6 @@ subroutine mean_stats_header(iunit)
   
   integer, intent(in) :: iunit
   
-  ! Work variables to write the date and time to .txt files
-  character(len=8)  :: date_str
-  character(len=10) :: time_str
-  integer :: year, month, day, hour, minute, second
-
-  ! Get the current date and time with intrinsic subroutine of Fortran 90 and later versions
-  call date_and_time(date=date_str, time=time_str)
-
-  ! Extract year, month, day from the date string
-  read(date_str, '(I4, I2, I2)') year, month, day
-
-  ! Extract hour, minute, second from the time string
-  read(time_str, '(I2, I2, I2)') hour, minute, second
-
   ! TTBL
   if (itype .eq. itype_ttbl) then
   
@@ -229,13 +215,44 @@ subroutine mean_stats_header(iunit)
   write(iunit, '(A)')      ' skew : skewness;'  
   write(iunit, '(A)')      ' kurt : kurtosis.'
   write(iunit, '(A)')      ' '
+
+  ! Write time and date to the .txt file
+  call write_time_and_date(iunit) 
+  
+end subroutine mean_stats_header
+
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: This subroutine is used to write to .txt files time and date.   
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+subroutine write_time_and_date(iunit)
+
+  integer, intent(in) :: iunit
+
+  implicit none
+
+  ! Work variables to write the date and time to .txt files
+  character(len=8)  :: date_str
+  character(len=10) :: time_str
+  integer :: year, month, day, hour, minute, second
+
+  ! Get the current date and time with intrinsic subroutine of Fortran 90 and later versions
+  call date_and_time(date=date_str, time=time_str)
+
+  ! Extract year, month, day from the date string
+  read(date_str, '(I4, I2, I2)') year, month, day
+
+  ! Extract hour, minute, second from the time string
+  read(time_str, '(I2, I2, I2)') hour, minute, second
+  
+  ! Write to .txt file
   write(iunit, '(A)')      ' Date and time of creation:'
   write(iunit, '(A, I4, A, I2.2, A, I2.2)')   " - Date (day/month/year) : ", day, "/", month, "/", year
   write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') " - Time (hour/min/sec)   : ", hour, ":", minute, ":", second  
   write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' ' 
 
-end subroutine mean_stats_header
+end subroutine write_time_and_date
 
 
 
