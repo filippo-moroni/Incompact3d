@@ -612,7 +612,7 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the mean statistics
-        subroutine mean_stats_header(iunit)
+        call mean_stats_header(iunit)
 
 #ifdef TTBL_MODE  
         ! Add the time unit to the header
