@@ -229,10 +229,9 @@ subroutine mean_stats_header(iunit)
   write(iunit, '(A)')      ' skew : skewness;'  
   write(iunit, '(A)')      ' kurt : kurtosis.'
   write(iunit, '(A)')      ' '
-  write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' Date and time of creation:'
-  write(iunit, '(A, I4, A, I2.2, A, I2.2)')   "  Date: ", year, "/", month, "/", day
-  write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') "  Time: ", hour, ":", minute, ":", second  
+  write(iunit, '(A, I4, A, I2.2, A, I2.2)')   " - Date (day/month/year) : ", day, "/", month, "/", year
+  write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') " - Time (hour/min/sec)   : ", hour, ":", minute, ":", second  
   write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' ' 
 
