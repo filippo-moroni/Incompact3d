@@ -665,6 +665,9 @@ end if
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
+        ! Write the header for the statistics
+        call stats_header(iunit)
+        
         ! Header
         write(iunit, '(7(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
                                          'dU/dy'        , ',', 'dW/dy',         ',', 'dPhi/dy',       ',', &

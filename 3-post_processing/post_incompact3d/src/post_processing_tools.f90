@@ -175,7 +175,14 @@ subroutine stats_header(iunit)
         write(iunit, '(A)') ' Mean statistics.'
         write(iunit, '(A)') ' '       
   
-  end if      
+  end if
+  
+  if (post_grad) then
+  
+        write(iunit, '(A)') ' Mean statistics for gradients-related quantities (vorticity, mean velocity gradients, total dissipation).'
+        write(iunit, '(A)') ' '       
+  
+  end if       
     
   ! TTBL
   if (itype .eq. itype_ttbl) then
@@ -203,55 +210,53 @@ subroutine stats_header(iunit)
   
   end if    
   
-  write(iunit, '(A)')      ' '      
-  write(iunit, '(A)')      ' Domain dimensions:'      
-  write(iunit, '(A,F6.2)') '  - Lx = ', xlx
-  write(iunit, '(A,F6.2)') '  - Ly = ', yly                  
-  write(iunit, '(A,F6.2)') '  - Lz = ', zlz
-  write(iunit, '(A)')      ' '               
-  write(iunit, '(A)')      ' Number of points:'      
-  write(iunit, '(A,I4)')   '  - nx = ', nx
-  write(iunit, '(A,I4)')   '  - ny = ', ny                  
-  write(iunit, '(A,I4)')   '  - nz = ', nz
-  write(iunit, '(A)')      ' '                      
-  write(iunit, '(A)')      ' Nomenclature:'
-  write(iunit, '(A)')      ' x    : streamwise  direction;'
-  write(iunit, '(A)')      ' y    : wall-normal  direction;'  
-  write(iunit, '(A)')      ' z    : spanwise  direction;'
+  write(iunit, '(A)')          ' '      
+  write(iunit, '(A)')          ' Domain dimensions:'      
+  write(iunit, '(A,F6.2)')     '  - Lx = ', xlx
+  write(iunit, '(A,F6.2)')     '  - Ly = ', yly                  
+  write(iunit, '(A,F6.2)')     '  - Lz = ', zlz
+  write(iunit, '(A)')          ' '               
+  write(iunit, '(A)')          ' Number of points:'      
+  write(iunit, '(A,I4)')       '  - nx = ', nx
+  write(iunit, '(A,I4)')       '  - ny = ', ny                  
+  write(iunit, '(A,I4)')       '  - nz = ', nz
+  write(iunit, '(A)')          ' '                      
+  write(iunit, '(A)')          ' Nomenclature:'
+  write(iunit, '(A)')          ' x       : streamwise  direction;'
+  write(iunit, '(A)')          ' y       : wall-normal  direction;'  
+  write(iunit, '(A)')          ' z       : spanwise  direction;'
 
   if (post_mean) then
 
-      write(iunit, '(A)')      ' u    : streamwise  velocity;'
-      write(iunit, '(A)')      ' v    : wall-normal velocity;'      
-      write(iunit, '(A)')      ' w    : spanwise    velocity;'
-      write(iunit, '(A)')      ' p    : pressure;'
-      write(iunit, '(A)')      ' phi  : passive scalar field;'
-      write(iunit, '(A)')      ' < >  : average operator;'
-      write(iunit, '(A)')      " '    : fluctuating quantity;"      
-      write(iunit, '(A)')      ' mean : mean/average;'
-      write(iunit, '(A)')      ' var  : variance;'
-      write(iunit, '(A)')      ' skew : skewness;'  
-      write(iunit, '(A)')      ' kurt : kurtosis.'
-      write(iunit, '(A)')      ' '
+      write(iunit, '(A)')      ' u       : streamwise  velocity;'
+      write(iunit, '(A)')      ' v       : wall-normal velocity;'      
+      write(iunit, '(A)')      ' w       : spanwise    velocity;'
+      write(iunit, '(A)')      ' p       : pressure;'
+      write(iunit, '(A)')      ' phi     : scalar field;'
+      write(iunit, '(A)')      ' < >     : average operator;'
+      write(iunit, '(A)')      " '       : fluctuating quantity;"      
+      write(iunit, '(A)')      ' mean    : mean/average;'
+      write(iunit, '(A)')      ' var     : variance;'
+      write(iunit, '(A)')      ' skew    : skewness;'  
+      write(iunit, '(A)')      ' kurt    : kurtosis.'
+      
+  end if
+  
+  if (post_grad) then
+
+      write(iunit, '(A)')      ' omega_x : streamwise vorticity;'
+      write(iunit, '(A)')      ' omega_y : wall-normal vorticity;'
+      write(iunit, '(A)')      ' omega_z : spanwise vorticity;'
+      write(iunit, '(A)')      ' dU/dy   : mean streamwise velocity gradient;'
+      write(iunit, '(A)')      ' dW/dy   : mean spanwise velocity gradient;'
+      write(iunit, '(A)')      ' dPhi/dy : mean scalar gradient;'
+      write(iunit, '(A)')      ' eps     : total dissipation rate of kinetic energy;'                  
+      write(iunit, '(A)')      ' mean    : mean/average;'
 
   end if
   
-  if (post_mean) then
-
-      write(iunit, '(A)')      ' u    : streamwise  velocity;'
-      write(iunit, '(A)')      ' v    : wall-normal velocity;'      
-      write(iunit, '(A)')      ' w    : spanwise    velocity;'
-      write(iunit, '(A)')      ' p    : pressure;'
-      write(iunit, '(A)')      ' phi  : passive scalar field;'
-      write(iunit, '(A)')      ' < >  : average operator;'
-      write(iunit, '(A)')      " '    : fluctuating quantity;"      
-      write(iunit, '(A)')      ' mean : mean/average;'
-      write(iunit, '(A)')      ' var  : variance;'
-      write(iunit, '(A)')      ' skew : skewness;'  
-      write(iunit, '(A)')      ' kurt : kurtosis.'
-      write(iunit, '(A)')      ' '
-
-  end if  
+  ! Empty row
+  write(iunit, '(A)') ' '  
 
   ! Write time and date to the .txt file
   call write_time_and_date(iunit) 
