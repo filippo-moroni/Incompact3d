@@ -161,6 +161,7 @@ end subroutine read_xdmf_time
 subroutine mean_stats_header(iunit)
 
   use param
+  use variables
 
   implicit none
   
