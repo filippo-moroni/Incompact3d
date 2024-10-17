@@ -169,7 +169,7 @@ subroutine mean_stats_header(iunit)
   integer, intent(in) :: iunit
   
   ! Start to write to .txt file with an empty row
-  write(iunit, '(A)')      ' '      
+  write(iunit, '(A)') ' '      
     
   ! TTBL
   if (itype .eq. itype_ttbl) then
@@ -256,8 +256,8 @@ subroutine write_time_and_date(iunit)
   
   ! Write to .txt file
   write(iunit, '(A)')      ' Date and time of creation:'
-  write(iunit, '(A, I2.2, A, I2.2, A, I4  )')   " - Date (day/month/year) : ", day, "/", month, "/", year
-  write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') " - Time (hour/min/sec)     : ", hour, ":", minute, ":", second  
+  write(iunit, '(A, I2.2, A, I2.2, A, I4  )') " - Date (day/month/year) : ", day, "/", month, "/", year
+  write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') " - Time (hour/min/sec)   : ", hour, ":", minute, ":", second  
   write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' ' 
 
