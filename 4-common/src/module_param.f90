@@ -363,10 +363,8 @@ module param
   integer :: iscalar,iadvance_time
   
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,t0
-  real(mytype) :: dt,xnu,init_noise
-  
-  real(mytype), save :: re
-    
+  real(mytype) :: dt,re,xnu,init_noise
+      
   ! Basic Param
   integer :: irestart
 

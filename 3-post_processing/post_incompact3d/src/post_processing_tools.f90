@@ -167,6 +167,15 @@ subroutine mean_stats_header(iunit)
   
   integer, intent(in) :: iunit
   
+  character(len=8) :: date_str
+  character(len=10) :: time_str
+  integer :: values(8)
+
+    ! Get the current date and time
+    call date_and_time(date=date_str, time=time_str, values=values)
+
+
+
   ! TTBL
   if (itype .eq. itype_ttbl) then
   
@@ -176,7 +185,7 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      ' Statistics are adimensionalised with wall velocity Uw and trip wire diameter D, both unitary.'
       write(iunit, '(A)')      ' '       
       write(iunit, '(A)')      ' Simulation details:'      
-      write(iunit, '(A,F5.1)') '  - Trip Reynolds number, Re_D = ', re      
+      write(iunit, '(A,F17.3)') '  - Trip Reynolds number, Re_D = ', re      
   
   ! Channel
   else if (itype .eq. itype_channel) then
@@ -187,7 +196,7 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      ' and channel half-height, both unitary.'
       write(iunit, '(A)')      ' '       
       write(iunit, '(A)')      ' Simulation details:'      
-      write(iunit, '(A,F5.1)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
+      write(iunit, '(A,F17.3)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
   
   end if    
   
@@ -215,8 +224,13 @@ subroutine mean_stats_header(iunit)
   write(iunit, '(A)')      ' skew : skewness;'  
   write(iunit, '(A)')      ' kurt : kurtosis.'
   write(iunit, '(A)')      ' '
-  write(iunit, '(A)')      ' '            
-                       
+  write(iunit, '(A)')      ' '
+  write(iunit, '(A)')      ' Date and time of creation:'
+  write(iunit, '(A,A)')    '  - Date (YYYYMMDD) : ', date_str
+  write(iunit, '(A,A)')    '  - Time (HHMMSS)   : ', time_str  
+  write(iunit, '(A)')      ' '
+  write(iunit, '(A)')      ' ' 
+
 end subroutine mean_stats_header
 
 
