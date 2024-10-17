@@ -187,7 +187,7 @@ subroutine mean_stats_header(iunit)
       write(iunit, '(A)')      'and channel half-height, both unitary.'
       write(iunit, '(A)')      ' '       
       write(iunit, '(A)')      'Simulation details:'      
-      write(iunit, '(A,F5.1)') ' - Centerline Reynolds number of related laminar Poiseuille flow, Re_0 = ', re 
+      write(iunit, '(A,F5.1)') ' - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
   
   end if    
   
