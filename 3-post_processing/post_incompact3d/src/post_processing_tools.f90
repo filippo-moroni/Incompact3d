@@ -168,6 +168,9 @@ subroutine mean_stats_header(iunit)
   
   integer, intent(in) :: iunit
   
+  ! Start to write to .txt file with an empty row
+  write(iunit, '(A)')      ' '      
+    
   ! TTBL
   if (itype .eq. itype_ttbl) then
   
@@ -206,6 +209,9 @@ subroutine mean_stats_header(iunit)
   write(iunit, '(A,I4)')   '  - nz = ', nz
   write(iunit, '(A)')      ' '                      
   write(iunit, '(A)')      ' Nomenclature:'
+  write(iunit, '(A)')      ' x    : streamwise  direction;'
+  write(iunit, '(A)')      ' y    : wall-normal  direction;'  
+  write(iunit, '(A)')      ' z    : spanwise  direction;'
   write(iunit, '(A)')      ' u    : streamwise  velocity;'
   write(iunit, '(A)')      ' v    : wall-normal velocity;'      
   write(iunit, '(A)')      ' w    : spanwise    velocity;'
@@ -250,8 +256,8 @@ subroutine write_time_and_date(iunit)
   
   ! Write to .txt file
   write(iunit, '(A)')      ' Date and time of creation:'
-  write(iunit, '(A, I4, A, I2.2, A, I2.2)')   " - Date (day/month/year) : ", day, "/", month, "/", year
-  write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') " - Time (hour/min/sec)   : ", hour, ":", minute, ":", second  
+  write(iunit, '(A, I2.2, A, I2.2, A, I4  )')   " - Date (day/month/year) : ", day, "/", month, "/", year
+  write(iunit, '(A, I2.2, A, I2.2, A, I2.2)') " - Time (hour/min/sec)     : ", hour, ":", minute, ":", second  
   write(iunit, '(A)')      ' '
   write(iunit, '(A)')      ' ' 
 
