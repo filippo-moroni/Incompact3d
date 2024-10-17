@@ -610,6 +610,8 @@ end if
         
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
+        
+        ! Add the call to the external subroutine
 
 #ifdef TTBL_MODE  
         ! Add the time unit to the header
