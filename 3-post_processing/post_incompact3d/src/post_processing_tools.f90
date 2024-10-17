@@ -170,50 +170,52 @@ subroutine mean_stats_header(iunit)
   ! TTBL
   if (itype .eq. itype_ttbl) then
   
-      write(iunit, '(A)')      'Mean statistics for a Temporal Turbulent Boundary Layer (TTBL),'
-      write(iunit, '(A)')      'with initialisation as Kozul et al. (2016).'
+      write(iunit, '(A)')      ' Mean statistics for a Temporal Turbulent Boundary Layer (TTBL),'
+      write(iunit, '(A)')      ' with initialisation as Kozul et al. (2016).'
       write(iunit, '(A)')      ' '
-      write(iunit, '(A)')      'Statistics are adimensionalised with wall velocity Uw and trip wire diameter D, both unitary.'
+      write(iunit, '(A)')      ' Statistics are adimensionalised with wall velocity Uw and trip wire diameter D, both unitary.'
       write(iunit, '(A)')      ' '       
-      write(iunit, '(A)')      'Simulation details:'      
-      write(iunit, '(A,F5.1)') ' - Trip Reynolds number, Re_D = ', re      
+      write(iunit, '(A)')      ' Simulation details:'      
+      write(iunit, '(A,F5.1)') '  - Trip Reynolds number, Re_D = ', re      
   
   ! Channel
   else if (itype .eq. itype_channel) then
   
-      write(iunit, '(A)')      'Mean statistics for a Channel.'
+      write(iunit, '(A)')      ' Mean statistics for a Channel.'
       write(iunit, '(A)')      ' '
-      write(iunit, '(A)')      'Statistics are adimensionalised with centerline velocity of the related laminar Poiseuille flow'
-      write(iunit, '(A)')      'and channel half-height, both unitary.'
+      write(iunit, '(A)')      ' Statistics are adimensionalised with centerline velocity of the related laminar Poiseuille flow'
+      write(iunit, '(A)')      ' and channel half-height, both unitary.'
       write(iunit, '(A)')      ' '       
-      write(iunit, '(A)')      'Simulation details:'      
-      write(iunit, '(A,F5.1)') ' - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
+      write(iunit, '(A)')      ' Simulation details:'      
+      write(iunit, '(A,F5.1)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re 
   
   end if    
   
   write(iunit, '(A)')      ' '      
-  write(iunit, '(A)')      'Domain dimensions:'      
-  write(iunit, '(A,F6.2)') ' - Lx = ', xlx
-  write(iunit, '(A,F6.2)') ' - Ly = ', yly                  
-  write(iunit, '(A,F6.2)') ' - Lz = ', zlz         
-  write(iunit, '(A)')      'Number of points:'      
-  write(iunit, '(A,I4)')   ' - nx = ', nx
-  write(iunit, '(A,I4)')   ' - ny = ', ny                  
-  write(iunit, '(A,I4)')   ' - nz = ', nz
+  write(iunit, '(A)')      ' Domain dimensions:'      
+  write(iunit, '(A,F6.2)') '  - Lx = ', xlx
+  write(iunit, '(A,F6.2)') '  - Ly = ', yly                  
+  write(iunit, '(A,F6.2)') '  - Lz = ', zlz
+  write(iunit, '(A)')      ' '               
+  write(iunit, '(A)')      ' Number of points:'      
+  write(iunit, '(A,I4)')   '  - nx = ', nx
+  write(iunit, '(A,I4)')   '  - ny = ', ny                  
+  write(iunit, '(A,I4)')   '  - nz = ', nz
   write(iunit, '(A)')      ' '      
-  write(iunit, '(A)')      'Nomenclature:'
-  write(iunit, '(A)')      'u    : streamwise  velocity;'
-  write(iunit, '(A)')      'v    : wall-normal velocity;'      
-  write(iunit, '(A)')      'w    : spanwise    velocity;'
-  write(iunit, '(A)')      'p    : pressure;'
-  write(iunit, '(A)')      'phi  : passive scalar field;'
-  write(iunit, '(A)')      '< >  : average operator;'
-  write(iunit, '(A)')      'u    : streamwise  velocity;'      
-  write(iunit, '(A)')      'mean : mean/average;'
-  write(iunit, '(A)')      'var  : variance;'
-  write(iunit, '(A)')      'skew : skewness;'  
-  write(iunit, '(A)')      'kurt : kurtosis.'
-  write(iunit, '(A)')      ' '      
+  write(iunit, '(A)')      ' Nomenclature:'
+  write(iunit, '(A)')      ' u    : streamwise  velocity;'
+  write(iunit, '(A)')      ' v    : wall-normal velocity;'      
+  write(iunit, '(A)')      ' w    : spanwise    velocity;'
+  write(iunit, '(A)')      ' p    : pressure;'
+  write(iunit, '(A)')      ' phi  : passive scalar field;'
+  write(iunit, '(A)')      ' < >  : average operator;'
+  write(iunit, '(A)')      " '    : fluctuating quantity;"      
+  write(iunit, '(A)')      ' mean : mean/average;'
+  write(iunit, '(A)')      ' var  : variance;'
+  write(iunit, '(A)')      ' skew : skewness;'  
+  write(iunit, '(A)')      ' kurt : kurtosis.'
+  write(iunit, '(A)')      ' '
+  write(iunit, '(A)')      ' '            
                        
 end subroutine mean_stats_header
 
