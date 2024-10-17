@@ -249,7 +249,7 @@ subroutine parameter(input_i3d)
           ! Viscosity based on Re_cent to keep same scaling as CFR
           xnu = one/re_cent 
     
-          !
+          ! 
           fcpg = two/yly * (re/re_cent)**2
     
           ! Calculate the related bulk Reynolds number (Pope, "Turbulent Flows")
