@@ -33,7 +33,12 @@ subroutine parameter(input_i3d)
   implicit none
 
   character(len=80), intent(in) :: input_i3d
+  
+  ! Index for scalar fields
   integer :: is
+  
+  ! Integer for new I/O units
+  integer :: iunit
 
   NAMELIST /BasicParam/ itype, p_row, p_col, nx, ny, nz,          &
                         istret, beta, xlx, yly, zlz,              &
@@ -85,34 +90,34 @@ subroutine parameter(input_i3d)
   call parameter_defaults()
 
   ! Read parameters
-  open(10, file=input_i3d)
+  open(newunit=iunit, file=input_i3d)
 
   ! These are the 'essential' parameters
-  read(10, nml=BasicParam); rewind(10)
-  read(10, nml=NumOptions); rewind(10)
-  read(10, nml=InOutParam); rewind(10)
+  read(iunit, nml=BasicParam); rewind(iunit)
+  read(iunit, nml=NumOptions); rewind(iunit)
+  read(iunit, nml=InOutParam); rewind(iunit)
   
   ! Additional controls
-  read(10, nml=AdditionalControls); rewind(10)
+  read(iunit, nml=AdditionalControls); rewind(iunit)
   
   ! Controls for wall oscillations
   if(iswitch_wo .eq. 1) then
-      read(10, nml=WallOscillations); rewind(10); 
+      read(iunit, nml=WallOscillations); rewind(iunit); 
   end if
   
   ! Read parameters for Channel case
   if (itype.eq.itype_channel) then
-     read(10, nml=ChannelParam); rewind(10);   
+     read(iunit, nml=ChannelParam); rewind(iunit);   
   end if
   
   ! Read parameters for temporal TBL case
   if (itype.eq.itype_ttbl) then
-     read(10, nml=TemporalTBLParam); rewind(10);   
+     read(iunit, nml=TemporalTBLParam); rewind(iunit);   
   end if
   
   ! Immersed boundary method
   if (iibm.ne.0) then
-      read(10, nml=ibmstuff); rewind(10)
+      read(iunit, nml=ibmstuff); rewind(iunit)
   endif
     
   ! Set Scalar BCs same as fluid (may be overridden) [DEFAULT]
@@ -163,7 +168,7 @@ subroutine parameter(input_i3d)
         endif
      endif
  
-  read(10, nml=LMN); rewind(10)
+  read(iunit, nml=LMN); rewind(iunit)
      do is = 1, numscalar
         if (massfrac(is)) then
            imultispecies = .TRUE.
@@ -186,11 +191,11 @@ subroutine parameter(input_i3d)
   endif
   
   if (numscalar.ne.0) then
-     read(10, nml=ScalarParam); rewind(10)
+     read(iunit, nml=ScalarParam); rewind(iunit)
   endif
     
   if(ilesmod.ne.0) then
-     read(10, nml=LESModel); rewind(10)
+     read(iunit, nml=LESModel); rewind(iunit)
   endif
     
   !read(10, nml=Statistics); rewind(10)
@@ -198,7 +203,7 @@ subroutine parameter(input_i3d)
   ! Read extra numerics control (Adjustable time-step)
   !read(10, nml=ExtraNumControl); rewind(10);
        
-  close(10)
+  close(iunit)
 
   ! allocate(sc(numscalar),cp(numscalar),ri(numscalar),group(numscalar))
 
@@ -358,6 +363,7 @@ subroutine parameter(input_i3d)
 #ifdef DEBG
   if (nrank == 0) write(*,*) '# parameter input.i3d done'
 #endif
+
   if (nrank==0) then
      print *,'==========================================================='
      if (itype.eq.itype_channel) then
