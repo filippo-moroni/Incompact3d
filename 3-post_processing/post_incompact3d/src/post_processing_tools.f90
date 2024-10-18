@@ -179,7 +179,7 @@ subroutine stats_header(iunit,i_header)
   
   if (i_header == 1) then
   
-        write(iunit, '(A)') ' Mean statistics for velocity, pressure and scalar fields.'
+        write(iunit, '(A)') ' Mean statistics for velocity, pressure and scalar field (if present).'
         write(iunit, '(A)') ' '       
   
   end if
