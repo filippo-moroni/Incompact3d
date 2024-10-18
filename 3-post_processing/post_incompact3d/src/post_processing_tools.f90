@@ -169,7 +169,7 @@ subroutine stats_header(iunit,i_header)
   integer, intent(in) :: iunit
   
   ! Switcher for different headers writing depending on flow statistics
-  integer, intent(in) :: i_header
+  integer, intent(in) :: i_header  ! 1: post_mean, 2: post_grad, 3: post_corz, 4: post_tke_eq
 
   ! Start to write to .txt file with an empty row
   write(iunit, '(A)') ' '
@@ -191,6 +191,8 @@ subroutine stats_header(iunit,i_header)
   if (i_header == 3) then
   
     write(iunit, '(A)') ' Spanwise correlation function(s).'
+    write(iunit, '(A)') ' Rows are different y locations, while different columns represent the values'
+    write(iunit, '(A)') ' at different spanwise separation variable rz'
     write(iunit, '(A)') ' '       
 
   end if
@@ -270,12 +272,6 @@ subroutine stats_header(iunit,i_header)
       write(iunit, '(A)')      ' dPhi/dy    : mean scalar gradient;'
       write(iunit, '(A)')      ' eps        : total dissipation rate of kinetic energy;'                  
       write(iunit, '(A)')      ' mean       : mean/average;'
-
-  end if
-
-  if (i_header == 3) then
-
-
 
   end if
 
