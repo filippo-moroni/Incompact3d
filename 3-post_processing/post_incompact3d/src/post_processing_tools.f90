@@ -169,7 +169,7 @@ subroutine stats_header(iunit,i_header)
   implicit none
   
   ! Integer for file unit
-  integer, intent(in) :: iunit
+  integer :: iunit
   
   ! Switcher for different headers writing depending on flow statistics
   integer, intent(in) :: i_header  ! 1: post_mean, 2: post_grad, 3: post_corz, 4: post_tke_eq
@@ -292,7 +292,7 @@ subroutine stats_header(iunit,i_header)
   write(iunit, '(A)') ' '  
 
   ! Write time and date to the .txt file
-  !call write_time_and_date(iunit) 
+  call write_time_and_date(iunit) 
   
 #ifdef TTBL_MODE  
   ! Add the time unit to the header
