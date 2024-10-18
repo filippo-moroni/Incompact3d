@@ -229,16 +229,14 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     var_w       = 0.0
     mean_uv     = 0.0
     
-    # Mean vorticity and mean gradients
+    # Mean vorticity, mean gradients and total dissipation
     vort_x      = 0.0   # mean streamwise vorticity (x)
     vort_y      = 0.0   # mean wall-normal vorticity (y)
     vort_z      = 0.0   # mean spanwise vorticity (z)
     mg_x        = 0.0   # mean streamwise gradient, dU/dy
     mg_z        = 0.0   # mean spanwise gradient, dW/dy
     mg_phi      = 0.0   # mean scalar gradient, dPhi/dy
-    
-    # Total dissipation
-    eps         = 0.0
+    eps         = 0.0   # total dissipation
     
     # Spanwise correlation functions
     Ruuz = np.zeros((ny,nz), dtype=np.float64, order='F')
@@ -280,7 +278,7 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
 
         # Reading of mean statistics
         if post_mean:        
-            M = np.loadtxt('data_post/mean_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+            M = np.loadtxt('data_post/mean_stats.txt', skiprows=37, delimiter=',', dtype=np.float64)
             mean_u  =   M[:,0]
             mean_w  =   M[:,2]   
             var_u   =   M[:,3]
@@ -290,22 +288,19 @@ def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post
     
         """
         !----------------------------------------------------------------!
-         Reading of vorticity components and mean gradients
-         (always performed since we need the mean gradients to calculate
-         total shear velocity).
+         Reading of vorticity components, mean gradients and 
+         total dissipation. This is always performed since we need 
+         the mean gradients to calculate the total shear velocity.
         !----------------------------------------------------------------!
         """
-        M = np.loadtxt('data_post/vort_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        M = np.loadtxt('data_post/grad_stats.txt', skiprows=34, delimiter=',', dtype=np.float64)
         vort_x = M[:,0]
         vort_y = M[:,1]
         vort_z = M[:,2]
         mg_x   = M[:,3]
         mg_z   = M[:,4]
         mg_phi = M[:,5]
-            
-        # Reading of the mean total dissipation
-        if post_diss:
-            eps = np.loadtxt('data_post/diss_stats.txt', skiprows=1, delimiter=',', dtype=np.float64)
+        eps    = M[:,6]
     
         # Reading of correlations
         if post_corz:
