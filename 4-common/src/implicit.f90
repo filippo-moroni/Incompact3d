@@ -528,7 +528,8 @@ module ydiff_implicit
 
   contains
 !-----------------------------------------------------------------------------!
-! Time integration, (semi) implicit Y diffusion
+! Time integration, with (semi) implicit y-diffusion
+!-----------------------------------------------------------------------------! 
 !    var1, input  : variable at time n
 !          output : variable at time n+1
 !    dvar1        : r.h.s. of transport equation
