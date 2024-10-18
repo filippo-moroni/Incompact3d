@@ -74,7 +74,7 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
 
 # Read useful flow parameters from 'input.i3d' and 'post.prm' files
 (itype, nx, ny, nz, istret, beta, Lx, Ly, Lz, re, dt, ifirst, ilast, numscalar, itimescheme, ioutput, ioutput_cf, iswitch_wo,  
- add_string, file1, filen, icrfile, nr, post_mean, post_vort, post_diss, post_corz, post_tke_eq
+ add_string, file1, filen, icrfile, nr, post_mean, post_grad, post_corz, post_tke_eq
 ) = read_input_files('input.i3d','post.prm')
 
 #!--------------------------------------------------------------------------------------!
@@ -111,7 +111,7 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
  snap_numb, i_switch_plot, ts, 
- sh_vel_x, sh_vel_tot, phi_tau) = read_data(itype, numscalar, post_mean, post_vort, post_diss, 
+ sh_vel_x, sh_vel_tot, phi_tau) = read_data(itype, numscalar, post_mean, post_grad, 
                                             post_corz, post_tke_eq, ny, nz, nu)
                                                                                                                                    
 #!--------------------------------------------------------------------------------------!
@@ -198,7 +198,7 @@ if post_mean:
     mean_w_plus  = mean_w / sh_vel_x
 
 # Rescale vorticity through 'streamwise' viscous time unit
-if post_vort:
+if post_grad:
     vort_x *= t_nu_x
     vort_y *= t_nu_x
     vort_z *= t_nu_x
@@ -792,7 +792,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
 
 #!--- Total dissipation section ---!
-if post_diss and i_switch_plot == False:
+if post_grad and i_switch_plot == False:
 
     # Find the maximum of mean total dissipation
     eps_max = max(eps)
