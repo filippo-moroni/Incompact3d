@@ -28,6 +28,9 @@ subroutine read_post_file()
 
   implicit none
 
+  ! Integer for the file unit (assigned by the compiler, I/O)
+  integer :: iunit
+
   ! Index for the number of post-processing selections employed (selector index)
   integer,dimension(4) :: sel
   integer              :: i
