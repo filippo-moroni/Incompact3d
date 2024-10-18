@@ -292,12 +292,12 @@ subroutine stats_header(iunit,i_header)
   write(iunit, '(A)') ' '  
 
   ! Write time and date to the .txt file
-  call write_time_and_date(iunit) 
+  !call write_time_and_date(iunit) 
   
 #ifdef TTBL_MODE  
-        ! Add the time unit to the header
-        write(iunit, '(A, A)') 'Time unit, t = ', time_value
-        write(iunit, *) ' '
+  ! Add the time unit to the header
+  write(iunit, '(A, A)') 'Time unit, t = ', time_value
+  write(iunit, *) ' '
 #endif 
   
 end subroutine stats_header
