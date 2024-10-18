@@ -474,12 +474,12 @@ contains
       ! Subdomains
       vortxmeanH1      = zero; vortymeanH1      = zero; vortzmeanH1    = zero
       mean_gradientxH1 = zero; mean_gradientzH1 = zero; mean_gradphiH1 = zero
-      epsmeanH1 = zero
+      epsmeanH1        = zero
             
       ! Total domain
       vortxmeanHT      = zero; vortymeanHT      = zero; vortzmeanHT    = zero
       mean_gradientxHT = zero; mean_gradientzHT = zero; mean_gradphiHT = zero
-      epsmeanHT = zero  
+      epsmeanHT        = zero  
   
   end if
   
