@@ -46,7 +46,10 @@ program post
 
   ! Integer for the file unit (assigned by the compiler, I/O)
   integer :: iunit
-  
+
+  ! Integer to switch different headers for statistics
+  integer :: i_header
+
   ! Denominator of the divisions
   real(mytype) :: den
   
@@ -609,7 +612,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the statistics
-        call stats_header(iunit,1)
+        i_header = 1
+        call stats_header(iunit,i_header)
         
         ! Header
         write(iunit, '(23(A13, A1, 1X))') 'mean[u]'  , ',', 'mean[v]'  , ',', 'mean[w]', ',', &
@@ -669,7 +673,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the statistics
-        call stats_header(iunit,2)
+        i_header = 2
+        call stats_header(iunit,i_header)
         
         ! Header
         write(iunit, '(7(A13, A1, 1X))') 'mean[omega_x]', ',', 'mean[omega_y]', ',', 'mean[omega_z]', ',', &
@@ -712,7 +717,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the statistics
-        call stats_header(iunit,3)
+        i_header = 3
+        call stats_header(iunit,i_header)
 
         ! Streamwise fluctuations correlation function        
         do j = 1, ysize(2)
@@ -741,7 +747,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the statistics
-        call stats_header(iunit,3)
+        i_header = 3
+        call stats_header(iunit,i_header)
 
         ! Vertical fluctuations correlation function        
         do j = 1, ysize(2)
@@ -770,7 +777,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the statistics
-        call stats_header(iunit,3)
+        i_header = 3
+        call stats_header(iunit,i_header)
 
         ! Vertical fluctuations correlation function        
         do j = 1, ysize(2)
@@ -799,7 +807,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the statistics
-        call stats_header(iunit,3)
+        i_header = 3
+        call stats_header(iunit,i_header)
 
         ! Vertical fluctuations correlation function        
         do j = 1, ysize(2)
@@ -828,7 +837,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
         ! Write the header for the statistics
-        call stats_header(iunit,3)
+        i_header = 3
+        call stats_header(iunit,i_header)
 
         ! Scalar fluctuations correlation function        
         do j = 1, ysize(2)
@@ -858,7 +868,8 @@ end if
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
  
         ! Write the header for the statistics
-        call stats_header(iunit,4)
+        i_header = 4
+        call stats_header(iunit,i_header)
 
         ! Header 
         write(iunit, '(5(A13, A1, 1X))') 'tke_turbt' , ',', 'tke_presst', ',', 'tke_difft', ',', &

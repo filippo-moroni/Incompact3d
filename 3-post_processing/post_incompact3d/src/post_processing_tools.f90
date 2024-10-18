@@ -164,7 +164,7 @@ subroutine stats_header(iunit,i_header)
 
   use param
   use variables
-  use post_processing
+  use post_processing, only : time_value
 
   implicit none
   
