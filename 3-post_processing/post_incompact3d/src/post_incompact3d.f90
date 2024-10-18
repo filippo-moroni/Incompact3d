@@ -924,29 +924,20 @@ end if
      write(*,*) ' '    
      endif
      
-     ! Vorticity and mean gradient 
-     if (post_vort) then
+     ! Mean vorticity, mean gradients (velocity and scalar field)
+     ! and total dissipation 
+     if (post_grad) then
      write(*,*) '==========================================================='
      write(*,*) ' '
      write(*,*) 'The following statistics have been saved in'
-     write(*,*) '"vort_stats" file(s):'
+     write(*,*) '"grad_stats" file(s):'
      write(*,*) ' '
      write(*,*) 'mean[omega_x], mean[omega_y], mean[omega_z]'
      write(*,*) 'dU/dy,         dW/dy,         dPhi/dy'
-     write(*,*) ' '    
+     write(*,*) 'mean[eps]'    
+     write(*,*) ' '     
      endif
-     
-     ! Total dissipation rate 
-     if (post_diss) then
-     write(*,*) '==========================================================='
-     write(*,*) ' '
-     write(*,*) 'The following statistics have been saved in'
-     write(*,*) '"diss_stats" file(s):'
-     write(*,*) ' '
-     write(*,*) 'mean[eps]'
-     write(*,*) ' '    
-     endif
-     
+          
      ! Correlation functions 
      if (post_corz) then
      write(*,*) '==========================================================='
