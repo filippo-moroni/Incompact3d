@@ -51,10 +51,7 @@ module post_processing
 
   ! Integer for MPI
   integer :: code
-  
-  ! Integer for the file unit (assigned by the compiler, I/O)
-  integer :: iunit                                   
-  
+                                     
   ! Format for snapshots numbers
   character(len=9) :: ifilenameformat = '(I4.4)'
   

@@ -43,6 +43,9 @@ program post
 
   ! Integers for cycles (x,y,z)
   integer :: i,j,k
+
+  ! Integer for the file unit (assigned by the compiler, I/O)
+  integer :: iunit
   
   ! Denominator of the divisions
   real(mytype) :: den
