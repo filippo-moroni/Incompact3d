@@ -10,7 +10,6 @@
 import sys
 import os
 import numpy as np
-from scipy.interpolate import InterpolatedUnivariateSpline
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)

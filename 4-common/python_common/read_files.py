@@ -211,7 +211,7 @@ def read_input_files(filename1,filename2):
 !-----------------------------------------------------------------------------!
 """
     
-def read_data(itype, numscalar, post_mean, post_vort, post_diss, post_corz, post_tke_eq, ny, nz, nu, snap_numb=None):
+def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny, nz, nu, snap_numb=None):
 
     #!--- Initialize variables ---! 
     

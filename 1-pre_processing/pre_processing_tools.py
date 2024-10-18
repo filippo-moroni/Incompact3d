@@ -14,8 +14,6 @@
 # Libraries
 import sys
 import os
-import numpy as np
-import matplotlib.pyplot as plt
 
 # Get the current directory
 current_dir = os.path.dirname(__file__)
