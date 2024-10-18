@@ -157,7 +157,7 @@ end subroutine read_xdmf_time
 !              and type of statistics we are saving.   
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine stats_header(iunit)
+subroutine stats_header(iunit,i_header)
 
   use param
   use variables
@@ -165,25 +165,43 @@ subroutine stats_header(iunit)
 
   implicit none
   
+  ! Integer for file unit
   integer, intent(in) :: iunit
   
+  ! Switcher for different headers writing depending on flow statistics
+  integer, intent(in) :: i_header
+
   ! Start to write to .txt file with an empty row
   write(iunit, '(A)') ' '
   
-  if (post_mean) then
+  if (i_header == 1) then
   
         write(iunit, '(A)') ' Mean statistics for velocity, pressure and scalar fields.'
         write(iunit, '(A)') ' '       
   
   end if
   
-  if (post_grad) then
+  if (i_header == 2) then
   
         write(iunit, '(A)') ' Mean statistics for gradients-related quantities (vorticity, mean gradients, total dissipation).'
         write(iunit, '(A)') ' '       
   
   end if       
-    
+
+  if (i_header == 3) then
+  
+    write(iunit, '(A)') ' Spanwise correlation function(s).'
+    write(iunit, '(A)') ' '       
+
+  end if
+
+  if (i_header == 4) then
+  
+    write(iunit, '(A)') ' Turbulent Kinetic Energy (TKE) equation.'
+    write(iunit, '(A)') ' '       
+
+  end if  
+  
   ! TTBL
   if (itype .eq. itype_ttbl) then
   
@@ -226,7 +244,7 @@ subroutine stats_header(iunit)
   write(iunit, '(A)')          ' y          : wall-normal  direction;'  
   write(iunit, '(A)')          ' z          : spanwise  direction;'
 
-  if (post_mean) then
+  if (i_header == 1) then
 
       write(iunit, '(A)')      ' u          : streamwise  velocity;'
       write(iunit, '(A)')      ' v          : wall-normal velocity;'      
@@ -242,7 +260,7 @@ subroutine stats_header(iunit)
       
   end if
   
-  if (post_grad) then
+  if (i_header == 2) then
 
       write(iunit, '(A)')      ' omega_x    : streamwise vorticity;'
       write(iunit, '(A)')      ' omega_y    : wall-normal vorticity;'
@@ -255,7 +273,13 @@ subroutine stats_header(iunit)
 
   end if
 
-  if (post_tke_eq) then
+  if (i_header == 3) then
+
+
+
+  end if
+
+  if (i_header == 4) then
 
       write(iunit, '(A)')      ' tke_turbt  : wall-normal turbulent transport of TKE;'
       write(iunit, '(A)')      ' tke_presst : wall-normal pressure transport of TKE;'
@@ -263,7 +287,7 @@ subroutine stats_header(iunit)
       write(iunit, '(A)')      ' tke_prod   : production of TKE;'
       write(iunit, '(A)')      ' tke_pseps  : pseudo-dissipation of TKE;'
 
-end if
+  end if
   
   ! Empty row
   write(iunit, '(A)') ' '  
