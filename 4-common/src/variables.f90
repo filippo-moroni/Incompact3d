@@ -1304,6 +1304,7 @@ contains
 #ifdef DEBG
     if (nrank ==  0) write(*,*) '# init_variables done'
 #endif
+
     return
   end subroutine init_variables
 end module var
