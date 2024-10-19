@@ -217,7 +217,7 @@ subroutine stats_header(iunit,i_header)
       write(iunit, '(A)')      ' '       
       write(iunit, '(A)')      ' Simulation & post-processing details:'      
       write(iunit, '(A,F8.2)') '  - Trip Reynolds number,      Re_D = ', re
-      write(iunit, '(A,I4)')   '  - Number of flow realizations, nr = ', nr 
+      write(iunit, '(A,I5)')   '  - Number of flow realizations, nr = ', nr 
   
   ! Channel
   else if (itype .eq. itype_channel) then
@@ -229,7 +229,7 @@ subroutine stats_header(iunit,i_header)
       write(iunit, '(A)')      ' '       
       write(iunit, '(A)')      ' Simulation & post-processing details:'      
       write(iunit, '(A,F8.2)') '  - Centerline Reynolds number of the related laminar Poiseuille flow, Re_0 = ', re
-      write(iunit, '(A,I4)')   '  - Number of snapshots in time, nt = ', nt  
+      write(iunit, '(A,I5)')   '  - Number of snapshots in time, nt = ', nt  
   
   end if    
   
@@ -296,7 +296,7 @@ subroutine stats_header(iunit,i_header)
   
 #ifdef TTBL_MODE  
   ! Add the time unit to the header
-  write(iunit, '(A, A)') 'Time unit, t = ', time_value
+  write(iunit, '(A, A)') ' Time unit, t = ', time_value
   write(iunit, *) ' '
 #endif 
   

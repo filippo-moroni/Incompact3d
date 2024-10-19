@@ -357,7 +357,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
              friction Reynolds number.
             !-----------------------------------------------------------------------!
             """
-            M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=3, delimiter=',', dtype=np.float64)
+            M = np.loadtxt(f'data_post/mean_stats-{snap_numb}.txt', skiprows=46, delimiter=',', dtype=np.float64)
             mean_u  = M[:,0]
             mean_w  = M[:,2]   
             var_u   = M[:,3]
@@ -372,7 +372,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
              the mean gradients to calculate the total shear velocity.
             !----------------------------------------------------------------!
             """
-            M = np.loadtxt(f'data_post/grad_stats-{snap_numb}.txt', skiprows=3, delimiter=',', dtype=np.float64)
+            M = np.loadtxt(f'data_post/grad_stats-{snap_numb}.txt', skiprows=43, delimiter=',', dtype=np.float64)
             vort_x = M[:,0]
             vort_y = M[:,1]
             vort_z = M[:,2]
