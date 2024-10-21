@@ -341,7 +341,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
         # Switcher for plotting different sources of statistics
         i_switch_plot = bool(int(input()))
 
-        # Plotting statistics from 'post_incompact3d'
+        # Plotting statistics from 'post_incompact3d'; TTBL statistics files have 2 rows more of header (we have time-units savings)
         if i_switch_plot == False:
         
             # Asking to the user the specific snapshot to show
