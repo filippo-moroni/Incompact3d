@@ -22,11 +22,12 @@ module post_processing
   implicit none
 
   ! Work variables for statistics
-  integer :: ii = 1,ie = 1           ! internal (ii) and external (ie) loops 
-  integer :: file1,filen,icrfile     ! indexes for opening snapshots (first, last & increment)
-  integer :: nt                      ! total number of savings in time
-  integer :: nr                      ! total number of flow realizations
-  integer :: ifile                   ! index to open different snapshots in time ('file index')
+  integer :: ii = 1,ie = 1           ! Internal (ii) and external (ie) loops 
+  integer :: file1,filen,icrfile     ! Indexes for opening snapshots (first, last & increment)
+  integer :: nt                      ! Total number of savings in time
+  integer :: nr                      ! Total number of flow realizations
+  integer :: ifile                   ! Index to open different snapshots in time ('file index')
+  integer :: i_skip_header           ! Integer to skip the header of 'mean_stats.txt', different for TTBL or Channel
   
   ! Strings for names of files and directories
   character(99) :: filename,dirname

@@ -80,12 +80,23 @@ subroutine read_post_file()
   
   ! Reading of velocity only if necessary
   if (post_grad .or. post_corz .or. post_tke_eq) read_vel=.true.
-  
+    
   ! Read of scalar field only if necessary
   if (iscalar==1) read_phi=.true. 
   
   ! Total number of snapshots in time
-  nt = (filen-file1)/icrfile+1                         
+  nt = (filen-file1)/icrfile+1
+  
+  ! Define the number of rows to skip in the header
+  if (post_grad .or. post_corz) then
+  
+      ! TTBL
+      if (itype .eq. itype_ttbl) i_skip_header = 47
+      
+      ! Channel
+      if (itype .eq. itype_channel) i_skip_header = 44
+  
+  end if                         
 
 end subroutine read_post_file
 

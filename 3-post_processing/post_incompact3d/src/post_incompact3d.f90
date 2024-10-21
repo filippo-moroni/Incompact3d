@@ -170,9 +170,13 @@ end if
   
              ! Display that we are reading the mean statistics
              if (nrank.eq.0) print *, 'Reading file: ', filename
-         
+             
              ! Skip the header
-             read(iunit, *)
+             do j = 1, i_skip_header
+             
+                 read(iunit, *)
+             
+             end do
   
              do j = 1, ysize(2)
              
