@@ -1289,6 +1289,7 @@ contains
     if (.not.ilmn) then
        nrhotime = 1 !! Save some space
     endif
+    
     allocate(rho1(xstart(1):xend(1),xstart(2):xend(2),xstart(3):xend(3),nrhotime)) !Need to store old density values to extrapolate drhodt
     rho1=one
     call alloc_y(rho2)
