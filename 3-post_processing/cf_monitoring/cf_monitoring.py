@@ -410,6 +410,9 @@ if itype == 3:
     n_snap_cf  = last_index - lower_index
     t_tot      = (n_snap_cf - 1)*delta
     
+    # Calculate mean friction velocity 
+    u_tau = mean_cf / 2.0
+    
     # Calculate number of snapshots saved (3d fields)
     n_snap = ilast // ioutput
 
@@ -482,6 +485,9 @@ elif itype == 3:
         f.write('  - t_tot     : total time of average (outer time, based on channel half-height and centerline velocity of the related laminar Poiseuille flow);\n')
         f.write('  - delta_TU  : delta of time units (TU) between different savings of cf;\n')
         f.write('  - n_snap    : number of snapshots used in the average.\n')
+        f.write('\n')
+        f.write(' Reference data:\n')
+        f.write('  - Kim et al. (1987), channel Re_tau = 180: 10^3 <cf> = 8.18.\n')
         f.write('\n')
         f.write(f"{'10^3 <cf>':>{pp.c_w}}, " +
                 f"{'t_tot':>{pp.c_w}}, "     +

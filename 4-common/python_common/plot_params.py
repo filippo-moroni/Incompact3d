@@ -1,9 +1,16 @@
 
 """
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: This is a small module to store Python plotting parameters.
+! DESCRIPTION: This is a small module to store Python plotting parameters and
+!              constans (e.g. double precision numbers).
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
+"""
+
+"""
+!----------------------------------------! 
+! Parameters and libraries for plotting.
+!----------------------------------------!
 """
 
 # Libraries
@@ -67,6 +74,21 @@ nlvl = 256           # number of isolevels
 pad_cbar_lab = -8    # padding of label of colorbar (cbar)
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
+
+"""
+!--------------------------------------------! 
+! Parameters and libraries for calculations.
+!--------------------------------------------!
+"""
+
+# Libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import warnings
+
+# Set Numpy
+np.seterr(divide='ignore', invalid='ignore')
 
 
 
