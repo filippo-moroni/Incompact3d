@@ -396,8 +396,16 @@ if itype == 3:
 
     # Calculate mean friction coefficient
     mean_cf = np.mean(cfx[lower_index:], dtype='float64')
+    
+    # Calculate mean friction velocity 
+    u_tau = np.sqrt(mean_cf / pp.two) * pp.twothird
+    
+    # Calculate friction Reynolds number (half-height is unitary) and show it
+    re_tau = u_tau / nu
+    print(f">>> Friction Reynolds number, Re_tau = {re_tau:.1f}")
+    print()
           
-    # Rescale friction coefficient by a factor of 1000.0
+    # Scale friction coefficient by a factor of 1000.0 and show it
     mean_cf = mean_cf*pp.onethousand
     print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.3f}")
     print()
@@ -406,13 +414,7 @@ if itype == 3:
     last_index = len(time_unit) 
     n_snap_cf  = last_index - lower_index
     t_tot      = (n_snap_cf - 1)*delta
-    
-    # Calculate mean friction velocity 
-    u_tau = sqrt(mean_cf / pp.two) * pp.twothird
-    
-    # Calculate friction Reynolds number (half-height is unitary)
-    re_tau = u_tau / nu
-    
+   
     # Calculate number of snapshots saved (3d fields)
     n_snap = ilast // ioutput
 
