@@ -14,13 +14,9 @@
 """
 
 # Libraries
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import warnings
-
-# Set Numpy
-np.seterr(divide='ignore', invalid='ignore')
 
 # Set Latex 
 plt.rcdefaults() 
@@ -83,12 +79,16 @@ pad_cbar_lab = -8    # padding of label of colorbar (cbar)
 
 # Libraries
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import warnings
 
 # Set Numpy
 np.seterr(divide='ignore', invalid='ignore')
+
+# Double-precision numbers
+two         = np.float64(2.0)
+three       = np.float64(3.0)
+onethousand = np.float64(1000.0)
+
+twothird    = two/three
 
 
 

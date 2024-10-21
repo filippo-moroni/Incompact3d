@@ -193,7 +193,7 @@ if itype == 13:
     power_in   = power_in_sum
         
     # Calculate (streamwise) friction coefficient
-    cfx = 2.0 * (sh_vel_x / uwall)**2
+    cfx = pp.two * (sh_vel_x / uwall)**2
     
     print()
     print(">>> Average of shear velocities, mean scalar gradient, Reynolds analogy factor and power input: done.")
@@ -396,12 +396,9 @@ if itype == 3:
 
     # Calculate mean friction coefficient
     mean_cf = np.mean(cfx[lower_index:], dtype='float64')
-   
-    # Define 1000.0 with double precision
-    onethousand = np.float64(1000.0)
-   
+          
     # Rescale friction coefficient by a factor of 1000.0
-    mean_cf = mean_cf*onethousand
+    mean_cf = mean_cf*pp.onethousand
     print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.3f}")
     print()
     
@@ -411,7 +408,10 @@ if itype == 3:
     t_tot      = (n_snap_cf - 1)*delta
     
     # Calculate mean friction velocity 
-    u_tau = mean_cf / 2.0
+    u_tau = sqrt(mean_cf / pp.two) * pp.twothird
+    
+    # Calculate friction Reynolds number (half-height is unitary)
+    re_tau = u_tau / nu
     
     # Calculate number of snapshots saved (3d fields)
     n_snap = ilast // ioutput
@@ -462,7 +462,7 @@ elif itype == 3:
     ax.text(lower_tu*1.1, mean_cf/2000.0, fr'$t = {lower_tu}$', color='k', fontsize=4, ha='left')
         
     # Horizontal line to show mean cf value
-    ax.hlines(y=mean_cf/onethousand, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
+    ax.hlines(y=mean_cf/pp.onethousand, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
     
     # Plot vertical lines to show when full snapshots have been saved
     for n in range(1, n_snap, 1):
@@ -479,6 +479,8 @@ elif itype == 3:
         f.write(' Average of friction coefficient for a Channel.\n')
         f.write('\n')
         f.write(f' Flowcase: {add_string}.\n')
+        f.write('\n')        
+        f.write(f' Re_tau = {re_tau}.\n')        
         f.write('\n')
         f.write(' Abbreviations:\n')
         f.write('  - 10^3 <cf> : friction coefficient average (times 10^3);\n')
