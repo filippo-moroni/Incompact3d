@@ -391,11 +391,16 @@ if itype == 3:
     print(">>> Correspondent snapshot index on 'cf_history.txt' file:", lower_index)
     print()
 
-    # Average (lower TU is included) (a futher check on precision must be made, the plotted line seems to low wrt to data points)
-    mean_cf = np.mean(cfx[lower_index:], dtype=np.float128)
+    # Define the mean of friction coefficient
+    mean_cf = np.float64(0.0)
+
+    # Calculate mean friction coefficient
+    for n in range(lower_index, ilast, 1)
     
-    # Define 1000.0 with quad precision
-    onethousand = np.float128(1000.0)
+        mean_cf = mean_cf + (cfx[n] - mean_cf) / n
+   
+    # Define 1000.0 with double precision
+    onethousand = np.float64(1000.0)
    
     # Rescale friction coefficient by a factor of 1000.0
     mean_cf = mean_cf*onethousand
