@@ -91,7 +91,7 @@ subroutine read_post_file()
   if (post_grad .or. post_corz) then
   
       ! TTBL
-      if (itype .eq. itype_ttbl) i_skip_header = 47
+      if (itype .eq. itype_ttbl) i_skip_header = 46
       
       ! Channel
       if (itype .eq. itype_channel) i_skip_header = 44
