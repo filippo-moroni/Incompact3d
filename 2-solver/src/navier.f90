@@ -222,13 +222,15 @@ contains
 
   ENDSUBROUTINE lmn_t_to_rho_trans
   !-----------------------------------------------------------------------------!
-  ! Correction of u* by the pressure gradient to get a divergence free
-  ! field.
-  ! input : px,py,pz
-  ! output : ux,uy,uz
-  ! Written by SL 2018.
+  !  SUBROUTINE: cor_vel
+  ! DESCRIPTION: Correction of u* by the pressure gradient to get 
+  !              a divergence free field.
+  !      INPUTS: px,py,pz.
+  !     OUTPUTS: ux,uy,uz.
+  !      AUTHOR: Sylvain Laizet
+  !        DATE: 2018
   !-----------------------------------------------------------------------------!
-  subroutine cor_vel (ux,uy,uz,px,py,pz)
+  subroutine cor_vel(ux,uy,uz,px,py,pz)
 
     use variables
     use param

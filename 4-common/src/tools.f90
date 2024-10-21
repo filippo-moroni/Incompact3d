@@ -445,17 +445,18 @@ contains
           end do
        endif
        
-       !if (ilmn) then
-       !   do is = 1, nrhotime
-       !      write(varname, *) "rho-", is
-       !      call decomp_2d_write_one(1,rho1(:,:,:,is),resfile,varname,0,io_restart,reduce_prec=.false.)
-       !   enddo
-       !   do is = 1, ntime
-       !      write(varname, *) "drho-", is
-       !      call decomp_2d_write_one(1,drho1(:,:,:,is),resfile,varname,0,io_restart,reduce_prec=.false.)
-       !   enddo
-       !   call decomp_2d_write_one(1,mu1(:,:,:),resfile,"mu",0,io_restart,reduce_prec=.false.)
-       !endif
+       ! Low-Mach number
+       if (ilmn) then
+          do is = 1, nrhotime
+             write(varname, *) "rho-", is
+             call decomp_2d_write_one(1,rho1(:,:,:,is),resfile,varname,0,io_restart,reduce_prec=.false.)
+          enddo
+          do is = 1, ntime
+             write(varname, *) "drho-", is
+             call decomp_2d_write_one(1,drho1(:,:,:,is),resfile,varname,0,io_restart,reduce_prec=.false.)
+          enddo
+          call decomp_2d_write_one(1,mu1(:,:,:),resfile,"mu",0,io_restart,reduce_prec=.false.)
+       endif
 
        call decomp_2d_end_io(io_restart, resfile)
        call decomp_2d_close_io(io_restart, resfile)
@@ -569,6 +570,8 @@ contains
            
          end do
        endif
+       
+       ! Low-Mach number
        if (ilmn) then
           do is = 1, nrhotime
              write(varname, *) "rho-", is
