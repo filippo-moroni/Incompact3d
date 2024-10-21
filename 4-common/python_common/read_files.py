@@ -275,7 +275,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
 
         # Reading of mean statistics
         if post_mean:        
-            M = np.loadtxt('data_post/mean_stats.txt', skiprows=37, delimiter=',', dtype=np.float64)
+            M = np.loadtxt('data_post/mean_stats.txt', skiprows=44, delimiter=',', dtype=np.float64)
             mean_u  =   M[:,0]
             mean_w  =   M[:,2]   
             var_u   =   M[:,3]
@@ -290,7 +290,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
          the mean gradients to calculate the total shear velocity.
         !----------------------------------------------------------------!
         """
-        M = np.loadtxt('data_post/grad_stats.txt', skiprows=34, delimiter=',', dtype=np.float64)
+        M = np.loadtxt('data_post/grad_stats.txt', skiprows=41, delimiter=',', dtype=np.float64)
         vort_x = M[:,0]
         vort_y = M[:,1]
         vort_z = M[:,2]

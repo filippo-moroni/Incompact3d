@@ -89,8 +89,8 @@ subroutine parameter(input_i3d)
   ! Define default value of parameters (subroutine below in this file)
   call parameter_defaults()
 
-  ! Read parameters
-  open(newunit=iunit, file=input_i3d)
+  ! Read parameters from 'input.i3d' file
+  open(newunit=iunit, file=input_i3d, status='old')
 
   ! These are the 'essential' parameters
   read(iunit, nml=BasicParam); rewind(iunit)
