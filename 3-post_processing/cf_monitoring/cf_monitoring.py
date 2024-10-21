@@ -405,10 +405,13 @@ if itype == 3:
     print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.3f}")
     print()
     
-    # Number of snapshots used and total average time (lower TU is included)
+    # Number of cf snapshots used and total average time (lower TU is included)
     last_index = len(time_unit) 
-    n_snap = last_index - lower_index
-    t_tot = (n_snap - 1)*delta
+    n_snap_cf  = last_index - lower_index
+    t_tot      = (n_snap - 1)*delta
+    
+    # Calculate number of snapshots saved (3d fields)
+    n_snap = ilast / i_output
 
 #!--------------------------------------------------------------------------------------!
 
@@ -454,9 +457,16 @@ elif itype == 3:
 
     # Text to show in the plot the lower time-unit
     ax.text(lower_tu*1.1, mean_cf/2000.0, fr'$t = {lower_tu}$', color='k', fontsize=4, ha='left')
-    
+        
     # Horizontal line to show mean cf value
     ax.hlines(y=mean_cf/onethousand, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
+    
+    # Plot vertical lines to show when full snapshots have been saved
+    for n in range(1, nsnap, 1):
+    
+        # Plot recursively vertical lines
+        ax.vlines(x=n*i_output*dt, ymin=yliminf, ymax=ylimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+        
     
     # Create folder to store cf_mean 
     os.makedirs('cf_stats', mode=0o777, exist_ok=True)
@@ -479,10 +489,10 @@ elif itype == 3:
                 f"{'delta_TU':>{pp.c_w}}, "  +
                 f"{'n_snap':>{pp.c_w}}\n"    )
 
-        f.write(f"{mean_cf:{pp.fs}}, "      +
-                f"{t_tot:{pp.fs}}, "        +
-                f"{delta:{pp.fs}}, "        +
-                f"{n_snap:{pp.fs}}\n"       )
+        f.write(f"{mean_cf:{pp.fs}}, "       +
+                f"{t_tot:{pp.fs}}, "         +
+                f"{delta:{pp.fs}}, "         +
+                f"{n_snap_cf:{pp.fs}}\n"     )
 
 # y-axis label
 ax.set_ylabel(r'$c_f$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
