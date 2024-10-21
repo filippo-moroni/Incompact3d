@@ -65,7 +65,7 @@ module post_processing
   ! Logical if time value is found in a .xdmf file
   logical :: time_found
   
-  ! Denominator of the divisions for statistics 
+  ! Denominator of the divisions for statistics calculation, used in subroutines
   real(mytype) :: den 
   
   ! Integer for undersampling in the GKE calculation (e.g. 2,4,etc.)

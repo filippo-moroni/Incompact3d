@@ -44,7 +44,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,                           &
   
   use param
   use variables
-  use post_processing, only : nr, nt
+  use post_processing, only : nr,nt,den
 
   implicit none
   
@@ -65,13 +65,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,                           &
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vpremean                    ! average of pressure-strain term in y-direction
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean           ! average and variance of scalar field
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations for scalar field
-    
-#ifdef TTBL_MODE 
-  den = real(nx*nz*nr,mytype)
-#else
-  den = real(nx*nz*nr*nt,mytype)
-#endif
-                                                                                                                                           
+                                                                                                                                               
   !---x-component---!
   ! average
   u1mean=u1mean+ux2/den 
@@ -194,7 +188,7 @@ subroutine stat_gradients(ux1,uy1,uz1,phi1,                              &
   use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2
   use var,  only : ta3,tb3,tc3,td3,te3,tf3,di3
   
-  use post_processing, only : nr, nt
+  use post_processing, only : nr,nt,den
   
   implicit none
   
@@ -258,13 +252,7 @@ subroutine stat_gradients(ux1,uy1,uz1,phi1,                              &
   !dw/dx=tc1 dw/dy=tf1 and dw/dz=ti1
   
   di1 = zero
-  
-#ifdef TTBL_MODE 
-  den = real(nx*nz*nr,mytype)
-#else
-  den = real(nx*nz*nr*nt,mytype)
-#endif
-  
+    
   !---- Mean gradients ----!
     
   ! Mean streamwise gradient
@@ -348,7 +336,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH
   use post_processing, only : read_phi,nr,nt
   use var,             only : phi3
   
-  use post_processing, only : nr,nt
+  use post_processing, only : nr,nt,den
 
   implicit none
    
@@ -367,12 +355,6 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH
   
   ! Indexes for cycles          
   integer :: i,j,k,rr,kpr 
-
-#ifdef TTBL_MODE 
-  den = real(nx*nz*nr,mytype)
-#else
-  den = real(nx*nz*nr*nt,mytype)
-#endif
 
   ! Transpose arrays along z
   call transpose_y_to_z(ux2,ux3)
@@ -464,7 +446,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,kvprime_mean,pseudo_eps_tke_mean)
   use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2
   use var,  only : ta3,tb3,tc3,td3,te3,tf3,di3
   
-  use post_processing, only : nr,nt
+  use post_processing, only : nr,nt,den
   
   implicit none
   
@@ -483,14 +465,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,kvprime_mean,pseudo_eps_tke_mean)
     
   ! Pseudo-dissipation for TKE
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: pseudo_eps_tke_mean   
-          
-  ! Different denominator according to Channel or TTBL mode  
-#ifdef TTBL_MODE 
-  den = real(nx*nz*nr,mytype)
-#else
-  den = real(nx*nz*nr*nt,mytype)
-#endif
-  
+            
   ! Turbulent transport of TKE by v' [ 0.5 * (u'^2 + v'^2 + w'^2) * v']
   kvprime_mean = kvprime_mean + zpfive*(ux2**2 + uy2**2 + uz2**2)*uy2 / den
   

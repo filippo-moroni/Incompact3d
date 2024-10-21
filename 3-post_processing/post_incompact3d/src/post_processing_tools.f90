@@ -96,7 +96,14 @@ subroutine read_post_file()
       ! Channel
       if (itype .eq. itype_channel) i_skip_header = 44
   
-  end if                         
+  end if
+
+  ! Define the denominator of the divisions, different depending on TTBL or Channel mode  
+#ifdef TTBL_MODE 
+  den = real(nx*nz*nr,mytype)
+#else
+  den = real(nx*nz*nr*nt,mytype)
+#endif                         
 
 end subroutine read_post_file
 
