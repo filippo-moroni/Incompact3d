@@ -65,11 +65,12 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,itimescheme,ioutput,nrealiz):
      - results obtained with AB3 and implicit y-diffusion with CN.
     
     >>> Test 2:
-     - ntot ~ 32 mln points;
-     - CPUh ~ 1660;
-     - points / nranks ~ 150'000;
-     - ts_tot = 30'000;
-     - results obtained with RK3 and implicit y-diffusion with CN.
+     - ntot ~ 574 mln points;
+     - CPUh ~ 5660;
+     - points / nranks ~ 2'760'000;
+     - ts = 4'000;
+     - results obtained with RK3 and implicit y-diffusion with CN;
+     - gfortran and FFT generic.
 
     """
     
@@ -83,9 +84,9 @@ def mem_and_cpuh(nx,ny,nz,ifirst,ilast,itimescheme,ioutput,nrealiz):
     # Runge-Kutta 3
     elif itimescheme == 5:
     
-        n_tot_test  = 32 * (10**6)
-        cpuh_test   = 1660
-        ts_tot_test = 30000
+        n_tot_test  = 574 * (10**6)
+        cpuh_test   = 5660
+        ts_tot_test = 4000
     
     
     # Ratio of CPUh of 1 flow realization by the product of number of points and number of total time-steps 
