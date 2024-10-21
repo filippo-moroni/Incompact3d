@@ -196,9 +196,6 @@ subroutine stat_gradients(ux1,uy1,uz1,phi1,                              &
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3))             :: ux1,uy1,uz1
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3),1:numscalar) :: phi1
                                                                                                               
-  ! Denominator of the divisions   
-  real(mytype) :: den
-
   ! IBM parameter
   real(mytype) :: lind
     
@@ -349,10 +346,7 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH
   
   ! Correlation functions (first index: j (rows); second index: r (columns))
   real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1, RuvzH1, RppzH1
-  
-  ! Denominator of the divisions
-  real(mytype) :: den
-  
+    
   ! Indexes for cycles          
   integer :: i,j,k,rr,kpr 
 
@@ -456,8 +450,7 @@ subroutine extra_terms_tke(ux2,uy2,uz2,kvprime_mean,pseudo_eps_tke_mean)
   ! Arrays for derivative calculations
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
     
-  ! Denominator of the divisions  
-  real(mytype) :: den   
+  ! IBM parameter
   real(mytype) :: lind
   
   ! Turbulent transport of TKE by v'
