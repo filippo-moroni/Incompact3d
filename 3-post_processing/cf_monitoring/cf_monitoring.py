@@ -2,11 +2,11 @@
 """
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: With this script, we perform:
-!              - averages of runtime mean statistics for a TTBL                               
-!              - plotting of streamwise friction coefficient vs time       
+!              - averages of runtime mean statistics for a TTBL;                             
+!              - plotting of friction coefficient vs time       
 !                and its mean value calculation (Channel);                
-!              - plotting of streamwise friction coefficient vs time,     
-!                friction Reynolds number vs time and streamwise          
+!              - plotting of friction coefficient vs time,     
+!                friction Reynolds number vs time and          
 !                friction coefficient vs friction Reynolds number (TTBL);
 !              - calculation with an external subroutine of 6th order 
 !                integrals of TTBL thickness parameters (delta*, theta).
@@ -52,13 +52,13 @@ print()
 print(" Calculation and plotting of:")
 print()
 print(" Channel: ")
-print(" - streamwise friction coefficient vs time ")
+print(" - friction coefficient vs time ")
 print("   and its mean value calculation.         ")
 print()
 print(" TTBL: ")
-print(" - streamwise friction coefficient vs time;")
+print(" - friction coefficient vs time;")
 print(" - friction Reynolds number vs time;       ")
-print(" - streamwise friction coefficient vs friction Reynolds number;")
+print(" - friction coefficient vs friction Reynolds number;")
 print(" - 6th order accurate integrals of TTBL thickness parameters (delta*, theta);")
 print(" - friction Reynolds number as function of momentum thickness Reynolds number;")
 print(" - displacement thickness Reynolds number as function of momentum thickness Reynolds number.")
