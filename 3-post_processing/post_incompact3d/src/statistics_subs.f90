@@ -350,6 +350,8 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH
   use variables,       only : numscalar,nx,nz
   use post_processing, only : read_phi,nr,nt
   use var,             only : phi3
+  
+  use post_processing, only : nr,nt
 
   implicit none
    
@@ -452,7 +454,7 @@ end subroutine stat_correlation_z
 !              in y-pencils. Results are later derived in y-direction.
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
 !-----------------------------------------------------------------------------!
-subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)   
+subroutine extra_terms_tke(ux2,uy2,uz2,kvprime_mean,pseudo_eps_tke_mean)   
 
   use decomp_2d_constants
   use decomp_2d_mpi
@@ -465,15 +467,13 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
   use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2
   use var,  only : ta3,tb3,tc3,td3,te3,tf3,di3
   
+  use post_processing, only : nr,nt
+  
   implicit none
   
   ! Fluctuations
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2
-  
-  ! Number of flow realizations and number of snapshots
-  integer,     intent(in) :: nr,nt                                                                                                  
-  integer                 :: i,j,k
-  
+                                                                                                   
   ! Arrays for derivative calculations
   real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
     
@@ -489,9 +489,9 @@ subroutine extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
           
   ! Different denominator according to Channel or TTBL mode  
 #ifdef TTBL_MODE 
-  den = real(nr,mytype)
+  den = real(nx*nz*nr,mytype)
 #else
-  den = real(nr*nt,mytype)
+  den = real(nx*nz*nr*nt,mytype)
 #endif
   
   ! Turbulent transport of TKE by v' [ 0.5 * (u'^2 + v'^2 + w'^2) * v']

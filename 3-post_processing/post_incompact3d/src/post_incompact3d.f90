@@ -270,13 +270,13 @@ end if
      endif
         
      ! Statistics computation through external subroutines
-     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
+     if (post_mean) call stat_mean(ux2,uy2,uz2,pre2,phi2,                           &
                                    u1mean,v1mean,w1mean,u2mean,v2mean,w2mean,       &
                                    u3mean,v3mean,w3mean,u4mean,v4mean,w4mean,       &
                                    uvmean,uwmean,vwmean,pre1mean,pre2mean,vpremean, &
                                    phi1mean,phi2mean,uphimean,vphimean,wphimean)
                                                                           
-     if (post_grad) call stat_gradients(ux1,uy1,uz1,phi1,nr,nt,vortxmean,vortymean,vortzmean,mean_gradientx,mean_gradientz,mean_gradphi,epsmean)
+     if (post_grad) call stat_gradients(ux1,uy1,uz1,phi1,vortxmean,vortymean,vortzmean,mean_gradientx,mean_gradientz,mean_gradphi,epsmean)
         
      !--- Correlations or fluctuating terms of TKE equation, mean statistics must be calculated in a previous post-processing run ---!
      if(post_corz .or. post_tke_eq) then
@@ -305,14 +305,14 @@ end if
      if(post_corz) then
    
          ! Correlation functions calculation (each subdomain, z-pencils)
-         call stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RsszH1)
+         call stat_correlation_z(ux2,uy2,uz2,phi2,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RsszH1)
       
      end if
      
      if(post_tke_eq) then
        
          ! Fluctuating terms for TKE equation
-         call extra_terms_tke(ux2,uy2,uz2,nr,nt,kvprime_mean,pseudo_eps_tke_mean)
+         call extra_terms_tke(ux2,uy2,uz2,kvprime_mean,pseudo_eps_tke_mean)
      
      end if
      !-----------------------------------------------------------------------------------------------------!
@@ -325,10 +325,7 @@ end if
   enddo 
 #endif  
 
-!--- Mean over homogeneous directions (H = Homogeneous) ---!
-
-  ! Denominator of the divisions
-  den = real(nx*nz,mytype)
+!--- Summation over homogeneous directions (H = Homogeneous) ---!
 
   ! Summation over x and z directions
   if (post_mean) then
@@ -337,39 +334,39 @@ end if
            do j=1,ysize(2)
               
               ! Velocity statistics          
-              u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)/den
-              v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)/den
-              w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)/den
-              u2meanH1(j)=u2meanH1(j)+u2mean(i,j,k)/den
-              v2meanH1(j)=v2meanH1(j)+v2mean(i,j,k)/den
-              w2meanH1(j)=w2meanH1(j)+w2mean(i,j,k)/den
-              u3meanH1(j)=u3meanH1(j)+u3mean(i,j,k)/den
-              v3meanH1(j)=v3meanH1(j)+v3mean(i,j,k)/den
-              w3meanH1(j)=w3meanH1(j)+w3mean(i,j,k)/den
-              u4meanH1(j)=u4meanH1(j)+u4mean(i,j,k)/den
-              v4meanH1(j)=v4meanH1(j)+v4mean(i,j,k)/den
-              w4meanH1(j)=w4meanH1(j)+w4mean(i,j,k)/den
+              u1meanH1(j)=u1meanH1(j)+u1mean(i,j,k)
+              v1meanH1(j)=v1meanH1(j)+v1mean(i,j,k)
+              w1meanH1(j)=w1meanH1(j)+w1mean(i,j,k)
+              u2meanH1(j)=u2meanH1(j)+u2mean(i,j,k)
+              v2meanH1(j)=v2meanH1(j)+v2mean(i,j,k)
+              w2meanH1(j)=w2meanH1(j)+w2mean(i,j,k)
+              u3meanH1(j)=u3meanH1(j)+u3mean(i,j,k)
+              v3meanH1(j)=v3meanH1(j)+v3mean(i,j,k)
+              w3meanH1(j)=w3meanH1(j)+w3mean(i,j,k)
+              u4meanH1(j)=u4meanH1(j)+u4mean(i,j,k)
+              v4meanH1(j)=v4meanH1(j)+v4mean(i,j,k)
+              w4meanH1(j)=w4meanH1(j)+w4mean(i,j,k)
               
               ! Reynolds stresses
-              uvmeanH1(j)=uvmeanH1(j)+uvmean(i,j,k)/den
-              uwmeanH1(j)=uwmeanH1(j)+uwmean(i,j,k)/den
-              vwmeanH1(j)=vwmeanH1(j)+vwmean(i,j,k)/den
+              uvmeanH1(j)=uvmeanH1(j)+uvmean(i,j,k)
+              uwmeanH1(j)=uwmeanH1(j)+uwmean(i,j,k)
+              vwmeanH1(j)=vwmeanH1(j)+vwmean(i,j,k)
               
               ! Pressure statistics
-              pre1meanH1(j)=pre1meanH1(j)+pre1mean(i,j,k)/den
-              pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)/den                                                   
+              pre1meanH1(j)=pre1meanH1(j)+pre1mean(i,j,k)
+              pre2meanH1(j)=pre2meanH1(j)+pre2mean(i,j,k)                                                  
               
               ! Pressure strain in y-direction
-              vpremeanH1(j)=vpremeanH1(j)+vpremean(i,j,k)/den
+              vpremeanH1(j)=vpremeanH1(j)+vpremean(i,j,k)
               
               ! Scalar statistics
-              phi1meanH1(j)=phi1meanH1(j)+phi1mean(i,j,k)/den
-              phi2meanH1(j)=phi2meanH1(j)+phi2mean(i,j,k)/den
+              phi1meanH1(j)=phi1meanH1(j)+phi1mean(i,j,k)
+              phi2meanH1(j)=phi2meanH1(j)+phi2mean(i,j,k)
               
               ! Mixed fluctuations scalar and velocity fields
-              uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)/den
-              vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)/den
-              wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)/den                                  
+              uphimeanH1(j)=uphimeanH1(j)+uphimean(i,j,k)
+              vphimeanH1(j)=vphimeanH1(j)+vphimean(i,j,k)
+              wphimeanH1(j)=wphimeanH1(j)+wphimean(i,j,k)                                  
            
            enddo          
         enddo
@@ -382,17 +379,17 @@ end if
            do j=1,ysize(2)
            
               ! Vorticity averages          
-              vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)/den
-              vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)/den
-              vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k)/den 
+              vortxmeanH1(j)=vortxmeanH1(j)+vortxmean(i,j,k)
+              vortymeanH1(j)=vortymeanH1(j)+vortymean(i,j,k)
+              vortzmeanH1(j)=vortzmeanH1(j)+vortzmean(i,j,k) 
               
               ! Mean gradients
-              mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k)/den 
-              mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k)/den 
-              mean_gradphiH1  (j)=mean_gradphiH1  (j)+mean_gradphi  (i,j,k)/den
+              mean_gradientxH1(j)=mean_gradientxH1(j)+mean_gradientx(i,j,k) 
+              mean_gradientzH1(j)=mean_gradientzH1(j)+mean_gradientz(i,j,k) 
+              mean_gradphiH1  (j)=mean_gradphiH1  (j)+mean_gradphi  (i,j,k)
               
               ! Total dissipation          
-              epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)/den                    
+              epsmeanH1(j)=epsmeanH1(j)+epsmean(i,j,k)                    
            
            enddo
         enddo
@@ -406,10 +403,10 @@ end if
               do j=1,ysize(2)
                   
                   ! Turbulent transport of TKE by v'  
-                  kvprime_meanH1(j)=kvprime_meanH1(j)+kvprime_mean(i,j,k)/den
+                  kvprime_meanH1(j)=kvprime_meanH1(j)+kvprime_mean(i,j,k)
                              
                   ! Pseudo-dissipation for TKE
-                  pseudo_eps_tke_meanH1(j)=pseudo_eps_tke_meanH1(j)+pseudo_eps_tke_mean(i,j,k)/den    
+                  pseudo_eps_tke_meanH1(j)=pseudo_eps_tke_meanH1(j)+pseudo_eps_tke_mean(i,j,k)    
               
               end do
           end do
@@ -421,7 +418,7 @@ end if
    call reset_averages()  
 #endif
  
-!-------- Mean over all MPI processes (T = Total) ---------!
+!-------- Summation over all MPI processes (T = Total) ---------!
 
   if (post_mean) then
       
@@ -615,7 +612,7 @@ end if
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 1
         call stats_header(iunit,i_header)
         
@@ -676,7 +673,7 @@ end if
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 2
         call stats_header(iunit,i_header)
         
@@ -720,7 +717,7 @@ end if
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 3
         call stats_header(iunit,i_header)
 
@@ -750,7 +747,7 @@ end if
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 3
         call stats_header(iunit,i_header)
 
@@ -780,7 +777,7 @@ end if
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 3
         call stats_header(iunit,i_header)
 
@@ -810,7 +807,7 @@ end if
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 3
         call stats_header(iunit,i_header)
 
@@ -840,7 +837,7 @@ end if
         ! Open the file and write      
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
         
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 3
         call stats_header(iunit,i_header)
 
@@ -871,7 +868,7 @@ end if
         ! Open the file and write
         open(newunit=iunit,file=trim(dirname)//trim(filename),form='formatted')
  
-        ! Write the header for the statistics
+        ! Write the header for the statistics (i_header specifies different headers)
         i_header = 4
         call stats_header(iunit,i_header)
 
