@@ -49,9 +49,6 @@ program post
 
   ! Integer to switch different headers for statistics
   integer :: i_header
-
-  ! Denominator of the divisions
-  real(mytype) :: den
   
   ! Temporary variable                                
   real(mytype) :: temp                               
