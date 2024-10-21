@@ -395,7 +395,7 @@ if itype == 3:
     mean_cf = np.float64(0.0)
 
     # Calculate mean friction coefficient
-    for n in range(lower_index, ilast-2, 1):
+    for n in range(lower_index, ilast, 1):
     
         mean_cf = mean_cf + (cfx[n] - mean_cf) / n
    
