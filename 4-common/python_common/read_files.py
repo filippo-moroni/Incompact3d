@@ -301,14 +301,14 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
     
         # Reading of correlations
         if post_corz:
-            Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-            Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-            Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=0, delimiter=None, dtype=np.float64)
-            Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+            Ruuz = np.loadtxt('data_post/Ruuz.txt', skiprows=34, delimiter=None, dtype=np.float64)
+            Rvvz = np.loadtxt('data_post/Rvvz.txt', skiprows=34, delimiter=None, dtype=np.float64)
+            Rwwz = np.loadtxt('data_post/Rwwz.txt', skiprows=34, delimiter=None, dtype=np.float64)
+            Ruvz = np.loadtxt('data_post/Ruvz.txt', skiprows=34, delimiter=None, dtype=np.float64)
       
             # Read scalar field correlations
             if numscalar == 1:               
-                Rssz = np.loadtxt('data_post/Rssz.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Rssz = np.loadtxt('data_post/Rssz.txt', skiprows=34, delimiter=None, dtype=np.float64)
         
         # Read of TKE 
         if post_tke_eq:
@@ -383,14 +383,14 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
                         
             # Reading of correlations
             if post_corz:
-                Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-                Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-                Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
-                Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                Ruuz = np.loadtxt(f'data_post/Ruuz-{snap_numb}.txt', skiprows=36, delimiter=None, dtype=np.float64)
+                Rvvz = np.loadtxt(f'data_post/Rvvz-{snap_numb}.txt', skiprows=36, delimiter=None, dtype=np.float64)
+                Rwwz = np.loadtxt(f'data_post/Rwwz-{snap_numb}.txt', skiprows=36, delimiter=None, dtype=np.float64)
+                Ruvz = np.loadtxt(f'data_post/Ruvz-{snap_numb}.txt', skiprows=36, delimiter=None, dtype=np.float64)
         
                 # Read scalar field correlations
                 if numscalar == 1:
-                    Rssz = np.loadtxt(f'data_post/Rssz-{snap_numb}.txt', skiprows=0, delimiter=None, dtype=np.float64)
+                    Rssz = np.loadtxt(f'data_post/Rssz-{snap_numb}.txt', skiprows=36, delimiter=None, dtype=np.float64)
         
             # Read of TKE
             if post_tke_eq: 
