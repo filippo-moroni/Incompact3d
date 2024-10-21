@@ -312,7 +312,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
         
         # Read of TKE 
         if post_tke_eq:
-            M = np.loadtxt('data_post/tke_stats.txt', skiprows=31, delimiter=',', dtype=np.float64)
+            M = np.loadtxt('data_post/tke_stats.txt', skiprows=38, delimiter=',', dtype=np.float64)
             tke_turbt  = M[:,0]   
             tke_presst = M[:,1]     
             tke_difft  = M[:,2]
@@ -394,7 +394,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
         
             # Read of TKE
             if post_tke_eq: 
-                M = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=1, delimiter=',', dtype=np.float64)
+                M = np.loadtxt(f'data_post/tke_stats-{snap_numb}.txt', skiprows=40, delimiter=',', dtype=np.float64)
                 tke_turbt  = M[:,0]   
                 tke_presst = M[:,1]     
                 tke_difft  = M[:,2]
