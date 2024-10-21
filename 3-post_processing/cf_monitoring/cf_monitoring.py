@@ -408,10 +408,10 @@ if itype == 3:
     # Number of cf snapshots used and total average time (lower TU is included)
     last_index = len(time_unit) 
     n_snap_cf  = last_index - lower_index
-    t_tot      = (n_snap - 1)*delta
+    t_tot      = (n_snap_cf - 1)*delta
     
     # Calculate number of snapshots saved (3d fields)
-    n_snap = ilast / i_output
+    n_snap = ilast // ioutput
 
 #!--------------------------------------------------------------------------------------!
 
@@ -462,10 +462,10 @@ elif itype == 3:
     ax.hlines(y=mean_cf/onethousand, xmin=lower_tu, xmax=xlimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed', label=f'Mean value: {mean_cf:.3e}')
     
     # Plot vertical lines to show when full snapshots have been saved
-    for n in range(1, nsnap, 1):
+    for n in range(1, n_snap, 1):
     
         # Plot recursively vertical lines
-        ax.vlines(x=n*i_output*dt, ymin=yliminf, ymax=ylimsup, linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+        ax.vlines(x=n*ioutput*dt, ymin=yliminf, ymax=ylimsup*0.01, linewidth=pp.lw, color='k', linestyles='dashed')
         
     
     # Create folder to store cf_mean 
