@@ -65,10 +65,7 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,                           &
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vpremean                    ! average of pressure-strain term in y-direction
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean           ! average and variance of scalar field
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations for scalar field
-  
-  ! Denominator of the divisions
-  real(mytype) :: den  
-  
+    
 #ifdef TTBL_MODE 
   den = real(nx*nz*nr,mytype)
 #else
