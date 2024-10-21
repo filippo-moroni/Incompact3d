@@ -401,8 +401,8 @@ if itype == 3:
     u_tau = np.sqrt(mean_cf / pp.two) * pp.twothird
     
     # Calculate friction Reynolds number (half-height is unitary) and show it
-    re_tau = u_tau / nu
-    print(f">>> Friction Reynolds number, Re_tau = {re_tau:.1f}")
+    re_tau = round(u_tau / nu, 1)
+    print(f">>> Friction Reynolds number, Re_tau = {re_tau}")
     print()
           
     # Scale friction coefficient by a factor of 1000.0 and show it
