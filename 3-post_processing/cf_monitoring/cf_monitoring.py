@@ -466,8 +466,7 @@ elif itype == 3:
     
         # Plot recursively vertical lines
         ax.vlines(x=n*ioutput*dt, ymin=yliminf, ymax=ylimsup*0.01, linewidth=pp.lw, color='k', linestyles='dashed')
-        
-    
+            
     # Create folder to store cf_mean 
     os.makedirs('cf_stats', mode=0o777, exist_ok=True)
            
