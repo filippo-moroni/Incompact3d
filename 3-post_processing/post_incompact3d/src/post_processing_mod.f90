@@ -64,6 +64,9 @@ module post_processing
 
   ! Logical if time value is found in a .xdmf file
   logical :: time_found
+  
+  ! Integer for undersampling in the GKE calculation (e.g. 2,4,etc.)
+  integer :: under_sampling
 
   !--- Arrays for statistic collection ---!
 
