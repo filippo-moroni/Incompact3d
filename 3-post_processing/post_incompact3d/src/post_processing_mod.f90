@@ -149,14 +149,23 @@ module post_processing
   real(mytype), save, allocatable, dimension(:)     :: kvprime_meanHT,pseudo_eps_tke_meanHT
   
   !--- Arrays for TKE equation ---!
-  real(mytype), save, allocatable, dimension(:)     :: tke_diffHT      ! diffusive transport term: -nu * d^2 (<k>) / dy^2
-  real(mytype), save, allocatable, dimension(:)     :: tke_prodHT      ! production term: - <u'v'> dU/dy
+  real(mytype), save, allocatable, dimension(:)     :: tke_diffHT  ! diffusive transport term: -nu * d^2 (<k>) / dy^2
+  real(mytype), save, allocatable, dimension(:)     :: tke_prodHT  ! production term: - <u'v'> dU/dy
   
   ! Work arrays for TKE
-  real(mytype), save, allocatable, dimension(:)     :: temp_dery       ! temporary variable to store the derivative in y of a generic quantity 
+  real(mytype), save, allocatable, dimension(:)     :: temp_dery   ! temporary variable to store the derivative in y of a generic quantity 
   real(mytype), save, allocatable, dimension(:)     :: di1d
   real(mytype) :: sy1d
-     
+  
+  ! Arrays for Generalized Kolmogorov equation (GKE)
+  real(mytype), save, allocatable, dimension(:,:,:) :: gke_dq2du       ! Transport (through scales) of 2nd order structure function by streamwise velocity increment
+  real(mytype), save, allocatable, dimension(:,:,:) :: gke_dq2dv       ! Transport (through scales) of 2nd order structure function by wall-normal velocity increment
+  real(mytype), save, allocatable, dimension(:,:,:) :: gke_dq2dw       ! Transport (through scales) of 2nd order structure function by spanwise velocity increment
+  real(mytype), save, allocatable, dimension(:,:,:) :: gke_dudv        ! Correlation of streamwise and wall-normal velocity increments
+  real(mytype), save, allocatable, dimension(:,:,:) :: gke_dq2         ! Second order structure function
+  real(mytype), save, allocatable, dimension(:,:,:) :: gke_dq2dv_star  ! Transport (in space, wall-normal) of 2nd order structure function by wall-normal mid-point velocity 
+  real(mytype), save, allocatable, dimension(:,:,:) :: gke_dpdv        ! Correlation of pressure and wall-normal velocity increments
+       
 contains
 
   !-----------------------------------------------------------------------------!
