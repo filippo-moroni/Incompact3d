@@ -24,8 +24,8 @@ module post_processing
   ! Work variables for statistics
   integer :: ii = 1,ie = 1           ! Internal (ii) and external (ie) loops 
   integer :: file1,filen,icrfile     ! Indexes for opening snapshots (first, last & increment)
-  integer :: nt                      ! Total number of savings in time
   integer :: nr                      ! Total number of flow realizations
+  integer :: nt                      ! Total number of savings in time
   integer :: ifile                   ! Index to open different snapshots in time ('file index')
   integer :: i_skip_header           ! Integer to skip the header of 'mean_stats.txt', different for TTBL or Channel
   

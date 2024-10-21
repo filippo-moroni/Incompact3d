@@ -32,7 +32,7 @@
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
 !              Roberto Corsini <roberto.corsini@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
+subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,                           &
                      u1mean,v1mean,w1mean,u2mean,v2mean,w2mean,       &
                      u3mean,v3mean,w3mean,u4mean,v4mean,w4mean,       &
                      uvmean,uwmean,vwmean,pre1mean,pre2mean,vpremean, &
@@ -44,16 +44,14 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
   
   use param
   use variables
+  use post_processing, only : nr, nt
 
   implicit none
   
   ! Variables definition (velocity components, pressure and scalar field)
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3))             :: ux2,uy2,uz2,pre2          
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),1:numscalar) :: phi2 
-  
-  ! Number of flow realizations and number of snapshots
-  integer,     intent(in) :: nr, nt 
-  
+    
   ! Local 
   real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2                                       ! temporary array (local)
   
@@ -68,12 +66,13 @@ subroutine stat_mean(ux2,uy2,uz2,pre2,phi2,nr,nt,                     &
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: phi1mean,phi2mean           ! average and variance of scalar field
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: uphimean,vphimean,wphimean  ! average of mixed fluctuations for scalar field
   
-  real(mytype) :: den  ! denominator of the divisions
+  ! Denominator of the divisions
+  real(mytype) :: den  
   
 #ifdef TTBL_MODE 
-  den = real(nr,mytype)
+  den = real(nx*nz*nr,mytype)
 #else
-  den = real(nr*nt,mytype)
+  den = real(nx*nz*nr*nt,mytype)
 #endif
                                                                                                                                            
   !---x-component---!
@@ -182,9 +181,9 @@ end subroutine stat_mean
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
 !              Roberto Corsini <roberto.corsini@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine stat_gradients(ux1,uy1,uz1,phi1,nr,nt,                          &
-                          vortxmean2,vortymean2,vortzmean2,                &
-                          mean_gradientx2,mean_gradientz2,mean_gradphi2,   &
+subroutine stat_gradients(ux1,uy1,uz1,phi1,                              &
+                          vortxmean2,vortymean2,vortzmean2,              &
+                          mean_gradientx2,mean_gradientz2,mean_gradphi2, &
                           epsmean2)   
 
   use decomp_2d_constants
@@ -198,19 +197,20 @@ subroutine stat_gradients(ux1,uy1,uz1,phi1,nr,nt,                          &
   use var,  only : ta2,tb2,tc2,td2,te2,tf2,di2
   use var,  only : ta3,tb3,tc3,td3,te3,tf3,di3
   
+  use post_processing, only : nr, nt
+  
   implicit none
   
   ! Variables definition (velocity components and scalar field)
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3))             :: ux1,uy1,uz1
   real(mytype),intent(in),dimension(xsize(1),xsize(2),xsize(3),1:numscalar) :: phi1
-            
-  ! Number of flow realizations and number of snapshots
-  integer,     intent(in) :: nr,nt                                                                                                  
-  integer                 :: i,j,k
-    
-  real(mytype) :: den  ! denominator of the divisions 
+                                                                                                              
+  ! Denominator of the divisions   
+  real(mytype) :: den
+
+  ! IBM parameter
   real(mytype) :: lind
-  
+    
   ! Vorticity (average vorticity components, y-pencils)
   real(mytype),intent(inout),dimension(ysize(1),ysize(2),ysize(3)) :: vortxmean2,vortymean2,vortzmean2   
   
@@ -263,9 +263,9 @@ subroutine stat_gradients(ux1,uy1,uz1,phi1,nr,nt,                          &
   di1 = zero
   
 #ifdef TTBL_MODE 
-  den = real(nr,mytype)
+  den = real(nx*nz*nr,mytype)
 #else
-  den = real(nr*nt,mytype)
+  den = real(nx*nz*nr*nt,mytype)
 #endif
   
   !---- Mean gradients ----!
@@ -341,14 +341,14 @@ end subroutine stat_gradients
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it>
 !              Roberto Corsini <roberto.corsini@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
+subroutine stat_correlation_z(ux2,uy2,uz2,phi2,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH1)
 
   use decomp_2d_constants
   use decomp_2d_mpi
   use decomp_2d
   
-  use variables,       only : numscalar
-  use post_processing, only : read_phi
+  use variables,       only : numscalar,nx,nz
+  use post_processing, only : read_phi,nr,nt
   use var,             only : phi3
 
   implicit none
@@ -356,18 +356,18 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,nx,nz,nr,nt,RuuzH1,RvvzH1,RwwzH1,
   ! Variables definition (velocity and scalar field fluctuations, y-pencils)
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3))           :: ux2,uy2,uz2          
   real(mytype),intent(in),dimension(ysize(1),ysize(2),ysize(3),numscalar) :: phi2 
-  
-  ! Number of points in homogeneous directions, number of snapshots and number of realizations
-  integer,     intent(in) :: nx,nz,nt,nr
-  
+    
   ! Local work arrays
   real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ux3,uy3,uz3,ta3
   
   ! Correlation functions (first index: j (rows); second index: r (columns))
   real(mytype),intent(inout),dimension(zsize(2),zsize(3)) :: RuuzH1, RvvzH1, RwwzH1, RuvzH1, RppzH1
   
-  real(mytype) :: den          ! denominator of the divisions
-  integer      :: i,j,k,rr,kpr 
+  ! Denominator of the divisions
+  real(mytype) :: den
+  
+  ! Indexes for cycles          
+  integer :: i,j,k,rr,kpr 
 
 #ifdef TTBL_MODE 
   den = real(nx*nz*nr,mytype)
