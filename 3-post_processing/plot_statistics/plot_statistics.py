@@ -831,16 +831,17 @@ if post_grad and i_switch_plot == False:
     filename += '.txt'
               
     # Create the file and write 
-    with open(filename, 'w') as f:  
-        f.write('Kolmogorov time scale and viscous time unit.\n')        
+    with open(filename, 'w') as f:
+        f.write('\n')  
+        f.write(' Kolmogorov time scale and viscous time unit.\n')        
         f.write('\n')
-        f.write(f'Flowcase: {add_string}.\n')
+        f.write(f' Flowcase: {add_string}.\n')
         f.write('\n') 
-        f.write('Abbreviations:\n')
-        f.write(' - tau_eta:  (minimum) Kolmogorov time scale;\n')
-        f.write(' - t_nu:     viscous time unit.\n')
+        f.write(' Abbreviations:\n')
+        f.write('  - tau_eta:  (minimum) Kolmogorov time scale;\n')
+        f.write('  - t_nu:     viscous time unit.\n')
         f.write('\n')
-        f.write(f'For reference, time-step dt = {dt}.\n')
+        f.write(f' For reference, time-step dt = {dt}.\n')
         f.write('\n')
         f.write(f"{'t_nu':>{pp.c_w}}, "        +
                 f"{'min tau_eta':>{pp.c_w}}\n" )  
