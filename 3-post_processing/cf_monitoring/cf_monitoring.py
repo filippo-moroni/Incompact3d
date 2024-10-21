@@ -243,22 +243,23 @@ if itype == 13:
 
     # Create the file and write  
     with open('time_evolution/time_evolution.txt', 'w') as f:
-        f.write('This file stores the main quantities of interest to analyse the behaviour of TTBLs.\n')
-        f.write('Acronyms & quantities:\n')
-        f.write(f' - cfx       : streamwise friction coefficient;\n')
-        f.write(f' - delta_99  : TTBL thickness delta_99;\n')
-        f.write(f' - disp_t    : TTBL displacement thickness (delta*);\n')        
-        f.write(f' - mom_t     : TTBL momentum thickness (theta);\n')        
-        f.write(f' - Re_tau    : friction Reynolds number;\n')        
-        f.write(f' - Re_delta* : Reynolds number based on displacement thickness;\n')        
-        f.write(f' - Re_theta  : Reynolds number based on momentum thickness;\n')        
-        f.write(f' - P_in      : power input (valid for both fixed and oscillating wall);\n')        
-        f.write(f' - A_fact    : Reynolds analogy factor.\n')
-        f.write(f' - t_nu      : viscous time unit, based on total shear velocity.\n')        
-        f.write(f' - time_unit : non-dimensional outer time scale, based on wall velocity and trip wire diameter.\n')            
         f.write('\n')
-        f.write(f'Statistics averaged on a time window of amplitude, T_avg = {2.0*twi*dt*ioutput_cf},\n')        
-        f.write(f'with number of snapshots in time, nt = {nt}.\n')                
+        f.write(' This file stores the main quantities of interest to analyse the behaviour of TTBLs.\n')
+        f.write(' Acronyms & quantities:\n')
+        f.write(f'  - cfx       : streamwise friction coefficient;\n')
+        f.write(f'  - delta_99  : TTBL thickness delta_99;\n')
+        f.write(f'  - disp_t    : TTBL displacement thickness (delta*);\n')        
+        f.write(f'  - mom_t     : TTBL momentum thickness (theta);\n')        
+        f.write(f'  - Re_tau    : friction Reynolds number;\n')        
+        f.write(f'  - Re_delta* : Reynolds number based on displacement thickness;\n')        
+        f.write(f'  - Re_theta  : Reynolds number based on momentum thickness;\n')        
+        f.write(f'  - P_in      : power input (valid for both fixed and oscillating wall);\n')        
+        f.write(f'  - A_fact    : Reynolds analogy factor.\n')
+        f.write(f'  - t_nu      : viscous time unit, based on total shear velocity.\n')        
+        f.write(f'  - time_unit : non-dimensional outer time scale, based on wall velocity and trip wire diameter.\n')            
+        f.write('\n')
+        f.write(f' Statistics averaged on a time window of amplitude, T_avg = {2.0*twi*dt*ioutput_cf},\n')        
+        f.write(f' with number of snapshots in time, nt = {nt}.\n')                
         f.write('\n')
         f.write(f"{'cfx':>{pp.c_w}}, "          +
                 f"{'delta_99':>{pp.c_w}}, "     +
@@ -328,21 +329,22 @@ if itype == 13:
 
     # Write and save to .txt file 
     with open('num_resolutions/worst_num_resolutions.txt', 'w') as f:
-        f.write('Maximum non-dimensional grid spacings and minimum viscous time scale.\n')
-        f.write('Rescaling with total shear velocity, based on the norm of the total wall shear stress vector.\n')
         f.write('\n')
-        f.write(f'Flowcase: {add_string}.\n')
+        f.write(' Maximum non-dimensional grid spacings and minimum viscous time scale.\n')
+        f.write(' Rescaling with total shear velocity, based on the norm of the total wall shear stress vector.\n')
         f.write('\n')
-        f.write(f'Time-step dt = {dt}.\n')        
-        f.write(f'Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
+        f.write(f' Flowcase: {add_string}.\n')
         f.write('\n')
-        f.write('Abbreviations:\n')
-        f.write(' - x     : streamwise direction;\n')
-        f.write(' - y     : wall-normal direction;\n')
-        f.write(' - z     : spanwise direction;\n')
-        f.write(' - delta : mesh spacing;\n')
-        f.write(' - w     : first element at the wall;\n')        
-        f.write(' - d     : boundary layer interface (d: small letter greek delta);\n')
+        f.write(f' Time-step dt = {dt}.\n')        
+        f.write(f' Time-step dt in viscous units, dt^+ = dt / t_nu_min = {dt_plus}.\n')
+        f.write('\n')
+        f.write(' Abbreviations:\n')
+        f.write('  - x     : streamwise direction;\n')
+        f.write('  - y     : wall-normal direction;\n')
+        f.write('  - z     : spanwise direction;\n')
+        f.write('  - delta : mesh spacing;\n')
+        f.write('  - w     : first element at the wall;\n')        
+        f.write('  - d     : boundary layer interface (d: small letter greek delta);\n')
         f.write('\n')
         f.write(f"{'delta_x+_max':>{pp.c_w}}, "   +
                 f"{'delta_yw+_max':>{pp.c_w}}, "  +
@@ -361,7 +363,7 @@ if itype == 13:
 """
 !--------------------------------------------------------------------------------------!
  Calculations for a channel (at the moment, we are limited to 1 flow realization only;
- however, it is not so common to make different channel flow realizations.
+ however, it is not so common to make different channel flow realizations).
 !--------------------------------------------------------------------------------------!
 """
 
@@ -458,15 +460,16 @@ elif itype == 3:
            
     # Create the file and write  
     with open('cf_stats/cf_mean.txt', 'w') as f:
-        f.write('Average of friction coefficient for a Channel.\n')
         f.write('\n')
-        f.write(f'Flowcase: {add_string}.\n')
+        f.write(' Average of friction coefficient for a Channel.\n')
         f.write('\n')
-        f.write('Abbreviations:\n')
-        f.write(' - 10^3 <cf> : friction coefficient average (times 10^3);\n')
-        f.write(' - t_tot     : total time of average (outer time, based on channel half-height and centerline velocity of the related laminar Poiseuille flow);\n')
-        f.write(' - delta_TU  : delta of time units (TU) between different savings of cf;\n')
-        f.write(' - n_snap    : number of snapshots used in the average.\n')
+        f.write(f' Flowcase: {add_string}.\n')
+        f.write('\n')
+        f.write(' Abbreviations:\n')
+        f.write('  - 10^3 <cf> : friction coefficient average (times 10^3);\n')
+        f.write('  - t_tot     : total time of average (outer time, based on channel half-height and centerline velocity of the related laminar Poiseuille flow);\n')
+        f.write('  - delta_TU  : delta of time units (TU) between different savings of cf;\n')
+        f.write('  - n_snap    : number of snapshots used in the average.\n')
         f.write('\n')
         f.write(f"{'10^3 <cf>':>{pp.c_w}}, " +
                 f"{'t_tot':>{pp.c_w}}, "     +
