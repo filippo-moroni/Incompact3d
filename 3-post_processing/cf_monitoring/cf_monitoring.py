@@ -391,13 +391,11 @@ if itype == 3:
     print(">>> Correspondent snapshot index on 'cf_history.txt' file:", lower_index)
     print()
 
-    # Define the mean of friction coefficient
+    # Define the mean of friction coefficient in double precision
     mean_cf = np.float64(0.0)
 
     # Calculate mean friction coefficient
-    for n in range(lower_index, ilast, 1):
-    
-        mean_cf = mean_cf + (cfx[n] - mean_cf) / n
+    mean_cf = np.mean(cfx[lower_index:], dtype='float64')
    
     # Define 1000.0 with double precision
     onethousand = np.float64(1000.0)
