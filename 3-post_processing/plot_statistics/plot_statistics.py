@@ -246,18 +246,19 @@ if add_string is not None:
 filename += '.txt'
   
 with open(filename, 'w') as f:
-    f.write('Grid spacings and domain dimensions. Adimensionalization in viscous units (^+),\n')        
-    f.write('with total shear velocity (based on total mean gradient).\n')        
     f.write('\n')
-    f.write(f'Flowcase: {add_string}.\n')
+    f.write(' Grid spacings and domain dimensions. Adimensionalization in viscous units (^+),\n')        
+    f.write(' with total shear velocity (based on total mean velocity gradient at the wall).\n')        
+    f.write('\n')
+    f.write(f' Flowcase: {add_string}.\n')
     f.write('\n') 
-    f.write('Abbreviations:\n')
-    f.write(' - x:        streamwise direction;\n')
-    f.write(' - y:        wall-normal direction;\n')
-    f.write(' - z:        spanwise direction;\n')
-    f.write(' - delta:    mesh spacing;\n')
-    f.write(' - L:        domain dimension;\n')
-    f.write(' - d:        boundary layer interface/channel centerline (d: small letter greek delta);\n')
+    f.write(' Abbreviations:\n')
+    f.write('  - x:        streamwise direction;\n')
+    f.write('  - y:        wall-normal direction;\n')
+    f.write('  - z:        spanwise direction;\n')
+    f.write('  - delta:    mesh spacing;\n')
+    f.write('  - L:        domain dimension;\n')
+    f.write('  - d:        boundary layer interface/channel centerline (d: small letter greek delta);\n')
     f.write('\n')
     f.write(f"{'delta_x^+':>{pp.c_w}}, "  +
             f"{'delta_yw^+':>{pp.c_w}}, " +
