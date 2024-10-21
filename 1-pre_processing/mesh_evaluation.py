@@ -294,9 +294,9 @@ if itype == 13:
     print('Domain dimension, Ly/D = ', yly)
     print('Domain dimension, Lz/D = ', zlz)
     print()
-    print('Domain dimension at Re_tau = 500, Lx/delta_99 = ', xlx/bl_thickness)     
-    print('Domain dimension at Re_tau = 500, Ly/delta_99 = ', yly/bl_thickness)
-    print('Domain dimension at Re_tau = 500, Lz/delta_99 = ', zlz/bl_thickness)
+    print('Domain dimension at Re_tau = 500, Lx/delta_99 = ', round(xlx/bl_thickness,1))     
+    print('Domain dimension at Re_tau = 500, Ly/delta_99 = ', round(yly/bl_thickness,1))
+    print('Domain dimension at Re_tau = 500, Lz/delta_99 = ', round(zlz/bl_thickness,1))
     print()
 
 if itype == 3:

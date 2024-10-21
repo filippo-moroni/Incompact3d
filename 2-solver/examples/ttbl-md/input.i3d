@@ -59,7 +59,7 @@ isecondder = 5        ! (1->2nd central, 2->4th central, 3->4th compact, 4-> 6th
 ipinter = 2           ! Interpolation scheme (1: classic, 2: optimized, 3: optimized agressive) (suggested: 2, spectral-like behaviour)
 
 ! Time scheme
-itimescheme = 5       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3, 7-->CN2+AB3
+itimescheme = 5       ! Time integration scheme for convective terms: 1->Euler, 2->AB2, 3->AB3, 5->RK3
 iimplicit = 2         ! Time integration scheme for diffusive terms in y-dir:  0->Same as convective, 1->Backward Euler, 2->CN
                       ! Implicit diffusion in y is valid only for Dirichlet conditions on both boundaries (ncly1 = nclyn = 2)
                       ! and it is experimental with the hyperviscous operator.
