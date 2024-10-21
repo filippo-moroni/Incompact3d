@@ -69,9 +69,12 @@ if itype == 13:
     # Imposing manually that the final friction Reynolds number is 500 (only for saving to .txt file)
     re_tau = 500.0  
     
-    # Maximum cf estimated at peak for TTBL (Cimarelli et al. (2024))
-    cf = 0.007
+    # Maximum cf according to Cimarelli et al. (2024a) (rounded value for safety)
+    # cf = 0.007
     
+    # Maximum cf from preliminary runs with large domain
+    cf = 0.00716
+        
     #!--- Ask the user to insert the domain dimensions based on TTBL thickness delta at Re_tau = 500 ---!
     print()
     scalex = float(input("Enter the scale factor for domain dimension in x-dir. based on BL thickness delta_99: "))
