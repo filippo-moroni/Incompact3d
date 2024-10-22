@@ -358,9 +358,16 @@ module param
   ! Time step, first and last
   integer :: itime,ifirst,ilast
   
-  ! How many (sub)timestpeps do we need to store?
-  integer :: ntime 
-  integer :: iscalar,iadvance_time
+  ! Number of (sub) time steps to store
+  ! (used for RK3 for runtime calculations and
+  ! for AB schemes for saving old time steps). 
+  integer :: ntime
+   
+  ! Number of sub-time steps of RK schemes
+  integer :: iadvance_time
+  
+  ! Switcher of scalar field(s)
+  integer :: iscalar
   
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2,t,t0
   real(mytype) :: dt,re,xnu,init_noise

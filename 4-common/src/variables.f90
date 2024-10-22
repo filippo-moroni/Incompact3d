@@ -1269,7 +1269,7 @@ contains
        gdt(4)=0.33602636754_mytype*dt
        gdt(5)=0.041717869325_mytype*dt
 
-       ntime = 2
+       ntime = 4
        nrhotime = 5 ! (A guess)
 
     endif
