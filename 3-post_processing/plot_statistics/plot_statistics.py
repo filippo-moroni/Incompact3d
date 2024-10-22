@@ -193,11 +193,6 @@ if post_mean:
     var_w   /= sh_vel_x**2
     mean_uv /= sh_vel_x**2
         
-    var_p    = var_p / sh_vel_x**2
-    var_p    = var_p * mean_p[0]**2
-    
-    print(np.max(var_p)/np.max(var_p_lm)) 
-
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
     mean_w_plus  = mean_w / sh_vel_x
 
