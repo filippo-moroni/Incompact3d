@@ -616,15 +616,21 @@ subroutine  inttimp (var1,dvar1,npaire,isc,forcing1,wall_vel)
         STOP
      endif
      
-  ! Runge-Kutta (low storage) RK3
-  elseif(itimescheme.eq.5) then
+  ! Runge-Kutta (low storage) RK3 or Runge-Kutta (low storage) RK4
+  elseif(itimescheme .eq. 5 .or. itimescheme .eq. 6) then
+      
+     ! First sub-time step
      if(itr.eq.1) then
         ta1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)
+      
+     ! Second sub-time step and others
      else
         ta1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)
      endif
+      
+     ! Store the RHS of a generic variable at the current sub-time step at the next index (to avoid to lose it)
      dvar1(:,:,:,2)=dvar1(:,:,:,1)
-
+        
   ! We should not be here
   else
      if (nrank.eq.0) then
