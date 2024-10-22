@@ -511,7 +511,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
     print()
  
     return (
-    mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
+    mean_u, mean_w, var_u, var_v, var_w, mean_uv, var_p, 
     vort_x, vort_y, vort_z, mg_x, mg_z, mg_phi, 
     eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
     tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
