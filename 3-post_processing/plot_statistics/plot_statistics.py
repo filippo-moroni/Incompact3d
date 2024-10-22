@@ -1132,26 +1132,11 @@ if post_tke_eq and i_switch_plot == False:
     ax.scatter(y_plus[:ny], p_eps_ratio_tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Description of .pdf file
-    description = 'Ratio of production over dissipation of Turbulent Kinetic Energy (TKE). Reference data '
+    description = 'Ratio of production over dissipation of Turbulent Kinetic Energy (TKE). Reference data Lee & Moser (2015).'
     
-    # TTBL
-    if itype == 13:
-        
-        # Lee & Moser (2015)
-        ax.plot(y_plus_lm1000, p_eps_ratio_lm1000 + 1.0, color='C1', linestyle='-', linewidth=pp.lw)
-        
-        # Completing description
-        description += 'Lee & Moser (2015).'
-                
-    # Channel    
-    elif itype == 3:
-        
-        # Moser et al. (1999)
-        ax.plot(y_plus_moser_1999, p_eps_ratio_moser_1999, color='C1', linestyle='-', linewidth=pp.lw)
-        
-        # Completing description
-        description += 'Moser et al. (1999).'
-            
+    # Lee & Moser (2015)
+    ax.plot(y_plus_lm1000, p_eps_ratio_lm1000 + 1.0, color='C1', linestyle='-', linewidth=pp.lw)
+                    
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
     ax.set_ylabel(r'$P/\varepsilon$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
