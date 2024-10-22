@@ -30,11 +30,12 @@ def set_flow_parameters(re):
         y = np.array([])  
         
     # Default parameters
-    twd   = np.float64(1.0)                  # Trip wire diameter, D
-    uwall = np.float64(1.0)                  # Wall velocity, Uwall 
+    twd     = np.float64(1.0)                  # Trip wire diameter, D
+    uwall   = np.float64(1.0)                  # Wall velocity, U_w
+    phiwall = np.float64(1.0)                  # Scalar field at the wall, Phi_w
 
     # Kinematic viscosity (Reynolds is from the input file 'input.i3d')  
     nu = 1.0/re                       
         
     # Return to main program with parameters and y-coordinates
-    return (uwall, nu, twd, y)
+    return (nu, y, uwall, twd, phiwall)

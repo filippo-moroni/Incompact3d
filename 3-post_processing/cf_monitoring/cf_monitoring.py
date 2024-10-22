@@ -86,7 +86,7 @@ os.makedirs('plots/time_evolution', mode=0o777, exist_ok=True)
 ) = read_ref_data_temp_evol()
 
 #!--- Parameters and mesh ---!
-(uwall, nu, twd, y) = set_flow_parameters(re)
+(nu, y, uwall, twd, phiwall) = set_flow_parameters(re)
                          
 # Start of calculations for a TTBL
 if itype == 13:

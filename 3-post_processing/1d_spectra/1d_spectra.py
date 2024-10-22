@@ -71,7 +71,7 @@ os.makedirs('plots/spectra', mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
     
 #!--- Parameters and mesh ---!
-(uwall, nu, twd, y) = set_flow_parameters(re)
+(nu, y, uwall, twd, phiwall) = set_flow_parameters(re)
   
 # Read statistics data
 (mean_u, mean_w, var_u, var_v, var_w, mean_uv, 

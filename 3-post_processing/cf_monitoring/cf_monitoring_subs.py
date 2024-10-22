@@ -86,7 +86,7 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     ) = read_input_files('input.i3d','post.prm')
 
     #!--- Parameters and mesh ---!
-    (uwall, nu, twd, y) = set_flow_parameters(re)
+    (nu, y, uwall, twd, phiwall) = set_flow_parameters(re)
                           
     #!--------------------------------------------------------------------------------------!
                                     

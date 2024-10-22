@@ -68,7 +68,7 @@ size_cbar     = '2%'
 #!--------------------------------------------------------------------------------------!
     
 #!--- Parameters and mesh ---!
-(uwall, nu, twd, y) = set_flow_parameters(re)
+(nu, y, uwall, twd, phiwall) = set_flow_parameters(re)
  
 # Resizing y-coordinates array
 y = y[:ny]

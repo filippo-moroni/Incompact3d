@@ -80,7 +80,7 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
 #!--------------------------------------------------------------------------------------!
     
 #!--- Parameters and mesh ---!
-(uwall, nu, twd, y) = set_flow_parameters(re)
+(nu, y, uwall, twd, phiwall) = set_flow_parameters(re)
 
 #!--- Reference data ---!
 (y_plus_lm,                 mean_u_lm, var_u_lm, var_v_lm, var_w_lm, mean_uv_lm,
