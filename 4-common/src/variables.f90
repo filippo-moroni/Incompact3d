@@ -1231,6 +1231,7 @@ contains
        nrhotime = 5
    
     ! Low-storage RK3, Williamson (1980)
+    ! See for more explicit details Le & Moin (1991)
     elseif(itimescheme.eq.5) then 
        
        ! Three sub-time steps
