@@ -431,9 +431,11 @@ subroutine parameter(input_i3d)
        print *,'Error: Adams-bashforth 4 not implemented!'
        stop
      elseif (itimescheme.eq.5) then
-       write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 3"
+       write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 3"     
      elseif (itimescheme.eq.6) then
        write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 4"
+       print *,'Error: Runge-Kutta 4 not implemented!'
+       stop
      else
        print *,'Error: itimescheme must be specified as 1-6'
        stop
