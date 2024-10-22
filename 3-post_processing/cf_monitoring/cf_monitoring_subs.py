@@ -156,9 +156,14 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
     delta_99   = np.zeros(nsavings_red)   # BL thickness delta_99
     disp_t     = np.zeros(nsavings_red)   # displacement thickness, delta*
     mom_t      = np.zeros(nsavings_red)   # momentum     thickness, theta
-    
+        
     # Initialize maximum Delta y+ at the BL edge for grid resolutions monitoring
     max_delta_yd_plus = 0.0
+    
+    # Initialize arrays for TTBL thickness parameters of the scalar field
+    delta_99_s = np.zeros(nsavings_red)   # BL thickness delta_99          for the scalar field
+    disp_t_s   = np.zeros(nsavings_red)   # displacement thickness, delta* for the scalar field
+    mom_t_s    = np.zeros(nsavings_red)   # momentum     thickness, theta  for the scalar field
 
     """
     !---------------------------------------------------------------------------------------------------------------------!
@@ -329,16 +334,19 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
                 
         # Call of external subroutine for the calculation of TTBL thickness parameters
         (delta_99[ti], delta_99_j, disp_t[ti], mom_t[ti]) = calculate_ttbl_thick_params(mean_u_r[:,ti],y,uwall)
-        
+                
         # Delta y+ at the BL edge
         delta_yd_plus = (y[delta_99_j] - y[delta_99_j-1]) * sh_vel_tot[ti] / nu
         
         # Maximum Delta y+ at the BL edge for grid resolutions monitoring
         if max_delta_yd_plus < delta_yd_plus:
             max_delta_yd_plus = delta_yd_plus
+        
+        # Call of external subroutine for the calculation of TTBL thickness parameters of scalar field
+        (delta_99_s[ti], delta_99_j_s, disp_t_s[ti], mom_t_s[ti]) = calculate_ttbl_thick_params(mean_phi_r[:,ti],y,phiwall)
                
     # Return to main program with TTBL thickness parameters time evolution and maximum delta y+ at the BL interface
-    return (delta_99, disp_t, mom_t, max_delta_yd_plus)
+    return (delta_99, disp_t, mom_t, max_delta_yd_plus, delta_99_s, disp_t_s, mom_t_s)
     
 
 
