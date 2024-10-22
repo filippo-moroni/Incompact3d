@@ -274,20 +274,23 @@ contains
     return
   end subroutine cor_vel
   !-----------------------------------------------------------------------------!
-  ! Calculation of div u* for nlock=1 and of div u^{n+1} for nlock=2.
-  ! input : ux1,uy1,uz1,ep1 (on velocity mesh)
-  ! output : pp3 (on pressure mesh)
-  ! Written by SL 2018.
+  !  SUBROUTINE: divergence
+  ! DESCRIPTION: Calculation of div u* for nlock=1 and of div u^{n+1} 
+  !              for nlock=2.
+  !      INPUTS: ux1,uy1,uz1,ep1 (on velocity mesh).
+  !     OUTPUTS: pp3 (on pressure mesh).
+  !      AUTHOR: Sylvain Laizet
+  !        DATE: 2018
   !-----------------------------------------------------------------------------!
   subroutine divergence (pp3,rho1,ux1,uy1,uz1,ep1,drho1,divu3,nlock)
 
     use param
     use variables
-    use var, only: ta1, tb1, tc1, pp1, pgy1, pgz1, di1, &
-         duxdxp2, uyp2, uzp2, duydypi2, upi2, ta2, dipp2, &
-         duxydxyp3, uzp3, po3, dipp3, nxmsize, nymsize, nzmsize
-    use mpi
+    use MPI
     use ibm_param
+    use var, only: ta1, tb1, tc1, pp1, pgy1, pgz1, di1,                   &
+                   duxdxp2, uyp2, uzp2, duydypi2, upi2, ta2, dipp2,       &
+                   duxydxyp3, uzp3, po3, dipp3, nxmsize, nymsize, nzmsize
 
     implicit none
 
