@@ -1270,11 +1270,18 @@ contains
        bdt(4)=0.6994504559488_mytype*dt
        bdt(5)=0.1530572479681_mytype*dt
        
-       gdt(1)=0.1496590219993_mytype*dt
-       gdt(2)=0.220741935365_mytype*dt
-       gdt(3)=0.25185480577_mytype*dt
-       gdt(4)=0.33602636754_mytype*dt
-       gdt(5)=0.041717869325_mytype*dt
+       gdt(1)=zero
+       gdt(2)=0.1496590219993_mytype*dt
+       gdt(3)=0.3704009573644_mytype*dt
+       gdt(4)=0.6222557631345_mytype*dt
+       gdt(5)=0.9582821306748_mytype*dt
+       
+       ! Default coefficients of Incompact3d
+       !gdt(1)=0.1496590219993_mytype*dt
+       !gdt(2)=0.220741935365_mytype*dt
+       !gdt(3)=0.25185480577_mytype*dt
+       !gdt(4)=0.33602636754_mytype*dt
+       !gdt(5)=0.041717869325_mytype*dt
 
        ! Number of sub-time steps to store (RHS)
        ntime = 2
@@ -1282,6 +1289,7 @@ contains
 
     endif
     
+    ! Arrays to store the momentum RHS at previous (sub) time steps
     allocate(dux1(xsize(1),xsize(2),xsize(3),ntime))
     dux1=zero
     allocate(duy1(xsize(1),xsize(2),xsize(3),ntime))
