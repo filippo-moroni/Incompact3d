@@ -93,7 +93,6 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
  y_plus_vvar_yao,           var_v_yao,
  y_plus_wvar_yao,           var_w_yao,
  y_plus_uvmean_yao,         mean_uv_yao, 
- y_plus_moser_1999,         p_eps_ratio_moser_1999,
  y_plus_lm1000,             p_eps_ratio_lm1000,
  y_plus_umean_kozul,        mean_u_kozul,
  y_plus_uvar_kozul,         var_u_kozul,
