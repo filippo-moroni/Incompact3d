@@ -1270,11 +1270,11 @@ contains
        bdt(4)=0.6994504559488_mytype*dt
        bdt(5)=0.1530572479681_mytype*dt
        
-       gdt(1)=zero
-       gdt(2)=0.1496590219993_mytype*dt
-       gdt(3)=0.3704009573644_mytype*dt
-       gdt(4)=0.6222557631345_mytype*dt
-       gdt(5)=0.9582821306748_mytype*dt
+       gdt(1)=bdt(1)
+       gdt(2)=adt(2)+bdt(2)
+       gdt(3)=adt(3)+bdt(3)
+       gdt(4)=adt(4)+bdt(4)
+       gdt(5)=adt(5)+bdt(5)
        
        ! Default coefficients of Incompact3d
        !gdt(1)=0.1496590219993_mytype*dt
