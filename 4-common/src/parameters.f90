@@ -562,9 +562,9 @@ subroutine parameter(input_i3d)
 #endif
      write(*,*) '==========================================================='
      write(*,"(' Gravity vector')")
-     write(*,"(' gx                 : (',F15.8,')')") gravx
-     write(*,"(' gy                 : (',F15.8,')')") gravy
-     write(*,"(' gz                 : (',F15.8,')')") gravz
+     write(*,"(' gx                     : (',F15.8,')')") gravx
+     write(*,"(' gy                     : (',F15.8,')')") gravy
+     write(*,"(' gz                     : (',F15.8,')')") gravz
 
      if (ilmn) then
         write(*,*)  "LMN                : Enabled"
