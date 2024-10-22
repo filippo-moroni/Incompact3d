@@ -459,6 +459,7 @@ contains
       endif
       
       ! Store the RHS of a generic variable at the current sub-time step at the next index (to avoid to lose it)
+      ! Basically the higher index corresponds the older in time
       dvar1(:,:,:,2)=dvar1(:,:,:,1)
    
    else
