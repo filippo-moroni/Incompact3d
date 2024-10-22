@@ -193,7 +193,7 @@ if post_mean:
     var_w   /= sh_vel_x**2
     mean_uv /= sh_vel_x**2
     
-    p_ref = np.abs(mean_p[0])
+    p_ref = 0.5*sh_vel_x**2
     
     var_p    = var_p / sh_vel_x**2 * p_ref**2 
 

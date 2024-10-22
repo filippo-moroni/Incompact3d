@@ -1019,8 +1019,9 @@ contains
   ! (taken from init_variables in 'variables' module).
   !
   ! - Used in subroutine for CFL calculation in tools module.
-  ! - At the moment, valid only for RK3 scheme.
-  ! - To do: AB schemes.
+  ! - At the moment, valid only for RK3 scheme (not possible for AB schemes
+  !   due to their nature of linear-multistep method, since they employ old 
+  !   time steps).
   !---------------------------------------------------------------------------!
   subroutine update_time_int_coeff()
   
