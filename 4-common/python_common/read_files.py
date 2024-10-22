@@ -536,6 +536,7 @@ def read_ref_data():
     var_v_lm               = 0.0
     var_w_lm               = 0.0
     mean_uv_lm             = 0.0
+    var_p_lm               = 0.0
     
     # Kim et al. (1987), Channel Re_tau = 180
     rz_plus_cuuz_kim       = 0.0
@@ -600,6 +601,9 @@ def read_ref_data():
     var_w_lm   =   M[:,4]
     mean_uv_lm = - M[:,5]
     
+    M = np.loadtxt(dirname + '/lee&moser2015/vort_&_p_var_stats_lee&moser2015.txt', skiprows=75, dtype=np.float64)
+    var_p_lm   = M[:,8]
+    	   
     # Velocity auto-correlations, Kim et al. (1987) data, y+ = 10.52
     M = np.loadtxt(dirname + '/kim1987/cuuz_kim1987.txt', skiprows=7, delimiter=',', dtype=np.float64)
     rz_plus_cuuz_kim = M[:,0]
@@ -710,7 +714,7 @@ def read_ref_data():
           
     # Return to main program with extracted reference data
     return (
-    y_plus_lm,                 mean_u_lm, var_u_lm, var_v_lm, var_w_lm, mean_uv_lm,
+    y_plus_lm,                 mean_u_lm, var_u_lm, var_v_lm, var_w_lm, mean_uv_lm, var_p_lm,
     rz_plus_cuuz_kim,          cuuz_kim, 
     rz_plus_cvvz_kim,          cvvz_kim,
     rz_plus_cwwz_kim,          cwwz_kim,
