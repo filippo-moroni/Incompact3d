@@ -324,6 +324,9 @@ subroutine parameter(input_i3d)
      ! Divide by 3 if RK3 is selected (we are assuming a time-step divided by 3)
      if (itimescheme == 5) xcst = xcst / three
      
+     ! Divide by 5 if RK4 is selected (we are assuming a time-step divided by 5) (we have 5 stages)
+     if (itimescheme == 6) xcst = xcst / five
+     
      if (iscalar.eq.1) xcst_sc = xcst / sc
   endif
   
@@ -431,8 +434,6 @@ subroutine parameter(input_i3d)
        write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 3"
      elseif (itimescheme.eq.6) then
        write(*,"(' Temporal scheme        : ',A20)") "Runge-Kutta 4"
-       print *,'Error: Runge-kutta 4 not implemented!'
-       stop
      else
        print *,'Error: itimescheme must be specified as 1-6'
        stop
