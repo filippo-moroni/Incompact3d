@@ -711,79 +711,45 @@ if post_mean:
     
     #!--------------------------------------------------------------------------------------!
     
-    print(">>> Plotting wall-normal velocity variance.")
+    print(">>> Plotting pressure variance.")
     print(">>> Folder: plots/mean_stats/.")
     print()
 
-    # <v'v'>
+    # <p'p'>
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
 
     # Limits for axes
     xliminf = 0.1
     xlimsup = Ly_plus*1.5
     yliminf = 0.0
-
-    # <v'v'>
-    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # <p'p'>
+    ax.scatter(y_plus[:ny], var_p[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
     # Description of .pdf file
-    description = 'Wall-normal velocity variance.'
-
-    # TTBL
-    if itype == 13:
-
-        ylimsup = 1.5
-        
-        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
-        if 150 < re_tau < 210:
-        
-            # Lee & Moser (2015)
-            ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
-            
-            # Completing description
-            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
-            
-        # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
-        elif 400 < re_tau < 450:
-        
-            # Kozul et al. (2016)
-            ax.plot(y_plus_vvar_kozul, var_v_kozul, color='C1', linestyle='-', linewidth=pp.lw)
-            
-            # Completing description
-            description += ' Reference data Kozul et al. (2016), Re_tau ~ 425.'  
+    description = 'Pressure variance.'
             
     # Channel    
-    elif itype == 3:
+    if itype == 3:
 
-        ylimsup = 0.8
+        ylimsup = 3.5
     
         # Lee & Moser (2015)
-        ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        ax.plot(y_plus_lm, var_p_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
         # Completing description
         description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
-    
-        # If wall oscillations are present
-        if iswitch_wo == 1:
-    
-            # Yao et al. (2019)
-            ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
-            
-            # Completing description, with slicing of the string (removing the final dot)
-            description = description[:-1]
-            
-            description += ', Yao et al. (2019).'
-    
+        
     # Axes labels
     ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\langle p^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
     # Set the plot parameters using the function 'set_plot_settings'
     # Last argument is the switcher for semilog plot (1: yes, 0: no)
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('vvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    save_and_show_plot('pvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
