@@ -704,9 +704,9 @@ subroutine parameter_defaults()
   
   !--- Additional parameters not present in namelists ---!                  
   t0        = zero
-  pressure0 = one
+  pressure0 = one  ! Reference pressure
   itest     = 1
-  npress    = 1  ! By default only one pressure field is needed
+  npress    = 1    ! By default only one pressure field is needed
 
 end subroutine parameter_defaults
 !-----------------------------------------------------------------------------!
