@@ -12,6 +12,7 @@
 !              an explicit LES approach or an implicit LES approach.
 !-----------------------------------------------------------------------------!
 
+! transeq: transport equations
 module transeq
 
   use decomp_2d_constants
@@ -77,12 +78,12 @@ contains
     use param
     use variables
     use decomp_2d
-    use var, only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,mu1,mu2,mu3
-    use var, only : rho2,ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
-    use var, only : rho3,ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
-    use var, only : sgsx1,sgsy1,sgsz1
+    use var,       only : ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,mu1,mu2,mu3
+    use var,       only : rho2,ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
+    use var,       only : rho3,ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
+    use var,       only : sgsx1,sgsy1,sgsz1
+    use les,       only : compute_SGS
     use ibm_param, only : ubcx,ubcy,ubcz
-    use les, only : compute_SGS
     
 #ifdef DEBG 
     use tools, only : avg3d
@@ -470,10 +471,12 @@ contains
     if (nrank == 0) write(*,*)'## SUB momentum_rhs_eq VAR tf1 (Diff X) AVG ', avg_param
 #endif
 
-    !FINAL SUM: DIFF TERMS + CONV TERMS
+    ! Final summation: diffusive + convective terms;
+    ! The RHS is stored at the index '1' of the dux_j1 arrays
     dux1(:,:,:,1) = ta1(:,:,:) - half*tg1(:,:,:)  + td1(:,:,:)
     duy1(:,:,:,1) = tb1(:,:,:) - half*th1(:,:,:)  + te1(:,:,:)
     duz1(:,:,:,1) = tc1(:,:,:) - half*ti1(:,:,:)  + tf1(:,:,:)
+    
 #ifdef DEBG
     avg_param = zero
     call avg3d (dux1, avg_param)

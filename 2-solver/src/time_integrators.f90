@@ -453,6 +453,8 @@ contains
       else
          var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+var1(:,:,:)
       endif
+      
+      ! Store the RHS of a generic variable at the current sub-time step at the next index (to avoid to lose it)
       dvar1(:,:,:,2)=dvar1(:,:,:,1)
    
    ! Runge-Kutta (low storage) RK4
