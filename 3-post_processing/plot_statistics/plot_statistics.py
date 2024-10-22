@@ -83,7 +83,7 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
 (nu, y, uwall, twd, phiwall) = set_flow_parameters(re)
 
 #!--- Reference data ---!
-(y_plus_lm,                 mean_u_lm, var_u_lm, var_v_lm, var_w_lm, mean_uv_lm,
+(y_plus_lm,                 mean_u_lm, var_u_lm, var_v_lm, var_w_lm, mean_uv_lm, var_p_lm,
  rz_plus_cuuz_kim,          cuuz_kim, 
  rz_plus_cvvz_kim,          cvvz_kim,
  rz_plus_cwwz_kim,          cwwz_kim,
@@ -105,7 +105,7 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
  y_plus_tke_pseps_mansour,  tke_pseps_mansour) = read_ref_data()
   
 # Read statistics data
-(mean_u, mean_w, var_u, var_v, var_w, mean_uv, 
+(mean_u, mean_w, var_u, var_v, var_w, mean_uv, var_p, 
  vort_x, vort_y, vort_z, mg_x, mg_z, mg_phi,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,
@@ -192,6 +192,7 @@ if post_mean:
     var_v   /= sh_vel_x**2
     var_w   /= sh_vel_x**2
     mean_uv /= sh_vel_x**2
+    var_p   /= sh_vel_x**2
 
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
     mean_w_plus  = mean_w / sh_vel_x
@@ -707,6 +708,82 @@ if post_mean:
 
     # Save and show the figure
     save_and_show_plot('tke', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+    
+    #!--------------------------------------------------------------------------------------!
+    
+    print(">>> Plotting wall-normal velocity variance.")
+    print(">>> Folder: plots/mean_stats/.")
+    print()
+
+    # <v'v'>
+    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+    # Limits for axes
+    xliminf = 0.1
+    xlimsup = Ly_plus*1.5
+    yliminf = 0.0
+
+    # <v'v'>
+    ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Description of .pdf file
+    description = 'Wall-normal velocity variance.'
+
+    # TTBL
+    if itype == 13:
+
+        ylimsup = 1.5
+        
+        # Plot Lee & Moser (2015) data if Re_tau is close to their Re_tau (180) 
+        if 150 < re_tau < 210:
+        
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
+            
+        # Plot Kozul et al. (2016) data if Re_tau is close to their Re_tau (~ 425) (Re_theta = 1100)
+        elif 400 < re_tau < 450:
+        
+            # Kozul et al. (2016)
+            ax.plot(y_plus_vvar_kozul, var_v_kozul, color='C1', linestyle='-', linewidth=pp.lw)
+            
+            # Completing description
+            description += ' Reference data Kozul et al. (2016), Re_tau ~ 425.'  
+            
+    # Channel    
+    elif itype == 3:
+
+        ylimsup = 0.8
+    
+        # Lee & Moser (2015)
+        ax.plot(y_plus_lm, var_v_lm, color='C1', linestyle='-', linewidth=pp.lw)
+        
+        # Completing description
+        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
+    
+        # If wall oscillations are present
+        if iswitch_wo == 1:
+    
+            # Yao et al. (2019)
+            ax.scatter(y_plus_vvar_yao, var_v_yao, marker='^', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='k')
+            
+            # Completing description, with slicing of the string (removing the final dot)
+            description = description[:-1]
+            
+            description += ', Yao et al. (2019).'
+    
+    # Axes labels
+    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+    ax.set_ylabel(r'$\langle v^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+
+    # Set the plot parameters using the function 'set_plot_settings'
+    # Last argument is the switcher for semilog plot (1: yes, 0: no)
+    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+
+    # Save and show the figure
+    save_and_show_plot('vvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 

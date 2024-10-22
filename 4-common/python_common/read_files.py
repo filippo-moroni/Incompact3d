@@ -282,6 +282,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
             var_v   =   M[:,4]
             var_w   =   M[:,5]
             mean_uv = - M[:,12]  # Change sign for Reynolds stress <u'v'> for a Channel
+            var_p   =   M[:,16]
     
         """
         !----------------------------------------------------------------!
@@ -364,6 +365,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
             var_v   = M[:,4]
             var_w   = M[:,5]
             mean_uv = M[:,12]
+            var_p   = M[:,16]
     
             """
             !----------------------------------------------------------------!
