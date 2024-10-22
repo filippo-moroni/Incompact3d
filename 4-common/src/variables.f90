@@ -1230,47 +1230,55 @@ contains
        ntime    = 4
        nrhotime = 5
    
-    ! RK3 (Williamson (1980))
+    ! Low-storage RK3, Williamson (1980)
     elseif(itimescheme.eq.5) then 
        
+       ! Three sub-time steps
        iadvance_time=3
 
        adt(1)=(eight/fifteen)*dt
-       bdt(1)= zero
-       gdt(1)=adt(1)
-       adt(2)=(      five/twelve)*dt
-       bdt(2)=(-seventeen/ sixty)*dt
-       gdt(2)=adt(2)+bdt(2)
-       adt(3)=( three/four)*dt
+       adt(2)=(five/twelve)*dt
+       adt(3)=(three/four)*dt
+              
+       bdt(1)=zero
+       bdt(2)=(-seventeen/sixty)*dt
        bdt(3)=(-five/twelve)*dt
+              
+       gdt(1)=adt(1)
+       gdt(2)=adt(2)+bdt(2)
        gdt(3)=adt(3)+bdt(3)
 
+       ! Number of sub-time steps to store (RHS)
        ntime = 2
        nrhotime = 3
       
-    ! RK4 Carpenter and Kennedy
+    ! Low-storage RK4, Carpenter and Kennedy (1994)
     elseif(itimescheme.eq.6) then 
        
+       ! Five sub-time steps
        iadvance_time=5
        
        adt(1)=zero
-       adt(2)=-0.4178904745_mytype
-       adt(3)=-1.192151694643_mytype
-       adt(4)=-1.697784692471_mytype
-       adt(5)=-1.514183444257_mytype
-       bdt(1)=0.1496590219993_mytype
-       bdt(2)=0.3792103129999_mytype
-       bdt(3)=0.8229550293869_mytype
-       bdt(4)=0.6994504559488_mytype
-       bdt(5)=0.1530572479681_mytype
+       adt(2)=-0.4178904745_mytype*dt
+       adt(3)=-1.192151694643_mytype*dt
+       adt(4)=-1.697784692471_mytype*dt
+       adt(5)=-1.514183444257_mytype*dt
+       
+       bdt(1)=0.1496590219993_mytype*dt
+       bdt(2)=0.3792103129999_mytype*dt
+       bdt(3)=0.8229550293869_mytype*dt
+       bdt(4)=0.6994504559488_mytype*dt
+       bdt(5)=0.1530572479681_mytype*dt
+       
        gdt(1)=0.1496590219993_mytype*dt
        gdt(2)=0.220741935365_mytype*dt
        gdt(3)=0.25185480577_mytype*dt
        gdt(4)=0.33602636754_mytype*dt
        gdt(5)=0.041717869325_mytype*dt
 
-       ntime = 4
-       nrhotime = 5 ! (A guess)
+       ! Number of sub-time steps to store (RHS)
+       ntime = 2
+       nrhotime = 5 
 
     endif
     

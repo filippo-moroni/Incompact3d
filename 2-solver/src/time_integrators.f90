@@ -446,10 +446,14 @@ contains
          stop
       endif
 
-   ! Runge-Kutta (low storage) RK3
-   elseif(itimescheme.eq.5) then
+   ! Runge-Kutta (low storage) RK3 or Runge-Kutta (low storage) RK4
+   elseif(itimescheme .eq. 5 .or. itimescheme .eq. 6) then
+      
+      ! First sub-time step
       if(itr.eq.1) then
          var1(:,:,:)=gdt(itr)*dvar1(:,:,:,1)+var1(:,:,:)
+      
+      ! Second sub-time step and others
       else
          var1(:,:,:)=adt(itr)*dvar1(:,:,:,1)+bdt(itr)*dvar1(:,:,:,2)+var1(:,:,:)
       endif
@@ -457,14 +461,6 @@ contains
       ! Store the RHS of a generic variable at the current sub-time step at the next index (to avoid to lose it)
       dvar1(:,:,:,2)=dvar1(:,:,:,1)
    
-   ! Runge-Kutta (low storage) RK4
-   elseif(itimescheme.eq.6) then
-
-      if (nrank==0) then
-         write(*,*) "RK4 not implemented!"
-         STOP
-      endif
-
    else
 
       if (nrank==0) then
