@@ -225,6 +225,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
     var_v       = 0.0
     var_w       = 0.0
     mean_uv     = 0.0
+    var_p       = 0.0
     
     # Mean vorticity, mean gradients and total dissipation
     vort_x      = 0.0   # mean streamwise vorticity (x)

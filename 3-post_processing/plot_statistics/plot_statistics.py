@@ -192,7 +192,7 @@ if post_mean:
     var_v   /= sh_vel_x**2
     var_w   /= sh_vel_x**2
     mean_uv /= sh_vel_x**2
-    var_p   /= sh_vel_x**3 * nu
+    #var_p   /= sh_vel_x**2 
 
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
     mean_w_plus  = mean_w / sh_vel_x
