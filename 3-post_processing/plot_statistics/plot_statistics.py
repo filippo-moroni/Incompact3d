@@ -105,7 +105,7 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
  y_plus_tke_pseps_mansour,  tke_pseps_mansour) = read_ref_data()
   
 # Read statistics data
-(mean_u, mean_w, var_u, var_v, var_w, mean_uv, var_p, 
+(mean_u, mean_w, var_u, var_v, var_w, mean_uv, mean_p, var_p, 
  vort_x, vort_y, vort_z, mg_x, mg_z, mg_phi,
  eps, Ruuz, Rvvz, Rwwz, Ruvz, Rssz,
  tke_turbt, tke_presst, tke_difft, tke_prod, tke_pseps,

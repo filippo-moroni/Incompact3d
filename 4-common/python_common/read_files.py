@@ -225,6 +225,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
     var_v       = 0.0
     var_w       = 0.0
     mean_uv     = 0.0
+    mean_p      = 0.0
     var_p       = 0.0
     
     # Mean vorticity, mean gradients and total dissipation
@@ -283,6 +284,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
             var_v   =   M[:,4]
             var_w   =   M[:,5]
             mean_uv = - M[:,12]  # Change sign for Reynolds stress <u'v'> for a Channel
+            mean_p  =   M[:,15]
             var_p   =   M[:,16]
     
         """
@@ -366,6 +368,7 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
             var_v   = M[:,4]
             var_w   = M[:,5]
             mean_uv = M[:,12]
+            mean_p  = M[:,15]
             var_p   = M[:,16]
     
             """
