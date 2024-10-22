@@ -556,9 +556,9 @@ end module post_processing
      write(*,*) '!---------------------------------------------------------!'
      
 #if defined(VERSION)
-     write(*,*)'Git version        : ', VERSION
+     write(*,*)'Git version : ', VERSION
 #else
-     write(*,*)'Git version        : unknown'
+     write(*,*)'Git version : unknown'
 #endif
   endif
   
