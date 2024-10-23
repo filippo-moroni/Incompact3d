@@ -65,8 +65,7 @@ from ttbl_subs import calculate_ttbl_thick_params
 os.makedirs('num_resolutions',    mode=0o777, exist_ok=True)
 os.makedirs('plots',              mode=0o777, exist_ok=True)
 os.makedirs('plots/mean_stats',   mode=0o777, exist_ok=True)
-os.makedirs('plots/vort_stats',   mode=0o777, exist_ok=True)
-os.makedirs('plots/diss_stats',   mode=0o777, exist_ok=True)
+os.makedirs('plots/grad_stats',   mode=0o777, exist_ok=True)
 os.makedirs('plots/correlations', mode=0o777, exist_ok=True)
 os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
 
@@ -281,7 +280,7 @@ with open(filename, 'w') as f:
 if post_mean:
 
     print(">>> Plotting mean streamwise velocity profile.")
-    print(">>> Folder: plots/mean_stats/.")
+    print("    Folder: plots/mean_stats/.")
     print()
 
     # Get reference mean streamwise velocity profile
@@ -367,7 +366,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
 
     print(">>> Plotting mean spanwise velocity profile.")
-    print(">>> Folder: plots/mean_stats/.")
+    print("    Folder: plots/mean_stats/.")
     print()
 
     # Mean spanwise velocity profile
@@ -422,7 +421,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
 
     print(">>> Plotting streamwise velocity variance.")
-    print(">>> Folder: plots/mean_stats/.")
+    print("    Folder: plots/mean_stats/.")
     print()
 
     # <u'u'>
@@ -498,7 +497,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
 
     print(">>> Plotting wall-normal velocity variance.")
-    print(">>> Folder: plots/mean_stats/.")
+    print("    Folder: plots/mean_stats/.")
     print()
 
     # <v'v'>
@@ -574,7 +573,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
     
     print(">>> Plotting spanwise velocity variance.")
-    print(">>> Folder: plots/mean_stats/.")
+    print("    Folder: plots/mean_stats/.")
     print()
 
     # <w'w'>
@@ -641,7 +640,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
 
     print(">>> Plotting Turbulent Kinetic Energy (TKE).")
-    print(">>> Folder: plots/mean_stats/.")
+    print("    Folder: plots/mean_stats/.")
     print()
 
     # TKE (<k>)
@@ -714,7 +713,7 @@ if post_mean:
     if i_switch_plot == False:
     
         print(">>> Plotting pressure variance.")
-        print(">>> Folder: plots/mean_stats/.")
+        print("    Folder: plots/mean_stats/.")
         print()
 
         # <p'p'>
@@ -756,7 +755,7 @@ if post_mean:
     #!--------------------------------------------------------------------------------------!
 
     print(">>> Plotting Reynolds stress <u'v'>.")
-    print(">>> Folder: plots/mean_stats/.")
+    print("    Folder: plots/mean_stats/.")
     print()
 
     # <u'v'>
@@ -850,14 +849,14 @@ if post_grad and i_switch_plot == False:
     #!--- Writing to file the viscous time unit and the Kolmogorov time scale ---!
     print(">>> Saving in 'time_scales' viscous time unit and")
     print("    Kolmogorov time scale.")
-    print(">>> Folder: /num_resolutions.")
+    print("    Folder: /num_resolutions.")
     print()
     
     # TTBL only
     if itype == 13:
 
         print(">>> For a comprehensive file for time_scales evolution,")
-        print(">>> run 'ttbl_indexes.py'.")
+        print("    run 'ttbl_indexes.py'.")
         print()
         
     # Create the file and write
@@ -894,7 +893,7 @@ if post_grad and i_switch_plot == False:
                 f"{tau_eta:{pp.fs}}\n"         )
 
     print(">>> Plotting total dissipation.")
-    print(">>> Folder: plots/diss_stats/.")
+    print("    Folder: plots/grad_stats/.")
     print()
 
     # Total dissipation
@@ -921,7 +920,7 @@ if post_grad and i_switch_plot == False:
     set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
     # Save and show the figure
-    save_and_show_plot('eps_tot', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='diss_stats', description=description)
+    save_and_show_plot('eps_tot', snap_numb=snap_numb, add_string=add_string, re_tau=re_tau, subfolder='grad_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
@@ -1019,7 +1018,7 @@ if post_corz and i_switch_plot == False:
                 ]
     
     print(">>> Plotting spanwise velocity auto-correlation coefficients Cii(rz).")
-    print(">>> Folder: plots/correlations/.")
+    print("    Folder: plots/correlations/.")
     print()
 
     # Loop through each plot's data and create the plots
@@ -1068,7 +1067,7 @@ if post_corz and i_switch_plot == False:
     #!--------------------------------------------------------------------------------------!
 
     print(">>> Plotting spanwise velocity correlation coefficient Cuv(rz).")
-    print(">>> Folder: plots/correlations/.")
+    print("    Folder: plots/correlations/.")
     print()
 
     # Cuvz
@@ -1105,7 +1104,7 @@ if post_corz and i_switch_plot == False:
     if numscalar == 1:
 
         print(">>> Plotting spanwise scalar auto-correlation coefficient Css(rz).")
-        print(">>> Folder: plots/correlations/.")
+        print("    Folder: plots/correlations/.")
         print()
 
         # Cssz
@@ -1160,7 +1159,7 @@ if post_tke_eq and i_switch_plot == False:
     #!--------------------------------------------------------------------------------------!
 
     print(">>> Plotting ratio of production over dissipation of TKE.")
-    print(">>> Folder: plots/tke_stats/.")
+    print("    Folder: plots/tke_stats/.")
     print()
 
     # Ratio of production over dissipation of TKE
@@ -1195,7 +1194,7 @@ if post_tke_eq and i_switch_plot == False:
     #!--------------------------------------------------------------------------------------!
     
     print(">>> Plotting TKE budget terms.")
-    print(">>> Folder: plots/tke_stats/.")
+    print("    Folder: plots/tke_stats/.")
     print()
 
     # TKE budget terms
