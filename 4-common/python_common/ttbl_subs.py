@@ -163,6 +163,9 @@ def find_max_ts(directory):
             # Extract the time-step value (7 digits)
             ts_values.append(int(match.group(1)))
 
+    # Print blank line
+    print()
+    
     # Check if any time steps were found
     if ts_values:
         max_ts = max(ts_values)
@@ -170,4 +173,8 @@ def find_max_ts(directory):
     else:
         print("No matching files found.")
 
+    # Print blank line    
+    print()
+
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
 
