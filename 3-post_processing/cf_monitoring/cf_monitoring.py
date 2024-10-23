@@ -406,8 +406,8 @@ if itype == 3:
     
     # Estimated friction coefficient according to Ricco & Quadrio (2008),
     # with reference from Pope ("Turbulent Flows", p. 279).
-    cf_est = 0.0336 * re_tau ** (-0.273)
-    cf_est = cf_est*pp.onethousand
+    est_cf = 0.0336 * re_tau ** (-0.273)
+    est_cf = cf_est*pp.onethousand
     
     # Print calculated quantities
     print(f">>> Friction Reynolds number, Re_tau = {re_tau}")
@@ -499,7 +499,7 @@ elif itype == 3:
         f.write('\n')
         f.write(' Reference data:\n')
         f.write(f'  - Kim et al. (1987), channel Re_tau = 180   : 10^3 <cf> = 8.18.\n')
-        f.write(f'  - Ricco & Quadrio (2008), empirical formula : 10^3 <cf> = {cf_est}.\n')        
+        f.write(f'  - Ricco & Quadrio (2008), empirical formula : 10^3 <cf> = {est_cf}.\n')        
         f.write('\n')
         f.write(f"{'10^3 <cf>':>{pp.c_w}}, " +
                 f"{'t_tot':>{pp.c_w}}, "     +
