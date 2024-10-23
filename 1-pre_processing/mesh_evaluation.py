@@ -44,7 +44,7 @@ from write_txt_tables import write_txt_tables
 ) = read_input_files('input.i3d','post.prm')
 
 #!--- Parameters and mesh ---!
-(uwall, nu, twd, y) = set_flow_parameters(re)
+(nu, y, uwall, twd, phiwall) = set_flow_parameters(re)
 
 #!--------------------------------------------------------------------------------------!
 

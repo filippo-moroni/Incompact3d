@@ -4,7 +4,7 @@
 ╒════════╤═══════╤══════╤═════════╤═══════╤═══════════╤═════════╤══════════╤══════╤══════╤══════╕
 │   beta │    nu │   Re │   U_ref │    dt │   nrealiz │      cf │   Re_tau │   nx │   ny │   nz │
 ╞════════╪═══════╪══════╪═════════╪═══════╪═══════════╪═════════╪══════════╪══════╪══════╪══════╡
-│    2.2 │ 0.002 │  500 │       1 │ 0.025 │         1 │ 0.00716 │      500 │ 1536 │  487 │  768 │
+│    2.2 │ 0.002 │  500 │       1 │ 0.025 │         4 │ 0.00716 │      500 │ 1536 │  487 │  768 │
 ╘════════╧═══════╧══════╧═════════╧═══════╧═══════════╧═════════╧══════════╧══════╧══════╧══════╛
 
 !----- Numerics-related parameters -----!
@@ -15,11 +15,11 @@
 ╘═════════╧═══════╧════════╧═══════╛
 
 !----- Outputs -----!
-╒═══════════╤═════════╤════════════════╤═════════╤══════════╤════════╤═════════╕
-│     n_tot │   nsnap │   mem_tot [GB] │    CPUh │   sh_vel │   t_nu │   npvis │
-╞═══════════╪═════════╪════════════════╪═════════╪══════════╪════════╪═════════╡
-│ 574488576 │       9 │        206.816 │ 54382.2 │   0.0598 │ 0.5593 │      11 │
-╘═══════════╧═════════╧════════════════╧═════════╧══════════╧════════╧═════════╛
+╒═══════════╤═════════╤════════════════╤════════╤══════════╤════════╤═════════╕
+│     n_tot │   nsnap │   mem_tot [GB] │   CPUh │   sh_vel │   t_nu │   npvis │
+╞═══════════╪═════════╪════════════════╪════════╪══════════╪════════╪═════════╡
+│ 574488576 │       9 │        827.264 │ 217529 │   0.0598 │ 0.5593 │      11 │
+╘═══════════╧═════════╧════════════════╧════════╧══════════╧════════╧═════════╛
 
 !----- TTBL-specific setup parameters -----!
 ╒═════════════╤═══════════╤════════════════╕
@@ -56,10 +56,11 @@ nrealiz: Number of flow realizations considered.
 S:       Stability parameter, S < 1 (Thompson et al. (1985)).
 n_tot:   Total number of grid points.
 nsnap:   Number of snapshots for a single flow realization.
-mem_tot: Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field).
+mem_tot: Memory requirement to save snapshots in double precision, assuming 5 fields (velocity, pressure, 1 scalar field),
+         and the different flow realizations.
 CPUh:    Estimated total CPUh required to complete the simulation (including different flow realizations).
          Number of elements per CPU must be higher than 100'000 and a safety factor is included.
-         The related subroutine automatically distinguish between RK3 and AB3.
+         The related subroutine automatically distinguishes between RK3 and AB3.
 sh_vel:  Shear velocity peak (TTBL) or at steady state (Channel).
 t_nu:    Estimated minimum viscous time unit, based on kinematic viscosity and shear velocity (sh_vel).
 npvis:   Number of points viscous sublayer at cf peak (TTBL) or at steady state (Channel) (y+ < 5).
