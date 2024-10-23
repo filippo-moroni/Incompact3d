@@ -28,7 +28,7 @@
 !              a TTBL without feedback control (A^+, T^+, Ww).    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
-subroutine print_cf(ux,uy,uz,phi)
+subroutine print_cf(ux,uy,uz,pre,phi)
   
   use decomp_2d_constants
   use decomp_2d_mpi
@@ -40,7 +40,7 @@ subroutine print_cf(ux,uy,uz,phi)
   implicit none
  
   ! Inputs 
-  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux,uy,uz
+  real(mytype), dimension(xsize(1),xsize(2),xsize(3)),           intent(in) :: ux,uy,uz,pre
   real(mytype), dimension(xsize(1),xsize(2),xsize(3),numscalar), intent(in) :: phi
   
   ! Locals
@@ -74,7 +74,7 @@ subroutine print_cf(ux,uy,uz,phi)
   if(itype .eq. itype_ttbl) then
   
       ! Write mean statistics runtime in case of a TTBL
-      call print_mean_stats(ux,uy,uz)
+      call print_mean_stats(ux,uy,uz,pre)
       
       ! Write mean statistics runtime for scalar field in case of a TTBL 
       if(iscalar .eq. 1) call print_mean_stats_scalar(ux,uy,uz,phi) 
