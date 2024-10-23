@@ -97,6 +97,7 @@ os.makedirs('plots/tke_stats',    mode=0o777, exist_ok=True)
  y_plus_uvar_kozul,         var_u_kozul,
  y_plus_vvar_kozul,         var_v_kozul,
  y_plus_uvmean_kozul,       mean_uv_kozul,
+ y_plus_pvar_kozul,         var_p_kozul,    
  y_plus_tke_turbt_mansour,  tke_turbt_mansour,  
  y_plus_tke_presst_mansour, tke_presst_mansour,
  y_plus_tke_difft_mansour,  tke_difft_mansour,

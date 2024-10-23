@@ -593,7 +593,9 @@ def read_ref_data():
     var_v_kozul            = 0.0
     y_plus_uvmean_kozul    = 0.0
     mean_uv_kozul          = 0.0
-    
+    y_plus_pvar_kozul      = 0.0
+    var_p_kozul            = 0.0
+        
     # Mansour et al. (1988)
     y_plus_tke_turbt_mansour  = 0.0  
     tke_turbt_mansour         = 0.0  
@@ -704,10 +706,15 @@ def read_ref_data():
     M = np.loadtxt(dirname + '/kozul2016/uvmean_kozul2016.txt', skiprows=8, delimiter=',', dtype=np.float64)
     y_plus_uvmean_kozul    = M[:,0]
     mean_uv_kozul          = M[:,1]
+    
+    M = np.loadtxt(dirname + '/kozul2016/pprimerms_kozul2016.txt', skiprows=8, delimiter=',', dtype=np.float64)
+    y_plus_pvar_kozul      = M[:,0]
+    var_p_kozul            = M[:,1]
      
     # Square RMSs to obtain variances
     var_u_kozul = var_u_kozul**2
     var_v_kozul = var_v_kozul**2
+    var_p_kozul = var_p_kozul**2
     
     #!--- Mansour et al. (1988) ---!
     M = np.loadtxt(dirname + '/mansour1988/tke_turbt_mansour1988.txt', skiprows=8, delimiter=',', dtype=np.float64)
@@ -747,6 +754,7 @@ def read_ref_data():
     y_plus_uvar_kozul,         var_u_kozul,
     y_plus_vvar_kozul,         var_v_kozul,
     y_plus_uvmean_kozul,       mean_uv_kozul,
+    y_plus_pvar_kozul,         var_p_kozul,    
     y_plus_tke_turbt_mansour,  tke_turbt_mansour,  
     y_plus_tke_presst_mansour, tke_presst_mansour,
     y_plus_tke_difft_mansour,  tke_difft_mansour,
