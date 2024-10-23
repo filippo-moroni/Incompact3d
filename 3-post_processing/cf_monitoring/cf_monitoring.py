@@ -411,12 +411,16 @@ if itype == 3:
     est_cf = 0.0336 * (re_tau ** -0.273)
     est_cf = est_cf*pp.onethousand
     
-    # Print calculated quantities
+    # Round calculated quantities and print them
+    re_tau  = round(re_tau,  1)  # Friction Reynolds number based on mean friction coefficient (mean_cf)
+    mean_cf = round(mean_cf, 2)  # Mean friction coefficient calculated on the selected interval
+    est_cf  = round(est_cf,  2)  # Estimated friction coefficient (Ricco & Quadrio (2008))
+    
     print(f">>> Friction Reynolds number, Re_tau = {re_tau}")
     print()
-    print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.3f}")
-    print()    
-    print(f">>> Estimated cf value, according to Ricco & Quadrio (2008), 10^3 cf_est = {est_cf:.3f}")
+    print(f">>> Mean cf value, 10^3 <cf> = {mean_cf}")
+    print()
+    print(f">>> Estimated cf value, according to Ricco & Quadrio (2008), 10^3 cf_est = {est_cf}")
     print()
      
     # Number of cf snapshots used and total average time (lower TU is included)
