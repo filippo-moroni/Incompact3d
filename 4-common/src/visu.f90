@@ -230,15 +230,18 @@ contains
     call write_field(uy1, ".", "uy", trim(num))
     call write_field(uz1, ".", "uz", trim(num))
 
-    ! Interpolate pressure
-    !WORK Z-PENCILS
+    ! Interpolate pressure (in order to save on the velocity mesh, yp coordinates)
+    
+    ! Work z-pencils
     call interzpv(ppi3,pp3(:,:,:,1),dip3,sz,cifip6z,cisip6z,ciwip6z,cifz6,cisz6,ciwz6,&
     (ph3%zen(1)-ph3%zst(1)+1),(ph3%zen(2)-ph3%zst(2)+1),nzmsize,zsize(3),1)
-    !WORK Y-PENCILS
+    
+    ! Work y-pencils
     call transpose_z_to_y(ppi3,pp2,ph3) !nxm nym nz
     call interypv(ppi2,pp2,dip2,sy,cifip6y,cisip6y,ciwip6y,cify6,cisy6,ciwy6,&
             (ph3%yen(1)-ph3%yst(1)+1),nymsize,ysize(2),ysize(3),1)
-    !WORK X-PENCILS
+    
+    ! Work x-pencils
     call transpose_y_to_x(ppi2,pp1,ph2) !nxm ny nz
     call interxpv(ta1,pp1,di1,sx,cifip6,cisip6,ciwip6,cifx6,cisx6,ciwx6,&
             nxmsize,xsize(1),xsize(2),xsize(3),1)
@@ -431,10 +434,10 @@ contains
   end subroutine write_xdmf_header
   
   !-----------------------------------------------------------------------------!
-  ! DESCRIPTION: Write the footer of the XDMF file
+  ! DESCRIPTION: Write the footer of the XDMF file.
   !              Adapted from: 
   !              https://github.com/fschuch/Xcompact3d/blob/master/src/visu.f90
-  !   AUTHOR(s): Unknown
+  !   AUTHOR(s): Unknown.
   ! MODIFIED BY: Filippo Moroni <filippo.moroni@unimore.it>
   !-----------------------------------------------------------------------------! 
   subroutine write_xdmf_footer(ux,uz)
