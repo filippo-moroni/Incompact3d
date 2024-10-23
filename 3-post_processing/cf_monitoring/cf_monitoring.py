@@ -394,22 +394,29 @@ if itype == 3:
     # Define the mean of friction coefficient in double precision
     mean_cf = np.float64(0.0)
 
-    # Calculate mean friction coefficient
+    # Calculate mean friction coefficient and scale it by a factor of 1000.0
     mean_cf = np.mean(cfx[lower_index:], dtype='float64')
+    mean_cf = mean_cf*pp.onethousand
     
     # Calculate mean friction velocity 
     u_tau = np.sqrt(mean_cf / pp.two) * pp.twothird
     
-    # Calculate friction Reynolds number (half-height is unitary) and show it
-    re_tau = round(u_tau / nu, 1)
+    # Calculate friction Reynolds number (with channel half-height unitary) and show it
+    re_tau = u_tau / nu
+    
+    # Estimated friction coefficient according to Ricco & Quadrio (2008),
+    # with reference from Pope ("Turbulent Flows", p. 279).
+    cf_est = 0.0336 * re_tau ** (-0.273)
+    cf_est = cf_est*pp.onethousand
+    
+    # Print calculated quantities
     print(f">>> Friction Reynolds number, Re_tau = {re_tau}")
     print()
-          
-    # Scale friction coefficient by a factor of 1000.0 and show it
-    mean_cf = mean_cf*pp.onethousand
     print(f">>> Mean cf value, 10^3 <cf> = {mean_cf:.3f}")
+    print()    
+    print(f">>> Estimated cf value, according to Ricco & Quadrio (2008), 10^3 cf_est = {est_cf:.3f}")
     print()
-    
+     
     # Number of cf snapshots used and total average time (lower TU is included)
     last_index = len(time_unit) 
     n_snap_cf  = last_index - lower_index
@@ -491,7 +498,8 @@ elif itype == 3:
         f.write('  - n_snap    : number of snapshots used in the average.\n')
         f.write('\n')
         f.write(' Reference data:\n')
-        f.write('  - Kim et al. (1987), channel Re_tau = 180: 10^3 <cf> = 8.18.\n')
+        f.write(f'  - Kim et al. (1987), channel Re_tau = 180   : 10^3 <cf> = 8.18.\n')
+        f.write(f'  - Ricco & Quadrio (2008), empirical formula : 10^3 <cf> = {cf_est}.\n')        
         f.write('\n')
         f.write(f"{'10^3 <cf>':>{pp.c_w}}, " +
                 f"{'t_tot':>{pp.c_w}}, "     +
