@@ -48,7 +48,7 @@ Import functions to setting up, save and show plots, to get
 reference mean streamwise velocity profile and to obtain 
 closest y+ location to what is chosen and its index
 """
-from plot_subs import set_plot_settings, save_and_show_plot, get_ref_mean_vel_profile, y_plus_location
+from plot_subs import set_plot_settings, save_and_show_plot, get_ref_mean_vel_profile, y_plus_location, peak_yplus_location
 
 # Import functions to read 'input.i3d', 'post.prm' files, statistics data and reference data
 from read_files import read_input_files, read_data, read_ref_data
