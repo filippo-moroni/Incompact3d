@@ -407,7 +407,7 @@ if itype == 3:
     # Estimated friction coefficient according to Ricco & Quadrio (2008),
     # with reference from Pope ("Turbulent Flows", p. 279).
     est_cf = 0.0336 * re_tau ** (-0.273)
-    est_cf = cf_est*pp.onethousand
+    est_cf = est_cf*pp.onethousand
     
     # Print calculated quantities
     print(f">>> Friction Reynolds number, Re_tau = {re_tau}")
