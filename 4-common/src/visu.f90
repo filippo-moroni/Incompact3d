@@ -133,8 +133,7 @@ contains
 
     integer :: mode
     
-#ifdef ADIOS2
-    
+#ifdef ADIOS2   
     mode = decomp_2d_write_mode
 
     call decomp_2d_open_io(io_name, "data", mode)
