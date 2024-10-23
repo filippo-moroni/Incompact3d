@@ -292,7 +292,7 @@ if itype == 13:
 
     print()
     print(">>> Calculating maximum grid spacings in wall units and minimum viscous time scale.")
-    print(">>> We expect to observe maximum grid spacings along x and z and minimum viscous time at peak cf,")
+    print(">>> We expect to observe maximum grid spacings and minimum viscous time at peak cf,")
     print("    while maximum wall-normal grid spacing at the BL interface at the end of the simulation.")
 
     # Maximum (total) shear velocity
