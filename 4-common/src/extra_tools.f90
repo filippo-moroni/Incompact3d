@@ -641,19 +641,20 @@ subroutine calculate_bl_thick(ux,delta_99,counter)
 end subroutine calculate_bl_thick
 
 !-----------------------------------------------------------------------------!
-! DESCRIPTION: Calculate runtime mean statistics (umean, wmean, variances and
+! DESCRIPTION: Calculate runtime mean statistics (averages, variances and
 !              Reynolds stress) for a TTBL.
 !              This subroutine is called inside 'print_cf'. 
 !              The streamwise mean velocity profile is used to calculate 
 !              high order integrals of BL thickness parameters (delta*, theta) 
 !              during post_processing.
 !              These statistics must be finalized with different flow 
-!              realizations. var[u] must be finalized further, as:
+!              realizations. 
+!              Moreover, variances must be finalized further; for example:
 !                         var[u] = var[u] - mean[u]^2
 !              since var[u] here is mean[u^2]. 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!       
-subroutine print_mean_stats(ux,uy,uz)
+subroutine print_mean_stats(ux,uy,uz,pre)
   
   use decomp_2d_constants
   use decomp_2d_mpi
@@ -661,14 +662,14 @@ subroutine print_mean_stats(ux,uy,uz)
   
   use MPI
   
-  use var,       only : ux2,uy2,uz2     
+  use var,       only : ux2,uy2,uz2,pre2     
   use param,     only : zero,itime
   use variables, only : nx,ny,nz
     
   implicit none
   
   ! Inputs
-  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
+  real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz,pre
      
   ! Local variables
   real(mytype)  :: den
@@ -676,19 +677,23 @@ subroutine print_mean_stats(ux,uy,uz)
   character(99) :: filename 
   
   ! Mean velocity profile
-  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT  ! mean streamwise  velocity
-  real(mytype), dimension(ysize(2)) :: v1meanH1,v1meanHT  ! mean wall-normal velocity
-  real(mytype), dimension(ysize(2)) :: w1meanH1,w1meanHT  ! mean spanwise    velocity
+  real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT  ! Mean streamwise  velocity
+  real(mytype), dimension(ysize(2)) :: v1meanH1,v1meanHT  ! Mean wall-normal velocity
+  real(mytype), dimension(ysize(2)) :: w1meanH1,w1meanHT  ! Mean spanwise    velocity
   
   ! Variances
-  real(mytype), dimension(ysize(2)) :: u2meanH1,u2meanHT  ! streamwise  velocity variance
-  real(mytype), dimension(ysize(2)) :: v2meanH1,v2meanHT  ! wall-normal velocity variance
-  real(mytype), dimension(ysize(2)) :: w2meanH1,w2meanHT  ! spanwise    velocity variance
+  real(mytype), dimension(ysize(2)) :: u2meanH1,u2meanHT  ! Streamwise  velocity variance
+  real(mytype), dimension(ysize(2)) :: v2meanH1,v2meanHT  ! Wall-normal velocity variance
+  real(mytype), dimension(ysize(2)) :: w2meanH1,w2meanHT  ! Spanwise    velocity variance
 
   ! Reynolds stress
   real(mytype), dimension(ysize(2)) :: uvmeanH1,uvmeanHT  ! Reynolds stress <u'v'>
   real(mytype), dimension(ysize(2)) :: uwmeanH1,uwmeanHT  ! Reynolds stress <u'w'>
   real(mytype), dimension(ysize(2)) :: vwmeanH1,vwmeanHT  ! Reynolds stress <v'w'>
+  
+  ! Pressure field (mean and variance)
+  real(mytype), dimension(ysize(2)) :: pre1meanH1,pre1meanHT  ! Mean pressure
+  real(mytype), dimension(ysize(2)) :: pre2meanH1,pre2meanHT  ! Pressure variance  
   
   ! Set variables to zero
   u1meanH1 = zero; u1meanHT = zero
@@ -702,6 +707,9 @@ subroutine print_mean_stats(ux,uy,uz)
   uvmeanH1 = zero; uvmeanHT = zero
   uwmeanH1 = zero; uwmeanHT = zero  
   vwmeanH1 = zero; vwmeanHT = zero
+  
+  pre1meanH1 = zero; pre1meanHT = zero
+  pre2meanH1 = zero; pre2meanHT = zero  
 
   ! Denominator of the divisions
   den = real(nx*nz,mytype)
@@ -710,6 +718,7 @@ subroutine print_mean_stats(ux,uy,uz)
   call transpose_x_to_y(ux,ux2)
   call transpose_x_to_y(uy,uy2)
   call transpose_x_to_y(uz,uz2)
+  call transpose_x_to_y(pre,pre2)  
     
   ! Summation over x and z directions
   do k=1,ysize(3)
@@ -730,7 +739,11 @@ subroutine print_mean_stats(ux,uy,uz)
               uvmeanH1(j)=uvmeanH1(j)+ux2(i,j,k)*uy2(i,j,k)/den
               uwmeanH1(j)=uwmeanH1(j)+ux2(i,j,k)*uz2(i,j,k)/den
               vwmeanH1(j)=vwmeanH1(j)+uy2(i,j,k)*uz2(i,j,k)/den
-          
+              
+              ! Pressure field (mean and variance)
+              pre1meanH1(j)=pre1meanH1(j)+pre2(i,j,k)/den
+              pre2meanH1(j)=pre2meanH1(j)+pre2(i,j,k)*pre2(i,j,k)/den
+                        
           enddo          
       enddo
   enddo
@@ -748,7 +761,10 @@ subroutine print_mean_stats(ux,uy,uz)
   call MPI_REDUCE(uwmeanH1,uwmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   call MPI_REDUCE(vwmeanH1,vwmeanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
   
-  ! Print mean statistics for velocity field 
+  call MPI_REDUCE(pre1meanH1,pre1meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  call MPI_REDUCE(pre2meanH1,pre2meanHT,ysize(2),real_type,MPI_SUM,0,MPI_COMM_WORLD,code)
+  
+  ! Print mean statistics for velocity and pressure 
   if(nrank .eq. 0) then
 
       ! Write filename 
@@ -763,33 +779,39 @@ subroutine print_mean_stats(ux,uy,uz)
       write(iunit, *) 'Pay attention that these statistics need to be averaged later'
       write(iunit, *) 'with different flow realizations.'
       write(iunit, *) ' '
-      write(iunit, *) 'Only var[u] needs to be finalized later by subtracting (mean[u])**2,'
-      write(iunit, *) 'due to the symmetries of the TTBL.'
+      write(iunit, *) 'var[u] and var[p] need to be finalized later by subtracting'
+      write(iunit, *) '(mean[u])**2 and (mean[p])**2 due to the symmetries of the TTBL.'
       write(iunit, *) ' '     
       write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway'
       write(iunit, *) 'in order to check the correctness of the calculations.' 
       write(iunit, *) ' '
-      write(iunit, '(9(A14, A1, 1X))') 'umean(y,t,nr)' , ',', &
-                                       'vmean(y,t,nr)' , ',', &
-                                       'wmean(y,t,nr)' , ',', &
-                                       'var[u](y,t,nr)', ',', &
-                                       'var[v](y,t,nr)', ',', &
-                                       'var[w](y,t,nr)', ',', &
-                                       "<u'v'>(y,t,nr)", ',', &
-                                       "<u'w'>(y,t,nr)", ',', &
-                                       "<v'w'>(y,t,nr)"
+      write(iunit, '(11(A14, A1, 1X))') 'umean(y,t,nr)' , ',', &
+                                        'vmean(y,t,nr)' , ',', &
+                                        'wmean(y,t,nr)' , ',', &
+                                        'var[u](y,t,nr)', ',', &
+                                        'var[v](y,t,nr)', ',', &
+                                        'var[w](y,t,nr)', ',', &
+                                        "<u'v'>(y,t,nr)", ',', &
+                                        "<u'w'>(y,t,nr)", ',', &
+                                        "<v'w'>(y,t,nr)", ',', &
+                                        'pmean(y,t,nr)' , ',', &
+                                        'var[p](y,t,nr)'
 
       ! Write mean statistics, function of y-direction, time and specific realization
       do j=1,ny
-          write(iunit, '(9(F14.9, A1, 1X))') u1meanHT(j), ',', &  ! Mean streamwise  velocity
-                                             v1meanHT(j), ',', &  ! Mean wall-normal velocity
-                                             w1meanHT(j), ',', &  ! Mean spanwise    velocity
-                                             u2meanHT(j), ',', &  ! Streamwise  velocity variance
-                                             v2meanHT(j), ',', &  ! Wall-normal velocity variance
-                                             w2meanHT(j), ',', &  ! Spanwise    velocity variance
-                                             uvmeanHT(j), ',', &  ! Reynolds stress <u'v'>
-                                             uwmeanHT(j), ',', &  ! Reynolds stress <u'w'>
-                                             vwmeanHT(j)          ! Reynolds stress <v'w'>
+          write(iunit, '(11(F14.9, A1, 1X))') u1meanHT(j),   ',', &  ! Mean streamwise  velocity
+                                              v1meanHT(j),   ',', &  ! Mean wall-normal velocity
+                                              w1meanHT(j),   ',', &  ! Mean spanwise    velocity
+                                              u2meanHT(j),   ',', &  ! Streamwise  velocity variance
+                                              v2meanHT(j),   ',', &  ! Wall-normal velocity variance
+                                              w2meanHT(j),   ',', &  ! Spanwise    velocity variance
+                                              uvmeanHT(j),   ',', &  ! Reynolds stress <u'v'>
+                                              uwmeanHT(j),   ',', &  ! Reynolds stress <u'w'>
+                                              vwmeanHT(j),   ',', &  ! Reynolds stress <v'w'>
+                                              pre1meanHT(j), ',', &  ! Mean pressure
+                                              pre2meanHT(j)          ! Pressure variance
+                                              
+                                              
       enddo
       
       close(iunit)
