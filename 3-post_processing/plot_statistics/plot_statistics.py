@@ -192,6 +192,13 @@ if post_mean:
     var_v   /= sh_vel_x**2
     var_w   /= sh_vel_x**2
     mean_uv /= sh_vel_x**2
+    var_p   /= sh_vel_x**2
+    
+    u_ref = 0.29 # need to understand what is physically this value
+    
+    p_ref = 0.5*1.0*u_ref**2
+    
+    var_p = var_p / p_ref**2
         
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
     mean_w_plus  = mean_w / sh_vel_x
@@ -736,7 +743,7 @@ if post_mean:
         # Channel    
         if itype == 3:
 
-            ylimsup = 3.5
+            ylimsup = 4.0
     
             # Lee & Moser (2015)
             ax.plot(y_plus_lm, var_p_lm, color='C1', linestyle='-', linewidth=pp.lw)
