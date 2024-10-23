@@ -223,7 +223,30 @@ def y_plus_location(y_plus, ny):
     return(y_plus_index, y_plus_name, y_plus_in)    
     
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!    
-    
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script we find and plot a vertical line at the y+
+!              location of maximum of a generic quantity. This is used for 
+!              example to show the y+ location of the peak of TKE.
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""     
 
+def peak_yplus_location(vect, y_plus):
+
+    # Find the index at which we have maximum of the 'vect' array and the related y+
+    vect_max_index  = np.argmax(vect)
+    y_plus_max_vect = round(y_plus[vect_max_index],1)
+
+    # Vertical line to show the peak location of the 'vect' array
+    ax.vlines(x=y_plus_max_vect, ymin=0.0, ymax=np.max(vect), linewidth=pp.lw, color=pp.grey, linestyles='dashed')
+
+    # y*, y location of the y+ label
+    y_star = np.max(vect) / 4.0
+
+    # Text to show the y+ of maximum of the 'vect' array
+    ax.text(y_plus_max_vect*1.2, y_star, fr'$y^+ = {y_plus_max_vect}$', color='k', fontsize=4, ha='left')
+
+#!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
 

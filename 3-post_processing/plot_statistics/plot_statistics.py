@@ -650,6 +650,7 @@ if post_mean:
     tke = 0.5*(var_u + var_v + var_w)
     tke_lm = 0.5*(var_u_lm + var_v_lm + var_w_lm)
 
+    """
     # Find the index at which we have maximum TKE and the related y+
     tke_max_index = np.argmax(tke)
     y_plus_max_tke = round(y_plus[tke_max_index],1)
@@ -662,6 +663,9 @@ if post_mean:
 
     # Text to show the y+ of maximum TKE
     ax.text(y_plus_max_tke*1.2, y_star, fr'$y^+ = {y_plus_max_tke}$', color='k', fontsize=4, ha='left')
+    """
+    
+    peak_yplus_location(tke, y_plus)
 
     # Limits for axes
     xliminf = 0.1
