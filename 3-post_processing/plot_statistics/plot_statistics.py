@@ -771,6 +771,9 @@ if post_mean:
     # <u'v'>
     ax.scatter(y_plus[:ny], mean_uv[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
+    # Plot the y+ location corresponding to the peak value    
+    peak_yplus_location(mean_uv, y_plus, ax)
+    
     # Description of .pdf file
     description = 'Reynolds stress.'
     
