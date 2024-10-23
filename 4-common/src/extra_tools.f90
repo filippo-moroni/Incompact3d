@@ -785,16 +785,16 @@ subroutine print_mean_stats(ux,uy,uz,pre)
       write(iunit, *) 'The finalization of all 2nd order statistics can be performed anyway'
       write(iunit, *) 'in order to check the correctness of the calculations.' 
       write(iunit, *) ' '
-      write(iunit, '(11(A14, A1, 1X))') 'umean(y,t,nr)' , ',', &
-                                        'vmean(y,t,nr)' , ',', &
-                                        'wmean(y,t,nr)' , ',', &
+      write(iunit, '(11(A14, A1, 1X))') 'umean(y,t,nr)',  ',', &
+                                        'vmean(y,t,nr)',  ',', &
+                                        'wmean(y,t,nr)',  ',', &
                                         'var[u](y,t,nr)', ',', &
                                         'var[v](y,t,nr)', ',', &
                                         'var[w](y,t,nr)', ',', &
                                         "<u'v'>(y,t,nr)", ',', &
                                         "<u'w'>(y,t,nr)", ',', &
                                         "<v'w'>(y,t,nr)", ',', &
-                                        'pmean(y,t,nr)' , ',', &
+                                        'pmean(y,t,nr)',  ',', &
                                         'var[p](y,t,nr)'
 
       ! Write mean statistics, function of y-direction, time and specific realization

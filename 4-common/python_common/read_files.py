@@ -222,23 +222,25 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
     snap_numb   = None
     
     # Mean statistics
-    mean_u      = 0.0
-    mean_w      = 0.0
-    var_u       = 0.0
-    var_v       = 0.0
-    var_w       = 0.0
-    mean_uv     = 0.0
-    mean_p      = 0.0
-    var_p       = 0.0
+    mean_u      = 0.0   # Mean streamwise velocity
+    mean_w      = 0.0   # Mean spanwise   velocity
+    var_u       = 0.0   # Streamwise  velocity variance
+    var_v       = 0.0   # Wall-normal velocity variance
+    var_w       = 0.0   # Spanwise    velocity variance
+    mean_uv     = 0.0   # Reynolds stress <u'v'>
+    mean_uw     = 0.0   # Reynolds stress <u'w'>
+    mean_vw     = 0.0   # Reynolds stress <v'w'>
+    mean_p      = 0.0   # Mean pressure
+    var_p       = 0.0   # Pressure variance
     
     # Mean vorticity, mean gradients and total dissipation
-    vort_x      = 0.0   # mean streamwise vorticity (x)
-    vort_y      = 0.0   # mean wall-normal vorticity (y)
-    vort_z      = 0.0   # mean spanwise vorticity (z)
-    mg_x        = 0.0   # mean streamwise gradient, dU/dy
-    mg_z        = 0.0   # mean spanwise gradient, dW/dy
-    mg_phi      = 0.0   # mean scalar gradient, dPhi/dy
-    eps         = 0.0   # total dissipation
+    vort_x      = 0.0   # Mean streamwise vorticity (x)
+    vort_y      = 0.0   # Mean wall-normal vorticity (y)
+    vort_z      = 0.0   # Mean spanwise vorticity (z)
+    mg_x        = 0.0   # Mean streamwise gradient, dU/dy
+    mg_z        = 0.0   # Mean spanwise gradient, dW/dy
+    mg_phi      = 0.0   # Mean scalar gradient, dPhi/dy
+    eps         = 0.0   # Total dissipation
     
     # Spanwise correlation functions
     Ruuz = np.zeros((ny,nz), dtype=np.float64, order='F')
@@ -432,6 +434,10 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
             var_v   = M[:,4]
             var_w   = M[:,5]
             mean_uv = M[:,6]
+            mean_uw = M[:,7]
+            mean_vw = M[:,8]
+            mean_p  = M[:,9]
+            var_p   = M[:,10]
             
             # Opening of 'mean_stats_realiz-ts' file
             with open(f'data_post_te/velocity/mean_stats_realiz-ts{ts}.txt', 'r') as file:
