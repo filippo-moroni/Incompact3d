@@ -710,45 +710,48 @@ if post_mean:
     
     #!--------------------------------------------------------------------------------------!
     
-    print(">>> Plotting pressure variance.")
-    print(">>> Folder: plots/mean_stats/.")
-    print()
-
-    # <p'p'>
-    fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
-    # Limits for axes
-    xliminf = 0.1
-    xlimsup = Ly_plus*1.5
-    yliminf = 0.0
+    # Pressure variance is not saved in runtime mean statistics
+    if i_switch_plot == False:
     
-    # <p'p'>
-    ax.scatter(y_plus[:ny], var_p[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        print(">>> Plotting pressure variance.")
+        print(">>> Folder: plots/mean_stats/.")
+        print()
+
+        # <p'p'>
+        fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
+
+        # Limits for axes
+        xliminf = 0.1
+        xlimsup = Ly_plus*1.5
+        yliminf = 0.0
     
-    # Description of .pdf file
-    description = 'Pressure variance.'
+        # <p'p'>
+        ax.scatter(y_plus[:ny], var_p[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+        # Description of .pdf file
+        description = 'Pressure variance.'
             
-    # Channel    
-    if itype == 3:
+        # Channel    
+        if itype == 3:
 
-        ylimsup = 3.5
+            ylimsup = 3.5
     
-        # Lee & Moser (2015)
-        ax.plot(y_plus_lm, var_p_lm, color='C1', linestyle='-', linewidth=pp.lw)
+            # Lee & Moser (2015)
+            ax.plot(y_plus_lm, var_p_lm, color='C1', linestyle='-', linewidth=pp.lw)
         
-        # Completing description
-        description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
+            # Completing description
+            description += ' Reference data Lee & Moser (2015), Re_tau = 180.'
         
-    # Axes labels
-    ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
-    ax.set_ylabel(r'$\langle p^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        # Axes labels
+        ax.set_xlabel(r'$y^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
+        ax.set_ylabel(r'$\langle p^{\prime 2} \rangle^+$', fontsize=pp.fla, labelpad=pp.pad_axes_lab)
 
-    # Set the plot parameters using the function 'set_plot_settings'
-    # Last argument is the switcher for semilog plot (1: yes, 0: no)
-    set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
+        # Set the plot parameters using the function 'set_plot_settings'
+        # Last argument is the switcher for semilog plot (1: yes, 0: no)
+        set_plot_settings(ax, xliminf, xlimsup, yliminf, ylimsup, pp, 1)
 
-    # Save and show the figure
-    save_and_show_plot('pvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
+        # Save and show the figure
+        save_and_show_plot('pvar', snap_numb=snap_numb, ts=ts, add_string=add_string, re_tau=re_tau, subfolder='mean_stats', description=description)
 
     #!--------------------------------------------------------------------------------------!
 
