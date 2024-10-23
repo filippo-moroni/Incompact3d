@@ -233,7 +233,7 @@ def y_plus_location(y_plus, ny):
 !-----------------------------------------------------------------------------!
 """     
 
-def peak_yplus_location(vect, y_plus):
+def peak_yplus_location(vect, y_plus, ax):
 
     # Find the index at which we have maximum of the 'vect' array and the related y+
     vect_max_index  = np.argmax(vect)

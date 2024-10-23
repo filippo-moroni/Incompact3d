@@ -435,6 +435,9 @@ if post_mean:
     # <u'u'>
     ax.scatter(y_plus[:ny], var_u[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
+    # Plot the y+ location corresponding to the peak value    
+    peak_yplus_location(var_u, y_plus, ax)
+    
     # Description of .pdf file
     description = 'Streamwise velocity variance.'
 
@@ -511,6 +514,9 @@ if post_mean:
     # <v'v'>
     ax.scatter(y_plus[:ny], var_v[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
     
+    # Plot the y+ location corresponding to the peak value    
+    peak_yplus_location(var_v, y_plus, ax)
+    
     # Description of .pdf file
     description = 'Wall-normal velocity variance.'
 
@@ -578,7 +584,7 @@ if post_mean:
 
     # <w'w'>
     fig, ax = plt.subplots(1, 1, figsize=(pp.xinches,pp.yinches), linewidth=pp.tick_width, dpi=300)
-
+    
     # Limits for axes
     xliminf = 0.1
     xlimsup = Ly_plus*1.5
@@ -586,6 +592,9 @@ if post_mean:
 
     # <w'w'>
     ax.scatter(y_plus[:ny], var_w[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Plot the y+ location corresponding to the peak value    
+    peak_yplus_location(var_w, y_plus, ax)
     
     # Description of .pdf file
     description = 'Spanwise velocity variance.'
@@ -650,23 +659,6 @@ if post_mean:
     tke = 0.5*(var_u + var_v + var_w)
     tke_lm = 0.5*(var_u_lm + var_v_lm + var_w_lm)
 
-    """
-    # Find the index at which we have maximum TKE and the related y+
-    tke_max_index = np.argmax(tke)
-    y_plus_max_tke = round(y_plus[tke_max_index],1)
-
-    # Vertical line to show the TKE peak location
-    ax.vlines(x=y_plus_max_tke, ymin=0.0, ymax=np.max(tke), linewidth=pp.lw, color=pp.grey, linestyles='dashed')
-
-    # y*, y location of the y+ label
-    y_star = np.max(tke) / 4.0
-
-    # Text to show the y+ of maximum TKE
-    ax.text(y_plus_max_tke*1.2, y_star, fr'$y^+ = {y_plus_max_tke}$', color='k', fontsize=4, ha='left')
-    """
-    
-    peak_yplus_location(tke, y_plus)
-
     # Limits for axes
     xliminf = 0.1
     xlimsup = Ly_plus*1.5
@@ -675,6 +667,9 @@ if post_mean:
 
     # <k>
     ax.scatter(y_plus[:ny], tke[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+    
+    # Plot the y+ location corresponding to the peak value    
+    peak_yplus_location(tke, y_plus, ax)
     
     # Description of .pdf file
     description = 'Turbulent Kinetic Energy (TKE).'
@@ -730,6 +725,9 @@ if post_mean:
     
         # <p'p'>
         ax.scatter(y_plus[:ny], var_p[:ny], marker='o', linewidth=pp.lw, s=pp.markersize, facecolors='none', edgecolors='C0')
+        
+        # Plot the y+ location corresponding to the peak value    
+        peak_yplus_location(var_p, y_plus, ax)
     
         # Description of .pdf file
         description = 'Pressure variance.'
