@@ -671,9 +671,9 @@ subroutine print_mean_stats(ux,uy,uz)
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3)) :: ux,uy,uz
      
   ! Local variables
-  real(mytype)                      :: den
-  integer                           :: code,i,j,k,iunit
-  character(99)                     :: filename 
+  real(mytype)  :: den
+  integer       :: code,i,j,k,iunit
+  character(99) :: filename 
   
   ! Mean velocity profile
   real(mytype), dimension(ysize(2)) :: u1meanH1,u1meanHT  ! mean streamwise  velocity
@@ -826,9 +826,9 @@ subroutine print_mean_stats_scalar(ux,uy,uz,phi)
   real(mytype), intent(in), dimension(xsize(1),xsize(2),xsize(3),numscalar) :: phi
      
   ! Local variables
-  real(mytype)                      :: den
-  integer                           :: code,i,j,k,iunit
-  character(99)                     :: filename 
+  real(mytype)  :: den
+  integer       :: code,i,j,k,iunit
+  character(99) :: filename 
   
   ! Mean statistics for scalar field
   real(mytype), dimension(ysize(2)) :: phi1meanH1,phi1meanHT  ! mean scalar field
