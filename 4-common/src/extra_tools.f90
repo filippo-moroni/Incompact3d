@@ -513,7 +513,7 @@ end subroutine spanwise_wall_oscillations
 
 !-----------------------------------------------------------------------------!
 ! DESCRIPTION: Calculate bulk velocity for a channel.
-!              Adapted from 'channel_cfr' subroutine.    
+!              Adapted from original 'channel_cfr' subroutine.    
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------! 
 subroutine calculate_ubulk(ux,uball)
@@ -649,7 +649,8 @@ end subroutine calculate_bl_thick
 !              during post_processing.
 !              These statistics must be finalized with different flow 
 !              realizations. var[u] must be finalized further, as:
-!                         var[u] = var[u] - mean[u]**2 
+!                         var[u] = var[u] - mean[u]^2
+!              since var[u] here is mean[u^2]. 
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!       
 subroutine print_mean_stats(ux,uy,uz)
