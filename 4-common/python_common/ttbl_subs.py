@@ -169,7 +169,7 @@ def find_max_ts(directory):
     # Check if any time steps were found
     if ts_values:
         max_ts = max(ts_values)
-        print(f"The maximum time-step available is ts = {str(max_ts)}")
+        print(f"The maximum time-step available is ts = {str(max_ts)}.")
     else:
         print("No matching files found.")
 
