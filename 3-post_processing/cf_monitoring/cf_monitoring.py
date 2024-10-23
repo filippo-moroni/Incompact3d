@@ -394,9 +394,8 @@ if itype == 3:
     # Define the mean of friction coefficient in double precision
     mean_cf = np.float64(0.0)
 
-    # Calculate mean friction coefficient and scale it by a factor of 1000.0
+    # Calculate mean friction coefficient
     mean_cf = np.mean(cfx[lower_index:], dtype='float64')
-    mean_cf = mean_cf*pp.onethousand
     
     # Calculate mean friction velocity 
     u_tau = np.sqrt(mean_cf / pp.two) * pp.twothird
@@ -404,9 +403,12 @@ if itype == 3:
     # Calculate friction Reynolds number (with channel half-height unitary) and show it
     re_tau = u_tau / nu
     
+    # Scale friction coefficient by a factor of 1000.0
+    mean_cf = mean_cf*pp.onethousand
+    
     # Estimated friction coefficient according to Ricco & Quadrio (2008),
     # with reference from Pope ("Turbulent Flows", p. 279).
-    est_cf = 0.0336 * re_tau ** (-0.273)
+    est_cf = 0.0336 * (re_tau ** -0.273)
     est_cf = est_cf*pp.onethousand
     
     # Print calculated quantities
