@@ -210,6 +210,9 @@ def read_input_files(filename1,filename2):
 !   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
 !-----------------------------------------------------------------------------!
 """
+
+# External subroutines
+from ttbl_subs import find_max_ts
     
 def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny, nz, nu, snap_numb=None):
 
@@ -409,6 +412,9 @@ def read_data(itype, numscalar, post_mean, post_grad, post_corz, post_tke_eq, ny
 
         # Plotting statistics from 'cf_monitoring'
         elif i_switch_plot == True:
+        
+            # Search and show the maximum time-step (ts) available
+            find_max_ts('data_post_te/velocity')
         
             # Asking to the user the time-step to show
             ts = input(">>> Enter the time-step to show: ")

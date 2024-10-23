@@ -136,4 +136,38 @@ def calculate_ttbl_thick_params(mean_u,y,uwall):
 
 #!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------!
 
+"""
+!-----------------------------------------------------------------------------!
+! DESCRIPTION: With this script, we show the maximum time-step (ts) available
+!              in mean statistics calculated runtime for a TTBL.   
+!   AUTHOR(s): Filippo Moroni <filippo.moroni@unimore.it> 
+!-----------------------------------------------------------------------------!
+"""
+
+# Libraries
+import os
+import re
+
+def find_max_ts(directory):
+
+    # Regular expression pattern to match 'mean_stats_realiz-tsXXXXXXX.txt'
+    pattern = re.compile(r'mean_stats_realiz-ts(\d{7})\.txt')
+
+    # List to store all the found time steps
+    ts_values = []
+
+    # Iterate through the files in the given directory
+    for filename in os.listdir(directory):
+        match = pattern.match(filename)
+        if match:
+            # Extract the time-step value (7 digits)
+            ts_values.append(int(match.group(1)))
+
+    # Check if any time steps were found
+    if ts_values:
+        max_ts = max(ts_values)
+        print(f"The maximum time-step found is: {str(max_ts).zfill(7)}")
+    else:
+        print("No matching files found.")
+
 
