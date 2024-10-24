@@ -22,7 +22,7 @@ module post_processing
   implicit none
 
   ! Work variables for statistics
-  integer :: ii = 1,ie = 1           ! Internal (ii) and external (ie) loops 
+  integer :: ii = 1,ie = 1           ! Internal ('ii', used for different flow realizations) and external ('ie', used for different time units) loops 
   integer :: file1,filen,icrfile     ! Indexes for opening snapshots (first, last & increment)
   integer :: nr                      ! Total number of flow realizations
   integer :: nt                      ! Total number of savings in time
@@ -36,7 +36,7 @@ module post_processing
   character(99) :: snap_index,snap_n_index,printing
   
   ! Dummy character
-  character(1)  :: a  
+  character(1) :: a  
   
   ! Logicals for 'if' conditions during post-processing, initialised to 'false'
   logical, save :: post_mean   = .false.
