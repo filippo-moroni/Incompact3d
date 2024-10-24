@@ -163,12 +163,17 @@ if itype == 3:
     uc_over_ub = mean_u[ny] / pp.twothird
     uc_over_ub = round(uc_over_ub,2)
     
+    # Calculate Dean's correlation of the ratio of centerline and bulk velocities (Dean (1978), equation n. 12)
+    uc_over_ub_dean = 1.28*re_b**(-0.0116)
+    
     # Print centerline and bulk Reynolds numbers and ratio of centerline and bulk velocities
     print(">>> Centerline Reynolds number, Re_0 ~ ", re_0)
     print()
     print(">>> Bulk Reynolds number, Re_B ~ ", re_b)
     print()
     print(">>> Ratio centerline velocity U_0 and bulk velocity U_B, (U_0/U_B) = ", uc_over_ub)
+    print()
+    print(">>> Dean (1978) correlation for (U_0/U_B) = ", uc_over_ub_dean)
     print()
     
 
@@ -192,7 +197,7 @@ elif itype == 13:
     print()
     print(">>> Domain height in wall units, Ly+ = ", round(Ly_plus,1))
     print()
-    
+   
     
 # Print friction Reynolds number
 re_tau = int(re_tau)
