@@ -248,7 +248,7 @@ subroutine parameter(input_i3d)
       ! Constant pressure gradient, re = Re_tau --> used to compute Re_centerline
       if (cpg) then
   
-          ! Calculate Reynolds centerline of a laminar Poiseuille flow (re = Re_tau in this case)
+          ! Calculate Reynolds centerline of the related laminar Poiseuille flow (re = Re_tau in this case)
           re_cent = (re/0.116_mytype)**(1.0_mytype/0.88_mytype)
     
           ! Viscosity based on Re_cent to keep same scaling as CFR
