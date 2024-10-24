@@ -84,11 +84,13 @@ import numpy as np
 np.seterr(divide='ignore', invalid='ignore')
 
 # Double-precision numbers
+one         = np.float64(1.0)
 two         = np.float64(2.0)
 three       = np.float64(3.0)
 onethousand = np.float64(1000.0)
 
 twothird    = two/three
+
 
 
 

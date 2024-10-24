@@ -146,10 +146,24 @@ if itype == 3:
     delta_yd_plus = y_plus_tot[ny-1] - y_plus_tot[ny-2]
     
     # Halving Ly+
-    Ly_plus = Ly_plus / 2.0
+    Ly_plus = Ly_plus / pp.two
     
     # Calculate friction Reynolds number
-    re_tau = sh_vel_x * 1.0 / nu
+    re_tau = sh_vel_x * pp.one / nu
+    
+    # Calculate centerline Reynolds number
+    re_0 = mean_u[ny] * pp.one / nu
+    re_0 = round(re_0,0)
+    
+    # Calculate bulk Reynolds number
+    re_b = pp.twothird * pp.two / nu
+    re_b = round(re_b,0)
+    
+    # Print centerline and bulk Reynolds numbers
+    print(">>> Centerline Reynolds number, Re_0 ~ ", re_0)
+    print()
+    print(">>> Bulk Reynolds number, Re_B ~ ", re_b)
+    print()
 
 # TTBL only
 elif itype == 13:
