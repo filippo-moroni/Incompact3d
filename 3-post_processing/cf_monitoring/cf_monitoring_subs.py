@@ -343,7 +343,8 @@ def average_runtime_mean_stats(sh_vel_tot, sh_vel_x, mg_phi_w, nsavings, time_wi
             max_delta_yd_plus = delta_yd_plus
         
         # Call of external subroutine for the calculation of TTBL thickness parameters of scalar field
-        (delta_99_s[ti], delta_99_j_s, disp_t_s[ti], mom_t_s[ti]) = calculate_ttbl_thick_params(mean_phi_r[:,ti],y,phiwall)
+        if numscalar == 1:
+            (delta_99_s[ti], delta_99_j_s, disp_t_s[ti], mom_t_s[ti]) = calculate_ttbl_thick_params(mean_phi_r[:,ti],y,phiwall)
                
     # Return to main program with TTBL thickness parameters time evolution and maximum delta y+ at the BL interface
     return (delta_99, disp_t, mom_t, max_delta_yd_plus, delta_99_s, disp_t_s, mom_t_s)
