@@ -329,11 +329,11 @@ subroutine stat_correlation_z(ux2,uy2,uz2,phi2,RuuzH1,RvvzH1,RwwzH1,RuvzH1,RppzH
   use decomp_2d_mpi
   use decomp_2d
   
-  use variables,       only : numscalar,nx,nz
+  use variables,       only : numscalar,nz
   use post_processing, only : read_phi,nr,nt
   use var,             only : phi3
   
-  use post_processing, only : nr,nt,den
+  use post_processing, only : den
 
   implicit none
    
