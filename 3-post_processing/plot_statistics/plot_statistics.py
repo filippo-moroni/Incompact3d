@@ -153,27 +153,24 @@ if itype == 3:
     
     # Calculate centerline Reynolds number
     re_0 = mean_u[ny] * pp.one / nu
-    re_0 = int(re_0)
     
     # Calculate bulk Reynolds number
     re_b = pp.twothird * pp.two / nu
-    re_b = int(re_b)
     
     # Ratio of centerline and bulk velocities
     uc_over_ub = mean_u[ny] / pp.twothird
-    uc_over_ub = round(uc_over_ub,2)
     
     # Calculate Dean's correlation of the ratio of centerline and bulk velocities (Dean (1978), equation n. 12)
     uc_over_ub_dean = 1.28*re_b**(-0.0116)
     
     # Print centerline and bulk Reynolds numbers and ratio of centerline and bulk velocities
-    print(">>> Centerline Reynolds number, Re_0 ~ ", re_0)
+    print(">>> Centerline Reynolds number, Re_0 ~ ", int(re_0))
     print()
-    print(">>> Bulk Reynolds number, Re_B ~ ", re_b)
+    print(">>> Bulk Reynolds number, Re_B ~ ", int(re_b))
     print()
-    print(">>> Ratio centerline velocity U_0 and bulk velocity U_B, (U_0/U_B) = ", uc_over_ub)
+    print(">>> Ratio centerline velocity U_0 and bulk velocity U_B, (U_0/U_B) = ", round(uc_over_ub,2))
     print()
-    print(">>> Dean (1978) correlation for (U_0/U_B) = ", uc_over_ub_dean)
+    print(">>> Dean (1978) correlation for (U_0/U_B) = ", round(uc_over_ub_dean,2))
     print()
     
 
