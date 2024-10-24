@@ -217,10 +217,11 @@ if post_mean:
     mean_uv /= sh_vel_x**2
     var_p   /= sh_vel_x**2
     
-    u_ref = 0.29 # need to understand what is physically this value
+    
+    u_ref = 0.29 # need to understand what is physically this value (it seems 1.16 / 4)
     
     p_ref = 0.5*1.0*u_ref**2
-    
+       
     var_p = var_p / p_ref**2
         
     # Spanwise velocity is not overwritten since for a channel it is plotted in external units 
